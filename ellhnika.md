@@ -41,7 +41,7 @@
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Τι είναι ο A\*;**
 
@@ -137,20 +137,6 @@ INFERENCE (Clipped Neural A*):
 - Evaluation σε χάρτες από robot datasets (MatterPort3D, Gibson)
 - Statistical testing (t-test) για τη μείωση node expansions
 
----
-
-### 9. Publication Potential
-
-**Τίτλος:** "Admissible Neural Heuristics for Learning-Augmented A\* in Unknown Environments"  
-**Venue:** ICRA Workshop on Learning for Planning, RA-L  
-**Level:** Workshop-level ή incremental conference paper  
-**Outline:** Introduction → Background A\* → Neural Heuristic Training → Admissibility Guarantee → Experiments → Comparison → Conclusion
-
----
-
-### 10. PhD Potential
-
-Μπορεί να γίνει κεφάλαιο «Planning Efficiency» σε διδακτορικό. Ανοίγει σε: online learning της heuristic, multi-task heuristics για διαφορετικά robots, meta-learning για heuristics.
 
 ---
 
@@ -166,8 +152,7 @@ INFERENCE (Clipped Neural A*):
 
 ---
 
-### 2. Background για Αρχάριους
-
+### 2. Background 
 **Τι είναι το Kalman Filter;**
 
 Φαντάσου ότι ακολουθείς έναν φίλο στο δρόμο με κλειστά μάτια, χρησιμοποιώντας μόνο τα βήματά του. Μετά ανοίγεις τα μάτια για μια στιγμή και βλέπεις που είναι. Ο Kalman Filter κάνει ακριβώς αυτό — συνδυάζει την «προβλεψιμότητα» (μοντέλο κίνησης) με τις «παρατηρήσεις» (αισθητήρες) για να εκτιμήσει τη θέση.
@@ -220,7 +205,7 @@ Update:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Τι είναι το CVaR;**
 
@@ -278,7 +263,7 @@ f(s) = g(s) + λ · CVaR_α(p_collision(s)) + h(s)
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Irreversible state:** Κατάσταση από την οποία δεν υπάρχει διαδρομή επιστροφής σε ασφαλή ζώνη.
 
@@ -320,9 +305,6 @@ PLANNING WITH RETURNABILITY:
 **Αδύναμο:** BFS approximation δεν είναι full backward reachability. Υπό uncertainty (ατελής χάρτης), η εγγύηση αποδυναμώνεται.
 ---
 
-### 6. Publication Potential
-
-**Τίτλος:** "Safe Exploration via Returnability Constraints in Unknown Environments"  
 
 
 ---
@@ -337,7 +319,7 @@ PLANNING WITH RETURNABILITY:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **FSM (Finite State Machine):** Ένας αυτόματος με πεπερασμένες καταστάσεις και μεταβάσεις. Σαν κυκλοφοριακό φανάρι — τρεις καταστάσεις, αλλάζει με βάση συνθήκες.
 
@@ -384,7 +366,7 @@ CONTRIBUTION 06 — Energy & Connectivity-Aware Planning
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Resource-constrained shortest path:** Κλασικό πρόβλημα operations research. Βρες τον φθηνότερο δρόμο που ταυτόχρονα δεν υπερβαίνει το resource budget. Είναι NP-hard γενικά, αλλά με Lagrangian relaxation γίνεται tractable.
 
@@ -418,13 +400,7 @@ CONSTRAINED A*:
 **Αδύναμο:** Λείπει πειραματική επαλήθευση με πραγματικά δεδομένα μπαταρίας από TurtleBot3.  
 
 
----
 
-### 5. Publication Potential
-
-**Τίτλος:** "Energy-Aware Navigation with Communication Constraints for Mobile Robots"  
-**Venue:** IROS, RoboCup Symposium  
-**Level:** Short conference paper — χρειάζεται hardware validation
 
 ---
 
@@ -440,7 +416,7 @@ CONSTRAINED A*:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Entropy χάρτη:** Κάθε κελί έχει πιθανότητα p_c να είναι κατειλημμένο. Αβεβαιότητα = -p_c·log(p_c) - (1-p_c)·log(1-p_c). Μεγάλη αβεβαιότητα σημαίνει p_c ≈ 0.5 (δεν ξέρουμε).
 
@@ -477,14 +453,6 @@ MAP UPDATE (Binary Bayes Filter):
 
 ---
 
-### 5. Publication Potential
-
-**Τίτλος:** "Uncertainty-Driven Active Exploration with Information-Geometric Viewpoint Selection"  
-**Venue:** IROS, ICRA Workshop on Exploration  
-
-
----
-
 ## CONTRIBUTION 08 — Security & Intrusion Detection
 
 ### 1. Τίτλος και Σύντομη Περίληψη
@@ -497,7 +465,7 @@ MAP UPDATE (Binary Bayes Filter):
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Innovation sequence:** Στο Kalman Filter, ορίζεται ως η διαφορά μεταξύ της πραγματικής μέτρησης και της προβλεπόμενης:
 
@@ -557,7 +525,7 @@ alarm if g_k > h
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Multi-robot path planning (MAPF):** Το πρόβλημα εύρεσης διαδρομών για N ρομπότ ταυτόχρονα χωρίς συγκρούσεις. Κεντρικές λύσεις (CBS - Conflict-Based Search) είναι βέλτιστες αλλά δεν scale. Αποκεντρωμένες λύσεις scale αλλά δεν εγγυώνται βέλτιστο αποτέλεσμα.
 
@@ -590,12 +558,7 @@ RISK BUDGET ALLOCATION:
 **Αδύναμο:** Priority-based approaches είναι γνωστές και δεν εγγυώνται βέλτιστο. Δεν συγκρίνεται με CBS ή M\*.  
 
 
----
 
-### 5. Publication Potential
-
-**Venue:** AAMAS, MRS (Multi-Robot Systems) Workshop  
-**Level:** Systems integration — χρειάζεται formal analysis για deadlock freedom
 
 ---
 
@@ -609,7 +572,7 @@ RISK BUDGET ALLOCATION:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Ethical zones:** Ορισμένες περιοχές που το ρομπότ δεν πρέπει να εισέλθει για λόγους ιδιωτικότητας, ασφάλειας ή ηθικής (νοσοκομεία, χώροι προσευχής, κλπ).
 
@@ -659,7 +622,7 @@ TRUST SCALING: actions scaled by τ(t) ∈ [0,1]
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **VLM (Vision-Language Model):** Νευρωνικό δίκτυο που κατανοεί ταυτόχρονα εικόνες και κείμενο. Παραδείγματα: GPT-4V, LLaVA, CLIP. Μπορεί να απαντά ερωτήσεις για εικόνες.
 
@@ -720,7 +683,7 @@ CONFIDENCE GATING:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Diffusion models:** Κατηγορία generative AI (σαν DALL-E, Stable Diffusion). Μαθαίνουν να «αφαιρούν θόρυβο» από noisy εικόνες βήμα-βήμα. Η ίδια ιδέα εφαρμόζεται σε occupancy maps.
 
@@ -782,7 +745,7 @@ RISK-AUGMENTED COST:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **World Model:** Εσωτερικό μοντέλο του ρομπότ για το πώς ο κόσμος ανταποκρίνεται σε κινήσεις. «Αν στρίψω αριστερά, τι θα συμβεί;»
 
@@ -845,7 +808,7 @@ CONTRIBUTION 14 — Causal Risk Attribution
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Correlation vs Causation:** «Ο θόρυβος αισθητήρα συνεχώς προηγείται των συγκρούσεων» ≠ «ο θόρυβος αισθητήρα **προκαλεί** συγκρούσεις». Μπορεί και οι δύο να οφείλονται σε κακές συνθήκες φωτισμού.
 
@@ -917,7 +880,7 @@ ROOT CAUSE RANKING (Shapley-inspired):
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **DVS (Dynamic Vision Sensor):** Κάθε pixel πυροδοτεί ένα event (x,y,t,polarity) όταν αλλάξει log-intensity πάνω από threshold C:
 ```
@@ -993,8 +956,7 @@ SNN DETECTOR:
 
 ---
 
-### 2. Background για Αρχάριους
-
+### 2. Background 
 **Federated Learning:** Κατανεμημένη εκπαίδευση ML:
 1. Server στέλνει global model στους clients
 2. Κάθε client εκπαιδεύει τοπικά στα δικά του data
@@ -1066,7 +1028,7 @@ CLIENT k:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Topological map:** Graph G=(V,E,w) — κόμβοι = ζώνες, ακμές = μεταβάσεις. Πολύ πιο compact από grid map. Planning = Dijkstra στον graph (O(|V|²) αντί O(grid²)).
 
@@ -1128,7 +1090,7 @@ SERIALISATION: JSON → persistent across sessions
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background
 
 **Γιατί χρειαζόμαστε formal safety;** Ένα neural network policy μπορεί να βγάλει «τυχαία» μια επικίνδυνη εντολή. Ένας CBF filter εγγυάται ότι αυτό δεν θα συμβεί — όχι statistically, αλλά με μαθηματική απόδειξη.
 
@@ -1212,7 +1174,7 @@ SafetyShield.step(u_des, pos, obstacles):
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background
 
 **LLM (Large Language Model):** Νευρωνικό δίκτυο εκπαιδευμένο σε τεράστιες ποσότητες κειμένου. Μπορεί να κατανοήσει και να παράγει κείμενο. Παραδείγματα: GPT-4, Claude, LLaMA.
 
@@ -1270,7 +1232,7 @@ FALLBACK:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 Φαντάσου μηχανικό που αναλύει crash report αυτοκινήτου:
 1. Βλέπει την εικόνα (scene description)
@@ -1322,7 +1284,7 @@ REPORT FORMAT: Markdown / JSON
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Reinforcement Learning (RL):** Ο agent δοκιμάζει κινήσεις, παίρνει rewards/penalties, και μαθαίνει ποιες κινήσεις ήταν καλές. Σαν παιδί που μαθαίνει ποδήλατο — δεν του εξηγείς, απλά το αφήνεις να δοκιμάζει.
 
@@ -1401,7 +1363,7 @@ PPO UPDATE (K epochs):
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **Curriculum Learning (Bengio 2009):** Ίδια ιδέα με το σχολείο — πρώτα άλγεβρα, μετά λογισμός. Αν ξεκινήσεις με differential equations, δεν μαθαίνεις τίποτα.
 
@@ -1467,7 +1429,7 @@ CURRICULUM SCHEDULER:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background 
 
 **3D Gaussian Splatting (Kerbl 2023):** State-of-the-art method για 3D scene representation. Αντί για voxels ή meshes, χρησιμοποιεί N Gaussian primitives:
 ```
@@ -1511,13 +1473,7 @@ O(r,c) = min(1, Σ_i α_i · exp(-d²_{2D}/2σ_i²))
 
 ---
 
-### 5. Publication Potential
 
-**Τίτλος:** "Navigation-Centric 3D Gaussian Splatting: Occupancy and Uncertainty Extraction for Autonomous Exploration"  
-**Venue:** ICRA, RA-L  
-**Level:** Workshop → Conference αν added neural rendering
-
----
 
 ## CONTRIBUTION 24 — NeRF Uncertainty Maps
 
@@ -1529,7 +1485,7 @@ O(r,c) = min(1, Σ_i α_i · exp(-d²_{2D}/2σ_i²))
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background
 
 **NeRF (Neural Radiance Field, Mildenhall 2020):** Νευρωνικό δίκτυο που μαθαίνει να αποδίδει views μιας σκηνής από οποιαδήποτε γωνία. Αντί να αποθηκεύει pixels, αποθηκεύει μια implicit function.
 
@@ -1590,7 +1546,7 @@ MC-DROPOUT UNCERTAINTY:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background
 
 **Adversarial attack:** Μικρή, σχεδόν αόρατη αλλαγή στα inputs που «ξεγελάει» ένα neural network. Κλασικό παράδειγμα: ένα αυτοκόλλητο σε stop sign που κάνει ένα self-driving car να το αγνοεί.
 
@@ -1672,7 +1628,7 @@ ODOM DRIFT:
 
 ---
 
-### 2. Background για Αρχάριους
+### 2. Background
 
 **Byzantine Generals Problem (Lamport 1982):** Κλασικό πρόβλημα κατανεμημένων συστημάτων. Πώς μπορεί μια group να πάρει κοινή απόφαση όταν μερικά μέλη λένε ψέματα;
 
@@ -1814,23 +1770,8 @@ LAYER 8: Learning           (21, 22)
 
 ---
 
-## C. Τα 3 Πιο Δυνατά Contributions
 
-###  1. Contribution 18 — Formal Safety Shields (STL + CBF)
-**Γιατί:** Μόνο αυτό έχει formal mathematical guarantees + πλήρη πειραματικά αποτελέσματα (93% violation reduction, < 8% overhead). Είναι το μόνο contribution που θα μπορούσε να σταθεί αυτόνομα ως conference paper σήμερα, χωρίς μεγάλες αλλαγές.  
-**PhD potential:** Υψηλό — stochastic CBF, multi-robot CBF, learned CBF parameters.
-
-###  2. Contribution 14 — Causal Risk Attribution
-**Γιατί:** Η εφαρμογή SCM + do-calculus σε navigation failure diagnosis είναι σχετικά novel. Σωστή υλοποίηση counterfactual queries. Η σύνδεση με Contribution 20 (Failure Explainer) δημιουργεί pipeline που δεν υπάρχει αλλού στη robotics literature.  
-**PhD potential:** Υψηλό — learned causal graphs από navigation data, causal RL.
-
-###  3. Contribution 26 — BFT Swarm Consensus
-**Γιατί:** Clean algorithmic contribution, σωστή BFT theory, multiple fault modes tested. Η εφαρμογή BFT consensus ειδικά για navigation plan selection είναι novel framing.  
-**PhD potential:** Μέτριο-Υψηλό — Byzantine-robust federated learning, cryptographic extensions.
-
----
-
-## D. Τα 3 Πιο Αδύναμα / Immature Contributions
+## C. Τα 3 Πιο Αδύναμα / Immature Contributions
 
 ### 1. Contribution 21 — PPO Navigation Agent
 **Πρόβλημα:** Numpy stubs = η policy δεν εκπαιδεύεται. Αυτό πρέπει να ειπωθεί ρητά. Χωρίς PyTorch + actual training, δεν είναι RL agent.  
