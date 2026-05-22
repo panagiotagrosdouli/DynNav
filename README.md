@@ -718,11 +718,13 @@ Released under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE) for
 The Apache-2.0 licence is chosen because it explicitly grants a patent licence alongside the copyright licence — relevant for downstream use of the safety-shield and adversarial-defence components — and because it imposes no copyleft on derived works.
 
 ---
-
 ## 26. Acknowledgements
 
-The framework builds on the broader open-source robotics ecosystem: ROS 2 Humble, Nav2, slam_toolbox, TurtleBot3, NumPy, SciPy, PyTorch, Plotly, Streamlit, networkx, Open3D, and the Hugging Face ecosystem. Where a specific algorithm is reproduced (Hungarian assignment, median–MAD outlier filtering, FedAvg, TD3-style twin critics, PPO, Dreamer-style world models, FGSM / PGD attacks) the canonical reference is named in the corresponding module's deep-dive PDF.
+This project was developed as an independent research effort built upon the broader open-source robotics and machine learning ecosystem. The framework integrates and extends technologies including ROS 2 Humble, Nav2, slam_toolbox, TurtleBot3, NumPy, SciPy, PyTorch, Plotly, Streamlit, networkx, Open3D, and components from the Hugging Face ecosystem.
 
-Particular thanks are owed to the academic environment at DUTH ECE, which made the project possible as a sustained piece of independent research.
+A number of implemented techniques are based on established methods from the scientific literature, including Hungarian assignment optimization, median–MAD outlier filtering, Federated Averaging (FedAvg), TD3-style twin critics, PPO, Dreamer-inspired world models, and adversarial attack methods such as FGSM and PGD. The canonical references for these approaches are provided within the corresponding module-specific deep-dive PDFs.
+
+The author also acknowledges the wider open-source and research communities whose publicly available tools, publications, and educational resources contributed to the realization of this work.
+
 
 ---
