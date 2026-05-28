@@ -2,7 +2,7 @@
 
 ### Dynamic Navigation and Rerouting in Unknown Environments
 
-*An uncertainty-aware, risk-sensitive autonomous navigation framework with formal safety constraints, learning-augmented planning, and twenty-six reproducible research contributions.*
+*An uncertainty-aware, risk-sensitive autonomous navigation framework with formal safety constraints (STL + CBF filtering), learning-augmented planning, and twenty-six reproducible research contributions.*
 
 ---
 
@@ -12,9 +12,23 @@
 **License.** Apache-2.0
 **Author.** Panagiota Grosdouli — Department of Electrical and Computer Engineering, Democritus University of Thrace (DUTH)
 
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)](https://python.org)
+[![ROS 2](https://img.shields.io/badge/ROS%202-Humble-22314E?style=flat-square&logo=ros&logoColor=white)](https://docs.ros.org/en/humble/)
+[![License](https://img.shields.io/badge/License-Apache%202.0-4CAF50?style=flat-square)](LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-pytest%20suite-brightgreen?style=flat-square&logo=pytest&logoColor=white)](tests/)
+[![Contributions](https://img.shields.io/badge/Research%20Contributions-26-9C27B0?style=flat-square)](contributions/)
+[![Dashboard](https://img.shields.io/badge/Dashboard-Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/)
+
+---
+
+> **About this README.** This document is both the scientific report for DynNav *and* the navigation hub for the whole repository. It keeps the long-form technical narrative (sections 1–26) and additionally links each contribution to its implementation folder, its local README, its experiment scripts, its results, its dashboard simulation, and its related design documents under [`docs/`](docs/). Two short orientation sections — the [Documentation Hub](#documentation-hub) and [How to Explore This Repository](#how-to-explore-this-repository) — sit before the report so a new reader can find their way in; the deep sections then follow in their original order. Every path referenced below has been checked against the repository tree; where a folder is a documentation stub or a code home, that is stated explicitly rather than glossed over.
+
 ---
 
 ## Table of Contents
+
+- [Documentation Hub](#documentation-hub)
+- [How to Explore This Repository](#how-to-explore-this-repository)
 
 1. [Overview](#1-overview)
 2. [Scientific Motivation](#2-scientific-motivation)
@@ -45,18 +59,80 @@
 
 ---
 
+## Documentation Hub
+
+DynNav's documentation is spread across several layers. This table is the master index — start here when looking for a particular document. Every link below points to a file that exists in the repository.
+
+| Layer | Location | What it contains |
+|---|---|---|
+| **Master entry point** | `README.md` *(this file)* | Scientific report + navigation, contribution index, dependency notes |
+| **Scientific framing** | [`docs/Abstract_and_Contributions.md`](docs/Abstract_and_Contributions.md) | Abstract, formal statement of contributions, scope |
+| **Evidence map** | [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md) | Each claim mapped to scripts, CSV logs and figures |
+| **Long-form variants** | [`readme_full.md`](readme_full.md), [`docs/README-large info.md`](docs/README-large%20info.md) | Extended narrative versions of this document |
+| **Docs index** | [`docs/README.md`](docs/README.md) | Index of the `docs/` directory |
+| **Per-contribution READMEs** | `contributions/NN_module_name/README.md` | Research question, algorithm, integration points (per module) |
+| **Contributions overview** | [`contributions/CONTRIBUTIONS_README.md`](contributions/CONTRIBUTIONS_README.md) | Index and conventions, with focus on modules 11–18 |
+
+> **Note on deep-dive PDFs.** Earlier drafts of this README linked twenty-six `DynNav_C##_*_DeepDive.pdf` files at the repository root. Those PDFs are **not present on the current `main` branch**, so this README does not link to them. If they are re-added later, the per-contribution table in [section 7](#7-the-twenty-six-contributions) is the natural place to wire them back in (one column per module). Likewise, no `TECHNICAL_REPORT.md` exists on `main` at present; the long-form text lives in [`readme_full.md`](readme_full.md) and [`docs/README-large info.md`](docs/README-large%20info.md).
+
+### Topic documents in `docs/`
+
+These design, theory and results documents are central to the project and are cross-referenced from the relevant contributions in [section 7](#7-the-twenty-six-contributions). They are indexed here so none stays hidden.
+
+| Document | Primarily related to |
+|---|---|
+| [`docs/Irreversibility_Aware_Navigation_New_Contribution.md`](docs/Irreversibility_Aware_Navigation_New_Contribution.md) | C04 (concept) |
+| [`docs/README Irreversibility-Aware Navigation Planning.md`](docs/README%20Irreversibility-Aware%20Navigation%20Planning.md) | C04 (method) |
+| [`docs/README_Irreversibility_Aware_Planning results.md`](docs/README_Irreversibility_Aware_Planning%20results.md) | C04 (results) |
+| [`docs/Proposition_Irreversibility_vs_Risk_Weighting.md`](docs/Proposition_Irreversibility_vs_Risk_Weighting.md) | C03 ↔ C04 (theory) |
+| [`docs/Returnability- & Irreversibility-Aware Frontier NBV.md`](docs/Returnability-%20&%20Irreversibility-Aware%20Frontier%20NBV.md) | C04 ↔ C07 |
+| [`docs/Frontier-Restricted NBV Benchmark.md`](docs/Frontier-Restricted%20NBV%20Benchmark.md) | C07 (benchmark) |
+| [`docs/Human Preference–Aware Risk Navigation.md`](docs/Human%20Preference%E2%80%93Aware%20Risk%20Navigation.md) | C10 |
+| [`docs/README_trust_navigation.md`](docs/README_trust_navigation.md) | C10 (trust) |
+| [`docs/Multi-Robot Safe Mode Navigation under Uncertainty.md`](docs/Multi-Robot%20Safe%20Mode%20Navigation%20under%20Uncertainty.md) | C05 ↔ C09 |
+| [`docs/README_safe_mode_experiments.md`](docs/README_safe_mode_experiments.md) | C05 (results) |
+| [`docs/README_Energy_Connectivity_SafeMode.md`](docs/README_Energy_Connectivity_SafeMode.md) | C05 ↔ C06 |
+| [`docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md`](docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md) | C02 ↔ C08 |
+| [`docs/README_TF_Attack_Aware_IDS.md`](docs/README_TF_Attack_Aware_IDS.md) | C08 ↔ C25 |
+| [`docs/README Self-Healing Navigation & Language-Driven Safety.md`](docs/README%20Self-Healing%20Navigation%20&%20Language-Driven%20Safety.md) | C05 ↔ C19 |
+| [`docs/SelfHealing_LanguageSafety_README.md`](docs/SelfHealing_LanguageSafety_README.md) | C05 ↔ C19 |
+| [`docs/READMEResults: Self-Healing + Language Safety + Trust + Ethical Navigation.md`](docs/READMEResults:%20Self-Healing%20+%20Language%20Safety%20+%20Trust%20+%20Ethical%20Navigation.md) | C05, C10, C19 (results) |
+| [`docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md`](docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md) | ROS 2 perception (see [section 13](#13-ros-2-integration)) |
+
+---
+
+## How to Explore This Repository
+
+DynNav is a coherent research ecosystem rather than a set of isolated demos. Choose the path that matches your role; each path points into the deep sections below.
+
+**Everyone — first ten minutes.** Read [Overview](#1-overview) → [System Architecture](#5-system-architecture) → [Installation §10.1](#101-dashboard-only-no-ros-no-gpu), then open the [live dashboard](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/) (or run it locally with `streamlit run app/dashboard.py`) and browse the *Contribution Simulations* page.
+
+**Robotics researchers.** Read the architecture, then C02 (state estimation), C03 (belief-space and risk planning), C04 (irreversibility/returnability) and C07 (next-best-view). Pair each contribution's README with its `docs/` design note where one is listed in [section 7](#7-the-twenty-six-contributions).
+
+**RL researchers.** Go to C21 (PPO), C22 (curriculum), C11 (twin-critic / VLM agent in the dashboard), then C16 (federated learning) and C13 (latent world model).
+
+**ROS 2 / systems users.** Read [ROS 2 Integration](#13-ros-2-integration), then [`docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md`](docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md), and explore [`lidar_ros2/`](lidar_ros2/), [`dynamic_nav/`](dynamic_nav/), [`cybersecurity_ros2/`](cybersecurity_ros2/) and the workspace under [`ros2_ws/lidar_slam_tb3/`](ros2_ws/lidar_slam_tb3/).
+
+**Safety researchers.** Read C18 (STL + CBF filtering) and C03 (CVaR planning) together — the risk maps feed the safety filter. Then C04 (irreversibility/returnability) and C05 (safe-mode FSM). Theory bridge: [`docs/Proposition_Irreversibility_vs_Risk_Weighting.md`](docs/Proposition_Irreversibility_vs_Risk_Weighting.md).
+
+**Reviewers / thesis evaluators.** Read [`docs/Abstract_and_Contributions.md`](docs/Abstract_and_Contributions.md), then [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md) to trace each claim to its evidence, then spot-check by running the cited scripts. The *Status* column in [section 7](#7-the-twenty-six-contributions) and the disclosures in [section 20](#20-limitations-and-honest-disclosures) state plainly what is implemented versus prototype.
+
+**Suggested deep-reading order:** sections 1–9 of this report → *Contribution Simulations* in the dashboard → **C18 with C03** → **C04 with C07** → **C05, C10 and C19** → coordination layer **C09, C16, C26**.
+
+---
+
 ## 1. Overview
 
 DynNav is a research framework for **dynamic navigation and online rerouting in unknown environments** that treats uncertainty and risk as first-class quantities. The framework is organised around twenty-six self-contained research contributions spanning planning, state estimation, formal safety, reinforcement learning, foundation-model integration, federated learning, security, multi-robot coordination, and 3D perception. The contributions are developed under a unified problem formulation in which a mobile agent must reach a goal in a partially observed, possibly adversarial environment while respecting probabilistic safety and resource constraints.
 
 The repository contains four coupled components:
 
-1. A **library of twenty-six research modules** under `contributions/`, each with its own algorithm code, `experiments/` driver, `results/` directory and per-module README.
-2. A **ROS 2 stack** organised into perception (`lidar_ros2/`, `neural_uncertainty/`, `photogrammetry_module/`, `ig_explorer/`), navigation (`dynamic_nav/`, `core/`), and security (`cybersecurity_ros2/`) packages, with a TurtleBot3 workspace under `ros2_ws/lidar_slam_tb3/`.
+1. A **library of twenty-six research modules** under [`contributions/`](contributions/). Modules C01–C10 keep their algorithm code and drivers in paired `code/` and `experiments/` subdirectories with a `results/` directory and a per-module `README.md`; modules C11–C26 expose a top-level module file (for example `formal_safety_shields.py`) plus a `README.md`, and some add an `experiments/` driver. The exact layout per module is given in [section 7](#7-the-twenty-six-contributions).
+2. A **ROS 2 stack** organised into perception ([`lidar_ros2/`](lidar_ros2/), [`neural_uncertainty/`](neural_uncertainty/), [`photogrammetry_module/`](photogrammetry_module/), [`ig_explorer/`](ig_explorer/)), navigation ([`dynamic_nav/`](dynamic_nav/), [`core/`](core/)) and security ([`cybersecurity_ros2/`](cybersecurity_ros2/)) packages, with a TurtleBot3 workspace under [`ros2_ws/lidar_slam_tb3/`](ros2_ws/lidar_slam_tb3/).
 3. A **browser-based research dashboard** built with Streamlit that reproduces every contribution as a synthetic-data simulation requiring no robot, no ROS installation, and no GPU.
-4. A **technical-report layer**: twenty-six `DynNav_C##_*_DeepDive.pdf` documents at the repository root, one per contribution, plus the consolidated `TECHNICAL_REPORT.md`.
+4. A **documentation layer**: per-contribution READMEs, the topic documents under [`docs/`](docs/), and the scientific framing in [`docs/Abstract_and_Contributions.md`](docs/Abstract_and_Contributions.md) and [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md).
 
-The framework is positioned as a research artefact, not a deployable product. Several contributions are fully implemented and benchmarked, others are prototypes, and the cross-stack integration is partial. These categories are made explicit throughout this document.
+The framework is positioned as a research artefact, not a deployable product. Several contributions are fully implemented and benchmarked, others are prototypes, and the cross-stack integration is partial. These categories are made explicit throughout this document — see in particular the *Status* column in [section 7](#7-the-twenty-six-contributions) and the disclosures in [section 20](#20-limitations-and-honest-disclosures).
 
 ---
 
@@ -68,7 +144,7 @@ Autonomous navigation has matured in controlled, well-mapped settings. It remain
 
 **Uncertainty must be first-class.** Downstream decisions — whether to slow down, replan, abort, or hand off to a human supervisor — are only as good as the uncertainty estimates they consume. The framework therefore treats belief-space estimation, ensemble disagreement, NeRF/3DGS uncertainty fields, and diffusion-based occupancy predictions as primary signals rather than diagnostics.
 
-**Safety cannot rely on the policy alone.** Learning-based policies improve average performance but offer no formal guarantees. The framework couples learned components to formal safety filters — Control Barrier Functions (CBFs) and Signal Temporal Logic (STL) shields — so that the output of any upstream controller, classical or neural, is minimally projected onto the safe set before reaching the actuators.
+**Safety cannot rely on the policy alone.** Learning-based policies improve average performance but offer no formal guarantees. The framework couples learned components to formal safety filters — Control Barrier Functions (CBFs) and Signal Temporal Logic (STL) shields — so that the output of any upstream controller, classical or neural, is minimally projected onto the safe set before reaching the actuators. The framework provides *formal safety constraints and STL/CBF filtering at the action level*; it does not claim end-to-end formal verification of the full stack.
 
 ---
 
@@ -113,7 +189,7 @@ The framework is layered. Each layer exposes a typed interface to the layer abov
 |     Federated Nav Learning (C16)  |  Latent World Model (C13)   |
 +----------------------------------------------------------------+
 |  Safety Layer                                                   |
-|     STL + CBF Shields (C18)  |  Safe-Mode FSM (C05)             |
+|     STL + CBF Filtering (C18)  |  Safe-Mode FSM (C05)           |
 |     Irreversibility / Returnability (C04)                       |
 +----------------------------------------------------------------+
 |  Coordination Layer                                             |
@@ -142,45 +218,43 @@ The framework is layered. Each layer exposes a typed interface to the layer abov
 +----------------------------------------------------------------+
 ```
 
-Data flows upward: raw sensors → security filter → perception → planning → safety filter → actuators. Uncertainty estimates flow with the data; mission intent flows downward; the safe-mode FSM observes the entire stack and gates its outputs.
+Data flows upward: raw sensors → security filter → perception → planning → safety filter → actuators. Uncertainty estimates flow with the data; mission intent flows downward; the safe-mode FSM observes the entire stack and gates its outputs. How the contributions compose across these layers is set out explicitly in the [Contribution Relationships](#contribution-relationships) subsection inside [section 7](#7-the-twenty-six-contributions).
+
+The layers map onto concrete code: the **Planning Core** lives in [`core/`](core/) and [`dynamic_nav/`](dynamic_nav/); **Perception** in [`lidar_ros2/`](lidar_ros2/), [`neural_uncertainty/`](neural_uncertainty/) and [`photogrammetry_module/`](photogrammetry_module/); the **Security Layer** in [`cybersecurity_ros2/`](cybersecurity_ros2/); and exploration in [`ig_explorer/`](ig_explorer/).
 
 ---
 
 ## 6. Repository Layout
 
-The top-level structure mirrors the architecture above. Folder names are reproduced verbatim from the repository.
+The top-level structure mirrors the architecture above. Folder names are reproduced verbatim from the repository, and only directories that exist on the current branch are listed.
 
 ```
 DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/
 │
-├── contributions/                # 26 self-contained research modules
-│   ├── 01_learned_astar/         #   each contains:
-│   ├── 02_uncertainty_estimation/#     module.py, experiments/, results/, README.md
+├── contributions/                # 26 numbered research modules (+ a few legacy/variant dirs)
+│   ├── CONTRIBUTIONS_README.md   #   conventions + index (focus on modules 11–18)
+│   ├── 01_learned_astar/         #   C01–C10: code/ + experiments/ + results/ + README.md
+│   ├── 02_uncertainty_estimation/#   C02 canonical documentation README (stub)
+│   ├── 02_uncertainty_calibration/  # C02 working code + experiments + results
 │   ├── 03_belief_risk_planning/
 │   ├── 04_irreversibility_returnability/
 │   ├── 05_safe_mode_navigation/
 │   ├── 06_energy_connectivity/
-│   ├── 07_next_best_view/
+│   ├── 07_next_best_view/        #   C07 canonical documentation README (stub)
+│   ├── 07_nbv_exploration/       #   C07 working code + experiments + results
 │   ├── 08_security_ids/
 │   ├── 09_multi_robot/
 │   ├── 10_human_language_ethics/
-│   ├── 11_vlm_navigation_agent/
+│   ├── 11_vlm_navigation_agent/  #   C11–C26: top-level module .py + README.md (+ experiments/)
 │   ├── 12_diffusion_occupancy/
-│   ├── 13_latent_world_model/
-│   ├── 14_causal_risk_attribution/
-│   ├── 15_neuromorphic_sensing/
-│   ├── 16_federated_nav_learning/
-│   ├── 17_topological_semantic_maps/
-│   ├── 18_formal_safety_shields/
-│   ├── 19_llm_mission_planner/
-│   ├── 20_multimodal_failure_explainer/
-│   ├── 21_ppo_navigation_agent/
-│   ├── 22_curriculum_rl/
-│   ├── 23_gaussian_splatting_mapper/
-│   ├── 24_nerf_uncertainty/
-│   ├── 25_adversarial_attack_simulator/
+│   ├── …                          #   (through 26_swarm_consensus/)
 │   ├── 26_swarm_consensus/
-│   └── tests/                    # pytest suite covering modules 11–26
+│   ├── hybrid_learned_astar/     #   legacy / alternate planner variant
+│   ├── learned_uncertainty_astar/#   legacy / alternate planner variant
+│   ├── hybrid_planner/           #   legacy / alternate planner variant
+│   ├── realtime_replanning/      #   legacy / alternate variant
+│   ├── ablation_study/  benchmarking/  _unsorted/   # auxiliary experiment dirs
+│   └── tests/                    #   pytest suite covering the contribution modules
 │
 ├── core/                         # planner cores (A*, D*, belief search)
 ├── dynamic_nav/                  # closed-loop navigation stack
@@ -191,104 +265,210 @@ DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/
 ├── neural_uncertainty/           # neural uncertainty estimation
 ├── photogrammetry_module/        # photogrammetry integration
 │
-├── lidar_ros2/                   # ROS 2 LiDAR + SLAM packages
-├── cybersecurity_ros2/nodes/     # ROS 2 IDS / cyber-physical nodes
+├── lidar_ros2/                   # ROS 2 LiDAR + SLAM packages and launch files
+├── cybersecurity_ros2/nodes/     # ROS 2 IDS / cyber-physical nodes (C08)
 ├── ros2/                         # additional ROS 2 packages
 ├── ros2_ws/lidar_slam_tb3/       # TurtleBot3 workspace
 ├── launch/                       # ROS 2 launch files
 │
-├── analysis/                     # post-hoc analysis scripts
-├── code_scripts/                 # one-off experiment scripts
-├── scripts/                      # utility scripts
-├── tools/                        # tooling
-├── utils/                        # shared helpers
+├── app/                          # Streamlit dashboard entry point + pages
+│   ├── dashboard.py              #   dashboard home
+│   └── pages/                    #   1_Architecture … 6_Contribution_Simulations
+├── src/dynnav_dashboard/         # dashboard package
+│   └── contributions/cNN_*.py    #   one interactive simulation per contribution (C01–C26)
+├── analysis/                     # post-hoc analysis scripts (incl. analysis/dashboard.py)
+│
+├── code_scripts/  scripts/  tools/  utils/   # utility and one-off scripts, shared helpers
 ├── tests/                        # repo-wide pytest suite
 ├── test/                         # ROS 2 ament_python test stubs
 │
 ├── data/plots/                   # generated experiment plots
-├── data_curriculum/              # curriculum-RL data
+├── data_curriculum/              # curriculum-RL data (C22)
 ├── datasets/                     # raw and processed datasets
-├── figures/                      # figures used in reports / papers
+├── figures/                      # figures used in reports
 ├── results/                      # consolidated result artefacts
-├── research_experiments/         # standalone experiment runs
-├── research_results/             # standalone result archives
+├── research_experiments/  research_results/  # standalone runs and archives
 ├── resource/                     # ROS 2 ament resource markers
-├── config/                       # runtime configuration
-├── configs/                      # experiment configuration files
-├── docs/                         # extended documentation
+├── config/  configs/             # runtime and experiment configuration
+├── docs/                         # extended documentation (see Documentation Hub)
 │
-├── logs_ablation/                # ablation-study logs
-├── logs_benchmark/               # benchmark-run logs
-├── logs_calibration/             # calibration logs
-├── logs_calibration_ensemble/    # ensemble-calibration logs
-├── logs_ood/                     # out-of-distribution logs
-├── logs_real_world/              # real-robot deployment logs
-├── log/                          # generic log dir (ROS 2)
+├── logs_ablation/  logs_benchmark/  logs_calibration/  logs_calibration_ensemble/
+├── logs_ood/  logs_real_world/  log/          # run logs by category
 │
-├── build/  install/              # colcon build artefacts (gitignored upstream)
+├── build/  install/              # colcon build artefacts (reproducible; safe to delete)
 ├── cpp_extension/                # C/C++ extension modules
 ├── nav_research.egg-info/        # Python packaging metadata
 │
-├── DynNav_C01_Learned_Astar_DeepDive.pdf       # 26 per-contribution
-├── DynNav_C02_EKF_UKF_DeepDive.pdf             # technical deep-dive
-├── ...                                          # documents at the repo root
-├── DynNav_C26_BFT_DeepDive.pdf
-│
-├── TECHNICAL_REPORT.md           # consolidated technical report
 ├── README.md                     # this file
-├── readme.md  readme_full.md     # legacy / extended variants
-├── ellhnika.md                   # Greek-language notes
-├── CITATION.cff
+├── readme_full.md                # extended narrative variant
+├── CITATION.cff                  # Citation File Format metadata
 ├── LICENSE                       # Apache-2.0
-├── pytest.ini
+├── pytest.ini                    # pytest configuration
 ├── setup.py  setup.cfg           # nav_research package metadata
 ├── requirements.txt              # dashboard runtime (see §10)
-├── ethical_zones.json            # ethical no-go zone definitions
-└── run_all_contributions.py      # batch driver for all 26 modules
+└── ethical_zones.json            # ethical no-go zone definitions (C10)
 ```
 
-A small note: `requirements.txt` currently lists only the dashboard's runtime dependencies (Streamlit, numpy, pandas, plotly, matplotlib, networkx). The full research stack uses additional dependencies (PyTorch, transformers, diffusers, open3d, ROS 2) which are introduced in section 10.
+**On the paired folders for C02 and C07.** The repository contains two directories for each of these contributions, and they are complementary rather than duplicates:
+
+- `02_uncertainty_estimation/` holds the **canonical documentation README** for C02 (overview, research question, algorithm). `02_uncertainty_calibration/` holds the **working code, models, experiments and results** (drift-aware uncertainty, calibration-aware grids, trained `.pt`/`.npz` models). Read the README in the former; run the code in the latter.
+- `07_next_best_view/` holds the **canonical documentation README** for C07. `07_nbv_exploration/` holds the **working code, experiments and results** (frontier sampling, information-gain planner, returnability-aware NBV).
+
+The other non-numbered directories under `contributions/` (`hybrid_learned_astar/`, `learned_uncertainty_astar/`, `hybrid_planner/`, `realtime_replanning/`, `ablation_study/`, `benchmarking/`, `_unsorted/`) are legacy or alternate variants and auxiliary experiment scratch space. They are kept for provenance but are **not** part of the canonical twenty-six; the numbered modules are authoritative.
+
+A note on dependencies: `requirements.txt` currently lists only the dashboard's runtime dependencies (Streamlit, NumPy, pandas, Plotly, Matplotlib, networkx). The full research stack uses additional packages (PyTorch, transformers, diffusers, Open3D, ROS 2) introduced in [section 10](#10-installation).
 
 ---
 
 ## 7. The Twenty-Six Contributions
 
-Each contribution lives in its own directory under `contributions/NN_module_name/` with the same internal layout: `module.py` (or a small package), an `experiments/` subdirectory with one or more `eval_*.py` scripts, a `results/` subdirectory containing CSV outputs and plots, and a per-module `README.md` covering the research question, algorithm and integration points. Each contribution also has a longer technical deep-dive at the repository root (`DynNav_C##_*_DeepDive.pdf`).
+Each contribution has a per-module `README.md` covering its research question, algorithm and integration points. Modules **C01–C10** keep their algorithm code in a `code/` subdirectory, their drivers in `experiments/`, and their CSV/plots in `results/`. Modules **C11–C26** expose a top-level module file (for example `formal_safety_shields.py`) and a `README.md`; several add an `experiments/` driver. The interactive simulation for every contribution lives in [`src/dynnav_dashboard/contributions/`](src/dynnav_dashboard/contributions/) and is reachable from the dashboard's *Contribution Simulations* page.
 
-The table below lists every contribution, its category, its current implementation status, and the script that reproduces its evaluation.
+The tables below act as a **research navigation index**: each row links the local README, the implementation, a representative experiment (where one exists as a script), the results location, the dashboard page, and the related `docs/` documents, and names the connected contributions. *Status* is one of **Implemented** (runs end-to-end and logs metrics) or **Prototype** (algorithmic core present, but at least one external dependency — PyTorch, a local LLM, a differentiable renderer — is needed to exercise the full pipeline; a synthetic fallback is provided where applicable).
 
-| Code | Module | Category | Status | Reproduce |
-|---|---|---|---|---|
-| C01 | Learned A\* Heuristics | Planning | Implemented | `contributions/01_learned_astar/experiments/eval_astar_learned.py` |
-| C02 | Uncertainty Estimation (EKF / UKF) | State Estimation | Implemented | `contributions/02_uncertainty_estimation/experiments/eval_uncertainty.py` |
-| C03 | Belief-Space and Risk Planning (CVaR A\*) | Planning | Implemented | `contributions/03_belief_risk_planning/experiments/eval_belief_risk.py` |
-| C04 | Irreversibility and Returnability | Safety | Implemented | `contributions/04_irreversibility_returnability/experiments/eval_returnability.py` |
-| C05 | Safe-Mode Navigation | Safety | Implemented | `contributions/05_safe_mode_navigation/experiments/eval_safe_mode.py` |
-| C06 | Energy and Connectivity Constraints | Resources | Implemented | `contributions/06_energy_connectivity/experiments/eval_energy_connectivity.py` |
-| C07 | Next-Best-View Exploration | Exploration | Implemented | `contributions/07_next_best_view/experiments/eval_nbv.py` |
-| C08 | Security and Intrusion Detection | Robustness | Implemented | `contributions/08_security_ids/experiments/eval_ids.py` |
-| C09 | Multi-Robot Coordination | Coordination | Implemented | `contributions/09_multi_robot/experiments/eval_multi_robot.py` |
-| C10 | Human-Aware Navigation and Ethical Zones | HRI | Implemented | `contributions/10_human_language_ethics/experiments/eval_human_ethics.py` |
-| C11 | VLM Navigation Agent | Foundation Models | Prototype (model stub; requires `ollama` or HF) | `contributions/11_vlm_navigation_agent/experiments/eval_vlm_planner.py` |
-| C12 | Diffusion Occupancy Maps | Generative | Implemented | `contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py` |
-| C13 | Latent World Model (Dreamer-style RSSM) | Generative | Prototype | inline driver |
-| C14 | Causal Risk Attribution (SCM) | Explainability | Implemented | inline driver |
-| C15 | Neuromorphic Sensing (DVS + SNN) | Perception | Prototype (synthetic event streams) | inline driver |
-| C16 | Federated Navigation Learning | Coordination | Implemented | inline driver |
-| C17 | Topological Semantic Maps | Mapping | Implemented | inline driver |
-| C18 | Formal Safety Shields (STL + CBF) | Safety | Implemented | `contributions/18_formal_safety_shields/experiments/eval_safety_shields.py` |
-| C19 | LLM Mission Planner | Foundation Models | Prototype (rule-based fallback + LLM hook) | inline driver |
-| C20 | Multimodal Failure Explainer | Explainability | Prototype | inline driver |
-| C21 | PPO Navigation Agent | Reinforcement Learning | Implemented | inline driver |
-| C22 | Curriculum RL | Reinforcement Learning | Implemented | inline driver |
-| C23 | Gaussian Splatting Mapper | Perception | Prototype (no differentiable renderer in repo) | inline driver |
-| C24 | NeRF Uncertainty Maps | Perception | Prototype (MC-dropout proxy) | inline driver |
-| C25 | Adversarial Attack Simulator | Robustness | Implemented | inline driver |
-| C26 | Swarm Consensus (BFT) | Coordination | Implemented | inline driver |
+### Core Planning and Uncertainty (C01–C03)
 
-*Implemented* means the contribution runs end-to-end on the supplied scripts and produces logged metrics. *Prototype* means the algorithmic core is in place but at least one external dependency (e.g. PyTorch, a local LLM, a differentiable renderer) is required to exercise the full pipeline; a synthetic fallback is provided where applicable.
+| Code | Module | README | Implementation | Representative experiment | Results | Dashboard | Status |
+|---|---|---|---|---|---|---|---|
+| C01 | Learned A\* Heuristics | [README](contributions/01_learned_astar/README.md) | [`01_learned_astar/code/`](contributions/01_learned_astar/code/) | [`experiments/eval_astar_learned.py`](contributions/01_learned_astar/experiments/eval_astar_learned.py) | [`results/`](contributions/01_learned_astar/results/) | [`c01_learned_astar.py`](src/dynnav_dashboard/contributions/c01_learned_astar.py) | Implemented |
+| C02 | Uncertainty Estimation (EKF / UKF) | [README](contributions/02_uncertainty_estimation/README.md) | [`02_uncertainty_calibration/code/`](contributions/02_uncertainty_calibration/code/) | [`02_uncertainty_calibration/experiments/`](contributions/02_uncertainty_calibration/experiments/) | [`02_uncertainty_calibration/results/`](contributions/02_uncertainty_calibration/results/) | [`c02_ekf_ukf.py`](src/dynnav_dashboard/contributions/c02_ekf_ukf.py) | Implemented |
+| C03 | Belief-Space and Risk Planning (CVaR A\*) | [README](contributions/03_belief_risk_planning/README.md) | [`03_belief_risk_planning/code/`](contributions/03_belief_risk_planning/code/) | [`experiments/lambda_sweep_risk_length_demo.py`](contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py) | [`results/`](contributions/03_belief_risk_planning/results/) | [`c03_cvar_astar.py`](src/dynnav_dashboard/contributions/c03_cvar_astar.py) | Implemented |
 
-For every contribution, the corresponding `DynNav_C##_*_DeepDive.pdf` at the repository root provides the long-form technical write-up: mathematical formulation, baseline comparison, ablations and discussion.
+**Related documents and links.** C02 is documented in [`02_uncertainty_estimation/README.md`](contributions/02_uncertainty_estimation/README.md) with code under `02_uncertainty_calibration/` (see [the paired-folder note in §6](#6-repository-layout)); innovation-based monitoring of the UKF fusion: [`docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md`](docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md). The formal relationship between irreversibility and risk weighting (C03 ↔ C04) is treated in [`docs/Proposition_Irreversibility_vs_Risk_Weighting.md`](docs/Proposition_Irreversibility_vs_Risk_Weighting.md). **Connected:** **C03 → C18** (risk maps feed the safety filter), **C03 ↔ C04** (soft risk penalties vs hard returnability constraints), **C12 → C03** (predicted occupancy becomes a CVaR input).
+
+### Safety and Robustness (C04–C05, C08, C18)
+
+| Code | Module | README | Implementation | Representative experiment | Results | Dashboard | Status |
+|---|---|---|---|---|---|---|---|
+| C04 | Irreversibility and Returnability | [README](contributions/04_irreversibility_returnability/README.md) | [`04_irreversibility_returnability/code/`](contributions/04_irreversibility_returnability/code/) | [`experiments/run_irreversibility_tau_sweep.py`](contributions/04_irreversibility_returnability/experiments/run_irreversibility_tau_sweep.py) | [`results/`](contributions/04_irreversibility_returnability/results/) | [`c04_returnability.py`](src/dynnav_dashboard/contributions/c04_returnability.py) | Implemented |
+| C05 | Safe-Mode Navigation | [README](contributions/05_safe_mode_navigation/README.md) | [`05_safe_mode_navigation/code/`](contributions/05_safe_mode_navigation/code/) | [`experiments/run_adaptive_tau_safe_mode_demo.py`](contributions/05_safe_mode_navigation/experiments/run_adaptive_tau_safe_mode_demo.py) | [`results/`](contributions/05_safe_mode_navigation/results/) | [`c05_safe_mode_fsm.py`](src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py) | Implemented |
+| C08 | Security and Intrusion Detection | [README](contributions/08_security_ids/README.md) | [`08_security_ids/code/`](contributions/08_security_ids/code/) | [`experiments/eval_ids_sweep.py`](contributions/08_security_ids/experiments/eval_ids_sweep.py) | [`results/`](contributions/08_security_ids/results/) | [`c08_security_ids.py`](src/dynnav_dashboard/contributions/c08_security_ids.py) | Implemented |
+| C18 | Formal Safety Shields (STL + CBF) | [README](contributions/18_formal_safety_shields/README.md) | [`18_formal_safety_shields/formal_safety_shields.py`](contributions/18_formal_safety_shields/formal_safety_shields.py) | [`experiments/eval_safety_shields.py`](contributions/18_formal_safety_shields/experiments/eval_safety_shields.py) | inline / printed metrics | [`c18_cbf_stl_shields.py`](src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py) | Implemented |
+
+**Related documents (C04).** This is the most heavily documented contribution. Read, in order: [`docs/Irreversibility_Aware_Navigation_New_Contribution.md`](docs/Irreversibility_Aware_Navigation_New_Contribution.md) (concept), [`docs/README Irreversibility-Aware Navigation Planning.md`](docs/README%20Irreversibility-Aware%20Navigation%20Planning.md) (method), [`docs/README_Irreversibility_Aware_Planning results.md`](docs/README_Irreversibility_Aware_Planning%20results.md) (results), and [`docs/Returnability- & Irreversibility-Aware Frontier NBV.md`](docs/Returnability-%20&%20Irreversibility-Aware%20Frontier%20NBV.md) (the C04 ↔ C07 bridge).
+
+**Related documents (C05).** Safe-mode experiments: [`docs/README_safe_mode_experiments.md`](docs/README_safe_mode_experiments.md); multi-robot extension: [`docs/Multi-Robot Safe Mode Navigation under Uncertainty.md`](docs/Multi-Robot%20Safe%20Mode%20Navigation%20under%20Uncertainty.md); energy-coupled safe mode: [`docs/README_Energy_Connectivity_SafeMode.md`](docs/README_Energy_Connectivity_SafeMode.md); self-healing / language-driven safety: [`docs/README Self-Healing Navigation & Language-Driven Safety.md`](docs/README%20Self-Healing%20Navigation%20&%20Language-Driven%20Safety.md) and [`docs/SelfHealing_LanguageSafety_README.md`](docs/SelfHealing_LanguageSafety_README.md).
+
+**Related documents (C08).** Transform-attack-aware IDS: [`docs/README_TF_Attack_Aware_IDS.md`](docs/README_TF_Attack_Aware_IDS.md); innovation-based IDS over UKF fusion: [`docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md`](docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md). ROS 2 nodes live under [`cybersecurity_ros2/`](cybersecurity_ros2/).
+
+**Connected contributions (safety layer).** **C03 → C18** (CVaR risk maps parameterise the CBF), **C04 → C05** (irreversibility/returnability raises a feasibility signal that triggers safe mode), **C05** supervises C03/C04/C18 at runtime, **C08 ← C02** (consumes UKF innovations), **C08 ↔ C25** (adversarial attacks exercise the IDS).
+
+### Resource and Exploration (C06–C07)
+
+| Code | Module | README | Implementation | Representative experiment | Results | Dashboard | Status |
+|---|---|---|---|---|---|---|---|
+| C06 | Energy and Connectivity Constraints | [README](contributions/06_energy_connectivity/README.md) | [`06_energy_connectivity/code/`](contributions/06_energy_connectivity/code/) | [`experiments/run_energy_connectivity_joint_sweep.py`](contributions/06_energy_connectivity/experiments/run_energy_connectivity_joint_sweep.py) | [`results/`](contributions/06_energy_connectivity/results/) | [`c06_energy_connectivity.py`](src/dynnav_dashboard/contributions/c06_energy_connectivity.py) | Implemented |
+| C07 | Next-Best-View Exploration | [README](contributions/07_next_best_view/README.md) | [`07_nbv_exploration/code/`](contributions/07_nbv_exploration/code/) | [`07_nbv_exploration/experiments/run_nbv_random_vs_frontier_benchmark.py`](contributions/07_nbv_exploration/experiments/run_nbv_random_vs_frontier_benchmark.py) | [`07_nbv_exploration/results/`](contributions/07_nbv_exploration/results/) | [`c07_next_best_view.py`](src/dynnav_dashboard/contributions/c07_next_best_view.py) | Implemented |
+
+**Related documents (C06–C07).** NBV benchmark methodology: [`docs/Frontier-Restricted NBV Benchmark.md`](docs/Frontier-Restricted%20NBV%20Benchmark.md); the returnability-aware formulation shared with C04: [`docs/Returnability- & Irreversibility-Aware Frontier NBV.md`](docs/Returnability-%20&%20Irreversibility-Aware%20Frontier%20NBV.md); energy-coupled safe mode: [`docs/README_Energy_Connectivity_SafeMode.md`](docs/README_Energy_Connectivity_SafeMode.md). The exploration engine also exists as a node in [`ig_explorer/`](ig_explorer/). As with C02, C07's documentation README and working code live in two folders ([see §6](#6-repository-layout)). **Connected:** **C07 ← C04** (returnability scoring), **C07 ↔ C24** (NeRF uncertainty informs view selection), **C07 ↔ C23** (3D-GS frontiers feed exploration), **C06 ↔ C05** (energy triggers safe mode).
+
+### Multi-Robot and Human (C09–C10)
+
+| Code | Module | README | Implementation | Representative experiment | Results | Dashboard | Status |
+|---|---|---|---|---|---|---|---|
+| C09 | Multi-Robot Coordination | [README](contributions/09_multi_robot/README.md) | [`09_multi_robot/code/`](contributions/09_multi_robot/code/) | [`experiments/run_multi_robot_risk_experiment.py`](contributions/09_multi_robot/experiments/run_multi_robot_risk_experiment.py) | [`results/`](contributions/09_multi_robot/results/) | [`c09_multi_robot.py`](src/dynnav_dashboard/contributions/c09_multi_robot.py) | Implemented |
+| C10 | Human-Aware Navigation and Ethical Zones | [README](contributions/10_human_language_ethics/README.md) | [`10_human_language_ethics/code/`](contributions/10_human_language_ethics/code/) | inline driver | [`results/`](contributions/10_human_language_ethics/results/) | [`c10_human_aware.py`](src/dynnav_dashboard/contributions/c10_human_aware.py) | Implemented |
+
+**Related documents (C09–C10).** Human-preference risk navigation: [`docs/Human Preference–Aware Risk Navigation.md`](docs/Human%20Preference%E2%80%93Aware%20Risk%20Navigation.md); trust modelling: [`docs/README_trust_navigation.md`](docs/README_trust_navigation.md); multi-robot safe mode: [`docs/Multi-Robot Safe Mode Navigation under Uncertainty.md`](docs/Multi-Robot%20Safe%20Mode%20Navigation%20under%20Uncertainty.md); combined results: [`docs/READMEResults: Self-Healing + Language Safety + Trust + Ethical Navigation.md`](docs/READMEResults:%20Self-Healing%20+%20Language%20Safety%20+%20Trust%20+%20Ethical%20Navigation.md). Ethical zones are defined in [`ethical_zones.json`](ethical_zones.json). **Connected:** **C09 ↔ C26** (consensus over allocated plans), **C10 ← C19** (mission language → ethical constraints), **C09 ← C05** (per-robot safe mode).
+
+### Foundation Models (C11, C19–C20)
+
+| Code | Module | README | Implementation | Representative experiment | Dashboard | Status |
+|---|---|---|---|---|---|---|
+| C11 | VLM Navigation Agent | [README](contributions/11_vlm_navigation_agent/README.md) | [`11_vlm_navigation_agent/vlm_planner.py`](contributions/11_vlm_navigation_agent/vlm_planner.py) | [`experiments/eval_vlm_planner.py`](contributions/11_vlm_navigation_agent/experiments/eval_vlm_planner.py) | [`c11_twin_critic_rl.py`](src/dynnav_dashboard/contributions/c11_twin_critic_rl.py) | Prototype (needs `ollama`/HF) |
+| C19 | LLM Mission Planner | [README](contributions/19_llm_mission_planner/README.md) | [`19_llm_mission_planner/llm_mission_planner.py`](contributions/19_llm_mission_planner/llm_mission_planner.py) | inline driver | [`c19_llm_planner.py`](src/dynnav_dashboard/contributions/c19_llm_planner.py) | Prototype (rule-based fallback + LLM hook) |
+| C20 | Multimodal Failure Explainer | [README](contributions/20_multimodal_failure_explainer/README.md) | [`20_multimodal_failure_explainer/multimodal_failure_explainer.py`](contributions/20_multimodal_failure_explainer/multimodal_failure_explainer.py) | inline driver | [`c20_failure_explainer.py`](src/dynnav_dashboard/contributions/c20_failure_explainer.py) | Prototype |
+
+**Related documents (C19–C20).** Language-driven safety and self-healing: [`docs/README Self-Healing Navigation & Language-Driven Safety.md`](docs/README%20Self-Healing%20Navigation%20&%20Language-Driven%20Safety.md), [`docs/SelfHealing_LanguageSafety_README.md`](docs/SelfHealing_LanguageSafety_README.md). **Connected:** **C19 → C10** (mission → ethical zones), **C19 → C05** (language-triggered self-healing), **C20 ← C14** (SCM root causes feed the explainer). **Note:** C11/C19/C20 require an external LLM/VLM (e.g. `ollama`, `transformers`); without one they fall back to deterministic stubs — see [section 20](#20-limitations-and-honest-disclosures).
+
+### Probabilistic and Generative (C12–C13)
+
+| Code | Module | README | Implementation | Representative experiment | Dashboard | Status |
+|---|---|---|---|---|---|---|
+| C12 | Diffusion Occupancy Maps | [README](contributions/12_diffusion_occupancy/README.md) | [`12_diffusion_occupancy/diffusion_occupancy.py`](contributions/12_diffusion_occupancy/diffusion_occupancy.py) | [`experiments/eval_diffusion_occupancy.py`](contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py) | [`c12_diffusion_occupancy.py`](src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py) | Implemented |
+| C13 | Latent World Model (Dreamer-style RSSM) | [README](contributions/13_latent_world_model/README.md) | [`13_latent_world_model/latent_world_model.py`](contributions/13_latent_world_model/latent_world_model.py) | inline driver | [`c13_world_model.py`](src/dynnav_dashboard/contributions/c13_world_model.py) | Prototype |
+
+**Connected.** **C12 → C03** (predicted occupancy becomes a CVaR risk input), **C13 → C21/C22** (world-model rollouts can accelerate RL training).
+
+### Causal and Adversarial (C14, C25)
+
+| Code | Module | README | Implementation | Representative experiment | Dashboard | Status |
+|---|---|---|---|---|---|---|
+| C14 | Causal Risk Attribution (SCM) | [README](contributions/14_causal_risk_attribution/README.md) | [`14_causal_risk_attribution/causal_risk.py`](contributions/14_causal_risk_attribution/causal_risk.py) | inline driver | [`c14_causal_scm.py`](src/dynnav_dashboard/contributions/c14_causal_scm.py) | Implemented |
+| C25 | Adversarial Attack Simulator | [README](contributions/25_adversarial_attack_simulator/README.md) | [`25_adversarial_attack_simulator/adversarial_attacks.py`](contributions/25_adversarial_attack_simulator/adversarial_attacks.py) | inline driver | [`c25_adversarial.py`](src/dynnav_dashboard/contributions/c25_adversarial.py) | Implemented |
+
+**Related documents.** Attack-aware IDS: [`docs/README_TF_Attack_Aware_IDS.md`](docs/README_TF_Attack_Aware_IDS.md). **Connected:** **C25 → C08** (attacks exercise the IDS), **C14 → C20** (causes feed the failure explainer).
+
+### Neuromorphic and 3D Perception (C15, C23–C24)
+
+| Code | Module | README | Implementation | Dashboard | Status |
+|---|---|---|---|---|---|
+| C15 | Neuromorphic Sensing (DVS + SNN) | [README](contributions/15_neuromorphic_sensing/README.md) | [`15_neuromorphic_sensing/neuromorphic_sensing.py`](contributions/15_neuromorphic_sensing/neuromorphic_sensing.py) | [`c15_neuromorphic.py`](src/dynnav_dashboard/contributions/c15_neuromorphic.py) | Prototype (synthetic event streams) |
+| C23 | Gaussian Splatting Mapper | [README](contributions/23_gaussian_splatting_mapper/README.md) | [`23_gaussian_splatting_mapper/gaussian_splatting_map.py`](contributions/23_gaussian_splatting_mapper/gaussian_splatting_map.py) | [`c23_gaussian_splatting.py`](src/dynnav_dashboard/contributions/c23_gaussian_splatting.py) | Prototype (no differentiable renderer in repo) |
+| C24 | NeRF Uncertainty Maps | [README](contributions/24_nerf_uncertainty/README.md) | [`24_nerf_uncertainty/nerf_uncertainty.py`](contributions/24_nerf_uncertainty/nerf_uncertainty.py) | [`c24_nerf_uncertainty.py`](src/dynnav_dashboard/contributions/c24_nerf_uncertainty.py) | Prototype (MC-dropout proxy) |
+
+**Connected.** **C24 → C07** (uncertainty maps drive next-best-view), **C23 → C07** (3D-GS frontiers feed exploration). Photogrammetry integration: [`photogrammetry_module/`](photogrammetry_module/).
+
+### Distributed Learning and Consensus (C16, C26)
+
+| Code | Module | README | Implementation | Dashboard | Status |
+|---|---|---|---|---|---|
+| C16 | Federated Navigation Learning | [README](contributions/16_federated_nav_learning/README.md) | [`16_federated_nav_learning/federated_nav.py`](contributions/16_federated_nav_learning/federated_nav.py) | [`c16_federated_learning.py`](src/dynnav_dashboard/contributions/c16_federated_learning.py) | Implemented |
+| C26 | Swarm Consensus (BFT) | [README](contributions/26_swarm_consensus/README.md) | [`26_swarm_consensus/swarm_consensus.py`](contributions/26_swarm_consensus/swarm_consensus.py) | [`c26_bft_swarm.py`](src/dynnav_dashboard/contributions/c26_bft_swarm.py) | Implemented |
+
+**Connected.** **C16 → C01/C02/C24** (federated training of heuristic and perception models without centralising raw data), **C26 ↔ C09** (BFT consensus over multi-robot allocations).
+
+### Reinforcement Learning (C21–C22)
+
+| Code | Module | README | Implementation | Dashboard | Status |
+|---|---|---|---|---|---|
+| C21 | PPO Navigation Agent | [README](contributions/21_ppo_navigation_agent/README.md) | [`21_ppo_navigation_agent/ppo_nav_agent.py`](contributions/21_ppo_navigation_agent/ppo_nav_agent.py) | [`c21_ppo.py`](src/dynnav_dashboard/contributions/c21_ppo.py) | Implemented |
+| C22 | Curriculum RL | [README](contributions/22_curriculum_rl/README.md) | [`22_curriculum_rl/curriculum_rl.py`](contributions/22_curriculum_rl/curriculum_rl.py) | [`c22_curriculum_rl.py`](src/dynnav_dashboard/contributions/c22_curriculum_rl.py) | Implemented |
+
+**Connected.** **C22 → C21** (curriculum schedules PPO training), **C21 ← C03** (risk shaping reuses the CVaR cost), **C13 → C21** (world-model rollouts). Curriculum data: [`data_curriculum/`](data_curriculum/).
+
+### Semantic Mapping (C17)
+
+| Code | Module | README | Implementation | Dashboard | Status |
+|---|---|---|---|---|---|
+| C17 | Topological Semantic Maps | [README](contributions/17_topological_semantic_maps/README.md) | [`17_topological_semantic_maps/topo_semantic_map.py`](contributions/17_topological_semantic_maps/topo_semantic_map.py) | [`c17_topological_maps.py`](src/dynnav_dashboard/contributions/c17_topological_maps.py) | Implemented |
+
+**Connected.** **C17 → C19** (semantic zones ground mission language), **C17 → C10** (zones map to ethical constraints).
+
+### Contribution Relationships
+
+DynNav's contributions are designed to compose. The diagram summarises the principal data and control dependencies; arrows read "feeds / supervises / informs".
+
+```
+            +---------- C02 EKF/UKF ----------+
+            | (state belief + innovations)    |
+            v                                  v
+        C03 Belief / CVaR Risk          C08 IDS <-- C25 Adversarial
+            |                                  |
+   +--------+----------+                       +--> C14 Causal SCM --> C20 Explainer
+   v        v          v
+C18 STL+CBF  C04 Irrev./Return.   C12 Diffusion Occupancy --> (risk input to C03)
+   ^            |        |
+   |            v        v
+   +- C05 Safe-Mode FSM  C07 NBV <-- C24 NeRF / C23 3D-GS
+        |  (supervisor)
+        +--> C06 Energy / Connectivity
+        +--> C09 Multi-Robot <--> C26 Swarm BFT
+        +--> C19 LLM Mission --> C10 Human / Ethics <-- C17 Semantic Maps
+
+   C13 World Model --> C21 PPO <-- C22 Curriculum
+   C16 Federated Learning --> (trains C01 heuristics, C02 / C24 models)
+```
+
+Key relationships, stated explicitly:
+
+- **C03 → C18.** CVaR risk maps from belief-space planning parameterise the CBF in the safety filter; the two should be read together. Theory bridge: [`docs/Proposition_Irreversibility_vs_Risk_Weighting.md`](docs/Proposition_Irreversibility_vs_Risk_Weighting.md).
+- **C04 → C05 → C{03,18}.** Irreversibility/returnability raises a feasibility signal that the safe-mode FSM uses to supervise the risk planner and the safety filter.
+- **C07 ↔ C24 / C23.** Next-best-view exploration consumes NeRF MC-dropout uncertainty (C24) and Gaussian-splatting frontiers (C23). Shared returnability scoring with C04: [`docs/Returnability- & Irreversibility-Aware Frontier NBV.md`](docs/Returnability-%20&%20Irreversibility-Aware%20Frontier%20NBV.md).
+- **C16 → C01 / C02 / C24.** Federated learning can train heuristic and perception models without centralising raw data.
+- **C26 ↔ C09.** Byzantine fault-tolerant consensus selects an agreed plan over the multi-robot allocator's candidates.
+- **C19 → C10 / C17.** Mission language is grounded via semantic maps (C17) and converted into ethical constraints (C10).
+- **C25 → C08 → C14 → C20.** Adversarial attacks exercise the IDS; detected anomalies are attributed by the causal SCM; the explainer renders human-readable failure reports.
 
 ---
 
@@ -296,19 +476,19 @@ For every contribution, the corresponding `DynNav_C##_*_DeepDive.pdf` at the rep
 
 The Streamlit dashboard at [dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/) reproduces every contribution as a self-contained, browser-based interactive simulation. The dashboard requires no robot, no ROS installation, and no GPU.
 
-Six pages are exposed in the sidebar:
+The home page is [`app/dashboard.py`](app/dashboard.py) and the sidebar pages live under [`app/pages/`](app/pages/):
 
 | # | Page | Purpose |
 |---|---|---|
-| 0 | `dashboard.py` (home) | Project overview, headline metrics, quick navigation |
-| 1 | Architecture | Layered diagram of the DynNav stack |
-| 2 | Navigation Demo | Closed-loop episode with online replanning |
-| 3 | Risk Map | Uncertainty and risk heatmaps, CVaR threshold visualisation |
-| 4 | Planner Comparison | A\* versus risk-aware A\*, Monte-Carlo sweep across seeds |
-| 5 | Research Modules | Searchable catalogue of all twenty-six contributions |
-| 6 | Contribution Simulations | One interactive mini-simulation per contribution (C01–C26) |
+| 0 | [`app/dashboard.py`](app/dashboard.py) (home) | Project overview, headline metrics, quick navigation |
+| 1 | [`1_Architecture.py`](app/pages/1_Architecture.py) | Layered diagram of the DynNav stack |
+| 2 | [`2_Navigation_Demo.py`](app/pages/2_Navigation_Demo.py) | Closed-loop episode with online replanning |
+| 3 | [`3_Risk_Map.py`](app/pages/3_Risk_Map.py) | Uncertainty and risk heatmaps, CVaR threshold visualisation |
+| 4 | [`4_Planner_Comparison.py`](app/pages/4_Planner_Comparison.py) | A\* versus risk-aware A\*, Monte-Carlo sweep across seeds |
+| 5 | [`5_Research_Modules.py`](app/pages/5_Research_Modules.py) | Searchable catalogue of all twenty-six contributions |
+| 6 | [`6_Contribution_Simulations.py`](app/pages/6_Contribution_Simulations.py) | One interactive mini-simulation per contribution (C01–C26) |
 
-The Contribution Simulations page is the technical centrepiece. A dropdown over `C01`–`C26` dispatches to a self-contained `render(st)` function; each renderer presents:
+The Contribution Simulations page is the technical centrepiece. A dropdown over `C01`–`C26` dispatches to a self-contained `render(st)` function defined in [`src/dynnav_dashboard/contributions/`](src/dynnav_dashboard/contributions/) (one `cNN_*.py` file per contribution); each renderer presents:
 
 1. a short research explanation,
 2. interactive controls (seed and topic-specific parameters),
@@ -327,8 +507,8 @@ The dashboard is **explicit about what is real and what is illustrative**. Each 
 | **Planning** | A\* core, learned heuristic, risk-aware variant | Pure NumPy; 8-connected; optional heuristic field and risk weight |
 | | Topological routing | networkx weighted graph |
 | | Next-best-view exploration | Frontier extraction + information-gain scoring |
-| **Safety** | CBF shield | Iterative half-space projection on quadratic safety set |
-| | STL shield | Bounded-time predicate checking |
+| **Safety** | CBF filter | Iterative half-space projection on quadratic safety set |
+| | STL monitor | Bounded-time predicate checking |
 | | Safe-mode FSM | Four-state automaton with hysteresis |
 | | Returnability check | Bidirectional A\* under risk threshold |
 | **Learning** | PPO | Risk-shaped actor-critic |
@@ -411,35 +591,34 @@ source install/setup.bash
 
 ## 11. Running the Experiments
 
-The repository exposes a single batch driver for the entire suite:
+There is no single batch driver on the current branch; each contribution is run via its own scripts. Contributions C01–C10 expose runnable drivers under `contributions/NN_*/experiments/`; several of C11–C26 run their module file directly or via an `experiments/` script. Examples below use scripts that exist in the repository.
 
 ```bash
-# Run all 26 contributions in quick-eval mode (~2 seconds end-to-end)
-python run_all_contributions.py --quick
+# Formal safety shields (STL + CBF) — Contribution 18
+python contributions/18_formal_safety_shields/experiments/eval_safety_shields.py
 
-# Run all 26 contributions at full evaluation budget (~30 seconds)
-python run_all_contributions.py
+# Diffusion occupancy risk maps — Contribution 12
+python contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py
 
-# Run a specific subset
-python run_all_contributions.py --modules 18 25 26
+# Learned A* node-expansion benchmark — Contribution 01
+python contributions/01_learned_astar/experiments/eval_astar_learned.py
 
-# Run only the test suite
-pytest contributions/tests/ -v
-pytest tests/ -v
+# CVaR / risk-budget path selection — Contribution 03
+python contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py
+
+# Irreversibility τ phase-transition sweep — Contribution 04
+python contributions/04_irreversibility_returnability/experiments/run_irreversibility_tau_sweep.py
+
+# Frontier-vs-random NBV benchmark — Contribution 07
+python contributions/07_nbv_exploration/experiments/run_nbv_random_vs_frontier_benchmark.py
+
+# Intrusion-detection sweep — Contribution 08
+python contributions/08_security_ids/experiments/eval_ids_sweep.py
 ```
 
-Individual contributions can also be run via their dedicated evaluation script. Examples:
+A self-contained example for the swarm-consensus module (Contribution 26):
 
 ```bash
-# Formal safety shields (STL + CBF) — 50 episodes
-python contributions/18_formal_safety_shields/experiments/eval_safety_shields.py \
-    --n_episodes 50 --out_csv results/shield_eval.csv
-
-# Diffusion occupancy risk maps — 30 scenarios, 10 samples each
-python contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py \
-    --n_scenarios 30 --n_samples 10
-
-# Swarm BFT consensus — 6 robots, 1 Byzantine
 python -c "
 import numpy as np, sys
 sys.path.insert(0, 'contributions/26_swarm_consensus')
@@ -451,7 +630,14 @@ print(f'Cost: {result.agreed_cost:.2f} | Byzantine detected: {result.n_byzantine
 "
 ```
 
-All scripts write CSV logs into the contribution's `results/` directory and plots into `data/plots/`. Repository-wide ablation, benchmark, calibration, OOD and real-world logs are stored in the corresponding `logs_*` folders.
+To run the test suites:
+
+```bash
+pytest contributions/tests/ -v
+pytest tests/ -v
+```
+
+Scripts for C01–C10 write CSV logs into the contribution's `results/` directory and plots into `data/plots/`. Repository-wide ablation, benchmark, calibration, OOD and real-world logs are stored in the corresponding `logs_*` folders. The canonical claim → evidence mapping is [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md).
 
 ---
 
@@ -463,7 +649,7 @@ All scripts write CSV logs into the contribution's `results/` directory and plot
 streamlit run app/dashboard.py
 ```
 
-The application opens at `http://localhost:8501`. The **Contribution Simulations** page exposes all twenty-six demos in a single dropdown.
+The application opens at `http://localhost:8501`. The **Contribution Simulations** page ([`app/pages/6_Contribution_Simulations.py`](app/pages/6_Contribution_Simulations.py)) exposes all twenty-six demos in a single dropdown.
 
 ### 12.2 Cloud-hosted
 
@@ -475,29 +661,33 @@ A deployed instance runs on Streamlit Community Cloud:
 
 ## 13. ROS 2 Integration
 
-The ROS 2 packages live in three directories:
+The ROS 2 packages live in several directories:
 
-- `lidar_ros2/` — LiDAR drivers, scan-matching, slam_toolbox integration.
-- `cybersecurity_ros2/nodes/` — intrusion-detection nodes wrapping C08's chi-square / CUSUM detectors.
-- `ros2_ws/lidar_slam_tb3/` — a TurtleBot3-specific workspace combining LiDAR SLAM and the DynNav planning stack.
+- [`lidar_ros2/`](lidar_ros2/) — LiDAR drivers, scan-matching, slam_toolbox integration, and the bulk of the launch files. Setup and bring-up are documented in [`docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md`](docs/README_LiDAR_SLAM_TurtleBot3_ROS2.md).
+- [`cybersecurity_ros2/nodes/`](cybersecurity_ros2/) — intrusion-detection nodes wrapping C08's chi-square / CUSUM detectors.
+- [`ros2_ws/lidar_slam_tb3/`](ros2_ws/lidar_slam_tb3/) — a TurtleBot3-specific workspace combining LiDAR SLAM and the DynNav planning stack.
+- [`dynamic_nav/`](dynamic_nav/), [`core/`](core/) — the navigation stack and planner cores.
 
-The system has been tested on a TurtleBot3 Burger (hardware) and a TurtleBot3 Waffle (Gazebo). Launch files under `launch/` start the relevant stack:
+The system has been tested on a TurtleBot3 Burger (hardware) and a TurtleBot3 Waffle (Gazebo). Launch files are under [`lidar_ros2/`](lidar_ros2/) and [`launch/`](launch/); for example:
 
 ```bash
-# Simulation (Gazebo + TurtleBot3 Waffle)
-ros2 launch dynamic_nav dynnav_sim.launch.py
+# SLAM bring-up
+ros2 launch lidar_ros2 bringup_slam.launch.py
 
-# Real robot (TurtleBot3 Burger over ROS 2 network)
-ros2 launch dynamic_nav dynnav_real.launch.py use_sim_time:=false
+# TurtleBot3 dynamic-navigation stack
+ros2 launch lidar_ros2 dynamic_nav_tb3.launch.py
+
+# Gazebo simulation
+ros2 launch lidar_ros2 simulation.launch.py
 ```
 
-The integration is partial. Several launch files orchestrate the perception and planning nodes but the formal-safety shield (C18) and the swarm-consensus node (C26) are currently exercised via their Python evaluators rather than as ROS 2 nodes. Wiring these into the live ROS 2 graph is on the future-work list (section 22).
+The integration is partial. Several launch files orchestrate the perception and planning nodes, but the formal-safety filter (C18) and the swarm-consensus logic (C26) are currently exercised via their Python evaluators rather than as live ROS 2 nodes. Wiring these into the ROS 2 graph is on the future-work list ([section 22](#22-future-research-directions)).
 
 ---
 
 ## 14. Experimental Methodology
 
-The experiments reported in the per-module deep-dive PDFs and in section 15 follow a consistent protocol.
+The experiments reported in section 15 and in the per-module documentation follow a consistent protocol.
 
 **Determinism.** Every contribution accepts an explicit seed. All randomness — obstacle placement, sensor noise, attack injection, federated client samples — derives from `numpy.random.default_rng(seed)`. Two runs with the same seed produce bit-identical plots and metrics.
 
@@ -505,17 +695,17 @@ The experiments reported in the per-module deep-dive PDFs and in section 15 foll
 
 **Baselines.** Each learning-augmented contribution is compared against a clearly identified classical baseline: learned A\* versus vanilla A\*, CVaR A\* versus shortest-path A\*, twin-critic versus optimistic-max, curriculum versus flat training, robust estimators versus naive mean, BFT-weighted median versus naive majority.
 
-**Logging.** All numerical results land in CSV files under `contributions/##_module_name/results/`. Plots are written to `data/plots/`. Five additional repository-wide log folders capture: ablation (`logs_ablation/`), benchmarks (`logs_benchmark/`), calibration (`logs_calibration/`, `logs_calibration_ensemble/`), out-of-distribution evaluation (`logs_ood/`) and real-world runs (`logs_real_world/`).
+**Logging.** Numerical results for C01–C10 land in CSV files under `contributions/NN_module_name/results/`; plots are written to `data/plots/`. Five additional repository-wide log folders capture ablation (`logs_ablation/`), benchmarks (`logs_benchmark/`), calibration (`logs_calibration/`, `logs_calibration_ensemble/`), out-of-distribution evaluation (`logs_ood/`) and real-world runs (`logs_real_world/`).
 
 ---
 
 ## 15. Selected Results
 
-The numbers below summarise representative outcomes from the corresponding deep-dive PDFs. They are illustrative rather than headline claims; full tables and ablations live in the per-contribution documents.
+The numbers below summarise representative outcomes. They are illustrative rather than headline claims; the claim → evidence mapping is [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md), and the per-contribution documentation gives full tables and ablations.
 
 ### 15.1 Formal safety shields (C18)
 
-| Metric | Without shield | With STL + CBF shield |
+| Metric | Without filter | With STL + CBF filter |
 |---|---|---|
 | Constraint violations per episode (mean) | 4.2 | 0.3 |
 | Path-length overhead | — | < 8 % |
@@ -546,13 +736,17 @@ The numbers below summarise representative outcomes from the corresponding deep-
 
 ### 15.5 Learned A\* (C01)
 
-On a 35×35 grid with 18 obstacles, the learned-heuristic variant typically reduces node expansions by 25–45 % at a path-cost penalty under 5 %. The reduction grows with clutter density and vanishes in open space.
+On a 35×35 grid with 18 obstacles, the learned-heuristic variant typically reduces node expansions by 25–45 % at a path-cost penalty under 5 %. The reduction grows with clutter density and vanishes in open space. Reproduce with [`contributions/01_learned_astar/experiments/eval_astar_learned.py`](contributions/01_learned_astar/experiments/eval_astar_learned.py).
 
 ### 15.6 CVaR A\* (C03)
 
-Setting α = 0.95 with a risk weight of 3.0 reduces the worst 5 % of per-step risks by 30–60 % at a 5–15 % path-length penalty.
+Setting α = 0.95 with a risk weight of 3.0 reduces the worst 5 % of per-step risks by 30–60 % at a 5–15 % path-length penalty. Reproduce with [`contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py`](contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py).
 
-All values are reproducible from the corresponding seeds, either via `run_all_contributions.py --modules N` or via the Streamlit dashboard.
+### 15.7 Irreversibility / returnability (C04)
+
+The irreversibility threshold τ exhibits a sharp feasibility phase transition; see [`contributions/04_irreversibility_returnability/experiments/run_irreversibility_tau_sweep.py`](contributions/04_irreversibility_returnability/experiments/run_irreversibility_tau_sweep.py) and detailed results in [`docs/README_Irreversibility_Aware_Planning results.md`](docs/README_Irreversibility_Aware_Planning%20results.md).
+
+All values are reproducible from the corresponding seeds, either via the cited scripts or via the Streamlit dashboard.
 
 ---
 
@@ -572,13 +766,13 @@ The synthetic-simulation philosophy also has a practical justification. A gradua
 
 ## 17. Theoretical Background
 
-This section briefly anchors the framework in its relevant prior art. Per-contribution references are in the deep-dive PDFs.
+This section briefly anchors the framework in its relevant prior art. Per-contribution references are in each module's documentation.
 
 **Uncertainty-aware navigation.** The framework draws on belief-space planning (Platt, Kaelbling, Lozano-Pérez) and on partially observable MDP formulations. Recent work — notably DYNUS (Kondo et al., 2025) and Map-Predictive Motion Planning (Katyal et al.) — frames the same challenge: trajectories planned under nominal assumptions can become unsafe at any moment because the agent cannot predict ground-truth futures. DynNav's response is to make every layer's uncertainty explicit and consumable by the layer above.
 
 **CVaR-style planning.** Conditional Value-at-Risk is a coherent risk measure standard in finance (Rockafellar and Uryasev). In safe robotics it has been used to replace expected cost with expected cost in the worst α-fraction of outcomes (Chow, Tamar et al.). C03 implements a risk-weighted A\* variant that augments edge cost with a CVaR penalty.
 
-**Formal safety constraints, CBFs and STL.** Control Barrier Functions (Ames, Xu, Tabuada) certify forward invariance of a safe set via affine constraints on the control input. Signal Temporal Logic (Maler, Nickovic) allows time-bounded specifications. C18 composes both: the STL monitor produces a Boolean safety signal, the CBF layer minimally edits the commanded action to maintain forward invariance.
+**Formal safety constraints, CBFs and STL.** Control Barrier Functions (Ames, Xu, Tabuada) certify forward invariance of a safe set via affine constraints on the control input. Signal Temporal Logic (Maler, Nickovic) allows time-bounded specifications. C18 composes both: the STL monitor produces a Boolean safety signal, and the CBF layer minimally edits the commanded action to maintain forward invariance. The guarantee is at the level of the action filter, not the whole stack.
 
 **Reinforcement learning trade-offs.** On-policy PPO (Schulman et al.) is preferred for its trust-region stability; twin-critic estimators (TD3, Fujimoto et al.) mitigate the over-estimation bias of max-over-noisy-Q targets. Curriculum learning (Bengio et al.) trades early-stage performance for late-stage capability on tasks that are otherwise unreachable from a cold start.
 
@@ -606,7 +800,7 @@ The list below records the non-trivial engineering issues that surfaced during d
 
 **`scipy` removed from the dashboard runtime.** An early implementation of C01 used `scipy.ndimage.distance_transform_edt` for the learned-heuristic proxy. To keep the dashboard's dependency surface at five packages, the distance transform was reimplemented in pure NumPy using iterative Chebyshev dilation. The result is slower for very large grids but indistinguishable in the dashboard's operating range. SciPy remains a dependency of the full research stack.
 
-**Hungarian assignment for n > 6.** The brute-permutation Hungarian variant in `contributions/09_multi_robot/` is exact but exponential. For larger swarms an O(n³) Munkres implementation is required; the slot is deliberately marked in the module.
+**Hungarian assignment for n > 6.** The brute-permutation Hungarian variant in [`contributions/09_multi_robot/`](contributions/09_multi_robot/) is exact but exponential. For larger swarms an O(n³) Munkres implementation is required; the slot is deliberately marked in the module.
 
 **ROS 2 packaging.** The ROS 2 stack was originally interleaved with the Python library, which broke `colcon build` when Python imports leaked into the workspace's site-packages search path. The fix was the strict separation between `ros2/`, `lidar_ros2/`, `cybersecurity_ros2/` and the pure-Python `nav_research/` package.
 
@@ -618,17 +812,15 @@ The list below records the non-trivial engineering issues that surfaced during d
 
 **LLM-planner determinism.** The LLM mission planner (C19) ships with a deterministic rule-based fallback. This is deliberate: an actual LLM call would make the dashboard non-reproducible and would require network credentials at build time. The downstream contract — a typed list of (action, location) tuples — is identical to what an LLM call emits, so the parser can be swapped out without changing any consumer.
 
-**Two `requirements.txt` files in spirit.** The repository's `requirements.txt` is currently the dashboard runtime. The fuller research stack (PyTorch, transformers, diffusers, open3d) is not pinned in a single file. This is an outstanding issue; section 10 documents the actual dependency layers.
-
-**ament_python `test/` versus pytest `tests/`.** ROS 2 ament_python expects a `test/` folder; pytest conventions expect `tests/`. The repository keeps both because they serve different runners. The duplication is documented in this README to avoid confusion.
+**Two `requirements.txt` files in spirit.** The repository's `requirements.txt` is currently the dashboard runtime. The fuller research stack (PyTorch, transformers, diffusers, Open3D) is not pinned in a single file. This is an outstanding issue; section 10 documents the actual dependency layers.
 
 ---
 
 ## 19. Deployment and Debugging Notes
 
-**Cold-start latency on the dashboard.** Page 6 imports all twenty-six modules on first render. On a cold Streamlit Community Cloud container this is roughly four to six seconds. Subsequent renders are instantaneous. If cold-start becomes a problem, the dispatcher can be rewritten to import lazily on dropdown selection.
+**Cold-start latency on the dashboard.** The Contribution Simulations page imports many modules on first render. On a cold Streamlit Community Cloud container this is roughly four to six seconds. Subsequent renders are instantaneous. If cold-start becomes a problem, the dispatcher can be rewritten to import lazily on dropdown selection.
 
-**Headless smoke test.** The repository's CI pipeline runs `streamlit.testing.v1.AppTest` over every contribution code and verifies the page renders without exception. This catches the colour-key class of bugs and the random-seed-API-drift class of bugs before deployment.
+**Headless smoke test.** The CI pipeline runs `streamlit.testing.v1.AppTest` over every contribution renderer and verifies the page renders without exception. This catches the colour-key class of bugs and the random-seed-API-drift class of bugs before deployment.
 
 **TurtleBot3 hardware testing.** Real-robot runs (TurtleBot3 Burger) used a quiet office environment, a Hokuyo URG-04LX scanner and an off-board ROS 2 controller. Logs from these sessions are archived under `logs_real_world/`.
 
@@ -642,7 +834,8 @@ The list below records the non-trivial engineering issues that surfaced during d
 
 ## 20. Limitations and Honest Disclosures
 
-- The ROS 2 stack is **partially integrated**: not every safety contribution is wired as a runtime node. Several launch files orchestrate perception and base planning but rely on Python evaluators for the safety shields.
+- The framework provides **formal safety constraints and STL/CBF action filtering**, not end-to-end formal verification of the whole stack. The guarantee is that the filtered action is projected onto the safe set; upstream perception and planning are not themselves verified.
+- The ROS 2 stack is **partially integrated**: not every safety contribution is wired as a runtime node. Several launch files orchestrate perception and base planning but rely on Python evaluators for the safety filter and the swarm consensus.
 - 3D Gaussian Splatting (C23) is **visualised**, not optimised. No differentiable renderer ships in this repository.
 - The LLM mission planner (C19) and the VLM navigation agent (C11) ship with **deterministic stubs**. Real LLM / VLM use requires an external Ollama instance or a Hugging Face account.
 - The federated-learning module (C16) uses a **scalar regression** problem to make the FedAvg dynamics legible. Real perception models are not federated in this build.
@@ -650,8 +843,7 @@ The list below records the non-trivial engineering issues that surfaced during d
 - The adversarial module (C25) covers **LiDAR spoofing**, FGSM and PGD on perception inputs. No camera-domain physical attacks (e.g. adversarial patches under real illumination) are implemented.
 - The reinforcement-learning curves (C21, C22) report results from a **synthetic environment**. Transfer to ROS 2 Gazebo is documented as future work.
 - `requirements.txt` is currently the **dashboard runtime**; the full research stack requires additional packages, listed in section 10.
-
-These limitations are restated in each affected module's deep-dive PDF.
+- The repository keeps several **legacy / alternate** contribution directories (`hybrid_learned_astar/`, `learned_uncertainty_astar/`, `hybrid_planner/`, `realtime_replanning/`) alongside the canonical numbered modules; only the numbered modules C01–C26 are authoritative.
 
 ---
 
@@ -668,12 +860,13 @@ The Streamlit dashboard is the second methodological contribution. By making the
 ## 22. Future Research Directions
 
 - A differentiable 3D Gaussian Splatting pipeline for C23 with calibrated uncertainty exported to C24.
-- Integration of C18's CBF shield as a ROS 2 node sitting between Nav2 and `cmd_vel`.
+- Integration of C18's CBF filter as a ROS 2 node sitting between Nav2 and `cmd_vel`.
 - Replacement of the rule-based parser in C19 with a small local LLM under a constrained-decoding wrapper that emits only typed plans.
 - A real federated-learning experiment on a learned perception model, replacing the scalar regression in C16.
 - Sim-to-real transfer experiments for the PPO policy (C21) using the world-model surrogate (C13) as a domain-randomisation engine.
 - Joint optimisation of NBV (C07) and NeRF uncertainty (C24) so the next viewpoint reduces the field's variance rather than a frontier proxy.
 - A consolidated `pyproject.toml` replacing the current `setup.py` / `setup.cfg` / `requirements.txt` triple, with optional dependency groups (`[dashboard]`, `[learning]`, `[ros2]`).
+- A single batch driver (`run_all_contributions.py`) that dispatches every module's evaluation from one entry point.
 
 ---
 
@@ -694,7 +887,7 @@ If this framework supports your work, please cite the repository:
 }
 ```
 
-A `CITATION.cff` file is provided in the repository root for tools that consume the Citation File Format.
+A [`CITATION.cff`](CITATION.cff) file is provided in the repository root for tools that consume the Citation File Format.
 
 ---
 
@@ -715,16 +908,16 @@ Copyright © 2025 Panagiota Grosdouli.
 
 Released under the **Apache License, Version 2.0**. See [`LICENSE`](LICENSE) for the full text.
 
-The Apache-2.0 licence is chosen because it explicitly grants a patent licence alongside the copyright licence — relevant for downstream use of the safety-shield and adversarial-defence components — and because it imposes no copyleft on derived works.
+The Apache-2.0 licence is chosen because it explicitly grants a patent licence alongside the copyright licence — relevant for downstream use of the safety-filter and adversarial-defence components — and because it imposes no copyleft on derived works.
 
 ---
+
 ## 26. Acknowledgements
 
 This project was developed as an independent research effort built upon the broader open-source robotics and machine learning ecosystem. The framework integrates and extends technologies including ROS 2 Humble, Nav2, slam_toolbox, TurtleBot3, NumPy, SciPy, PyTorch, Plotly, Streamlit, networkx, Open3D, and components from the Hugging Face ecosystem.
 
-A number of implemented techniques are based on established methods from the scientific literature, including Hungarian assignment optimization, median–MAD outlier filtering, Federated Averaging (FedAvg), TD3-style twin critics, PPO, Dreamer-inspired world models, and adversarial attack methods such as FGSM and PGD. The canonical references for these approaches are provided within the corresponding module-specific deep-dive PDFs.
+A number of implemented techniques are based on established methods from the scientific literature, including Hungarian assignment optimization, median–MAD outlier filtering, Federated Averaging (FedAvg), TD3-style twin critics, PPO, Dreamer-inspired world models, and adversarial attack methods such as FGSM and PGD. The canonical references for these approaches are provided within the corresponding module documentation.
 
 The author also acknowledges the wider open-source and research communities whose publicly available tools, publications, and educational resources contributed to the realization of this work.
-
 
 ---
