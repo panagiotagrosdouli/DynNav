@@ -435,6 +435,103 @@ The tables below act as a **research navigation index**: each row links the loca
 
 **Connected.** **C17 → C19** (semantic zones ground mission language), **C17 → C10** (zones map to ethical constraints).
 
+## Research Monograph Series
+
+DynNav is accompanied by a complete collection of technical monographs that provide a detailed scientific treatment of each contribution.
+
+While this README focuses on the overall architecture and implementation, the monographs contain the full research-level discussion, including:
+
+- Motivation and problem formulation
+- Mathematical foundations
+- Algorithm design
+- Theoretical analysis
+- Complexity analysis
+- Experimental methodology
+- Failure modes and limitations
+- Literature positioning
+- Reviewer-oriented critique
+- Publication strategy
+- Open research questions
+
+These documents are intended for researchers, graduate students, reviewers, and engineers seeking a deeper understanding of the underlying methods.
+
+### Core Planning and Uncertainty
+
+| Contribution | Monograph |
+|-------------|------------|
+| C01 — Learned A* Heuristics | [DynNav_C01_Learned_Astar_DeepDive.pdf](DynNav_C01_Learned_Astar_DeepDive.pdf) |
+| C02 — EKF / UKF Uncertainty Estimation | [DynNav_C02_EKF_UKF_DeepDive.pdf](DynNav_C02_EKF_UKF_DeepDive.pdf) |
+| C03 — CVaR Belief-Space Planning | [DynNav_C03_CVaR_AStar_DeepDive.pdf](DynNav_C03_CVaR_AStar_DeepDive.pdf) |
+| C04 — Returnability-Aware Navigation | [DynNav_C04_Returnability_DeepDive.pdf](DynNav_C04_Returnability_DeepDive.pdf) |
+
+### Safety, Security and Exploration
+
+| Contribution | Monograph |
+|-------------|------------|
+| C05 — Safe Mode Navigation | [DynNav_C05_Safe_Mode_FSM_DeepDive.pdf](DynNav_C05_Safe_Mode_FSM_DeepDive.pdf) |
+| C06 — Energy and Connectivity-Aware Planning | [DynNav_C06_Energy_Connectivity_DeepDive.pdf](DynNav_C06_Energy_Connectivity_DeepDive.pdf) |
+| C07 — Next-Best-View Exploration | [DynNav_C07_NextBestView_DeepDive.pdf](DynNav_C07_NextBestView_DeepDive.pdf) |
+| C08 — Security and Intrusion Detection | [DynNav_C08_Security_IDS_DeepDive.pdf](DynNav_C08_Security_IDS_DeepDive.pdf) |
+
+### Multi-Robot Systems and Human-Aware Navigation
+
+| Contribution | Monograph |
+|-------------|------------|
+| C09 — Multi-Robot Coordination | [DynNav_C09_MultiRobot_DeepDive.pdf](DynNav_C09_MultiRobot_DeepDive.pdf) |
+| C10 — Human-Aware Navigation | [DynNav_C10_HumanAware_DeepDive.pdf](DynNav_C10_HumanAware_DeepDive.pdf) |
+
+### Learning, Reasoning and Foundation Models
+
+| Contribution | Monograph |
+|-------------|------------|
+| C11 — Twin-Critic Reinforcement Learning | [DynNav_C11_TwinCritic_RL_DeepDive.pdf](DynNav_C11_TwinCritic_RL_DeepDive.pdf) |
+| C12 — Diffusion-Based Planning | [DynNav_C12_Diffusion_DeepDive.pdf](DynNav_C12_Diffusion_DeepDive.pdf) |
+| C13 — World Models | [DynNav_C13_WorldModel_DeepDive.pdf](DynNav_C13_WorldModel_DeepDive.pdf) |
+| C14 — Structural Causal Models | [DynNav_C14_CausalSCM_DeepDive.pdf](DynNav_C14_CausalSCM_DeepDive.pdf) |
+| C19 — LLM Mission Planning | [DynNav_C19_LLMPlanner_DeepDive.pdf](DynNav_C19_LLMPlanner_DeepDive.pdf) |
+| C20 — Failure Explanation Engine | [DynNav_C20_FailureExplainer_DeepDive.pdf](DynNav_C20_FailureExplainer_DeepDive.pdf) |
+| C21 — PPO Navigation Policies | [DynNav_C21_PPO_DeepDive.pdf](DynNav_C21_PPO_DeepDive.pdf) |
+| C22 — Curriculum Learning | [DynNav_C22_Curriculum_DeepDive.pdf](DynNav_C22_Curriculum_DeepDive.pdf) |
+
+### Mapping, Perception and Formal Methods
+
+| Contribution | Monograph |
+|-------------|------------|
+| C15 — Neuromorphic Perception | [DynNav_C15_Neuromorphic_DeepDive.pdf](DynNav_C15_Neuromorphic_DeepDive.pdf) |
+| C17 — Topological Semantic Maps | [DynNav_C17_TopologicalMaps_DeepDive.pdf](DynNav_C17_TopologicalMaps_DeepDive.pdf) |
+| C18 — Signal Temporal Logic and Control Barrier Functions | [DynNav_C18_CBF_STL_DeepDive.pdf](DynNav_C18_CBF_STL_DeepDive.pdf) |
+| C23 — Gaussian Splatting | [DynNav_C23_GaussianSplatting_DeepDive.pdf](DynNav_C23_GaussianSplatting_DeepDive.pdf) |
+| C24 — Neural Radiance Fields (NeRF) | [DynNav_C24_NeRF_DeepDive.pdf](DynNav_C24_NeRF_DeepDive.pdf) |
+
+### Distributed Systems and Robustness
+
+| Contribution | Monograph |
+|-------------|------------|
+| C16 — Federated Learning | [DynNav_C16_Federated_DeepDive.pdf](DynNav_C16_Federated_DeepDive.pdf) |
+| C25 — Adversarial Robustness | [DynNav_C25_Adversarial_DeepDive.pdf](DynNav_C25_Adversarial_DeepDive.pdf) |
+| C26 — Byzantine Fault-Tolerant Swarm Consensus | [DynNav_C26_BFT_DeepDive.pdf](DynNav_C26_BFT_DeepDive.pdf) |
+
+### Comprehensive Analyses
+
+| Document | Description |
+|-----------|-------------|
+| [DynNav_Mega_Ellinika.pdf.pdf](DynNav_Mega_Ellinika.pdf.pdf) | Extended Greek-language technical analysis of the complete DynNav framework |
+| [DynNav_UltraDeep_Analysis.pdf](DynNav_UltraDeep_Analysis.pdf) | System-wide research analysis covering architecture, theory, evaluation, and future research directions |
+
+### Suggested Reading Path
+
+Researchers primarily interested in navigation, uncertainty, and formal safety are encouraged to begin with:
+
+1. C01 — Learned A* Heuristics
+2. C02 — EKF / UKF Uncertainty Estimation
+3. C03 — CVaR Belief-Space Planning
+4. C04 — Returnability-Aware Navigation
+5. C18 — STL + CBF Safety Shields
+
+These five contributions form the core scientific foundation of the DynNav framework.
+
+
+
 ### Contribution Relationships
 
 DynNav's contributions are designed to compose. The diagram summarises the principal data and control dependencies; arrows read "feeds / supervises / informs".
