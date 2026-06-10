@@ -74,6 +74,125 @@ The validation benchmark compares:
 | `learned_raw` | Neural heuristic without clipping | Must be checked empirically |
 | `learned_manhattan_clipped` | Neural heuristic clipped by Manhattan | Admissible on this grid model |
 
+
+Εξαιρετικά. Τα δεδομένα πλέον είναι αρκετά για να γράψουμε το επίσημο αποτέλεσμα του C01.
+
+# Results (για README)
+
+## Experimental Setup
+
+* 100 random start-goal trials
+* 40×40 grid environment
+* Classical A* baseline
+* Learned A* using the trained neural heuristic
+* CPU execution
+* Same planning tasks for both planners
+
+## Quantitative Results
+
+| Metric          |      Classic A* |      Learned A* |
+| --------------- | --------------: | --------------: |
+| Success Rate    |            100% |            100% |
+| Path Length     |   42.21 ± 11.40 |   42.21 ± 11.40 |
+| Node Expansions | 461.23 ± 267.58 | 266.78 ± 212.18 |
+| Runtime (ms)    |     1.17 ± 0.68 |   18.31 ± 11.34 |
+
+### Expansion Reduction
+
+[
+Reduction=\left(1-0.5720\right)\times100
+]
+
+Reduction=(1-0.5720)\times100
+
+Result:
+
+```text
+42.8% fewer node expansions
+```
+
+### Path Optimality
+
+```text
+Delta path length = 0.0000 ± 0.0000
+```
+
+The learned heuristic produced paths of identical length to the classical A* baseline across all evaluated trials.
+
+---
+
+# CLAIMS_EVIDENCE.md (C01)
+
+## Claim
+
+**Contribution 01 introduces a learned heuristic for A* search that substantially reduces search effort while preserving solution quality.**
+
+### Evidence
+
+Dataset:
+
+```text
+100 randomized start-goal trials
+```
+
+Observed metrics:
+
+```text
+Success rate: 100%
+Path length difference: 0
+Expansion reduction: 42.8%
+```
+
+Measured values:
+
+```text
+Classic expansions:
+461.23 ± 267.58
+
+Learned expansions:
+266.78 ± 212.18
+```
+
+```text
+Expansion ratio:
+0.5720 ± 0.2335
+```
+
+Interpretation:
+
+```text
+The learned heuristic reduced node expansions by approximately
+42.8% while maintaining identical path lengths on all successful
+trials.
+```
+
+### Limitation
+
+```text
+Runtime increased because neural-network inference introduces
+additional computation per node expansion.
+```
+
+Observed:
+
+```text
+Classic runtime:
+1.17 ms
+
+Learned runtime:
+18.31 ms
+```
+
+Therefore:
+
+```text
+Contribution 01 should be described as a search-efficiency
+improvement rather than a runtime-speed improvement.
+```
+
+
+
+
 ## Current Validation Results
 
 A 400-task validation run was executed with four obstacle-density regimes: easy (10%), medium (20%), hard (30%), and very hard (40%). In the local validation environment, the learned checkpoint was not available, so `learned_raw` and `learned_manhattan_clipped` fell back to Manhattan. Therefore the current results validate the benchmark protocol and the classical baseline, but should **not** be used as final evidence for learned-heuristic improvement.
