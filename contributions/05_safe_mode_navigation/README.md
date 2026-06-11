@@ -49,3 +49,39 @@ SAFE_MODE → (risk > critical) → EMERGENCY_STOP
 - **Triggered by**: Contribution 03 (risk planner) and Contribution 08 (IDS alerts)
 - **Extended by**: Contribution 13 (world model pre-screening)
 - **Extended by**: Contribution 18 (CBF as always-on safety layer)
+## Results
+
+### Experimental Setup
+
+A threshold-ablation study compared:
+
+* Normal navigation policy
+* Safe-mode navigation policy
+
+The safe-mode controller activates conservative navigation behavior under elevated risk.
+
+### Quantitative Results
+
+| Metric         | Normal Policy | Safe Mode |
+| -------------- | ------------: | --------: |
+| Total Distance |           1.1 |       4.0 |
+| Total Risk     |           1.2 |       0.4 |
+| Maximum Risk   |           0.9 |       0.2 |
+| Total Cost     |           4.9 |      10.4 |
+
+### Relative Changes
+
+| Metric                 | Change |
+| ---------------------- | -----: |
+| Risk Reduction         |  66.7% |
+| Maximum Risk Reduction |  77.8% |
+| Distance Increase      | 263.6% |
+| Cost Increase          | 112.2% |
+
+### Interpretation
+
+Safe mode substantially reduces both accumulated risk and peak risk exposure.
+
+The reduction is achieved through more conservative navigation behavior, resulting in longer traveled distance and higher total cost.
+
+Contribution 05 therefore provides a configurable safety-efficiency trade-off mechanism rather than a free improvement in all metrics.

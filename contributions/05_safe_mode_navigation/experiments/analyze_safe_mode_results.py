@@ -15,8 +15,10 @@ from collections import defaultdict
 import numpy as np
 
 
-INPUT_CSV = "multi_robot_safe_mode_results.csv"
+from pathlib import Path
 
+BASE = Path(__file__).resolve().parents[1]
+INPUT_CSV = BASE / "results" / "multi_robot_safe_mode_results.csv"
 
 def load_results(path: str):
     rows = []
