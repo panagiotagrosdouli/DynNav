@@ -1,0 +1,2 @@
+n_lambda_values,success_rate,baseline_lambda,baseline_fused_mean,baseline_geometric_length,best_risk_lambda,best_risk_fused_mean,best_risk_geometric_length,risk_reduction_pct_vs_lambda0,length_change_pct_vs_lambda0,best_cost_lambda,best_cost
+6,1.0,0.0,0.39999999999999986,70.0,0.1,0.22898814881175406,70.0,42.752962797061464,0.0,0.0,70.0

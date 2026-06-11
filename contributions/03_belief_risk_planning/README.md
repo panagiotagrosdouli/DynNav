@@ -34,6 +34,40 @@ Belief state (μ, Σ) + occupancy → risk map → CVaR cost → risk-weighted A
 python contributions/03_belief_risk_planning/experiments/eval_belief_risk.py
 ```
 
+## Results
+
+A lambda-sweep experiment was conducted to evaluate the trade-off between geometric path length and belief-aware risk cost.
+
+### Experimental Setup
+
+- 6 lambda values evaluated.
+- Risk-aware objective:
+
+J = L + λR
+
+where:
+- L = geometric path length
+- R = fused belief-risk metric
+- λ = risk weighting coefficient
+
+### Results
+
+| Metric | Value |
+|----------|----------|
+| Lambda values tested | 6 |
+| Success rate | 100% |
+| Baseline risk (λ=0) | 0.400 |
+| Best risk (λ=0.1) | 0.229 |
+| Risk reduction | 42.75% |
+| Path length increase | 0.00% |
+
+### Interpretation
+
+The belief-risk planner successfully reduced fused path risk by 42.75% relative to the risk-neutral baseline while maintaining identical geometric path length.
+
+This demonstrates that incorporating belief-aware risk terms into the planning objective can improve safety without sacrificing path efficiency in the evaluated benchmark.
+
+
 ## Risk Metrics
 
 | Metric | Formula | Use |
