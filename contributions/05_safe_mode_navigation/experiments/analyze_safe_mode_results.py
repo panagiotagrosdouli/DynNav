@@ -79,6 +79,58 @@ def print_summary(per_policy):
         print()
 
 
+def write_summary_outputs(per_policy):
+    out_dir = BASE / "results"
+    out_csv = out_dir / "c05_safe_mode_summary.csv"
+    out_md = out_dir / "c05_safe_mode_summary.md"
+
+    summary = {}
+
+    for policy, metrics_dict in per_policy.items():
+        for metric_name, values in metrics_dict.items():
+            arr = np.array(values, dtype=float)
+            summary[f"{policy}_{metric_name}_mean"] = float(arr.mean())
+            summary[f"{policy}_{metric_name}_std"] = float(arr.std(ddof=1)) if len(arr) > 1 else 0.0
+
+    normal_risk = summary["NORMAL_POLICY_total_risk_mean"]
+    safe_risk = summary["SAFE_MODE_POLICY_total_risk_mean"]
+    normal_max = summary["NORMAL_POLICY_max_risk_mean"]
+    safe_max = summary["SAFE_MODE_POLICY_max_risk_mean"]
+    normal_dist = summary["NORMAL_POLICY_total_distance_mean"]
+    safe_dist = summary["SAFE_MODE_POLICY_total_distance_mean"]
+    normal_cost = summary["NORMAL_POLICY_total_cost_mean"]
+    safe_cost = summary["SAFE_MODE_POLICY_total_cost_mean"]
+
+    summary["risk_reduction_pct"] = 100.0 * (normal_risk - safe_risk) / normal_risk
+    summary["max_risk_reduction_pct"] = 100.0 * (normal_max - safe_max) / normal_max
+    summary["distance_increase_pct"] = 100.0 * (safe_dist - normal_dist) / normal_dist
+    summary["cost_increase_pct"] = 100.0 * (safe_cost - normal_cost) / normal_cost
+
+    with open(out_csv, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(summary.keys()))
+        writer.writeheader()
+        writer.writerow(summary)
+
+    with open(out_md, "w") as f:
+        f.write("# C05 Safe-Mode Navigation Summary\n\n")
+        f.write(f"- Normal total risk: {normal_risk:.3f}\n")
+        f.write(f"- Safe-mode total risk: {safe_risk:.3f}\n")
+        f.write(f"- Risk reduction: {summary['risk_reduction_pct']:.2f}%\n")
+        f.write(f"- Normal max risk: {normal_max:.3f}\n")
+        f.write(f"- Safe-mode max risk: {safe_max:.3f}\n")
+        f.write(f"- Max-risk reduction: {summary['max_risk_reduction_pct']:.2f}%\n")
+        f.write(f"- Distance increase: {summary['distance_increase_pct']:.2f}%\n")
+        f.write(f"- Cost increase: {summary['cost_increase_pct']:.2f}%\n\n")
+        f.write("## Interpretation\n\n")
+        f.write(
+            "Safe mode reduces cumulative and peak risk relative to normal navigation, "
+            "but does so through more conservative behavior that increases distance and cost.\n"
+        )
+
+    print(f"[INFO] Wrote {out_csv}")
+    print(f"[INFO] Wrote {out_md}")
+
+
 def main():
     rows = load_results(INPUT_CSV)
     if not rows:
@@ -87,7 +139,7 @@ def main():
 
     per_policy = summarize_by_policy(rows)
     print_summary(per_policy)
-
+    write_summary_outputs(per_policy)
 
 if __name__ == "__main__":
     main()
