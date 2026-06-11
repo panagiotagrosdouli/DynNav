@@ -1,0 +1,2 @@
+n_scenes,region_accuracy,goal_accuracy,valid_goal_rate,mean_confidence,mean_latency_ms,confidence_goal_calibration_error
+8,1.0,0.875,1.0,0.8574999999999999,19.0,0.01750000000000007
