@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: research/trust_aware_cvar
+        working-directory: research_experiments/trust_aware_cvar
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
