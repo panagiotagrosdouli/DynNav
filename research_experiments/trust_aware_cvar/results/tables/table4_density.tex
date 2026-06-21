@@ -1,0 +1,22 @@
+\begin{table}
+\caption{Effect of dynamic obstacle density on collision and success rate.}
+\label{tab:density}
+\begin{tabular}{lllrr}
+\toprule
+ & planner & density\_override & CollisionsEp & SuccessRate \\
+\midrule
+2 & CVaRPlanner & low & 0.337 & 0.522 \\
+3 & CVaRPlanner & medium & 0.583 & 0.277 \\
+1 & CVaRPlanner & high & 0.747 & 0.112 \\
+0 & CVaRPlanner & extreme & 0.832 & 0.028 \\
+6 & DynNavCurrent & low & 0.337 & 0.522 \\
+7 & DynNavCurrent & medium & 0.583 & 0.277 \\
+5 & DynNavCurrent & high & 0.747 & 0.112 \\
+4 & DynNavCurrent & extreme & 0.832 & 0.028 \\
+10 & TrustAwareCVaR & low & 0.333 & 0.525 \\
+11 & TrustAwareCVaR & medium & 0.590 & 0.270 \\
+9 & TrustAwareCVaR & high & 0.750 & 0.108 \\
+8 & TrustAwareCVaR & extreme & 0.832 & 0.028 \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,16 @@
+\begin{table}
+\caption{Effect of the formal safety shield (Contribution 18 reproduction) on residual safety violations.}
+\label{tab:shield}
+\begin{tabular}{llrrrr}
+\toprule
+ & planner & shield\_enabled & SafetyViolationsEp & PathLength & SuccessRate \\
+\midrule
+0 & CVaRPlanner & False & 0.568 & 16.587 & 0.292 \\
+1 & CVaRPlanner & True & 0.375 & 21.372 & 0.485 \\
+2 & DynNavCurrent & False & 0.568 & 16.587 & 0.292 \\
+3 & DynNavCurrent & True & 0.375 & 21.372 & 0.485 \\
+4 & TrustAwareCVaR & False & 0.577 & 16.591 & 0.283 \\
+5 & TrustAwareCVaR & True & 0.355 & 21.701 & 0.505 \\
+\bottomrule
+\end{tabular}
+\end{table}
