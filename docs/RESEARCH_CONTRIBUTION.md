@@ -1,122 +1,90 @@
-# DynNav Research Contribution
+# DynNav: Returnability-Aware Navigation under Uncertainty
 
-DynNav is a research framework for autonomous navigation in unknown and dynamic environments, built around one central idea:
+## Research Motivation
 
-> A robot should not only plan a path to a goal. It should continuously reason about whether it can remain safe, recover, and return under uncertainty.
+Autonomous robots operating in unknown environments often make decisions using incomplete information.
 
-Most navigation systems optimize for path length, expected cost, or geometric obstacle avoidance. DynNav extends this view by treating uncertainty, risk, irreversibility, returnability, and formal safety as first-class components of the navigation problem.
+Traditional navigation systems typically optimize path length, travel cost, or collision avoidance. However, a path that appears optimal at the current time may later become unsafe, unrecoverable, or impossible to reverse due to uncertainty in the environment.
 
-## Core Research Thesis
+This creates a fundamental challenge:
 
-The main thesis behind DynNav is:
+> How can an autonomous robot make navigation decisions that preserve its ability to safely recover from future uncertainty?
 
-> Autonomous navigation in uncertain environments requires explicit reasoning over risk, reversibility, and recoverability, not only collision avoidance or expected path-cost minimization.
+## Research Problem
 
-This thesis is explored through a modular stack that connects uncertainty estimation, risk-sensitive planning, returnability constraints, safe-mode supervision, formal safety filtering, learning-based decision making, multi-robot coordination, and security-aware navigation.
+Existing navigation approaches primarily focus on reaching a goal efficiently.
+
+In real-world environments, successful navigation requires more than reaching a destination.
+
+A robot must also maintain the ability to:
+
+* recover from unexpected events,
+* return to previously safe regions,
+* avoid irreversible decisions,
+* remain operational under uncertainty.
+
+These properties are rarely treated as explicit planning objectives.
+
+## Proposed Contribution
+
+This work introduces a **Returnability-Aware Navigation Framework** for autonomous robots operating in partially known environments.
+
+The central idea is simple:
+
+> A navigation decision should be evaluated not only by its immediate cost, but also by its future recoverability.
+
+To achieve this, the framework combines:
+
+* uncertainty estimation,
+* risk assessment,
+* returnability evaluation,
+* safety supervision.
+
+Navigation actions are therefore selected according to both goal progress and preservation of future recovery options.
 
 ## Main Scientific Contribution
 
-The central contribution of DynNav is a returnability-aware, uncertainty-driven navigation framework.
+The primary contribution of this work is the introduction of **returnability as an explicit navigation objective**.
 
-Instead of asking only:
+Instead of evaluating paths only according to:
 
-> What is the shortest or lowest-cost path to the goal?
+* distance,
+* travel time,
+* energy cost,
+* collision risk,
 
-DynNav asks:
+the proposed framework additionally evaluates:
 
-> Can the robot reach the goal while preserving the ability to remain safe, recover from uncertainty, and return if the environment becomes unsafe?
+* recovery feasibility,
+* reversibility of decisions,
+* ability to safely retreat from hazardous situations.
 
-This shift matters because in real-world robotics, failure often does not occur because a robot cannot find a path. Failure occurs because the robot finds a path that looks locally valid but later becomes unsafe, irreversible, disconnected, energy-infeasible, or impossible to recover from.
+This transforms navigation from a pure path-planning problem into a recoverability-aware decision-making problem.
 
-DynNav therefore treats recoverability as part of the navigation objective rather than as a late-stage exception handler.
+## Evaluation
 
-## Contribution Structure
+The proposed framework is evaluated in unknown and dynamic environments and compared against conventional navigation strategies.
 
-DynNav's research contribution can be understood through six connected components.
+Performance is assessed using:
 
-### 1. Uncertainty-aware state and environment modelling
+* mission success rate,
+* irreversible failure rate,
+* recovery success rate,
+* navigation cost,
+* safety violations.
 
-The system maintains uncertainty estimates over robot state, observations, and environment structure. These estimates are not treated as diagnostics only; they are passed upward into planning, safety, and recovery decisions.
+The goal is to determine whether explicit reasoning about returnability improves navigation robustness under uncertainty.
 
-### 2. Risk-sensitive planning
+## Research Question
 
-Planning is not based only on nominal cost. DynNav incorporates risk-aware and CVaR-inspired reasoning so that the planner accounts for exposure to high-risk regions and worst-case outcomes.
+The work investigates the following question:
 
-### 3. Returnability and irreversibility reasoning
-
-A path is considered unsafe not only when it collides with obstacles, but also when it leads to states from which safe recovery or return becomes infeasible. This provides a stricter notion of safety than local obstacle avoidance.
-
-### 4. Safe-mode supervision
-
-When uncertainty, risk, energy, connectivity, or feasibility degrade beyond acceptable thresholds, DynNav can switch to conservative behaviour. The safe-mode layer supervises the interaction between planning, returnability, and formal safety.
-
-### 5. Formal safety filtering
-
-Signal Temporal Logic and Control Barrier Function based filters provide an additional action-level safety layer. These filters constrain unsafe control outputs and help separate high-level decision making from low-level safety enforcement.
-
-### 6. Modular integration across learning, security, and multi-robot autonomy
-
-DynNav is not a single planner. It is a research stack in which learning-based heuristics, reinforcement learning policies, adversarial detection, federated learning, human-aware constraints, and multi-robot coordination can all interact through shared uncertainty and risk interfaces.
-
-## Why Returnability Matters
-
-Classical navigation systems often assume that if a path is collision-free now, it is acceptable. In unknown or dynamic environments, this assumption can fail.
-
-A robot may enter a corridor that later becomes blocked, spend too much energy to return, lose communication, increase uncertainty beyond the reliability of its estimator, or commit to a region where no feasible recovery path exists.
-
-Returnability-aware navigation addresses this by asking whether each decision preserves future options. This changes navigation from a purely goal-reaching problem into a constrained decision-making problem under uncertainty.
-
-## Relationship to the DynNav Modules
-
-The research thesis is distributed across the repository rather than isolated in one file.
-
-The main conceptual path is:
-
-```text
-Uncertainty estimation
-        ↓
-Risk-sensitive planning
-        ↓
-Returnability / irreversibility reasoning
-        ↓
-Safe-mode supervision
-        ↓
-Formal safety filtering
-```
-
-Key modules connected to this path include:
-
-- C02: uncertainty estimation and calibration,
-- C03: belief-space and CVaR-style risk planning,
-- C04: irreversibility and returnability,
-- C05: safe-mode navigation,
-- C06: energy and connectivity constraints,
-- C07: returnability-aware next-best-view exploration,
-- C08: intrusion detection and security monitoring,
-- C18: STL and CBF formal safety shields.
-
-Additional modules extend the framework toward multi-robot coordination, human-aware navigation, foundation-model planning, reinforcement learning, federated learning, adversarial robustness, and 3D perception.
-
-## Research Positioning
-
-DynNav is best understood as a research artifact rather than a finished product. Its contribution is methodological: it proposes a coherent way to connect uncertainty, risk, returnability, and safety across a navigation stack.
-
-The work does not claim that every component is novel in isolation. Many individual methods, such as A*, EKF/UKF estimation, PPO, CVaR, CBFs, STL, FedAvg, and Byzantine consensus, are established techniques.
-
-The research contribution lies in the integration principle:
-
-> uncertainty should flow through the navigation stack and directly shape planning, safety, and recovery decisions.
-
-In this framing, DynNav is not simply a collection of twenty-six modules. It is a system-level investigation of safer autonomous decision-making under uncertainty.
-
-## Practical Research Question
-
-The project can be summarized by the following research question:
-
-> How can an autonomous robot navigate unknown and dynamic environments while preserving not only collision safety, but also recoverability, returnability, and decision reliability under uncertainty?
+> Can autonomous robots achieve safer and more robust navigation by explicitly reasoning about returnability and recoverability under uncertainty?
 
 ## Summary
 
-DynNav proposes that safe autonomous navigation should be evaluated not only by whether a robot reaches its goal, but also by whether it preserves the ability to recover, return, and remain safe throughout the mission.
+DynNav proposes a navigation framework in which future recovery capability becomes part of the planning objective.
 
-This makes returnability a core navigation principle and positions DynNav as a framework for uncertainty-aware, risk-sensitive, and recoverability-preserving autonomy.
+The contribution is not a new planner, estimator, or learning algorithm in isolation.
+
+The contribution is the introduction of returnability-aware decision making as a first-class navigation principle for autonomous systems operating under uncertainty.
