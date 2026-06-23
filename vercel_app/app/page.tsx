@@ -64,7 +64,7 @@ export default function HomePage() {
         </a>
 
         <a
-          href="#"
+          href="/simulation"
           style={{
             padding: "12px 24px",
             background: "#16a34a",
