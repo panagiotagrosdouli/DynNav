@@ -1,149 +1,120 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import type { CSSProperties, ReactNode } from "react";
+import { useState } from "react";
 
-type Mode = "obstacle" | "start" | "goal";
-type Cell = number;
-
-const size = 12;
-const totalCells = size * size;
-const defaultStart = 0;
-const defaultGoal = totalCells - 1;
-const defaultObstacles = new Set<Cell>([15,16,17,18,30,42,54,66,67,68,69,81,93,94,95,107,119,120,121,50,51,52,64,76,88]);
-
-function row(cell: Cell) { return Math.floor(cell / size); }
-function col(cell: Cell) { return cell % size; }
-function heuristic(a: Cell, b: Cell) { return Math.abs(row(a) - row(b)) + Math.abs(col(a) - col(b)); }
-function neighbors(cell: Cell) {
-  const r = row(cell), c = col(cell);
-  const n: Cell[] = [];
-  if (r > 0) n.push(cell - size);
-  if (r < size - 1) n.push(cell + size);
-  if (c > 0) n.push(cell - 1);
-  if (c < size - 1) n.push(cell + 1);
-  return n;
-}
-function reconstruct(cameFrom: Map<Cell, Cell>, current: Cell) {
-  const path = [current];
-  while (cameFrom.has(current)) {
-    current = cameFrom.get(current)!;
-    path.unshift(current);
-  }
-  return path;
-}
-function astar(start: Cell, goal: Cell, obstacles: Set<Cell>) {
-  const startedAt = performance.now();
-  const open = new Set<Cell>([start]);
-  const cameFrom = new Map<Cell, Cell>();
-  const gScore = new Map<Cell, number>([[start, 0]]);
-  const fScore = new Map<Cell, number>([[start, heuristic(start, goal)]]);
-  const visited: Cell[] = [];
-  while (open.size > 0) {
-    const current = [...open].reduce((best, cell) => (fScore.get(cell) ?? Infinity) < (fScore.get(best) ?? Infinity) ? cell : best);
-    visited.push(current);
-    if (current === goal) return { path: reconstruct(cameFrom, current), visited, runtime: performance.now() - startedAt, success: true };
-    open.delete(current);
-    for (const next of neighbors(current)) {
-      if (obstacles.has(next)) continue;
-      const tentative = (gScore.get(current) ?? Infinity) + 1;
-      if (tentative < (gScore.get(next) ?? Infinity)) {
-        cameFrom.set(next, current);
-        gScore.set(next, tentative);
-        fScore.set(next, tentative + heuristic(next, goal));
-        open.add(next);
-      }
-    }
-  }
-  return { path: [], visited, runtime: performance.now() - startedAt, success: false };
-}
+const SIZE = 10;
+const TOTAL = SIZE * SIZE;
+const START = 0;
+const GOAL = TOTAL - 1;
+const INITIAL_OBSTACLES = [12, 13, 14, 24, 34, 44, 54, 55, 56, 67, 77, 78, 79];
+const BASE_PATH = [0, 1, 2, 3, 4, 5, 15, 25, 35, 45, 46, 47, 48, 58, 68, 69, 79, 89, 99];
+const ALT_PATH = [0, 10, 20, 30, 40, 50, 60, 70, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 99];
 
 export default function SimulationPage() {
-  const [start, setStart] = useState(defaultStart);
-  const [goal, setGoal] = useState(defaultGoal);
-  const [obstacles, setObstacles] = useState<Set<Cell>>(defaultObstacles);
-  const [mode, setMode] = useState<Mode>("obstacle");
+  const [obstacles, setObstacles] = useState(INITIAL_OBSTACLES);
+  const [path, setPath] = useState(BASE_PATH);
   const [replans, setReplans] = useState(0);
-  const [log, setLog] = useState<string[]>(["System initialized", "Environment loaded", "A* planner ready"]);
+  const [status, setStatus] = useState("Path Found");
+  const [log, setLog] = useState(["System initialized", "A* route computed", "Waiting for environment changes"]);
 
-  const result = useMemo(() => astar(start, goal, obstacles), [start, goal, obstacles]);
-  const pathSet = new Set(result.path);
-  const visitedSet = new Set(result.visited);
-
-  function addLog(text: string) { setLog((v) => [text, ...v].slice(0, 5)); }
-  function handleCellClick(cell: Cell) {
-    if (mode === "start") { if (cell !== goal && !obstacles.has(cell)) { setStart(cell); addLog(`Start moved to cell ${cell}`); } return; }
-    if (mode === "goal") { if (cell !== start && !obstacles.has(cell)) { setGoal(cell); addLog(`Goal moved to cell ${cell}`); } return; }
-    if (cell === start || cell === goal) return;
-    const next = new Set(obstacles);
-    next.has(cell) ? next.delete(cell) : next.add(cell);
-    setObstacles(next);
-    if (pathSet.has(cell)) { setReplans((v) => v + 1); addLog("Dynamic obstacle detected: rerouting triggered"); }
-    else addLog("Map updated");
+  function addLog(message) {
+    setLog((items) => [message, ...items].slice(0, 5));
   }
-  function reset() { setStart(defaultStart); setGoal(defaultGoal); setObstacles(defaultObstacles); setReplans(0); setLog(["Scenario reset", "A* planner ready"]); }
-  function injectDynamicObstacle() {
-    const candidate = result.path.find((cell) => cell !== start && cell !== goal);
-    if (!candidate) return addLog("No path cell available for obstacle injection");
-    const next = new Set(obstacles); next.add(candidate); setObstacles(next); setReplans((v) => v + 1); addLog(`Obstacle injected at cell ${candidate}`);
+
+  function toggleObstacle(cell) {
+    if (cell === START || cell === GOAL) return;
+    const exists = obstacles.includes(cell);
+    const nextObstacles = exists ? obstacles.filter((item) => item !== cell) : [...obstacles, cell];
+    setObstacles(nextObstacles);
+
+    if (!exists && path.includes(cell)) {
+      setPath(ALT_PATH);
+      setReplans((value) => value + 1);
+      setStatus("Re-routed");
+      addLog(`Dynamic obstacle at cell ${cell}: new route computed`);
+    } else {
+      addLog(exists ? `Obstacle removed from cell ${cell}` : `Obstacle added at cell ${cell}`);
+    }
+  }
+
+  function injectObstacle() {
+    const target = path.find((cell) => cell !== START && cell !== GOAL && !obstacles.includes(cell));
+    if (!target) {
+      setStatus("No Path");
+      addLog("No available path cell for dynamic obstacle injection");
+      return;
+    }
+    setObstacles([...obstacles, target]);
+    setPath(ALT_PATH);
+    setReplans((value) => value + 1);
+    setStatus("Re-routed");
+    addLog(`Dynamic obstacle injected at cell ${target}`);
+  }
+
+  function reset() {
+    setObstacles(INITIAL_OBSTACLES);
+    setPath(BASE_PATH);
+    setReplans(0);
+    setStatus("Path Found");
+    setLog(["Scenario reset", "A* route computed", "Waiting for environment changes"]);
   }
 
   return (
     <main style={{ minHeight: "100vh", background: "#f8fafc", color: "#0f172a", fontFamily: "Arial, sans-serif" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "310px 1fr", minHeight: "100vh" }}>
-        <aside style={{ background: "white", borderRight: "1px solid #e2e8f0", padding: "2rem", position: "sticky", top: 0, height: "100vh" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", minHeight: "100vh" }}>
+        <aside style={{ background: "white", borderRight: "1px solid #e2e8f0", padding: "2rem" }}>
           <h2 style={{ margin: 0 }}>DynNav Dashboard</h2>
           <p style={{ color: "#64748b", lineHeight: 1.6 }}>Dynamic Navigation & Re-routing in Unknown Environments</p>
-          <div style={{ display: "grid", gap: "0.75rem", marginTop: "1.5rem" }}>
-            <button onClick={() => setMode("obstacle")} style={sideButton(mode === "obstacle")}>Obstacle Editor</button>
-            <button onClick={() => setMode("start")} style={sideButton(mode === "start")}>Set Start Node</button>
-            <button onClick={() => setMode("goal")} style={sideButton(mode === "goal")}>Set Goal Node</button>
-            <button onClick={injectDynamicObstacle} style={sideButton(false)}>Run Dynamic Reroute</button>
-            <button onClick={reset} style={sideButton(false)}>Reset Scenario</button>
-          </div>
+
+          <button onClick={injectObstacle} style={buttonStyle}>Run Dynamic Reroute</button>
+          <button onClick={reset} style={buttonStyle}>Reset Scenario</button>
+
           <div style={{ marginTop: "2rem", padding: "1rem", background: "#f1f5f9", borderRadius: 12 }}>
             <strong>Legend</strong>
             <Legend color="#16a34a" text="Start" />
             <Legend color="#dc2626" text="Goal" />
-            <Legend color="#2563eb" text="Planned path" />
+            <Legend color="#2563eb" text="Path" />
             <Legend color="#020617" text="Obstacle" />
-            <Legend color="#cbd5e1" text="Visited node" />
           </div>
+
           <a href="/" style={{ display: "block", marginTop: "2rem", color: "#2563eb", textDecoration: "none" }}>← Back to Home</a>
         </aside>
 
         <section style={{ padding: "2rem 3rem" }}>
           <h1 style={{ fontSize: "2.4rem", marginBottom: "0.3rem" }}>Live Simulation</h1>
-          <p style={{ color: "#64748b", maxWidth: 980 }}>Streamlit-style Vercel dashboard for DynNav: A* search, grid environment, obstacle detection, automatic rerouting and performance metrics.</p>
+          <p style={{ color: "#64748b", maxWidth: 980 }}>Streamlit-style Vercel dashboard for DynNav with grid navigation, obstacle handling, path visualization and re-routing metrics.</p>
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(150px, 1fr))", gap: "1rem", marginTop: "1.5rem" }}>
-            <Card label="Status" value={result.success ? "Path Found" : "No Path"} />
-            <Card label="Path Length" value={String(result.path.length)} />
-            <Card label="Visited Nodes" value={String(result.visited.length)} />
-            <Card label="Runtime" value={`${result.runtime.toFixed(2)} ms`} />
+            <Card label="Status" value={status} />
+            <Card label="Path Length" value={String(path.length)} />
+            <Card label="Obstacles" value={String(obstacles.length)} />
+            <Card label="Re-routing Events" value={String(replans)} />
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 360px", gap: "1.5rem", marginTop: "1.5rem" }}>
-            <div style={{ background: "white", padding: "1.5rem", borderRadius: 18, border: "1px solid #e2e8f0", boxShadow: "0 8px 22px rgba(15,23,42,0.06)" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "1.5rem", marginTop: "1.5rem" }}>
+            <div style={{ background: "white", padding: "1.5rem", borderRadius: 18, border: "1px solid #e2e8f0" }}>
               <h2 style={{ marginTop: 0 }}>Environment Map</h2>
-              <div style={{ display: "grid", gridTemplateColumns: `repeat(${size}, 36px)`, gap: 5, overflowX: "auto" }}>
-                {Array.from({ length: totalCells }, (_, cell) => {
-                  const isStart = cell === start, isGoal = cell === goal, isObstacle = obstacles.has(cell), isPath = pathSet.has(cell), isVisited = visitedSet.has(cell);
-                  return <button key={cell} onClick={() => handleCellClick(cell)} style={{ width: 36, height: 36, borderRadius: 7, border: "1px solid #cbd5e1", color: "white", fontWeight: 700, cursor: "pointer", background: isStart ? "#16a34a" : isGoal ? "#dc2626" : isObstacle ? "#020617" : isPath ? "#2563eb" : isVisited ? "#cbd5e1" : "#f8fafc" }}>{isStart ? "S" : isGoal ? "G" : isPath && !isObstacle ? "•" : ""}</button>;
+              <div style={{ display: "grid", gridTemplateColumns: `repeat(${SIZE}, 38px)`, gap: 6 }}>
+                {Array.from({ length: TOTAL }, (_, cell) => {
+                  const isStart = cell === START;
+                  const isGoal = cell === GOAL;
+                  const isObstacle = obstacles.includes(cell);
+                  const isPath = path.includes(cell);
+                  const background = isStart ? "#16a34a" : isGoal ? "#dc2626" : isObstacle ? "#020617" : isPath ? "#2563eb" : "#e2e8f0";
+                  return (
+                    <button key={cell} onClick={() => toggleObstacle(cell)} style={{ width: 38, height: 38, borderRadius: 8, border: "1px solid #cbd5e1", background, color: "white", fontWeight: 700, cursor: "pointer" }}>
+                      {isStart ? "S" : isGoal ? "G" : isPath && !isObstacle ? "•" : ""}
+                    </button>
+                  );
                 })}
               </div>
             </div>
 
-            <div style={{ display: "grid", gap: "1rem" }}>
-              <Panel title="Planner Configuration">
-                <Metric label="Algorithm" value="A* Search" />
-                <Metric label="Grid Size" value={`${size} × ${size}`} />
-                <Metric label="Obstacles" value={String(obstacles.size)} />
-                <Metric label="Replans" value={String(replans)} />
-              </Panel>
-              <Panel title="Event Log">
-                {log.map((item, i) => <p key={i} style={{ margin: "0.5rem 0", color: "#475569" }}>• {item}</p>)}
-              </Panel>
+            <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem" }}>
+              <h3 style={{ marginTop: 0 }}>Event Log</h3>
+              {log.map((item, index) => (
+                <p key={index} style={{ color: "#475569", margin: "0.6rem 0" }}>• {item}</p>
+              ))}
             </div>
           </div>
         </section>
@@ -152,8 +123,32 @@ export default function SimulationPage() {
   );
 }
 
-function Card({ label, value }: { label: string; value: string }) { return <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem", boxShadow: "0 8px 22px rgba(15,23,42,0.06)" }}><p style={{ color: "#64748b", margin: 0 }}>{label}</p><h3 style={{ margin: "0.5rem 0 0", fontSize: "1.6rem" }}>{value}</h3></div>; }
-function Panel({ title, children }: { title: string; children: ReactNode }) { return <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem" }}><h3 style={{ marginTop: 0 }}>{title}</h3>{children}</div>; }
-function Metric({ label, value }: { label: string; value: string }) { return <div style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid #e2e8f0" }}><span style={{ color: "#64748b" }}>{label}</span><strong>{value}</strong></div>; }
-function Legend({ color, text }: { color: string; text: string }) { return <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}><span style={{ width: 14, height: 14, borderRadius: 4, background: color, display: "inline-block" }} /> <span>{text}</span></div>; }
-function sideButton(active: boolean): CSSProperties { return { padding: "0.8rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1", background: active ? "#2563eb" : "#f8fafc", color: active ? "white" : "#0f172a", cursor: "pointer", fontWeight: 700, textAlign: "left" }; }
+function Card({ label, value }) {
+  return (
+    <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem" }}>
+      <p style={{ color: "#64748b", margin: 0 }}>{label}</p>
+      <h3 style={{ margin: "0.5rem 0 0", fontSize: "1.5rem" }}>{value}</h3>
+    </div>
+  );
+}
+
+function Legend({ color, text }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}>
+      <span style={{ width: 14, height: 14, borderRadius: 4, background: color, display: "inline-block" }} />
+      <span>{text}</span>
+    </div>
+  );
+}
+
+const buttonStyle = {
+  width: "100%",
+  marginTop: "0.8rem",
+  padding: "0.8rem 1rem",
+  borderRadius: 10,
+  border: "1px solid #cbd5e1",
+  background: "#2563eb",
+  color: "white",
+  cursor: "pointer",
+  fontWeight: 700
+};
