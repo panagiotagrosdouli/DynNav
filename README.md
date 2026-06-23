@@ -5,6 +5,14 @@
 *An uncertainty-aware, risk-sensitive autonomous navigation framework with formal safety constraints (STL + CBF filtering), learning-augmented planning, and twenty-six reproducible research contributions.*
 
 ---
+## Research Contribution
+
+For the scientific framing and central research thesis behind DynNav, see:
+
+➡️ [Research Contribution](docs/RESEARCH_CONTRIBUTION.md)
+
+This document explains the project's core idea:
+uncertainty-aware, risk-sensitive, and returnability-preserving autonomous navigation.
 
 **Repository.** [github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments)
 **Live dashboard.** [dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/)
@@ -24,14 +32,7 @@
 > **About this README.** This document is both the scientific report for DynNav *and* the navigation hub for the whole repository. It keeps the long-form technical narrative (sections 1–26) and additionally links each contribution to its implementation folder, its local README, its experiment scripts, its results, its dashboard simulation, and its related design documents under [`docs/`](docs/). Two short orientation sections — the [Documentation Hub](#documentation-hub) and [How to Explore This Repository](#how-to-explore-this-repository) — sit before the report so a new reader can find their way in; the deep sections then follow in their original order. Every path referenced below has been checked against the repository tree; where a folder is a documentation stub or a code home, that is stated explicitly rather than glossed over.
 
 
-## Research Contribution
 
-For the scientific framing and central research thesis behind DynNav, see:
-
-➡️ [Research Contribution](docs/RESEARCH_CONTRIBUTION.md)
-
-This document explains the project's core idea:
-uncertainty-aware, risk-sensitive, and returnability-preserving autonomous navigation.
 ---
 
 ## Table of Contents
