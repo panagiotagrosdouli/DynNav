@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 type Mode = "obstacle" | "start" | "goal";
 type Cell = number;
@@ -152,7 +153,7 @@ export default function SimulationPage() {
 }
 
 function Card({ label, value }: { label: string; value: string }) { return <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem", boxShadow: "0 8px 22px rgba(15,23,42,0.06)" }}><p style={{ color: "#64748b", margin: 0 }}>{label}</p><h3 style={{ margin: "0.5rem 0 0", fontSize: "1.6rem" }}>{value}</h3></div>; }
-function Panel({ title, children }: { title: string; children: React.ReactNode }) { return <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem" }}><h3 style={{ marginTop: 0 }}>{title}</h3>{children}</div>; }
+function Panel({ title, children }: { title: string; children: ReactNode }) { return <div style={{ background: "white", border: "1px solid #e2e8f0", borderRadius: 16, padding: "1rem" }}><h3 style={{ marginTop: 0 }}>{title}</h3>{children}</div>; }
 function Metric({ label, value }: { label: string; value: string }) { return <div style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderBottom: "1px solid #e2e8f0" }}><span style={{ color: "#64748b" }}>{label}</span><strong>{value}</strong></div>; }
 function Legend({ color, text }: { color: string; text: string }) { return <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10 }}><span style={{ width: 14, height: 14, borderRadius: 4, background: color, display: "inline-block" }} /> <span>{text}</span></div>; }
-function sideButton(active: boolean): React.CSSProperties { return { padding: "0.8rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1", background: active ? "#2563eb" : "#f8fafc", color: active ? "white" : "#0f172a", cursor: "pointer", fontWeight: 700, textAlign: "left" }; }
+function sideButton(active: boolean): CSSProperties { return { padding: "0.8rem 1rem", borderRadius: 10, border: "1px solid #cbd5e1", background: active ? "#2563eb" : "#f8fafc", color: active ? "white" : "#0f172a", cursor: "pointer", fontWeight: 700, textAlign: "left" }; }
