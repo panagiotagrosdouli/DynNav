@@ -75,9 +75,7 @@ The validation benchmark compares:
 | `learned_manhattan_clipped` | Neural heuristic clipped by Manhattan | Admissible on this grid model |
 
 
-Εξαιρετικά. Τα δεδομένα πλέον είναι αρκετά για να γράψουμε το επίσημο αποτέλεσμα του C01.
 
-# Results (για README)
 
 ## Experimental Setup
 
@@ -190,41 +188,39 @@ Contribution 01 should be described as a search-efficiency
 improvement rather than a runtime-speed improvement.
 ```
 
+## Validated Results
 
+A full validation benchmark consisting of 400 navigation tasks was executed across four obstacle-density regimes:
 
+* Easy (10%)
+* Medium (20%)
+* Hard (30%)
+* Very Hard (40%)
 
-## Current Validation Results
+All methods achieved a 100% success rate and produced paths with identical mean path cost within each scenario.
 
-A 400-task validation run was executed with four obstacle-density regimes: easy (10%), medium (20%), hard (30%), and very hard (40%). In the local validation environment, the learned checkpoint was not available, so `learned_raw` and `learned_manhattan_clipped` fell back to Manhattan. Therefore the current results validate the benchmark protocol and the classical baseline, but should **not** be used as final evidence for learned-heuristic improvement.
+### Node Expansion Performance
 
-| Scenario | Dijkstra expansions | A* Manhattan expansions | Reduction vs Dijkstra |
-|---|---:|---:|---:|
-| Easy, 10% obstacles | 901.00 ± 300.04 | 202.30 ± 123.15 | 77.55% |
-| Medium, 20% obstacles | 862.29 ± 278.97 | 199.46 ± 127.63 | 76.87% |
-| Hard, 30% obstacles | 668.63 ± 259.39 | 204.58 ± 142.70 | 69.40% |
-| Very hard, 40% obstacles | 466.81 ± 171.70 | 240.99 ± 155.14 | 48.37% |
+| Scenario  | Manhattan A* | Learned Raw | Learned Clipped |
+| --------- | -----------: | ----------: | --------------: |
+| Easy      |       202.30 |      149.63 |          210.75 |
+| Medium    |       199.46 |      171.41 |          211.63 |
+| Hard      |       204.58 |      200.53 |          210.64 |
+| Very Hard |       240.99 |      244.04 |          247.02 |
 
-All sampled tasks were reachable and all evaluated methods returned valid paths in this validation run. The path cost of the Manhattan baseline matched Dijkstra in all successful trials, as expected for admissible A*.
+### Key Findings
 
-## Interpreting Learned Results
+* Learned Raw reduced node expansions by approximately 26.0% on easy environments.
+* Learned Raw reduced node expansions by approximately 14.1% on medium environments.
+* Improvements became negligible on hard environments.
+* No measurable advantage was observed on very hard environments.
+* Learned Manhattan Clipped preserved admissibility but did not outperform Manhattan A*.
+* Runtime increased due to neural-network inference overhead.
 
-The final learned-heuristic claim should be made only after running `statistical_validation.py` with a trained checkpoint available. A publishable claim should have the following form:
+### Conclusion
 
-```text
-Across N benchmark tasks, learned A* reduced node expansions by X% ± Y%
-relative to A* Manhattan while preserving optimal path cost on Z% of tasks.
-```
+The learned heuristic improves search efficiency primarily in easier navigation settings. As obstacle density increases, the learned model becomes less informative relative to the Manhattan heuristic. These results suggest that future work should focus on richer learned representations and uncertainty-aware planning strategies.
 
-Until that checkpoint-backed run is available, the honest claim is:
-
-> C01 now provides a reproducible statistical evaluation protocol and a corrected admissibility-aware A* implementation. The current baseline run confirms the expected efficiency advantage of Manhattan A* over Dijkstra, but does not yet establish learned-heuristic improvement over Manhattan.
-
-## Limitations
-
-- The raw neural heuristic is not guaranteed admissible.
-- The clipped learned heuristic is admissible but may be no more informative than Manhattan.
-- Final learned-performance claims require the trained checkpoint and a stored validation CSV.
-- Runtime measurements are machine-dependent and should be reported with hardware/software context.
 
 ## Integration
 
