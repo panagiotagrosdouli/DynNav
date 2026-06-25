@@ -1,33 +1,49 @@
-## Results
+# Contribution 02 — Uncertainty Estimation
 
-### Experimental Setup
+[![Module](https://img.shields.io/badge/Module-02-purple)](.) [![Type](https://img.shields.io/badge/Type-Probabilistic%20Sensing-blue)](.) [![Status](https://img.shields.io/badge/Status-Core-brightgreen)](.)
 
-The uncertainty model was evaluated on 25,235 states collected from 30 randomly generated grid-world planning instances.
+## Overview
 
-For each state, the model produced:
+Explicit **uncertainty modelling** for robot state estimation using Extended Kalman Filter (EKF) and Unscented Kalman Filter (UKF). Quantifies sensing uncertainty, localisation error, and map confidence for use in downstream risk-aware planning.
 
-* Predictive mean (`μ`)
-* Predictive uncertainty (`σ`)
+## Research Question
 
-These predictions were compared against the true optimal cost-to-go (`h*`).
+> **RQ2**: How can uncertainty be explicitly incorporated into navigation decisions?
 
-### Quantitative Results
+## How It Works
 
-| Metric                    |  Value |
-| ------------------------- | -----: |
-| Samples                   | 25,235 |
-| Mean Absolute Error (MAE) |  0.899 |
-| Pearson(σ, |error|)       | -0.050 |
-| Spearman(σ, |error|)      |  0.404 |
-| Coverage @ 1σ             | 86.84% |
-| Coverage @ 2σ             | 88.73% |
-| Coverage @ 3σ             | 89.53% |
+```
+Sensor readings → EKF/UKF → belief state (μ, Σ) → uncertainty metrics → planner
+```
 
-### Interpretation
+- **EKF**: linearised Kalman filter for Gaussian noise models
+- **UKF**: sigma-point propagation for non-linear systems
+- **Output**: per-cell uncertainty estimates fed to risk planner (Contribution 03)
 
-The uncertainty estimates exhibit a positive rank correlation with prediction error (Spearman = 0.404), indicating that higher predicted uncertainty generally corresponds to more difficult predictions.
+## Files
 
-However, the empirical coverage rates do not follow the expected Gaussian confidence behavior. Coverage remains relatively constant across 1σ, 2σ, and 3σ intervals, suggesting that the predicted variance is not yet properly calibrated.
+```
+02_uncertainty_estimation/
+├── experiments/
+└── results/
+```
 
-The model therefore provides useful uncertainty ranking information but requires additional post-hoc calibration before uncertainty values can be interpreted as reliable confidence intervals.
+## Quick Start
 
+```bash
+python contributions/02_uncertainty_estimation/experiments/eval_uncertainty.py
+```
+
+## Key Concepts
+
+| Method | Use Case | Complexity |
+|--------|----------|------------|
+| EKF | Linear/mildly non-linear systems | O(n²) |
+| UKF | Strongly non-linear systems | O(n³) |
+| Particle Filter | Multimodal distributions | O(N particles) |
+
+## Integration
+
+- **Feeds into**: Contribution 03 (belief-space planning)
+- **Extended by**: Contribution 12 (diffusion maps) for occupancy uncertainty
+- **Extended by**: Contribution 24 (NeRF uncertainty) for exploration
