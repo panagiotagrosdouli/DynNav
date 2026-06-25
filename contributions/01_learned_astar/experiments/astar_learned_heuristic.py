@@ -18,12 +18,18 @@ from __future__ import annotations
 
 import argparse
 import heapq
+import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable, Protocol
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+MODULE_ROOT = Path(__file__).resolve().parents[1]
+CODE_DIR = MODULE_ROOT / "code"
+if str(CODE_DIR) not in sys.path:
+    sys.path.insert(0, str(CODE_DIR))
 
 try:  # Torch is only required when a neural checkpoint is actually used.
     import torch
