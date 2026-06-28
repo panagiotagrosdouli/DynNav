@@ -1,7 +1,0 @@
-method,n_queries,found_rate,mean_expansions,mean_path_length,mean_suboptimality,mean_h_std
-classic_astar,100,1.0000,228.49,28.7600,1.000000,0.000000
-uncertainty_astar(beta=-1.0),100,1.0000,156.18,28.7600,1.000000,2.440333
-uncertainty_astar(beta=-0.5),100,1.0000,102.34,28.7600,1.000000,2.210685
-uncertainty_astar(beta=+0.0),100,1.0000,79.03,28.8200,1.001679,2.078435
-uncertainty_astar(beta=+0.5),100,1.0000,74.60,28.8200,1.001679,2.036069
-uncertainty_astar(beta=+1.0),100,1.0000,74.09,28.9600,1.005351,2.018087

@@ -1,1 +1,0 @@
-/home/panagiotagrosd/ros2_ws/src/nav_research/launch/bringup_slam.launch.py

@@ -1,7 +1,0 @@
-Metadata-Version: 2.1
-Name: cybersecurity-ros2
-Version: 0.0.1
-Summary: ROS2 cybersecurity nodes (attacker + IDS)
-Maintainer: panagiota
-Maintainer-email: panagiota@example.com
-License: MIT

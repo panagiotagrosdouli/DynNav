@@ -1,1 +1,0 @@
-/home/panagiotagrosd/ros2_ws/src/dynamic_nav/launch/dynamic_nav_tb3.launch.py

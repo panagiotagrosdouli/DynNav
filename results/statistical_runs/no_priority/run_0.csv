@@ -1,2 +1,0 @@
-seed,path_length,time_to_goal,num_expansions,num_replans,coverage_percent,entropy_reduction,collision_flag
-0,13.0,3.5,600,0,88.0,0.48,0

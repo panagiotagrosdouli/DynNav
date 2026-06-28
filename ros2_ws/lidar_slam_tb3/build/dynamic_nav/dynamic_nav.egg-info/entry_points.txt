@@ -1,2 +1,0 @@
-[console_scripts]
-dynamic_nav_node = dynamic_nav.main:main
