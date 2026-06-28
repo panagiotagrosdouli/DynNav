@@ -15,17 +15,7 @@
 
 ---
 
-[![🌐 Website](https://img.shields.io/badge/Website-GitHub%20Pages-blue?style=for-the-badge)](https://panagiotagrosdouli.github.io/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/)
 
-[![🚀 Live Demo](https://img.shields.io/badge/Live-Demo-red?style=for-the-badge&logo=streamlit)](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/)
-<div align="center">
-
-
-<div align="center">
-
-# DynNav
-
-### Dynamic Navigation & Rerouting in Unknown Environments
 
 <a href="https://panagiotagrosdouli.github.io/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/">
 <img src="https://img.shields.io/badge/🌐_Project_Website-0066CC?style=for-the-badge">
