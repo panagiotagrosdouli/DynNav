@@ -12,6 +12,19 @@
 
 **[📖 Documentation](#documentation) · [🚀 Quick Start](#quick-start) · [🔬 Research Modules](#research-modules) · [📊 Results](#results) · [🤝 Citation](#citation)**
 
+
+---
+
+[![ Website](https://img.shields.io/badge/Website-GitHub%20Pages-blue?style=for-the-badge)](https://panagiotagrosdouli.github.io/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/)
+
+[![ Live Demo](https://img.shields.io/badge/Live-Demo-red?style=for-the-badge&logo=streamlit)](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/)
+
+
+
+
+---
+
+
 ---
 
 ## Overview
