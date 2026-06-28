@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DynNav — Dynamic Navigation & Rerouting in Unknown Environments</title>
+<meta name="description" content="Uncertainty-aware, risk-sensitive autonomous navigation and replanning in unknown environments. 26 research contributions, ROS 2 / TurtleBot3.">
+<meta property="og:title" content="DynNav — Dynamic Navigation & Rerouting in Unknown Environments">
+<meta property="og:description" content="Uncertainty-aware, risk-sensitive autonomous navigation and replanning in unknown environments.">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0F14;
+    --panel:#121821;
+    --panel-2:#0E1319;
+    --line:#1E2730;
+    --ink:#E8EDF2;
+    --muted:#7C8B9A;
+    --muted-2:#4E5C6A;
+    --risk:#FF6A3D;
+    --risk-dim:#7A3A24;
+    --safe:#3DDC97;
+    --safe-dim:#1F5C45;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:16px;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,h4{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+  @media (max-width:640px){.wrap{padding:0 20px;}}
+
+  /* focus visibility */
+  a:focus-visible,button:focus-visible{outline:2px solid var(--risk);outline-offset:3px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    background:rgba(11,15,20,0.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .navbar{
+    max-width:var(--maxw);margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:18px;}
+  .brand .dot{width:8px;height:8px;background:var(--risk);border-radius:1px;flex-shrink:0;}
+  .navlinks{display:flex;gap:28px;font-size:14px;color:var(--muted);}
+  .navlinks a{transition:color .15s;}
+  .navlinks a:hover{color:var(--ink);}
+  .navcta{display:flex;gap:10px;}
+  .navmenu-btn{display:none;background:none;border:1px solid var(--line);color:var(--ink);width:38px;height:38px;border-radius:4px;cursor:pointer;}
+  @media (max-width:840px){
+    .navlinks{display:none;}
+    .navmenu-btn{display:block;}
+  }
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:9px 16px;border-radius:3px;font-size:13.5px;font-weight:500;
+    font-family:'IBM Plex Mono';
+    border:1px solid var(--line);
+    transition:border-color .15s, background .15s;
+    white-space:nowrap;
+  }
+  .btn:hover{border-color:var(--muted-2);}
+  .btn-solid{background:var(--risk);border-color:var(--risk);color:#0B0F14;font-weight:600;}
+  .btn-solid:hover{background:#ff7c52;border-color:#ff7c52;}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;padding:170px 0 90px;overflow:hidden;border-bottom:1px solid var(--line);}
+  .hero-grid{
+    position:absolute;inset:0;z-index:0;opacity:0.9;
+  }
+  .hero-inner{position:relative;z-index:2;}
+  .eyebrow{
+    font-family:'IBM Plex Mono';font-size:12.5px;color:var(--risk);
+    letter-spacing:0.12em;text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;margin-bottom:22px;
+  }
+  .eyebrow::before{content:'';width:18px;height:1px;background:var(--risk);}
+  h1.title{
+    font-size:clamp(38px,6vw,68px);
+    line-height:1.04;
+    max-width:760px;
+    color:var(--ink);
+  }
+  h1.title em{font-style:normal;color:var(--risk);}
+  .subtitle{
+    margin-top:22px;max-width:560px;color:var(--muted);font-size:17px;line-height:1.65;
+  }
+  .hero-ctas{display:flex;gap:12px;margin-top:36px;flex-wrap:wrap;}
+  .hero-stats{
+    display:grid;grid-template-columns:repeat(4,auto);gap:36px;margin-top:64px;
+    padding-top:28px;border-top:1px solid var(--line);max-width:720px;
+  }
+  @media (max-width:700px){.hero-stats{grid-template-columns:repeat(2,auto);}}
+  .stat .num{font-family:'Space Grotesk';font-size:28px;font-weight:600;color:var(--ink);}
+  .stat .lbl{font-family:'IBM Plex Mono';font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-top:4px;}
+
+  /* ---------- SECTION SCAFFOLDING ---------- */
+  section{padding:96px 0;border-bottom:1px solid var(--line);}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:44px;}
+  .sec-num{font-family:'IBM Plex Mono';color:var(--muted-2);font-size:13px;}
+  .sec-title{font-size:clamp(26px,3.4vw,36px);}
+  .sec-lede{color:var(--muted);max-width:680px;margin-top:14px;font-size:16px;}
+
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:48px;}
+  @media (max-width:780px){.grid-2{grid-template-columns:1fr;}}
+
+  .panel{
+    background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:28px;
+  }
+
+  .label-tag{
+    font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);text-transform:uppercase;
+    letter-spacing:0.08em;border:1px solid var(--line);padding:3px 9px;border-radius:2px;display:inline-block;
+  }
+
+  /* abstract / motivation */
+  .keywords{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;}
+  .keywords span{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);border:1px solid var(--line);padding:5px 10px;border-radius:2px;}
+
+  .quote-list{margin-top:8px;}
+  .quote-list li{
+    list-style:none;padding:16px 0 16px 20px;border-left:2px solid var(--line);margin-bottom:2px;color:var(--ink);
+  }
+  .quote-list li b{color:var(--risk);font-family:'IBM Plex Mono';font-size:13px;display:block;margin-bottom:4px;}
+
+  /* pipeline */
+  .pipeline{display:flex;gap:0;overflow-x:auto;padding-bottom:8px;margin-top:10px;}
+  .pipe-step{
+    flex:1;min-width:170px;padding:20px;border:1px solid var(--line);position:relative;background:var(--panel);
+  }
+  .pipe-step + .pipe-step{border-left:none;}
+  .pipe-step .pn{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted-2);}
+  .pipe-step h4{font-size:15px;margin-top:8px;}
+  .pipe-step p{font-size:13px;color:var(--muted);margin-top:8px;}
+  .pipe-arrow{
+    position:absolute;right:-9px;top:50%;transform:translateY(-50%);
+    width:16px;height:16px;background:var(--bg);border:1px solid var(--line);
+    display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--muted);z-index:2;
+  }
+
+  /* architecture diagram */
+  .arch-svg-wrap{margin-top:10px;overflow-x:auto;}
+  .arch-svg-wrap svg{width:100%;min-width:640px;}
+
+  /* contributions grid */
+  .filter-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px;}
+  .filter-btn{
+    font-family:'IBM Plex Mono';font-size:12px;padding:7px 13px;border:1px solid var(--line);border-radius:2px;
+    color:var(--muted);cursor:pointer;background:none;transition:all .15s;
+  }
+  .filter-btn:hover{color:var(--ink);border-color:var(--muted-2);}
+  .filter-btn.active{color:var(--bg);background:var(--ink);border-color:var(--ink);}
+
+  .contrib-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media (max-width:900px){.contrib-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:600px){.contrib-grid{grid-template-columns:1fr;}}
+  .card{
+    background:var(--panel-2);padding:22px;display:flex;flex-direction:column;gap:10px;min-height:170px;
+    transition:background .15s;
+  }
+  .card:hover{background:var(--panel);}
+  .card .cn{font-family:'IBM Plex Mono';font-size:22px;color:var(--muted-2);}
+  .card h4{font-size:15.5px;line-height:1.3;}
+  .card p{font-size:13px;color:var(--muted);flex:1;}
+  .card .cat{font-family:'IBM Plex Mono';font-size:10.5px;color:var(--risk);text-transform:uppercase;letter-spacing:0.05em;}
+  .card.hidden{display:none;}
+
+  /* results */
+  .results-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;}
+  @media (max-width:780px){.results-grid{grid-template-columns:1fr;}}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px;}
+  th,td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--line);}
+  th{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.05em;font-weight:500;}
+  td.num{font-family:'IBM Plex Mono';}
+  td.hi{color:var(--safe);font-family:'IBM Plex Mono';}
+  .result-title{font-size:15px;margin-bottom:2px;}
+  .result-sub{font-size:12px;color:var(--muted-2);font-family:'IBM Plex Mono';}
+
+  .note{
+    margin-top:40px;padding:18px 20px;border:1px solid var(--risk-dim);background:rgba(255,106,61,0.06);
+    border-radius:3px;font-size:13.5px;color:var(--muted);
+  }
+  .note b{color:var(--risk);}
+
+  /* figures placeholder */
+  .figs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+  @media (max-width:780px){.figs-grid{grid-template-columns:1fr 1fr;}}
+  @media (max-width:520px){.figs-grid{grid-template-columns:1fr;}}
+  .fig-box{
+    aspect-ratio:4/3;border:1px dashed var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;color:var(--muted-2);background:var(--panel-2);
+  }
+  .fig-box .ic{font-size:22px;}
+  .fig-box span{font-family:'IBM Plex Mono';font-size:11px;text-align:center;padding:0 14px;}
+
+  /* citation */
+  .cite-box{
+    background:#080B0F;border:1px solid var(--line);border-radius:4px;padding:24px;
+    font-family:'IBM Plex Mono';font-size:13px;color:#9FB3C2;overflow-x:auto;white-space:pre;line-height:1.7;
+  }
+  .copy-btn{
+    margin-top:14px;
+  }
+
+  /* future work */
+  .future-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  @media (max-width:700px){.future-grid{grid-template-columns:1fr;}}
+  .future-item{padding:18px;border:1px solid var(--line);font-size:14px;display:flex;gap:12px;}
+  .future-item .fi-num{font-family:'IBM Plex Mono';color:var(--muted-2);font-size:13px;flex-shrink:0;}
+
+  /* footer */
+  footer{padding:60px 0 40px;}
+  .footer-grid{display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;}
+  .footer-col h5{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted-2);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px;}
+  .footer-col a{display:block;color:var(--muted);font-size:14px;margin-bottom:8px;transition:color .15s;}
+  .footer-col a:hover{color:var(--ink);}
+  .footer-bottom{
+    margin-top:50px;padding-top:24px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;color:var(--muted-2);font-size:12.5px;font-family:'IBM Plex Mono';flex-wrap:wrap;gap:10px;
+  }
+
+  /* faq */
+  details{border-bottom:1px solid var(--line);padding:18px 0;}
+  details summary{cursor:pointer;font-size:15px;font-weight:500;list-style:none;display:flex;justify-content:space-between;align-items:center;}
+  details summary::-webkit-details-marker{display:none;}
+  details summary::after{content:'+';font-family:'IBM Plex Mono';color:var(--muted);font-size:18px;}
+  details[open] summary::after{content:'−';}
+  details p{margin-top:12px;color:var(--muted);font-size:14px;}
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="navbar">
+    <a href="#top" class="brand"><span class="dot"></span>DYNNAV</a>
+    <div class="navlinks">
+      <a href="#abstract">Abstract</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#research">Research</a>
+      <a href="#results">Results</a>
+      <a href="#figures">Figures</a>
+      <a href="#future">Future Work</a>
+      <a href="#citation">Citation</a>
+    </div>
+    <div class="navcta">
+      <a class="btn" href="https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments" target="_blank" rel="noopener">Repository</a>
+    </div>
+  </div>
+</nav>
+
+<div id="top"></div>
+
+<!-- ================= HERO ================= -->
+<header class="hero">
+  <canvas class="hero-grid" id="riskCanvas"></canvas>
+  <div class="wrap hero-inner">
+    <div class="eyebrow">Research Project · Democritus University of Thrace · ECE</div>
+    <h1 class="title">Navigation that knows<br>what it doesn't <em>know.</em></h1>
+    <p class="subtitle">DynNav is a 26-contribution research framework for uncertainty-aware, risk-sensitive autonomous navigation in unknown environments — built on ROS&nbsp;2 Humble, validated on TurtleBot3, spanning belief-space planning, formal safety shields, and Byzantine-fault-tolerant swarm consensus.</p>
+    <div class="hero-ctas">
+      <a class="btn btn-solid" href="#research">Browse 26 contributions →</a>
+      <a class="btn" href="#paper">Read the paper</a>
+      <a class="btn" href="https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">26</div><div class="lbl">Research modules</div></div>
+      <div class="stat"><div class="num">79.4K</div><div class="lbl">Lines of Python</div></div>
+      <div class="stat"><div class="num">ROS 2</div><div class="lbl">Humble / TurtleBot3</div></div>
+      <div class="stat"><div class="num">72/72</div><div class="lbl">Unit tests passing</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= ABSTRACT ================= -->
+<section id="abstract">
+  <div class="wrap">
+    <div class="grid-2">
+      <div class="reveal">
+        <div class="sec-head"><span class="sec-num mono">01</span><h2 class="sec-title">Abstract & Motivation</h2></div>
+        <p style="color:var(--muted);font-size:15.5px;">Most navigation stacks assume the map, the sensors, and other agents behave well. Real deployments — disaster response, warehouse fleets, planetary rovers, assistive robots — break that assumption constantly. DynNav treats the <em style="color:var(--ink);font-style:normal;">failure modes</em> of autonomy as first-class research problems rather than edge cases, decomposing navigation under uncertainty into 26 independent, testable contributions: each pairs a focused research question with implementation, experiments, and reproducible results, integrated into a common ROS&nbsp;2 stack.</p>
+        <div class="keywords">
+          <span>uncertainty quantification</span><span>risk-sensitive planning</span><span>CVaR optimization</span>
+          <span>formal safety (STL/CBF)</span><span>belief-space planning</span><span>multi-robot consensus</span>
+          <span>reinforcement learning</span><span>ROS 2</span>
+        </div>
+      </div>
+      <div class="reveal">
+        <div class="label-tag" style="margin-bottom:18px;">Open research questions</div>
+        <ul class="quote-list">
+          <li><b>State uncertainty</b>What should a robot do when it is uncertain about its own state, not just the world's?</li>
+          <li><b>Formal guarantees</b>How do you give verifiable guarantees around components that are fundamentally statistical?</li>
+          <li><b>Adversarial robustness</b>What happens to multi-robot systems when an agent lies or fails, and how much can decentralization buy back?</li>
+          <li><b>Explainability</b>Can a robot explain its own failures in terms a human can act on, rather than a stack trace?</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ARCHITECTURE ================= -->
+<section id="architecture">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">02</span><h2 class="sec-title">System Architecture</h2></div>
+    <p class="sec-lede reveal">Four layers sit above a ROS&nbsp;2 / Gazebo / TurtleBot3 foundation. Foundation models and the learning layer feed structured planning; the safety layer filters every command before it reaches the robot.</p>
+    <div class="arch-svg-wrap reveal">
+      <svg viewBox="0 0 1000 430" xmlns="http://www.w3.org/2000/svg">
+        <style>
+          .lyr-label{font-family:'IBM Plex Mono',monospace;font-size:11px;fill:#7C8B9A;text-transform:uppercase;letter-spacing:0.5px;}
+          .lyr-box{fill:#121821;stroke:#1E2730;stroke-width:1;}
+          .mod{fill:none;stroke:#2A3540;stroke-width:1;}
+          .mod-text{font-family:'IBM Plex Mono',monospace;font-size:10.5px;fill:#E8EDF2;}
+          .lyr-title{font-family:'Space Grotesk',sans-serif;font-size:13px;fill:#E8EDF2;font-weight:600;}
+        </style>
+        <!-- Foundation/Learning/Safety/Coordination row -->
+        <g>
+          <rect x="10" y="10" class="lyr-box" width="230" height="110" rx="3"/>
+          <text x="24" y="32" class="lyr-title">Foundation Models</text>
+          <rect x="24" y="44" width="200" height="22" class="mod"/><text x="32" y="59" class="mod-text">11 · VLM Scene Agent</text>
+          <rect x="24" y="70" width="200" height="22" class="mod"/><text x="32" y="85" class="mod-text">19 · LLM Mission Planner</text>
+          <rect x="24" y="96" width="200" height="14" class="mod-text" style="fill:#4E5C6A">20 · Failure Explainer</rect>
+
+          <rect x="255" y="10" class="lyr-box" width="230" height="110" rx="3"/>
+          <text x="269" y="32" class="lyr-title">Learning Layer</text>
+          <rect x="269" y="44" width="200" height="22" class="mod"/><text x="277" y="59" class="mod-text">01 · Learned A* Heuristic</text>
+          <rect x="269" y="70" width="200" height="22" class="mod"/><text x="277" y="85" class="mod-text">21 · PPO Nav Agent</text>
+          <rect x="269" y="96" width="200" height="14" class="mod-text" style="fill:#4E5C6A">22 · Curriculum RL · 16 · Federated</text>
+
+          <rect x="500" y="10" class="lyr-box" width="230" height="110" rx="3"/>
+          <text x="514" y="32" class="lyr-title" style="fill:#FF6A3D">Safety Layer</text>
+          <rect x="514" y="44" width="200" height="22" class="mod" style="stroke:#7A3A24"/><text x="522" y="59" class="mod-text">18 · STL + CBF Shield</text>
+          <rect x="514" y="70" width="200" height="22" class="mod" style="stroke:#7A3A24"/><text x="522" y="85" class="mod-text">05 · Safe-Mode FSM</text>
+          <rect x="514" y="96" width="200" height="14" class="mod-text" style="fill:#4E5C6A">04 · Returnability</text>
+
+          <rect x="745" y="10" class="lyr-box" width="245" height="110" rx="3"/>
+          <text x="759" y="32" class="lyr-title">Coordination Layer</text>
+          <rect x="759" y="44" width="215" height="22" class="mod"/><text x="767" y="59" class="mod-text">26 · Swarm BFT Consensus</text>
+          <rect x="759" y="70" width="215" height="22" class="mod"/><text x="767" y="85" class="mod-text">16 · Federated Nav Learning</text>
+          <rect x="759" y="96" width="215" height="14" class="mod-text" style="fill:#4E5C6A">09 · Multi-Robot Coordination</text>
+        </g>
+
+        <!-- Planning Core -->
+        <rect x="10" y="145" class="lyr-box" width="980" height="60" rx="3"/>
+        <text x="24" y="167" class="lyr-title">Planning Core</text>
+        <text x="24" y="188" class="mod-text" style="fill:#7C8B9A">A* / D* · Belief-Space &amp; Risk Planning (03) · CVaR-weighted cost · Next-Best-View Exploration (07)</text>
+
+        <!-- Perception -->
+        <rect x="10" y="220" class="lyr-box" width="980" height="60" rx="3"/>
+        <text x="24" y="242" class="lyr-title">Perception Layer</text>
+        <text x="24" y="263" class="mod-text" style="fill:#7C8B9A">LiDAR SLAM · EKF/UKF (02) · Gaussian Splatting (23) · NeRF Uncertainty (24) · Neuromorphic DVS+SNN (15)</text>
+
+        <!-- Security -->
+        <rect x="10" y="295" class="lyr-box" width="980" height="60" rx="3"/>
+        <text x="24" y="317" class="lyr-title" style="fill:#FF6A3D">Security Layer</text>
+        <text x="24" y="338" class="mod-text" style="fill:#7C8B9A">Intrusion Detection (08) · Adversarial Attack Simulation (25) · Causal Risk Attribution (14)</text>
+
+        <!-- ROS2 -->
+        <rect x="10" y="370" class="lyr-box" width="980" height="50" rx="3" style="fill:#0E1319;stroke:#3DDC97;stroke-opacity:0.3"/>
+        <text x="24" y="400" class="lyr-title" style="fill:#3DDC97">ROS 2 Humble · TurtleBot3 · Gazebo · Nav2 · slam_toolbox</text>
+
+        <!-- connecting arrows -->
+        <line x1="500" y1="120" x2="500" y2="145" stroke="#2A3540"/>
+        <line x1="500" y1="205" x2="500" y2="220" stroke="#2A3540"/>
+        <line x1="500" y1="280" x2="500" y2="295" stroke="#2A3540"/>
+        <line x1="500" y1="355" x2="500" y2="370" stroke="#2A3540"/>
+      </svg>
+    </div>
+
+    <h3 style="margin-top:60px;font-size:18px;" class="reveal">Replanning pipeline</h3>
+    <div class="pipeline reveal" style="margin-top:18px;">
+      <div class="pipe-step"><div class="pn">01</div><h4>Sense</h4><p>LiDAR / odometry stream into EKF–UKF belief-state estimation.</p><div class="pipe-arrow">→</div></div>
+      <div class="pipe-step"><div class="pn">02</div><h4>Estimate risk</h4><p>Belief-space occupancy is converted into a CVaR-weighted risk map.</p><div class="pipe-arrow">→</div></div>
+      <div class="pipe-step"><div class="pn">03</div><h4>Plan</h4><p>Risk-weighted A* / D* searches over the belief-space cost field.</p><div class="pipe-arrow">→</div></div>
+      <div class="pipe-step"><div class="pn">04</div><h4>Shield</h4><p>STL monitors and CBF filters check the candidate command against safety constraints.</p><div class="pipe-arrow">→</div></div>
+      <div class="pipe-step"><div class="pn">05</div><h4>Execute / replan</h4><p>Safe-mode FSM triggers conservative behaviour or replanning if risk crosses threshold.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RESEARCH CONTRIBUTIONS ================= -->
+<section id="research">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">03</span><h2 class="sec-title">26 Research Contributions</h2></div>
+    <p class="sec-lede reveal">Each contribution is an independent module: a research question, an implementation, an experiment script, and a results folder. Filter by category, or browse all.</p>
+
+    <div class="filter-row reveal" id="filterRow">
+      <button class="filter-btn active" data-cat="all">All (26)</button>
+      <button class="filter-btn" data-cat="planning">Planning & Uncertainty</button>
+      <button class="filter-btn" data-cat="safety">Safety & Robustness</button>
+      <button class="filter-btn" data-cat="exploration">Resource & Exploration</button>
+      <button class="filter-btn" data-cat="multi">Multi-Robot & Human</button>
+      <button class="filter-btn" data-cat="foundation">Foundation Models</button>
+      <button class="filter-btn" data-cat="generative">Probabilistic & Generative</button>
+      <button class="filter-btn" data-cat="perception">Perception & 3D</button>
+      <button class="filter-btn" data-cat="learning">Distributed & RL</button>
+    </div>
+
+    <div class="contrib-grid" id="contribGrid"></div>
+  </div>
+</section>
+
+<!-- ================= RESULTS ================= -->
+<section id="results">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">04</span><h2 class="sec-title">Selected Results</h2></div>
+    <p class="sec-lede reveal">Figures reported below are drawn from each module's own experiment logs (<code class="mono">contributions/*/results/*.csv</code>). They reflect each module's standalone evaluation protocol, not a single unified benchmark.</p>
+
+    <div class="results-grid">
+      <div class="panel reveal">
+        <div class="result-title">Formal Safety Shields</div>
+        <div class="result-sub">Contribution 18 · STL monitor + CBF filter</div>
+        <table>
+          <tr><th>Metric</th><th>No shield</th><th>With shield</th></tr>
+          <tr><td>Constraint violations / episode</td><td class="num">4.2 avg</td><td class="num hi">0.3 avg</td></tr>
+          <tr><td>Path length overhead</td><td class="num">—</td><td class="num">&lt; 8%</td></tr>
+          <tr><td>Avg. command correction</td><td class="num">—</td><td class="num">0.026 m/s</td></tr>
+        </table>
+      </div>
+      <div class="panel reveal">
+        <div class="result-title">Byzantine Swarm Consensus</div>
+        <div class="result-sub">Contribution 26 · weighted-median BFT, 6 robots / 1 Byzantine</div>
+        <table>
+          <tr><th>Metric</th><th>Naive majority</th><th>BFT weighted median</th></tr>
+          <tr><td>Byzantine detection rate</td><td class="num">60%</td><td class="num hi">91%</td></tr>
+          <tr><td>Correct plan selected</td><td class="num">71%</td><td class="num hi">96%</td></tr>
+          <tr><td>Byzantine fault tolerance</td><td class="num">f &lt; N/2</td><td class="num hi">f &lt; N/3</td></tr>
+        </table>
+      </div>
+      <div class="panel reveal">
+        <div class="result-title">Federated Navigation Learning</div>
+        <div class="result-sub">Contribution 16 · FedAvg + DP across 6 robots</div>
+        <table>
+          <tr><th>Round</th><th>Centralised (MSE)</th><th>Federated (MSE)</th></tr>
+          <tr><td>1</td><td class="num">0.41</td><td class="num">0.37</td></tr>
+          <tr><td>10</td><td class="num">0.18</td><td class="num">0.21</td></tr>
+          <tr><td>20</td><td class="num">0.12</td><td class="num">0.14</td></tr>
+        </table>
+      </div>
+      <div class="panel reveal">
+        <div class="result-title">Curriculum Reinforcement Learning</div>
+        <div class="result-sub">Contribution 22 · adaptive 5-stage difficulty curriculum</div>
+        <table>
+          <tr><th>Training</th><th>Episodes to "hard" stage</th><th>Final success rate</th></tr>
+          <tr><td>Flat (no curriculum)</td><td class="num">N/A</td><td class="num">23%</td></tr>
+          <tr><td>Adaptive curriculum</td><td class="num">~200</td><td class="num hi">61%</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="note reveal"><b>Reproducibility note —</b> these tables are reported per-module results, not yet reproduced by a single top-level orchestration script. A unified benchmark harness producing all four tables from one command is on the project roadmap (see Future Work, §06).</div>
+  </div>
+</section>
+
+<!-- ================= FIGURES / VIDEO ================= -->
+<section id="figures">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">05</span><h2 class="sec-title">Figures & Demonstrations</h2></div>
+    <p class="sec-lede reveal">Placeholders for simulation captures and demo recordings — replace with exported assets from <code class="mono">data/plots/</code> and Gazebo screen recordings.</p>
+    <div class="figs-grid reveal">
+      <div class="fig-box"><div class="ic">▦</div><span>RISK MAP<br>occupancy + CVaR overlay</span></div>
+      <div class="fig-box"><div class="ic">⌁</div><span>PLANNER COMPARISON<br>A* vs learned-heuristic A*</span></div>
+      <div class="fig-box"><div class="ic">◈</div><span>ROS 2 NODE GRAPH<br>rqt_graph export</span></div>
+      <div class="fig-box"><div class="ic">▤</div><span>STL/CBF SHIELD<br>trajectory correction plot</span></div>
+      <div class="fig-box"><div class="ic">⬡</div><span>SWARM CONSENSUS<br>Byzantine detection over time</span></div>
+      <div class="fig-box"><div class="ic">▶</div><span>DEMO VIDEO<br>TurtleBot3 / Gazebo run</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FUTURE WORK ================= -->
+<section id="future">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">06</span><h2 class="sec-title">Future Work</h2></div>
+    <div class="future-grid reveal">
+      <div class="future-item"><span class="fi-num mono">·</span>Unified orchestration script reproducing all reported result tables from one command.</div>
+      <div class="future-item"><span class="fi-num mono">·</span>End-to-end integration of the sense → risk → plan → shield → execute loop as one running ROS 2 demo, not 26 separate evaluations.</div>
+      <div class="future-item"><span class="fi-num mono">·</span>Hardware validation of the safety-shield and safe-mode contributions on the physical TurtleBot3 Burger.</div>
+      <div class="future-item"><span class="fi-num mono">·</span>Ablation studies isolating the contribution of risk-weighting versus learned heuristics in planning quality.</div>
+      <div class="future-item"><span class="fi-num mono">·</span>Extending Byzantine-fault-tolerant consensus to heterogeneous robot teams with asymmetric sensing.</div>
+      <div class="future-item"><span class="fi-num mono">·</span>Formal verification coverage report for the STL/CBF safety layer across all contributions that route through it.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAPER / FAQ ================= -->
+<section id="paper">
+  <div class="wrap">
+    <div class="grid-2">
+      <div class="reveal">
+        <div class="sec-head"><span class="sec-num mono">07</span><h2 class="sec-title">Paper & FAQ</h2></div>
+        <p style="color:var(--muted);font-size:15px;margin-bottom:24px;">A full technical writeup is in <code class="mono">TECHNICAL_REPORT.md</code> in the repository. The questions below cover the project's scope honestly.</p>
+        <details open>
+          <summary>Is DynNav one integrated navigation system?</summary>
+          <p>Not yet. It is 26 independent research modules sharing a common ROS 2 target and simulation environment. Several modules are integrated into the core planning/safety loop; others are standalone studies. See Future Work for the integration roadmap.</p>
+        </details>
+        <details>
+          <summary>Are the result tables independently reproducible today?</summary>
+          <p>Each table is produced by that module's own evaluation script. A single command reproducing every table at once does not yet exist — this is the top item in Future Work.</p>
+        </details>
+        <details>
+          <summary>What hardware was this tested on?</summary>
+          <p>TurtleBot3 Burger (physical) and TurtleBot3 Waffle in Gazebo, on ROS 2 Humble / Ubuntu 22.04, with WSL2 supported for development.</p>
+        </details>
+        <details>
+          <summary>Can I build on this for my own thesis or project?</summary>
+          <p>Yes — the repository is Apache-2.0 licensed. See the Citation section below for how to credit the work.</p>
+        </details>
+      </div>
+      <div class="reveal">
+        <div class="label-tag" style="margin-bottom:18px;">Author</div>
+        <h3 style="font-size:22px;">Panagiota Grosdouli</h3>
+        <p style="color:var(--muted);font-size:14.5px;margin-top:6px;">Electrical & Computer Engineering<br>Democritus University of Thrace</p>
+        <p style="color:var(--muted);font-size:14.5px;margin-top:16px;">Research interests: uncertainty-aware planning, risk-sensitive control, formal safety for learning-enabled robotic systems, multi-robot coordination.</p>
+        <p style="margin-top:16px;font-size:14.5px;">Open to research collaboration and graduate study opportunities in robotics & autonomous systems.</p>
+        <div style="margin-top:22px;display:flex;gap:10px;">
+          <a class="btn" href="https://github.com/panagiotagrosdouli" target="_blank" rel="noopener">GitHub Profile</a>
+          <a class="btn" id="contactBtn" href="mailto:contact@example.com">Contact</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CITATION ================= -->
+<section id="citation">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-num mono">08</span><h2 class="sec-title">Citation</h2></div>
+    <p class="sec-lede reveal">If you use DynNav in your research, please cite the software release.</p>
+    <div class="cite-box reveal" id="citeBox">@software{dynnav2026,
+  author    = {Grosdouli, Panagiota},
+  title     = {{DynNav}: Dynamic Navigation Rerouting in Unknown Environments},
+  year      = {2026},
+  publisher = {GitHub},
+  url       = {https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments},
+  license   = {Apache-2.0},
+  note      = {26 research modules: uncertainty-aware, risk-sensitive, learning-augmented navigation}
+}</div>
+    <button class="btn copy-btn" id="copyCite">Copy BibTeX</button>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-col" style="max-width:280px;">
+        <div class="brand" style="margin-bottom:10px;"><span class="dot"></span>DYNNAV</div>
+        <p style="color:var(--muted);font-size:13.5px;">Uncertainty-aware, risk-sensitive autonomous navigation & replanning in unknown environments.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Project</h5>
+        <a href="#abstract">Abstract</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#research">Research modules</a>
+        <a href="#results">Results</a>
+      </div>
+      <div class="footer-col">
+        <h5>Resources</h5>
+        <a href="https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments" target="_blank" rel="noopener">GitHub Repository</a>
+        <a href="https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/blob/main/LICENSE" target="_blank" rel="noopener">License (Apache-2.0)</a>
+        <a href="#citation">Citation</a>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <a href="https://github.com/panagiotagrosdouli" target="_blank" rel="noopener">GitHub Profile</a>
+        <a href="https://ee.duth.gr" target="_blank" rel="noopener">Democritus University of Thrace</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Panagiota Grosdouli</span>
+      <span>Built with ROS 2 Humble · TurtleBot3 · Gazebo</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ---------------- contribution data ---------------- */
+const contributions = [
+  {n:1,t:"Learned A* Heuristics",cat:"planning",catLabel:"Planning & Uncertainty",d:"Neural heuristic reduces node expansions ~35% over classical A*."},
+  {n:2,t:"Uncertainty Estimation",cat:"planning",catLabel:"Planning & Uncertainty",d:"EKF/UKF belief-state estimation for noisy sensors."},
+  {n:3,t:"Belief-Space & Risk Planning",cat:"planning",catLabel:"Planning & Uncertainty",d:"CVaR-optimised risk-weighted A* over belief-space cost."},
+  {n:4,t:"Irreversibility & Returnability",cat:"safety",catLabel:"Safety & Robustness",d:"Returnability constraints prevent the planner from entering dead-ends."},
+  {n:5,t:"Safe-Mode Navigation",cat:"safety",catLabel:"Safety & Robustness",d:"Adaptive, risk-triggered conservative navigation mode."},
+  {n:6,t:"Energy & Connectivity",cat:"exploration",catLabel:"Resource & Exploration",d:"Battery- and WiFi-constrained path planning."},
+  {n:7,t:"Next-Best-View Exploration",cat:"exploration",catLabel:"Resource & Exploration",d:"Information-gain maximisation for active mapping."},
+  {n:8,t:"Security & Intrusion Detection",cat:"safety",catLabel:"Safety & Robustness",d:"χ² / CUSUM anomaly detection for sensor spoofing."},
+  {n:9,t:"Multi-Robot Coordination",cat:"multi",catLabel:"Multi-Robot & Human",d:"Decentralised conflict-free path allocation."},
+  {n:10,t:"Human-Aware & Ethics",cat:"multi",catLabel:"Multi-Robot & Human",d:"Trust-aware planning with declared ethical no-go zones."},
+  {n:11,t:"VLM Navigation Agent",cat:"foundation",catLabel:"Foundation Models",d:"Vision-language models translate scenes into semantic navigation goals."},
+  {n:12,t:"Diffusion Occupancy Maps",cat:"generative",catLabel:"Probabilistic & Generative",d:"DDPM-based occupancy prediction feeding CVaR-95 risk maps."},
+  {n:13,t:"Latent World Model",cat:"generative",catLabel:"Probabilistic & Generative",d:"Dreamer-v3-style RSSM for mental rollouts before acting."},
+  {n:14,t:"Causal Risk Attribution",cat:"safety",catLabel:"Safety & Robustness",d:"Structural causal model + counterfactual root-cause ranking."},
+  {n:15,t:"Neuromorphic Sensing",cat:"perception",catLabel:"Perception & 3D",d:"DVS event camera + spiking neural net at microsecond latency."},
+  {n:16,t:"Federated Navigation Learning",cat:"learning",catLabel:"Distributed & RL",d:"FedAvg with differential privacy across a robot fleet."},
+  {n:17,t:"Topological Semantic Maps",cat:"perception",catLabel:"Perception & 3D",d:"Zone graph with CLIP-based open-vocabulary grounding."},
+  {n:18,t:"Formal Safety Shields",cat:"safety",catLabel:"Safety & Robustness",d:"Signal Temporal Logic monitor + Control Barrier Function command filter."},
+  {n:19,t:"LLM Mission Planner",cat:"foundation",catLabel:"Foundation Models",d:"Natural-language instructions compiled into waypoint sequences."},
+  {n:20,t:"Multimodal Failure Explainer",cat:"foundation",catLabel:"Foundation Models",d:"VLM + causal model generate human-readable failure reports."},
+  {n:21,t:"PPO Navigation Agent",cat:"learning",catLabel:"Distributed & RL",d:"Risk-shaped PPO with actor-critic architecture."},
+  {n:22,t:"Curriculum Reinforcement Learning",cat:"learning",catLabel:"Distributed & RL",d:"Adaptive 5-stage difficulty curriculum for training."},
+  {n:23,t:"Gaussian Splatting Mapper",cat:"perception",catLabel:"Perception & 3D",d:"Incremental 3D Gaussian-splat mapping with frontier detection."},
+  {n:24,t:"NeRF Uncertainty Maps",cat:"perception",catLabel:"Perception & 3D",d:"MC-Dropout NeRF used to weight exploration targets."},
+  {n:25,t:"Adversarial Attack Simulator",cat:"safety",catLabel:"Safety & Robustness",d:"FGSM / PGD and LiDAR spoofing robustness evaluation."},
+  {n:26,t:"Swarm Consensus",cat:"multi",catLabel:"Multi-Robot & Human",d:"Byzantine-fault-tolerant plan consensus across the fleet."},
+];
+
+const grid = document.getElementById('contribGrid');
+contributions.sort((a,b)=>a.n-b.n).forEach(c=>{
+  const card = document.createElement('div');
+  card.className='card';
+  card.dataset.cat=c.cat;
+  card.innerHTML = `<div class="cn mono">${String(c.n).padStart(2,'0')}</div>
+    <div class="cat mono">${c.catLabel}</div>
+    <h4>${c.t}</h4>
+    <p>${c.d}</p>`;
+  grid.appendChild(card);
+});
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const cat = btn.dataset.cat;
+    document.querySelectorAll('.card').forEach(card=>{
+      card.classList.toggle('hidden', cat!=='all' && card.dataset.cat!==cat);
+    });
+  });
+});
+
+/* ---------------- copy citation ---------------- */
+document.getElementById('copyCite').addEventListener('click', ()=>{
+  navigator.clipboard.writeText(document.getElementById('citeBox').innerText).then(()=>{
+    const btn = document.getElementById('copyCite');
+    const orig = btn.textContent;
+    btn.textContent = 'Copied ✓';
+    setTimeout(()=>btn.textContent=orig, 1600);
+  });
+});
+
+/* ---------------- reveal on scroll ---------------- */
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:0.12});
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ---------------- hero risk-grid canvas ---------------- */
+(function(){
+  const canvas = document.getElementById('riskCanvas');
+  const ctx = canvas.getContext('2d');
+  let w,h,cols,rows,cell=26;
+  let grid=[];
+  let scan=0;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize(){
+    w = canvas.parentElement.offsetWidth;
+    h = canvas.parentElement.offsetHeight;
+    canvas.width=w; canvas.height=h;
+    cols = Math.ceil(w/cell)+1;
+    rows = Math.ceil(h/cell)+1;
+    grid = [];
+    for(let y=0;y<rows;y++){
+      const row=[];
+      for(let x=0;x<cols;x++){
+        // pseudo risk field: noise-ish via sine combos
+        const v = Math.abs(Math.sin(x*0.5)+Math.cos(y*0.4)+Math.sin((x+y)*0.18));
+        row.push(v/3);
+      }
+      grid.push(row);
+    }
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    for(let y=0;y<rows;y++){
+      for(let x=0;x<cols;x++){
+        const v = grid[y][x];
+        const px = x*cell, py = y*cell;
+        // base cell - subtle
+        const alpha = 0.03 + v*0.05;
+        ctx.fillStyle = `rgba(255,106,61,${alpha.toFixed(3)})`;
+        ctx.fillRect(px,py,cell-1,cell-1);
+        ctx.strokeStyle = 'rgba(30,39,48,0.6)';
+        ctx.strokeRect(px,py,cell,cell);
+      }
+    }
+    // scan line
+    if(!reduceMotion){
+      const sx = (scan % (w+200)) - 100;
+      const grad = ctx.createLinearGradient(sx-60,0,sx+60,0);
+      grad.addColorStop(0,'rgba(61,220,151,0)');
+      grad.addColorStop(0.5,'rgba(61,220,151,0.10)');
+      grad.addColorStop(1,'rgba(61,220,151,0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(sx-60,0,120,h);
+      scan += 1.4;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+</script>
+
+</body>
+</html>
