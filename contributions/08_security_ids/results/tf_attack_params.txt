@@ -1,5 +1,0 @@
-cusum_k: 0.40000173449516296
-cusum_h: 173014.9829901594
-fpr_target: 0.01
-attack_start_sec: 5.0
-detection_delay_sec: 0.0008657680000005996

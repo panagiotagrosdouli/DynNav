@@ -1,9 +1,0 @@
-{
-  "private_zones": [
-    { "x": 2.0, "y": 2.0, "radius": 1.5 },
-    { "x": -1.0, "y": 4.0, "radius": 2.0 }
-  ],
-  "vulnerable_zones": [
-    { "x": 5.0, "y": 5.0, "radius": 2.5 }
-  ]
-}

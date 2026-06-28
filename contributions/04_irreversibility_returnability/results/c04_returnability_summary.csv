@@ -1,2 +1,0 @@
-tau_sweep_n,tau_sweep_success_rate,min_feasible_tau,safe_mode_n,safe_mode_success_rate,safe_mode_relaxed_cases,safe_mode_normal_cases,safe_mode_mean_tau_gap,safe_mode_path_len,safe_mode_mean_I_on_path,safe_mode_max_I_on_path,returnability_mu_n,returnability_success_rate,returnability_meanR_mu0,returnability_meanR_max_mu
-15,0.26666666666666666,0.85,26,1.0,15,11,0.08000000000000007,45.0,0.48000000000000004,0.85,6,1.0,0.041628122109198404,0.15072463768233565

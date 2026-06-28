@@ -1,2 +1,0 @@
-tau_star,max_abs_derivative,derivative_at_tau_star,half_peak_width_tau,tau_min,tau_max,success_min,success_max,n_tau,tau_col,success_col
-0.8,10.000000000000025,10.000000000000025,0.15000000000000002,0.3,1.0,0.0,1.0,15,tau,success

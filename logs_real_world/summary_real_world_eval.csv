@@ -1,2 +1,0 @@
-baseline_mse,baseline_var,online_mse_before,online_mse_after,avg_self_trust,num_online_steps
-0.3702130615711212,0.0044017368927598,0.5267387628555298,0.5273910164833069,0.4740696661795179,120

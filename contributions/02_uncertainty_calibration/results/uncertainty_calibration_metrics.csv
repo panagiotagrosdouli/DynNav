@@ -1,2 +1,0 @@
-n_samples,mae,pearson_sigma_abs_error,spearman_sigma_abs_error,ece_sigma_abs_error,coverage_1sigma,coverage_2sigma,coverage_3sigma
-25235,0.8986378954924615,-0.05036611389901683,0.40404422264703427,3.001084626253976,0.86839706756489,0.8872993857737269,0.8953041410739053

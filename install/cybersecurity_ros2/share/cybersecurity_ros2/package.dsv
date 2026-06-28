@@ -1,6 +1,0 @@
-source;share/cybersecurity_ros2/hook/pythonpath.ps1
-source;share/cybersecurity_ros2/hook/pythonpath.dsv
-source;share/cybersecurity_ros2/hook/pythonpath.sh
-source;share/cybersecurity_ros2/hook/ament_prefix_path.ps1
-source;share/cybersecurity_ros2/hook/ament_prefix_path.dsv
-source;share/cybersecurity_ros2/hook/ament_prefix_path.sh

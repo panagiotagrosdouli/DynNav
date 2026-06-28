@@ -1,6 +1,0 @@
-Algorithm,Path_length,Time_to_goal,Number_of_expansions,Replans,Coverage_percent,Collision_rate,Entropy_reduction
-A*,12.4,1.2,520,1,92,0.01,0.62
-Dijkstra,14.1,1.8,860,0,95,0.00,0.65
-RRT*,15.8,2.6,310,3,88,0.06,0.54
-Informed RRT*,13.6,2.1,260,2,90,0.04,0.58
-DWA,16.2,0.9,180,4,85,0.08,0.50

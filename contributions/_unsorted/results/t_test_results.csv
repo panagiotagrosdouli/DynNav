@@ -1,5 +1,0 @@
-metric,mean_A,mean_B,t_stat,p_value,significant(p<0.05)
-path_length,14.2,12.2,19.999999999999964,4.073918328674983e-08,True
-time_to_goal,4.2,3.2,9.999999999999996,8.488181527628503e-06,True
-num_expansions,852.0,522.0,330.0,7.961440487413597e-18,True
-entropy_reduction,0.2,0.2,0.0,1.0,False
