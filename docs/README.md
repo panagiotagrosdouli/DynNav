@@ -20,35 +20,22 @@
 [![🚀 Live Demo](https://img.shields.io/badge/Live-Demo-red?style=for-the-badge&logo=streamlit)](https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/)
 <div align="center">
 
+
+<div align="center">
+
 # DynNav
 
-## Dynamic Navigation & Rerouting in Unknown Environments
-
-**Uncertainty-aware, risk-sensitive autonomous navigation in ROS 2 with learning-augmented planning and reproducible experiments.**
-
-<p>
+### Dynamic Navigation & Rerouting in Unknown Environments
 
 <a href="https://panagiotagrosdouli.github.io/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/">
-<img src="https://img.shields.io/badge/🌐_Project_Website-blue?style=for-the-badge">
+<img src="https://img.shields.io/badge/🌐_Project_Website-0066CC?style=for-the-badge">
 </a>
 
 <a href="https://dynnav-dynamic-navigation-rerouting-in-unknown-environments-fq.streamlit.app/">
-<img src="https://img.shields.io/badge/🚀_Interactive_Demo-red?style=for-the-badge&logo=streamlit">
+<img src="https://img.shields.io/badge/🚀_Interactive_Demo-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white">
 </a>
-
-<a href="https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments">
-<img src="https://img.shields.io/badge/GitHub-Repository-black?style=for-the-badge&logo=github">
-</a>
-
-</p>
-
-![License](https://img.shields.io/badge/License-Apache_2.0-green)
-![ROS2](https://img.shields.io/badge/ROS2-Humble-blue)
-![Python](https://img.shields.io/badge/Python-3.11-yellow)
-![Research](https://img.shields.io/badge/Research-Autonomous_Navigation-purple)
 
 </div>
-
 
 
 ---
