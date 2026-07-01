@@ -23,12 +23,25 @@ The project does not claim to solve this problem completely. Instead, it impleme
 
 ---
 
+## Current contribution upgrade log
+
+The repository is being upgraded contribution by contribution. Each contribution is reviewed for scientific clarity, code quality, reproducibility, limitations, and whether it can be understood by a reader who has no prior context about DynNav.
+
+| Contribution | Upgrade status | What was improved | Current evidence / result |
+|---|---|---|---|
+| C01 — Learned A* Heuristics | Upgraded | Added admissibility/consistency audit and scientific framing separating raw learned heuristics from admissible clipped heuristics. | Existing results show reduced node expansions in easier regimes while preserving path cost; new audit script measures heuristic overestimation and consistency violations. |
+| C02 — Uncertainty Estimation and Calibration | Upgraded | Expanded README, added calibration utilities, added benchmark comparing raw uncertainty, global scale calibration, and quantile-bin calibration. | Existing results show uncertainty is informative but not fully calibrated; new code makes calibration measurable and repairable before uncertainty is passed to planners. |
+
+Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
+
+---
+
 ## What is implemented
 
 The repository contains a ROS 2 / Python research framework with modules for:
 
 - learned heuristics for A* search,
-- uncertainty estimation with EKF/UKF-style state representations,
+- uncertainty estimation and calibration with EKF/UKF-style state representations,
 - belief-space and risk-aware planning,
 - information-gain exploration and next-best-view selection,
 - visual-odometry-based coverage replanning,
@@ -46,7 +59,8 @@ The project is intentionally modular: each module studies one research-oriented 
 
 | Module | Question | Example result |
 |---|---|---|
-| Learned A* heuristic | Can a learned heuristic reduce search effort without changing the optimal path? | Node expansions reduced in benchmark runs while preserving the same path cost. |
+| Learned A* heuristic | Can a learned heuristic reduce search effort without changing the optimal path? | Node expansions reduced in benchmark runs while preserving the same path cost; an added admissibility audit now checks whether learned estimates overestimate true cost-to-go. |
+| Uncertainty calibration | Can uncertainty estimates be trusted by a planner? | Existing results show uncertainty is rank-informative but miscalibrated; new calibration utilities evaluate and repair sigma values before planner use. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -71,7 +85,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_estimation/`, and the safety / replanning modules.
+3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
@@ -106,7 +120,7 @@ This repository is a research-oriented framework, not a production navigation sy
 - several advanced modules are prototypes designed to explore future research directions,
 - cross-module integration is partial and should be treated as experimental.
 
-The goal is not to present 26 completed PhD-level contributions, but to document an independent undergraduate research effort that progressively investigated how uncertainty, risk, safety, and learning interact in autonomous navigation.
+The goal is not to present every module as a finished PhD-level result, but to document and progressively mature an independent research effort investigating how uncertainty, risk, safety, and learning interact in autonomous navigation.
 
 ---
 
