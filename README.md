@@ -31,6 +31,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 |---|---|---|---|
 | C01 — Learned A* Heuristics | Upgraded | Added admissibility/consistency audit and scientific framing separating raw learned heuristics from admissible clipped heuristics. | Existing results show reduced node expansions in easier regimes while preserving path cost; new audit script measures heuristic overestimation and consistency violations. |
 | C02 — Uncertainty Estimation and Calibration | Upgraded | Expanded README, added calibration utilities, added benchmark comparing raw uncertainty, global scale calibration, and quantile-bin calibration. | Existing results show uncertainty is informative but not fully calibrated; new code makes calibration measurable and repairable before uncertainty is passed to planners. |
+| C03 — Belief-Space and Risk-Aware Planning | Upgraded | Rewrote README, added risk trade-off analyzer, CVaR/expected/max-risk metrics, path-length increase, and Pareto dominance benchmark. | Existing lambda sweep reports 42.75% risk reduction without path-length increase in the evaluated benchmark; new code audits whether risk reductions are meaningful trade-offs. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -61,6 +62,7 @@ The project is intentionally modular: each module studies one research-oriented 
 |---|---|---|
 | Learned A* heuristic | Can a learned heuristic reduce search effort without changing the optimal path? | Node expansions reduced in benchmark runs while preserving the same path cost; an added admissibility audit now checks whether learned estimates overestimate true cost-to-go. |
 | Uncertainty calibration | Can uncertainty estimates be trusted by a planner? | Existing results show uncertainty is rank-informative but miscalibrated; new calibration utilities evaluate and repair sigma values before planner use. |
+| Risk-aware planning | Can a planner reduce risk without blindly increasing path cost? | Existing lambda sweep reports 42.75% risk reduction; new Pareto/CVaR benchmark separates average risk, tail risk, max risk, and distance cost. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -85,7 +87,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, and the safety / replanning modules.
+3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, `contributions/03_belief_risk_planning/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
