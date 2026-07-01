@@ -1,0 +1,138 @@
+# DynNav
+
+**Dynamic Navigation and Rerouting in Unknown Environments**  
+*An undergraduate independent research project on uncertainty-aware autonomous navigation with ROS 2, TurtleBot3/Nav2, learning-augmented planning, and risk-aware decision making.*
+
+---
+
+## One-sentence summary
+
+DynNav studies how a mobile robot should plan, replan, and explore when the information it receives from perception, localization, mapping, or other agents is uncertain or unreliable.
+
+---
+
+## Why this project exists
+
+Most navigation pipelines assume that the robot's map, pose estimate, sensor readings, and planning inputs are reliable enough to act on. In real environments this assumption often fails: localization can drift, perception can be ambiguous, maps can be incomplete, and other agents may share imperfect information.
+
+DynNav was developed to explore a central research question:
+
+> **How should an autonomous robot change its behaviour when it cannot fully trust the information it is using to plan?**
+
+The project does not claim to solve this problem completely. Instead, it implements and evaluates a set of modular experimental components that investigate different failure modes of autonomous navigation under uncertainty.
+
+---
+
+## What is implemented
+
+The repository contains a ROS 2 / Python research framework with modules for:
+
+- learned heuristics for A* search,
+- uncertainty estimation with EKF/UKF-style state representations,
+- belief-space and risk-aware planning,
+- information-gain exploration and next-best-view selection,
+- visual-odometry-based coverage replanning,
+- formal safety shields using STL/CBF-style constraints,
+- safe-mode navigation under uncertainty,
+- multi-robot coordination and disagreement handling,
+- adversarial and sensor-anomaly detection prototypes,
+- interactive simulations and reproducible experiment scripts.
+
+The project is intentionally modular: each module studies one research-oriented question and can be inspected, tested, or extended independently.
+
+---
+
+## Selected results
+
+| Module | Question | Example result |
+|---|---|---|
+| Learned A* heuristic | Can a learned heuristic reduce search effort without changing the optimal path? | Node expansions reduced in benchmark runs while preserving the same path cost. |
+| VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
+| STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
+| Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
+
+Detailed numbers, scripts, and CSV logs are documented in the corresponding module folders and extended documentation.
+
+---
+
+## Repository guide for reviewers
+
+If you are reviewing this project quickly, start here:
+
+1. **Scientific overview:** [`docs/Abstract_and_Contributions.md`](docs/Abstract_and_Contributions.md)
+2. **Claim-to-evidence map:** [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md)
+3. **Full technical README:** [`READMEbig.md`](READMEbig.md)
+4. **Greek explanatory README:** [`README_GREEK.md`](README_GREEK.md)
+5. **Modules:** [`contributions/`](contributions/)
+6. **ROS 2 workspace:** [`ros2_ws/`](ros2_ws/)
+7. **Dashboard / interactive simulations:** [`vercel_app/`](vercel_app/) and [`app/`](app/)
+
+Suggested 10-minute reading path:
+
+1. Read this README.
+2. Open `docs/CLAIMS_EVIDENCE.md`.
+3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_estimation/`, and the safety / replanning modules.
+4. Run one experiment script or inspect the logged CSV results.
+
+---
+
+## Quick start
+
+```bash
+git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git
+cd DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments
+
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+
+# Run the contribution suite in quick mode
+python run_all_contributions.py --quick
+
+# Run tests
+pytest contributions/tests/ -v
+```
+
+For ROS 2 experiments, the project was developed around **ROS 2 Humble**, **TurtleBot3**, **Gazebo**, **Nav2**, and **slam_toolbox**.
+
+---
+
+## Scope and limitations
+
+This repository is a research-oriented framework, not a production navigation system. Some modules are more mature than others:
+
+- core planning and uncertainty modules contain executable experiments,
+- ROS 2 navigation components were developed and tested in TurtleBot3 / Gazebo settings,
+- several advanced modules are prototypes designed to explore future research directions,
+- cross-module integration is partial and should be treated as experimental.
+
+The goal is not to present 26 completed PhD-level contributions, but to document an independent undergraduate research effort that progressively investigated how uncertainty, risk, safety, and learning interact in autonomous navigation.
+
+---
+
+## Research relevance
+
+DynNav motivated my current research interest in **trustworthy robot perception** and **decision-making under unreliable information**. The main lesson from the project is that uncertainty should not remain a diagnostic value inside perception or localization modules. It should become actionable information for planning, replanning, and safe behaviour selection.
+
+This connects directly to broader research questions in:
+
+- robot perception,
+- active perception,
+- uncertainty-aware planning,
+- visual-inertial navigation,
+- safe autonomy,
+- collaborative robotic systems.
+
+---
+
+## Author
+
+**Panagiota Grosdouli**  
+Electrical and Computer Engineering, Democritus University of Thrace  
+Research interests: robot perception, uncertainty-aware autonomy, visual-inertial navigation, safe decision-making for robots.
+
+---
+
+## License
+
+Licensed under the Apache License 2.0. See [`LICENSE`](LICENSE) for details.
