@@ -1,87 +1,256 @@
 # Contribution 05 — Safe-Mode Navigation
 
-[![Module](https://img.shields.io/badge/Module-05-purple)](.) [![Type](https://img.shields.io/badge/Type-Adaptive%20Safety-blue)](.) [![Status](https://img.shields.io/badge/Status-Core-brightgreen)](.)
+[![Module](https://img.shields.io/badge/Module-05-purple)](.) [![Type](https://img.shields.io/badge/Type-Adaptive%20Safety-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
-## Overview
+## Plain-language summary
 
-**Adaptive safe-mode** mechanism that switches the robot to a conservative navigation strategy when risk exceeds a threshold — reducing speed, increasing safety margins, and triggering replanning. Automatically deactivates when risk drops back to normal.
+A robot should not always continue with the same behaviour when risk increases.
+
+Contribution 05 introduces a **safe-mode supervisor**. When risk becomes high, the robot switches from normal navigation to a more conservative behaviour: it slows down, increases safety margins, replans, and can eventually enter emergency stop if the risk becomes critical.
+
+The key idea is:
+
+> Safe mode is not a new planner. It is a runtime safety layer that changes planner behaviour when the robot no longer fully trusts the situation.
+
+---
 
 ## Research Question
 
-> **RQ3/RQ6**: How should navigation adapt when safety is threatened or resources are constrained?
+> **RQ5:** How should a robot adapt its navigation behaviour when risk, uncertainty, or trust degradation makes normal navigation unsafe?
 
-## How It Works
+This contribution studies:
 
-```
-Risk monitor → threshold exceeded → activate safe mode → conservative planner → risk normalises → deactivate
-```
+- risk-triggered mode switching,
+- conservative navigation behaviour,
+- emergency stop logic,
+- hysteresis,
+- activation and recovery persistence,
+- threshold sensitivity,
+- safety-efficiency trade-offs.
 
-Safe-mode behaviours:
-- Reduce maximum velocity
-- Increase obstacle inflation radius
-- Switch from greedy to conservative A*
-- Trigger immediate replanning
-- Alert human operator if risk persists
+---
 
-## Files
+## Motivation
 
-```
-05_safe_mode_navigation/
-├── experiments/
-└── results/
-```
+A robot may encounter situations where the planned path is still technically feasible, but the operational context becomes unsafe:
 
-## Quick Start
+- risk map values rise,
+- uncertainty becomes poorly calibrated,
+- returnability drops,
+- intrusion detection raises an alert,
+- obstacles appear too close,
+- the planner repeatedly replans without stabilizing.
 
-```bash
-python contributions/05_safe_mode_navigation/experiments/eval_safe_mode.py
-```
+In these cases, the system should not blindly continue with normal speed and normal safety margins.
+
+Safe mode provides a controlled fallback.
+
+---
 
 ## State Machine
 
+```text
+NORMAL
+  ↓ risk high for enough steps
+SAFE_MODE
+  ↓ risk critical
+EMERGENCY_STOP
 ```
-NORMAL → (risk > threshold) → SAFE_MODE → (risk < threshold, T steps) → NORMAL
-SAFE_MODE → (risk > critical) → EMERGENCY_STOP
+
+Recovery path:
+
+```text
+EMERGENCY_STOP → SAFE_MODE → NORMAL
 ```
 
-## Integration
+The upgraded controller uses hysteresis:
 
-- **Triggered by**: Contribution 03 (risk planner) and Contribution 08 (IDS alerts)
-- **Extended by**: Contribution 13 (world model pre-screening)
-- **Extended by**: Contribution 18 (CBF as always-on safety layer)
-## Results
+```text
+activate when risk >= risk_on_threshold
+recover when risk <= risk_off_threshold
+```
 
-### Experimental Setup
+The off-threshold is lower than the on-threshold to avoid rapid mode flickering.
 
-A threshold-ablation study compared:
+---
 
-* Normal navigation policy
-* Safe-mode navigation policy
+## Safe-Mode Behaviours
 
-The safe-mode controller activates conservative navigation behavior under elevated risk.
+When safe mode activates, the robot can:
 
-### Quantitative Results
+- reduce maximum velocity,
+- increase obstacle inflation radius,
+- trigger immediate replanning,
+- switch to conservative planning parameters,
+- alert a human operator if risk persists,
+- stop completely if risk becomes critical.
 
-| Metric         | Normal Policy | Safe Mode |
-| -------------- | ------------: | --------: |
-| Total Distance |           1.1 |       4.0 |
-| Total Risk     |           1.2 |       0.4 |
-| Maximum Risk   |           0.9 |       0.2 |
-| Total Cost     |           4.9 |      10.4 |
+---
 
-### Relative Changes
+## Files
 
-| Metric                 | Change |
-| ---------------------- | -----: |
-| Risk Reduction         |  66.7% |
-| Maximum Risk Reduction |  77.8% |
-| Distance Increase      | 263.6% |
-| Cost Increase          | 112.2% |
+```text
+05_safe_mode_navigation/
+├── README.md
+├── code/
+│   └── safe_mode_controller.py
+├── docs/
+│   └── SCIENTIFIC_UPGRADE.md
+├── experiments/
+│   └── eval_safe_mode_thresholds.py
+└── results/
+    └── c05_safe_mode_thresholds.csv       # generated by the new benchmark
+```
+
+---
+
+## Quick Start
+
+Run the threshold-sensitivity benchmark:
+
+```bash
+python contributions/05_safe_mode_navigation/experiments/eval_safe_mode_thresholds.py
+```
+
+This generates:
+
+```text
+contributions/05_safe_mode_navigation/results/c05_safe_mode_thresholds.csv
+```
+
+---
+
+## Original Result
+
+A threshold-ablation study compared normal navigation against safe-mode navigation.
+
+### Quantitative results
+
+| Metric | Normal Policy | Safe Mode |
+|---|---:|---:|
+| Total Distance | 1.1 | 4.0 |
+| Total Risk | 1.2 | 0.4 |
+| Maximum Risk | 0.9 | 0.2 |
+| Total Cost | 4.9 | 10.4 |
+
+### Relative changes
+
+| Metric | Change |
+|---|---:|
+| Risk Reduction | 66.7% |
+| Maximum Risk Reduction | 77.8% |
+| Distance Increase | 263.6% |
+| Cost Increase | 112.2% |
 
 ### Interpretation
 
-Safe mode substantially reduces both accumulated risk and peak risk exposure.
+Safe mode substantially reduced accumulated and peak risk, but it did so by increasing distance and total cost.
 
-The reduction is achieved through more conservative navigation behavior, resulting in longer traveled distance and higher total cost.
+This is the correct interpretation: safe mode is a configurable safety-efficiency trade-off, not a free improvement.
 
-Contribution 05 therefore provides a configurable safety-efficiency trade-off mechanism rather than a free improvement in all metrics.
+---
+
+## New Upgrade Added
+
+The safe-mode controller now includes:
+
+- activation persistence,
+- recovery persistence,
+- hysteresis,
+- cooldown after recovery,
+- emergency-stop handling,
+- transition logging,
+- summary metrics.
+
+This makes the controller more realistic and easier to evaluate.
+
+The new benchmark tests safe-mode behaviour under:
+
+- nominal noise,
+- temporary hazards,
+- critical spikes,
+- chattering risk near the threshold.
+
+---
+
+## Scientific Contribution
+
+The upgraded C05 contribution is not simply:
+
+> If risk is high, slow down.
+
+It is stronger:
+
+> Safe mode is implemented as an explicit finite-state supervisor that controls when the robot should switch to conservative navigation, stop, or recover back to normal behaviour.
+
+This makes the module suitable as a runtime bridge between risk estimation and actual robot behaviour.
+
+---
+
+## Why hysteresis matters
+
+Without hysteresis, the robot may repeatedly switch between normal and safe mode when risk fluctuates around one threshold.
+
+This is unsafe and inefficient.
+
+C05 therefore separates:
+
+```text
+risk_on_threshold
+risk_off_threshold
+```
+
+and requires risk to stay high or low for several steps before switching state.
+
+---
+
+## Integration
+
+- **Triggered by:** C03 risk-aware planning
+- **Triggered by:** C04 low recoverability / high irreversibility
+- **Triggered by:** C08 IDS alerts
+- **Uses:** calibrated uncertainty from C02
+- **Can modify:** planner speed, obstacle inflation, replanning frequency
+- **Constrained by:** C18 formal safety shields
+
+Recommended runtime interface:
+
+```text
+safe_mode_input = {
+    calibrated_uncertainty,
+    path_risk,
+    recoverability_score,
+    ids_alert,
+    mission_context
+}
+```
+
+---
+
+## Limitations
+
+- The new benchmark uses synthetic risk traces for auditability.
+- Real robot deployment requires connection to Nav2 parameters and hardware safety systems.
+- Thresholds are currently hand-selected.
+- Emergency stop is simulated as a controller state, not a certified hardware stop.
+- Safe mode reduces risk exposure but does not mathematically prove safety.
+
+---
+
+## Next Research Step
+
+The strongest next extension is adaptive safe-mode thresholding:
+
+```text
+threshold = f(calibrated_uncertainty, recoverability, IDS alerts, mission context)
+```
+
+This would let the robot become more conservative when uncertainty rises, recoverability drops, or cyber-physical trust decreases.
+
+---
+
+## Conclusion
+
+Contribution 05 provides the runtime safety-supervision layer of DynNav.
+
+The upgraded version makes safe mode explicit, measurable, and reproducible through a finite-state controller and threshold-sensitivity benchmark.
