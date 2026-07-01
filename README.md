@@ -34,6 +34,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C03 — Belief-Space and Risk-Aware Planning | Upgraded | Rewrote README, added risk trade-off analyzer, CVaR/expected/max-risk metrics, path-length increase, and Pareto dominance benchmark. | Existing lambda sweep reports 42.75% risk reduction without path-length increase in the evaluated benchmark; new code audits whether risk reductions are meaningful trade-offs. |
 | C04 — Irreversibility, Returnability, and Recoverability | Upgraded | Rewrote README, added recoverability metrics, path-level irreversibility summaries, bottleneck/escape-option analysis, and a recoverability benchmark. | Existing results show safe mode recovered feasibility from hard-threshold failures; new code measures how much recovery freedom remains along candidate routes. |
 | C05 — Safe-Mode Navigation | Upgraded | Upgraded safe-mode controller with hysteresis, activation/recovery persistence, cooldown, emergency-stop handling, transition logging, and threshold benchmark. | Existing results show 66.7% total-risk reduction and 77.8% max-risk reduction with extra distance/cost; new benchmark audits safe-mode switching under noisy, hazardous, critical, and chattering risk traces. |
+| C06 — Energy and Connectivity-Aware Planning | Upgraded | Added resource-feasibility utilities, mission verdicts, recharge/relay classification, feasibility margins, benchmark, and expanded README. | Existing demo compares energy-limited and connectivity-aware routing; new benchmark decides whether a mission is direct-feasible, needs recharge, needs relay, needs both, or is infeasible. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -48,6 +49,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - belief-space and risk-aware planning,
 - irreversibility, returnability, and recoverability-aware planning,
 - safe-mode navigation under uncertainty,
+- energy and connectivity-aware resource planning,
 - information-gain exploration and next-best-view selection,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
@@ -68,6 +70,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Risk-aware planning | Can a planner reduce risk without blindly increasing path cost? | Existing lambda sweep reports 42.75% risk reduction; new Pareto/CVaR benchmark separates average risk, tail risk, max risk, and distance cost. |
 | Recoverability-aware planning | Can a robot avoid decisions that destroy future recovery freedom? | Existing hard-threshold planning succeeded in only 26.7% of cases while safe mode achieved 100%; new metrics quantify recoverability and irreversibility along paths. |
 | Safe-mode navigation | When should the robot switch from normal behaviour to conservative behaviour? | Existing safe-mode result reduces total and peak risk; new finite-state controller benchmark measures transitions, replans, emergency stops, and chattering resistance. |
+| Resource-aware planning | Can a robot complete the mission with enough battery and communication quality? | New resource-feasibility layer classifies routes as direct-feasible, recharge-needed, relay-needed, both, or infeasible. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -92,7 +95,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, `contributions/03_belief_risk_planning/`, `contributions/04_irreversibility_returnability/`, `contributions/05_safe_mode_navigation/`, and the safety / replanning modules.
+3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, `contributions/03_belief_risk_planning/`, `contributions/04_irreversibility_returnability/`, `contributions/05_safe_mode_navigation/`, `contributions/06_energy_connectivity/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
