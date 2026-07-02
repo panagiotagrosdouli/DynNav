@@ -41,6 +41,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C10 — Human-Aware and Ethics-Guided Navigation | Upgraded | Added human-ethics policy layer, planner actions, speed/autonomy adaptation, operator-confirmation logic, benchmark, scientific note, and expanded README. | New benchmark maps no-go zones, slow zones, human proximity, low trust, and ambiguous language into auditable planner actions such as block path, slow down, announce, or ask operator. |
 | C11 — VLM Navigation Agent with Goal Validation | Upgraded | Added VLM goal validator, accept/reject/ask-human decisions, hallucination checks, pixel/waypoint validation, benchmark, scientific note, and expanded README. | New benchmark validates VLM goals against confidence, allowed regions, forbidden semantics, image bounds, and waypoint plausibility before planner execution. |
 | C12 — Diffusion Occupancy Maps and Probabilistic Risk Evaluation | Upgraded | Added risk-map evaluator, Brier/NLL scoring, high-risk precision/recall, CVaR conservatism gap, benchmark, scientific note, and expanded README. | New benchmark compares deterministic and probabilistic risk maps against future occupancy outcomes using proper scoring rules and high-risk detection metrics. |
+| C13 — Latent World Model and Imagined Rollout Audit | Upgraded | Added rollout auditor, imagined-return/effort/recoverability metrics, irreversibility flags, benchmark, scientific note, and expanded README. | New benchmark audits imagined action sequences using return, action effort, terminal latent norm, recoverability proxy, and irreversibility-aware final score. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -62,6 +63,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - human-aware and ethics-guided navigation,
 - VLM-based semantic navigation with goal validation,
 - diffusion-style future occupancy and probabilistic risk evaluation,
+- latent world-model planning with imagined rollout audit,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
 - adversarial and sensor-anomaly detection prototypes,
@@ -87,6 +89,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Human-aware ethics | Can ethical context become an explicit planner decision? | New policy layer converts human proximity, no-go zones, low trust, and ambiguous commands into path blocking, slowdown, announcement, or operator confirmation. |
 | VLM semantic navigation | Can foundation-model goals be used without blindly trusting hallucinated outputs? | New goal validator accepts, rejects, or requests human confirmation for VLM semantic goals before planner execution. |
 | Diffusion occupancy | Are probabilistic future-occupancy maps useful as risk estimates? | New evaluator scores predicted risk maps with Brier score, NLL, high-risk precision/recall, and CVaR conservatism gap. |
+| Latent world model | Can imagined futures be audited before execution? | New rollout audit scores candidate futures by imagined return, effort, latent familiarity, recoverability, and irreversibility. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -111,7 +114,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/12_diffusion_occupancy/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/13_latent_world_model/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
