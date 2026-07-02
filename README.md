@@ -37,6 +37,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C06 — Energy and Connectivity-Aware Planning | Upgraded | Added resource-feasibility utilities, mission verdicts, recharge/relay classification, feasibility margins, benchmark, and expanded README. | Existing demo compares energy-limited and connectivity-aware routing; new benchmark decides whether a mission is direct-feasible, needs recharge, needs relay, needs both, or is infeasible. |
 | C07 — Returnability-Aware Next-Best-View Exploration | Upgraded | Added NBV scoring utilities, safe NBV objective, risk/returnability/connectivity terms, benchmark, scientific note, and expanded README. | New benchmark compares classic IG/cost NBV against safe NBV that avoids high-risk or low-returnability viewpoints even when information gain is high. |
 | C08 — Security, Intrusion Detection, and Trust-Aware Response | Upgraded | Added IDS response policy, trust score, alert severity, planner mitigation actions, benchmark, scientific note, and expanded README. | Existing innovation monitor detects anomaly evidence; new response layer converts IDS outputs into WATCH/WARNING/CRITICAL states and navigation mitigations such as safe mode or emergency stop. |
+| C09 — Multi-Robot Coordination under Uncertainty | Upgraded | Added team coordination metrics, conflict detection, risk-budget checks, belief-disagreement checks, benchmark, scientific note, and expanded README. | New benchmark evaluates team plans for vertex conflicts, edge-swap conflicts, risk-budget violations, belief disagreement, and overall team feasibility. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -54,9 +55,9 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - energy and connectivity-aware resource planning,
 - returnability-aware next-best-view exploration,
 - cyber-physical intrusion detection and trust-aware response,
+- multi-robot coordination and disagreement handling,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
-- multi-robot coordination and disagreement handling,
 - adversarial and sensor-anomaly detection prototypes,
 - interactive simulations and reproducible experiment scripts.
 
@@ -76,6 +77,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Resource-aware planning | Can a robot complete the mission with enough battery and communication quality? | New resource-feasibility layer classifies routes as direct-feasible, recharge-needed, relay-needed, both, or infeasible. |
 | Next-best-view exploration | Can a robot choose informative viewpoints without sacrificing recoverability? | New returnability-aware NBV score compares classic IG/cost selection against safer viewpoint selection using risk, connectivity, and returnability. |
 | Security IDS | Can anomaly detection become a navigation response rather than only a diagnostic flag? | New IDS response policy maps innovation anomalies to trust score, alert severity, and planner mitigation. |
+| Multi-robot coordination | Can a team plan remain conflict-free, risk-feasible, and belief-consistent? | New coordination metrics detect path conflicts, budget violations, and belief disagreement across robot plans. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -100,7 +102,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect `contributions/01_learned_astar/`, `contributions/02_uncertainty_calibration/`, `contributions/03_belief_risk_planning/`, `contributions/04_irreversibility_returnability/`, `contributions/05_safe_mode_navigation/`, `contributions/06_energy_connectivity/`, `contributions/07_next_best_view/`, `contributions/08_security_ids/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/09_multi_robot/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
