@@ -51,6 +51,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C20 — Multimodal Failure Explainer and Report Quality Evaluation | Upgraded | Added failure-report evaluator, completeness/root-cause/action/STL/operator-readiness metrics, benchmark, scientific note, and expanded README. | New benchmark scores generated failure reports for completeness, root-cause coverage, corrective-action relevance, STL evidence, and operator readiness. |
 | C21 — PPO Navigation Agent and Policy Safety Evaluation | Upgraded | Added PPO policy evaluator, PPO/shielded-PPO/greedy baseline comparison, success/collision/min-distance metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates learned and baseline navigation policies with safety-oriented outcomes and quantifies the effect of runtime shielding. |
 | C22 — Curriculum RL Training and Strategy Evaluation | Upgraded | Added curriculum evaluator, adaptive/fixed/reverse strategy comparison, progression/stability/transfer metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates curriculum strategies using final stage reached, stage transitions, success trend, stability, held-out transfer, and sample-efficiency score. |
+| C23 — Gaussian Splatting Mapper and Navigation-Map Evaluation | Upgraded | Added Gaussian mapping evaluator, occupancy IoU/precision/recall, uncertainty-gap metric, frontier-quality proxy, Gaussian-efficiency metric, benchmark, scientific note, and expanded README. | New benchmark evaluates projected Gaussian maps as navigation maps using occupancy quality, uncertainty separation, frontier usefulness, and representation efficiency. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -82,6 +83,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - multimodal failure explanation with report-quality evaluation,
 - PPO-style reinforcement-learning navigation with safety evaluation,
 - curriculum RL training and strategy evaluation,
+- Gaussian-splatting-style mapping with navigation-map evaluation,
 - visual-odometry-based coverage replanning,
 - adversarial and sensor-anomaly detection prototypes,
 - interactive simulations and reproducible experiment scripts.
@@ -116,6 +118,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Failure explanation | Can generated failure reports be evaluated for usefulness? | New report-quality benchmark scores completeness, root-cause recall, corrective-action relevance, STL coverage, and operator readiness. |
 | PPO navigation | Can learned policies be evaluated through safety outcomes rather than only reward? | New policy benchmark compares PPO, shielded PPO, and greedy baseline using success, collision, reward, distance, and intervention metrics. |
 | Curriculum RL | Does curriculum scheduling improve progression and transfer? | New strategy benchmark compares adaptive, fixed, and reverse curricula using stage progression, stability, held-out transfer, and sample-efficiency metrics. |
+| Gaussian mapping | Can a 3D Gaussian map produce useful 2D navigation layers? | New mapping benchmark measures occupancy IoU, precision, recall, uncertainty unknown gap, frontier quality, and Gaussian efficiency. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
 
@@ -139,7 +142,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/22_curriculum_rl/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/23_gaussian_splatting_mapper/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
