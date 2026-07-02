@@ -48,6 +48,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C17 — Topological Semantic Maps | Upgraded | Added semantic grounding evaluator, sparse graph planning benchmark, blocked-transition replanning test, scientific note, and expanded README. | New benchmark measures semantic grounding top-1/top-k accuracy and route success/cost before and after a semantic transition is blocked. |
 | C18 — Formal Safety Shields | Upgraded | Added shield stress-test evaluator, shielded/unshielded comparison, STL robustness metrics, correction-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates violation count, minimum obstacle distance, intervention rate, correction cost, and goal-efficiency impact under obstacle stress tests. |
 | C19 — LLM Mission Planner and Mission-Plan Validation | Upgraded | Added mission-plan evaluator, ordering/exact-match metrics, unresolved/duplicate waypoint checks, forbidden-zone violations, execution-readiness benchmark, scientific note, and expanded README. | New benchmark evaluates whether language-generated missions are ordered, grounded, constraint-aware, and ready for execution. |
+| C20 — Multimodal Failure Explainer and Report Quality Evaluation | Upgraded | Added failure-report evaluator, completeness/root-cause/action/STL/operator-readiness metrics, benchmark, scientific note, and expanded README. | New benchmark scores generated failure reports for completeness, root-cause coverage, corrective-action relevance, STL evidence, and operator readiness. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -76,6 +77,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - topological semantic mapping and grounding,
 - formal safety shields using STL/CBF-style constraints,
 - LLM mission planning with execution-readiness validation,
+- multimodal failure explanation with report-quality evaluation,
 - visual-odometry-based coverage replanning,
 - adversarial and sensor-anomaly detection prototypes,
 - interactive simulations and reproducible experiment scripts.
@@ -107,6 +109,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Topological semantic maps | Can semantic place graphs support language grounding and route repair? | New benchmark evaluates semantic grounding accuracy and graph replanning after blocked semantic transitions. |
 | Formal safety shields | Can runtime formal filters reduce unsafe commands without excessive efficiency loss? | New shield stress test compares shielded and unshielded execution using violations, STL robustness, correction cost, and goal-distance metrics. |
 | LLM mission planning | Can language-generated missions become executable robot plans? | New mission-quality benchmark measures ordering accuracy, exact match, unresolved waypoints, duplicate steps, forbidden-zone violations, and execution readiness. |
+| Failure explanation | Can generated failure reports be evaluated for usefulness? | New report-quality benchmark scores completeness, root-cause recall, corrective-action relevance, STL coverage, and operator readiness. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
 
@@ -130,7 +133,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/19_llm_mission_planner/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/20_multimodal_failure_explainer/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
