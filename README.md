@@ -53,6 +53,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C22 — Curriculum RL Training and Strategy Evaluation | Upgraded | Added curriculum evaluator, adaptive/fixed/reverse strategy comparison, progression/stability/transfer metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates curriculum strategies using final stage reached, stage transitions, success trend, stability, held-out transfer, and sample-efficiency score. |
 | C23 — Gaussian Splatting Mapper and Navigation-Map Evaluation | Upgraded | Added Gaussian mapping evaluator, occupancy IoU/precision/recall, uncertainty-gap metric, frontier-quality proxy, Gaussian-efficiency metric, benchmark, scientific note, and expanded README. | New benchmark evaluates projected Gaussian maps as navigation maps using occupancy quality, uncertainty separation, frontier usefulness, and representation efficiency. |
 | C24 — NeRF Uncertainty Maps and Navigation Evaluation | Upgraded | Added NeRF uncertainty evaluator, calibration/OOD/novel-view/exploration/planning-safety metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates NeRF-derived uncertainty using Brier score, NLL, ECE, OOD AUROC, novel-view uncertainty gap, exploration precision@k, and planning-safety gain. |
+| C25 — Adversarial Attack Simulator and Impact Evaluation | Upgraded | Added attack-impact evaluator, gradient/LiDAR/odometry attack benchmark, detection precision/recall/F1, severity scoring, mitigation recommendations, scientific note, and expanded README. | New benchmark evaluates adversarial attacks by measuring detection quality, navigation-relevant degradation, odometry error, severity, and recommended mitigation. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -86,8 +87,9 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - curriculum RL training and strategy evaluation,
 - Gaussian-splatting-style mapping with navigation-map evaluation,
 - NeRF uncertainty mapping with navigation-signal evaluation,
+- adversarial attack simulation with impact evaluation,
 - visual-odometry-based coverage replanning,
-- adversarial and sensor-anomaly detection prototypes,
+- sensor-anomaly detection prototypes,
 - interactive simulations and reproducible experiment scripts.
 
 The project is intentionally modular: each module studies one research-oriented question and can be inspected, tested, or extended independently.
@@ -122,6 +124,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Curriculum RL | Does curriculum scheduling improve progression and transfer? | New strategy benchmark compares adaptive, fixed, and reverse curricula using stage progression, stability, held-out transfer, and sample-efficiency metrics. |
 | Gaussian mapping | Can a 3D Gaussian map produce useful 2D navigation layers? | New mapping benchmark measures occupancy IoU, precision, recall, uncertainty unknown gap, frontier quality, and Gaussian efficiency. |
 | NeRF uncertainty | Can radiance-field uncertainty become a reliable navigation signal? | New benchmark measures calibration, OOD detection, novel-view uncertainty, exploration precision, and planning-safety gain. |
+| Adversarial robustness | Can sensor attacks be detected and mitigated before unsafe behaviour? | New attack-impact benchmark measures detection precision/recall/F1, severity, LiDAR geometry change, odometry error, and mitigation choice. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
 
@@ -145,7 +148,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/24_nerf_uncertainty/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/25_adversarial_attack_simulator/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
