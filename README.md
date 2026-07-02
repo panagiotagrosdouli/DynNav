@@ -40,6 +40,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C09 — Multi-Robot Coordination under Uncertainty | Upgraded | Added team coordination metrics, conflict detection, risk-budget checks, belief-disagreement checks, benchmark, scientific note, and expanded README. | New benchmark evaluates team plans for vertex conflicts, edge-swap conflicts, risk-budget violations, belief disagreement, and overall team feasibility. |
 | C10 — Human-Aware and Ethics-Guided Navigation | Upgraded | Added human-ethics policy layer, planner actions, speed/autonomy adaptation, operator-confirmation logic, benchmark, scientific note, and expanded README. | New benchmark maps no-go zones, slow zones, human proximity, low trust, and ambiguous language into auditable planner actions such as block path, slow down, announce, or ask operator. |
 | C11 — VLM Navigation Agent with Goal Validation | Upgraded | Added VLM goal validator, accept/reject/ask-human decisions, hallucination checks, pixel/waypoint validation, benchmark, scientific note, and expanded README. | New benchmark validates VLM goals against confidence, allowed regions, forbidden semantics, image bounds, and waypoint plausibility before planner execution. |
+| C12 — Diffusion Occupancy Maps and Probabilistic Risk Evaluation | Upgraded | Added risk-map evaluator, Brier/NLL scoring, high-risk precision/recall, CVaR conservatism gap, benchmark, scientific note, and expanded README. | New benchmark compares deterministic and probabilistic risk maps against future occupancy outcomes using proper scoring rules and high-risk detection metrics. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -60,6 +61,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - multi-robot coordination and disagreement handling,
 - human-aware and ethics-guided navigation,
 - VLM-based semantic navigation with goal validation,
+- diffusion-style future occupancy and probabilistic risk evaluation,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
 - adversarial and sensor-anomaly detection prototypes,
@@ -84,6 +86,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Multi-robot coordination | Can a team plan remain conflict-free, risk-feasible, and belief-consistent? | New coordination metrics detect path conflicts, budget violations, and belief disagreement across robot plans. |
 | Human-aware ethics | Can ethical context become an explicit planner decision? | New policy layer converts human proximity, no-go zones, low trust, and ambiguous commands into path blocking, slowdown, announcement, or operator confirmation. |
 | VLM semantic navigation | Can foundation-model goals be used without blindly trusting hallucinated outputs? | New goal validator accepts, rejects, or requests human confirmation for VLM semantic goals before planner execution. |
+| Diffusion occupancy | Are probabilistic future-occupancy maps useful as risk estimates? | New evaluator scores predicted risk maps with Brier score, NLL, high-risk precision/recall, and CVaR conservatism gap. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -108,7 +111,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/11_vlm_navigation_agent/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/12_diffusion_occupancy/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
