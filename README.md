@@ -39,6 +39,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C08 — Security, Intrusion Detection, and Trust-Aware Response | Upgraded | Added IDS response policy, trust score, alert severity, planner mitigation actions, benchmark, scientific note, and expanded README. | Existing innovation monitor detects anomaly evidence; new response layer converts IDS outputs into WATCH/WARNING/CRITICAL states and navigation mitigations such as safe mode or emergency stop. |
 | C09 — Multi-Robot Coordination under Uncertainty | Upgraded | Added team coordination metrics, conflict detection, risk-budget checks, belief-disagreement checks, benchmark, scientific note, and expanded README. | New benchmark evaluates team plans for vertex conflicts, edge-swap conflicts, risk-budget violations, belief disagreement, and overall team feasibility. |
 | C10 — Human-Aware and Ethics-Guided Navigation | Upgraded | Added human-ethics policy layer, planner actions, speed/autonomy adaptation, operator-confirmation logic, benchmark, scientific note, and expanded README. | New benchmark maps no-go zones, slow zones, human proximity, low trust, and ambiguous language into auditable planner actions such as block path, slow down, announce, or ask operator. |
+| C11 — VLM Navigation Agent with Goal Validation | Upgraded | Added VLM goal validator, accept/reject/ask-human decisions, hallucination checks, pixel/waypoint validation, benchmark, scientific note, and expanded README. | New benchmark validates VLM goals against confidence, allowed regions, forbidden semantics, image bounds, and waypoint plausibility before planner execution. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -58,6 +59,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - cyber-physical intrusion detection and trust-aware response,
 - multi-robot coordination and disagreement handling,
 - human-aware and ethics-guided navigation,
+- VLM-based semantic navigation with goal validation,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
 - adversarial and sensor-anomaly detection prototypes,
@@ -81,6 +83,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Security IDS | Can anomaly detection become a navigation response rather than only a diagnostic flag? | New IDS response policy maps innovation anomalies to trust score, alert severity, and planner mitigation. |
 | Multi-robot coordination | Can a team plan remain conflict-free, risk-feasible, and belief-consistent? | New coordination metrics detect path conflicts, budget violations, and belief disagreement across robot plans. |
 | Human-aware ethics | Can ethical context become an explicit planner decision? | New policy layer converts human proximity, no-go zones, low trust, and ambiguous commands into path blocking, slowdown, announcement, or operator confirmation. |
+| VLM semantic navigation | Can foundation-model goals be used without blindly trusting hallucinated outputs? | New goal validator accepts, rejects, or requests human confirmation for VLM semantic goals before planner execution. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -105,7 +108,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/10_human_language_ethics/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/11_vlm_navigation_agent/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
