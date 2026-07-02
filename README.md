@@ -47,6 +47,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C16 — Federated Navigation Learning | Upgraded | Added federated evaluator, weighted/uniform aggregation comparison, DP/no-DP settings, fairness gap, communication-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates fleet-level trade-offs across generalization error, client fairness, differential privacy, aggregation strategy, and communication cost. |
 | C17 — Topological Semantic Maps | Upgraded | Added semantic grounding evaluator, sparse graph planning benchmark, blocked-transition replanning test, scientific note, and expanded README. | New benchmark measures semantic grounding top-1/top-k accuracy and route success/cost before and after a semantic transition is blocked. |
 | C18 — Formal Safety Shields | Upgraded | Added shield stress-test evaluator, shielded/unshielded comparison, STL robustness metrics, correction-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates violation count, minimum obstacle distance, intervention rate, correction cost, and goal-efficiency impact under obstacle stress tests. |
+| C19 — LLM Mission Planner and Mission-Plan Validation | Upgraded | Added mission-plan evaluator, ordering/exact-match metrics, unresolved/duplicate waypoint checks, forbidden-zone violations, execution-readiness benchmark, scientific note, and expanded README. | New benchmark evaluates whether language-generated missions are ordered, grounded, constraint-aware, and ready for execution. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -74,6 +75,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - federated navigation learning across robot fleets,
 - topological semantic mapping and grounding,
 - formal safety shields using STL/CBF-style constraints,
+- LLM mission planning with execution-readiness validation,
 - visual-odometry-based coverage replanning,
 - adversarial and sensor-anomaly detection prototypes,
 - interactive simulations and reproducible experiment scripts.
@@ -104,6 +106,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Federated learning | Can robot fleets learn together without sharing private raw data? | New trade-off benchmark compares aggregation/privacy settings using client MSE, fairness gap, communication cost, and DP metadata. |
 | Topological semantic maps | Can semantic place graphs support language grounding and route repair? | New benchmark evaluates semantic grounding accuracy and graph replanning after blocked semantic transitions. |
 | Formal safety shields | Can runtime formal filters reduce unsafe commands without excessive efficiency loss? | New shield stress test compares shielded and unshielded execution using violations, STL robustness, correction cost, and goal-distance metrics. |
+| LLM mission planning | Can language-generated missions become executable robot plans? | New mission-quality benchmark measures ordering accuracy, exact match, unresolved waypoints, duplicate steps, forbidden-zone violations, and execution readiness. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
 
@@ -127,7 +130,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/18_formal_safety_shields/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/19_llm_mission_planner/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
