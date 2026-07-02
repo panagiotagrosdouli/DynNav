@@ -43,6 +43,7 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C12 — Diffusion Occupancy Maps and Probabilistic Risk Evaluation | Upgraded | Added risk-map evaluator, Brier/NLL scoring, high-risk precision/recall, CVaR conservatism gap, benchmark, scientific note, and expanded README. | New benchmark compares deterministic and probabilistic risk maps against future occupancy outcomes using proper scoring rules and high-risk detection metrics. |
 | C13 — Latent World Model and Imagined Rollout Audit | Upgraded | Added rollout auditor, imagined-return/effort/recoverability metrics, irreversibility flags, benchmark, scientific note, and expanded README. | New benchmark audits imagined action sequences using return, action effort, terminal latent norm, recoverability proxy, and irreversibility-aware final score. |
 | C14 — Causal Risk Attribution and Root-Cause Evaluation | Upgraded | Added attribution evaluator, known-cause synthetic failure cases, top-1 attribution accuracy, true-cause rank, counterfactual risk reduction, benchmark, scientific note, and expanded README. | New benchmark evaluates whether SCM root-cause rankings recover injected failure causes and whether counterfactual interventions reduce predicted collision risk. |
+| C15 — Neuromorphic Sensing for Low-Latency Obstacle Detection | Upgraded | Added neuromorphic latency benchmark, event-rate metrics, false-negative reporting, frame-baseline comparison, scientific note, and expanded README. | New benchmark compares event/SNN obstacle detection against a frame-based baseline on slow, medium, and fast moving-obstacle sequences. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -66,6 +67,7 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - diffusion-style future occupancy and probabilistic risk evaluation,
 - latent world-model planning with imagined rollout audit,
 - causal root-cause attribution for navigation failures,
+- neuromorphic low-latency obstacle sensing,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
 - adversarial and sensor-anomaly detection prototypes,
@@ -93,6 +95,7 @@ The project is intentionally modular: each module studies one research-oriented 
 | Diffusion occupancy | Are probabilistic future-occupancy maps useful as risk estimates? | New evaluator scores predicted risk maps with Brier score, NLL, high-risk precision/recall, and CVaR conservatism gap. |
 | Latent world model | Can imagined futures be audited before execution? | New rollout audit scores candidate futures by imagined return, effort, latent familiarity, recoverability, and irreversibility. |
 | Causal attribution | Can a failure diagnosis recover the true underlying cause? | New attribution benchmark measures top-1 accuracy, true-cause rank, and counterfactual risk reduction on injected-cause failure cases. |
+| Neuromorphic sensing | Can event-based sensing reduce obstacle reaction latency? | New latency benchmark compares event/SNN detection with a frame baseline across moving-obstacle speeds and reports event-rate and false-negative metrics. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -117,7 +120,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/14_causal_risk_attribution/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/15_neuromorphic_sensing/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
