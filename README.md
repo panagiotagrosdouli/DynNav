@@ -44,6 +44,8 @@ The repository is being upgraded contribution by contribution. Each contribution
 | C13 — Latent World Model and Imagined Rollout Audit | Upgraded | Added rollout auditor, imagined-return/effort/recoverability metrics, irreversibility flags, benchmark, scientific note, and expanded README. | New benchmark audits imagined action sequences using return, action effort, terminal latent norm, recoverability proxy, and irreversibility-aware final score. |
 | C14 — Causal Risk Attribution and Root-Cause Evaluation | Upgraded | Added attribution evaluator, known-cause synthetic failure cases, top-1 attribution accuracy, true-cause rank, counterfactual risk reduction, benchmark, scientific note, and expanded README. | New benchmark evaluates whether SCM root-cause rankings recover injected failure causes and whether counterfactual interventions reduce predicted collision risk. |
 | C15 — Neuromorphic Sensing for Low-Latency Obstacle Detection | Upgraded | Added neuromorphic latency benchmark, event-rate metrics, false-negative reporting, frame-baseline comparison, scientific note, and expanded README. | New benchmark compares event/SNN obstacle detection against a frame-based baseline on slow, medium, and fast moving-obstacle sequences. |
+| C16 — Federated Navigation Learning | Upgraded | Added federated evaluator, weighted/uniform aggregation comparison, DP/no-DP settings, fairness gap, communication-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates fleet-level trade-offs across generalization error, client fairness, differential privacy, aggregation strategy, and communication cost. |
+| C17 — Topological Semantic Maps | Upgraded | Added semantic grounding evaluator, sparse graph planning benchmark, blocked-transition replanning test, scientific note, and expanded README. | New benchmark measures semantic grounding top-1/top-k accuracy and route success/cost before and after a semantic transition is blocked. |
 
 Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
 
@@ -68,6 +70,8 @@ The repository contains a ROS 2 / Python research framework with modules for:
 - latent world-model planning with imagined rollout audit,
 - causal root-cause attribution for navigation failures,
 - neuromorphic low-latency obstacle sensing,
+- federated navigation learning across robot fleets,
+- topological semantic mapping and grounding,
 - visual-odometry-based coverage replanning,
 - formal safety shields using STL/CBF-style constraints,
 - adversarial and sensor-anomaly detection prototypes,
@@ -96,6 +100,8 @@ The project is intentionally modular: each module studies one research-oriented 
 | Latent world model | Can imagined futures be audited before execution? | New rollout audit scores candidate futures by imagined return, effort, latent familiarity, recoverability, and irreversibility. |
 | Causal attribution | Can a failure diagnosis recover the true underlying cause? | New attribution benchmark measures top-1 accuracy, true-cause rank, and counterfactual risk reduction on injected-cause failure cases. |
 | Neuromorphic sensing | Can event-based sensing reduce obstacle reaction latency? | New latency benchmark compares event/SNN detection with a frame baseline across moving-obstacle speeds and reports event-rate and false-negative metrics. |
+| Federated learning | Can robot fleets learn together without sharing private raw data? | New trade-off benchmark compares aggregation/privacy settings using client MSE, fairness gap, communication cost, and DP metadata. |
+| Topological semantic maps | Can semantic place graphs support language grounding and route repair? | New benchmark evaluates semantic grounding accuracy and graph replanning after blocked semantic transitions. |
 | VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
 | STL + CBF safety shields | Can a safety layer reduce unsafe commands? | Constraint violations decreased with a modest path-length overhead. |
 | Swarm consensus | Can robots reject unreliable shared plans? | Byzantine-style disagreement handling improves selected-plan reliability in simulation. |
@@ -120,7 +126,7 @@ Suggested 10-minute reading path:
 
 1. Read this README.
 2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/15_neuromorphic_sensing/`, and the safety / replanning modules.
+3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/17_topological_semantic_maps/`, and the safety / replanning modules.
 4. Run one experiment script or inspect the logged CSV results.
 
 ---
