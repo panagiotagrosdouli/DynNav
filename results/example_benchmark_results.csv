@@ -1,0 +1,5 @@
+module_id,experiment_name,seed,scenario,method,baseline,n_trials,success_rate,collision_rate,path_length,time_to_goal,replans,mean_risk,max_risk,cvar_risk,uncertainty_integral,intervention_rate,compute_time_ms
+C03,risk_aware_grid_planning_demo,7,synthetic_unknown_grid,expected_plus_cvar_risk_planner,shortest_path,10,0.9,0.1,42.8,18.3,4,0.18,0.42,0.37,5.6,0.0,12.4
+C03,risk_aware_grid_planning_demo,8,synthetic_unknown_grid,expected_plus_cvar_risk_planner,shortest_path,10,1.0,0.0,43.2,18.7,5,0.16,0.39,0.34,5.2,0.0,13.1
+C05,safe_mode_threshold_demo,11,noisy_hazard_trace,hysteretic_safe_mode_controller,no_safe_mode,10,1.0,0.0,48.5,21.4,7,0.12,0.31,0.28,4.9,0.22,8.6
+C18,shield_stress_test_demo,13,moving_obstacle_stress,shielded_controller,unshielded_controller,10,1.0,0.0,46.1,20.2,6,0.14,0.27,0.25,4.1,0.18,9.2

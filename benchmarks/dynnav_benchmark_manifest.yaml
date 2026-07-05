@@ -1,0 +1,199 @@
+# DynNav benchmark manifest
+#
+# This file defines a common, machine-readable inventory of benchmark targets.
+# It is intentionally lightweight so it can be used before the full benchmark
+# runner exists.
+
+schema_version: 0.1
+project: DynNav
+benchmark_protocol: docs/BENCHMARK_PROTOCOL.md
+readiness_checklist: docs/CONTRIBUTION_READINESS_CHECKLIST.md
+
+shared_required_fields:
+  - module_id
+  - experiment_name
+  - seed
+  - scenario
+  - method
+  - baseline
+  - n_trials
+  - success_rate
+  - collision_rate
+  - path_length
+  - mean_risk
+  - max_risk
+  - cvar_risk
+  - compute_time_ms
+
+readiness_levels:
+  prototype: Code exists but evidence is limited.
+  reproducible_demo: A documented command runs and produces saved outputs.
+  benchmark_ready: Includes metrics, baseline, and repeated trials.
+  paper_ready: Includes ablations, failure analysis, statistics, and clear limitations.
+
+benchmarks:
+  - module_id: C01
+    name: Learned A* Heuristics
+    category: planning
+    research_question: Can a learned heuristic reduce graph search effort without changing the optimal path cost?
+    baseline: classical_admissible_astar
+    proposed_method: learned_or_clipped_learned_astar
+    primary_metrics:
+      - node_expansions
+      - path_cost
+      - heuristic_overestimation_rate
+      - consistency_violation_rate
+      - compute_time_ms
+    required_ablations:
+      - classical_heuristic
+      - raw_learned_heuristic
+      - admissible_clipped_learned_heuristic
+    readiness_target: benchmark_ready
+
+  - module_id: C02
+    name: Uncertainty Estimation and Calibration
+    category: uncertainty
+    research_question: Are uncertainty estimates calibrated enough to be used by a planner?
+    baseline: raw_uncertainty
+    proposed_method: calibrated_uncertainty
+    primary_metrics:
+      - brier_score
+      - nll
+      - ece
+      - calibration_slope
+      - planning_safety_gain
+    required_ablations:
+      - raw_uncertainty
+      - global_scale_calibration
+      - quantile_bin_calibration
+    readiness_target: benchmark_ready
+
+  - module_id: C03
+    name: Belief-Space and Risk-Aware Planning
+    category: risk_aware_planning
+    research_question: Can risk-aware planning reduce collision risk without hiding path-length trade-offs?
+    baseline: shortest_path
+    proposed_method: expected_and_cvar_risk_planner
+    primary_metrics:
+      - path_length
+      - mean_risk
+      - max_risk
+      - cvar_risk
+      - pareto_dominance_rate
+      - compute_time_ms
+    required_ablations:
+      - no_risk_term
+      - expected_risk_only
+      - expected_plus_cvar_risk
+    readiness_target: paper_ready
+
+  - module_id: C04
+    name: Irreversibility, Returnability, and Recoverability
+    category: recoverability
+    research_question: Can a planner preserve future recovery freedom under uncertainty?
+    baseline: feasibility_only_planner
+    proposed_method: recoverability_aware_planner
+    primary_metrics:
+      - returnability_score
+      - escape_option_count
+      - bottleneck_exposure
+      - recovery_success_rate
+      - path_length
+    required_ablations:
+      - no_recoverability_term
+      - recoverability_term
+      - recoverability_plus_risk_term
+    readiness_target: benchmark_ready
+
+  - module_id: C05
+    name: Safe-Mode Navigation
+    category: runtime_safety
+    research_question: When should a robot switch from nominal navigation to conservative behavior?
+    baseline: no_safe_mode
+    proposed_method: hysteretic_safe_mode_controller
+    primary_metrics:
+      - collision_rate
+      - total_risk
+      - max_risk
+      - intervention_rate
+      - chattering_events
+      - extra_distance
+    required_ablations:
+      - no_safe_mode
+      - threshold_safe_mode
+      - hysteretic_safe_mode
+    readiness_target: benchmark_ready
+
+  - module_id: C12
+    name: Diffusion Occupancy Maps and Probabilistic Risk Evaluation
+    category: prediction
+    research_question: Are probabilistic future-occupancy maps useful as navigation risk estimates?
+    baseline: deterministic_occupancy_map
+    proposed_method: probabilistic_future_occupancy_map
+    primary_metrics:
+      - brier_score
+      - nll
+      - high_risk_precision
+      - high_risk_recall
+      - cvar_conservatism_gap
+    required_ablations:
+      - deterministic_map
+      - probabilistic_map_without_calibration
+      - probabilistic_map_with_calibration
+    readiness_target: paper_ready
+
+  - module_id: C18
+    name: Formal Safety Shields
+    category: runtime_safety
+    research_question: Can a runtime shield reduce unsafe commands without excessive efficiency loss?
+    baseline: unshielded_controller
+    proposed_method: shielded_controller
+    primary_metrics:
+      - violation_count
+      - min_obstacle_distance
+      - stl_robustness
+      - intervention_rate
+      - correction_cost
+      - goal_efficiency
+    required_ablations:
+      - unshielded
+      - shielded_low_threshold
+      - shielded_high_threshold
+    readiness_target: paper_ready
+
+  - module_id: C21
+    name: PPO Navigation Agent and Policy Safety Evaluation
+    category: learning_augmented_navigation
+    research_question: Can learned policies be evaluated through safety outcomes rather than reward alone?
+    baseline: greedy_policy
+    proposed_method: ppo_or_shielded_ppo_policy
+    primary_metrics:
+      - success_rate
+      - collision_rate
+      - reward
+      - path_length
+      - min_obstacle_distance
+      - intervention_rate
+    required_ablations:
+      - greedy_policy
+      - ppo_policy
+      - shielded_ppo_policy
+    readiness_target: benchmark_ready
+
+  - module_id: C26
+    name: Swarm Consensus Navigation and Resilience Evaluation
+    category: multi_robot
+    research_question: Can a robot team preserve consensus and mission success under faulty agents or communication loss?
+    baseline: unweighted_consensus
+    proposed_method: trust_weighted_resilient_consensus
+    primary_metrics:
+      - consensus_accuracy
+      - mission_success
+      - conflict_count
+      - communication_overhead
+      - byzantine_resilience_score
+    required_ablations:
+      - unweighted_consensus
+      - trust_weighted_consensus
+      - trust_weighted_with_fault_filtering
+    readiness_target: benchmark_ready
