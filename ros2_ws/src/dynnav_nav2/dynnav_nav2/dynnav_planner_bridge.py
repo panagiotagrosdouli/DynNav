@@ -7,7 +7,7 @@ from typing import Iterable
 
 try:
     import rclpy
-    from nav_msgs.msg import Path
+    from nav_msgs.msg import OccupancyGrid, Path
     from rclpy.node import Node
     from std_msgs.msg import String
 except ImportError:  # pragma: no cover
@@ -15,8 +15,10 @@ except ImportError:  # pragma: no cover
     Node = object
     String = None
     Path = None
+    OccupancyGrid = None
 
-from dynnav.planners import GridMap, self_aware_astar
+from dynnav_nav2.live_map_planning import LiveMapPlanningConfig, plan_with_optional_live_grid
+from dynnav_nav2.occupancy_grid_conversion import occupancy_grid_msg_to_spec, occupancy_grid_spec_to_grid_map
 from dynnav_nav2.path_conversion import build_nav_path_message
 
 
@@ -29,10 +31,12 @@ class PlannerBridgeConfig:
     obstacles: tuple[tuple[int, int], ...]
     resolution_m: float = 1.0
     frame_id: str = "map"
+    use_live_map: bool = True
+    occupied_threshold: int = 65
+    unknown_is_obstacle: bool = False
 
 
 def parse_cells(raw: str) -> tuple[tuple[int, int], ...]:
-    """Parse `x:y,x:y` cell strings into grid cells."""
     if not raw.strip():
         return ()
     cells = []
@@ -42,11 +46,19 @@ def parse_cells(raw: str) -> tuple[tuple[int, int], ...]:
     return tuple(cells)
 
 
-def plan_grid_path(config: PlannerBridgeConfig) -> list[tuple[int, int]]:
-    """Plan a path using the research-core SelfAwareAStar implementation."""
-    grid = GridMap.from_obstacles(width=config.width, height=config.height, obstacles=config.obstacles)
-    result = self_aware_astar(grid, config.start, config.goal)
-    return result.path if result.success else []
+def planning_config_from_bridge(config: PlannerBridgeConfig) -> LiveMapPlanningConfig:
+    return LiveMapPlanningConfig(
+        start=config.start,
+        goal=config.goal,
+        fallback_width=config.width,
+        fallback_height=config.height,
+        fallback_obstacles=config.obstacles,
+        use_live_map=config.use_live_map,
+    )
+
+
+def plan_grid_path(config: PlannerBridgeConfig, live_grid=None) -> list[tuple[int, int]]:
+    return plan_with_optional_live_grid(planning_config_from_bridge(config), live_grid)
 
 
 def format_path(path: Iterable[tuple[int, int]]) -> str:
@@ -54,8 +66,6 @@ def format_path(path: Iterable[tuple[int, int]]) -> str:
 
 
 class DynNavPlannerBridge(Node):  # type: ignore[misc]
-    """Minimal ROS 2 node wrapping the DynNav planner core."""
-
     def __init__(self) -> None:
         super().__init__("dynnav_planner_bridge")
         self.declare_parameter("grid_width", 10)
@@ -66,9 +76,20 @@ class DynNavPlannerBridge(Node):  # type: ignore[misc]
         self.declare_parameter("resolution_m", 1.0)
         self.declare_parameter("frame_id", "map")
         self.declare_parameter("publish_period_s", 1.0)
+        self.declare_parameter("use_live_map", True)
+        self.declare_parameter("map_topic", "/map")
+        self.declare_parameter("occupied_threshold", 65)
+        self.declare_parameter("unknown_is_obstacle", False)
 
+        self.latest_grid = None
         self.debug_publisher = self.create_publisher(String, "dynnav/planned_path", 10)
         self.path_publisher = self.create_publisher(Path, "dynnav/path", 10)
+        self.map_subscription = self.create_subscription(
+            OccupancyGrid,
+            str(self.get_parameter("map_topic").value),
+            self.on_map,
+            10,
+        )
         self.timer = self.create_timer(float(self.get_parameter("publish_period_s").value), self.publish_plan_once)
 
     def read_config(self) -> PlannerBridgeConfig:
@@ -84,11 +105,24 @@ class DynNavPlannerBridge(Node):  # type: ignore[misc]
             obstacles=parse_cells(str(self.get_parameter("obstacles").value)),
             resolution_m=float(self.get_parameter("resolution_m").value),
             frame_id=str(self.get_parameter("frame_id").value),
+            use_live_map=bool(self.get_parameter("use_live_map").value),
+            occupied_threshold=int(self.get_parameter("occupied_threshold").value),
+            unknown_is_obstacle=bool(self.get_parameter("unknown_is_obstacle").value),
         )
+
+    def on_map(self, msg) -> None:
+        config = self.read_config()
+        spec = occupancy_grid_msg_to_spec(
+            msg,
+            occupied_threshold=config.occupied_threshold,
+            unknown_is_obstacle=config.unknown_is_obstacle,
+        )
+        self.latest_grid = occupancy_grid_spec_to_grid_map(spec)
+        self.get_logger().info("DynNav received live OccupancyGrid map")
 
     def publish_plan_once(self) -> None:
         config = self.read_config()
-        path = plan_grid_path(config)
+        path = plan_grid_path(config, self.latest_grid)
         debug_msg = String()
         debug_msg.data = format_path(path) if path else "NO_PATH"
         self.debug_publisher.publish(debug_msg)
