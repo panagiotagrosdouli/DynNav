@@ -17,15 +17,16 @@ Implemented:
 - YAML configuration,
 - launch file,
 - bridge from ROS parameters to the DynNav `self_aware_astar` research core,
-- string publisher for planned grid paths.
+- debug string publisher for planned grid paths,
+- `nav_msgs/Path` publisher on `/dynnav/path`,
+- grid-cell to map-frame coordinate conversion.
 
 Not implemented yet:
 
 - full Nav2 global planner plugin,
 - costmap conversion,
-- `nav_msgs/Path` output,
 - action server integration,
-- TF frame handling,
+- TF frame handling beyond configurable `frame_id`,
 - robot execution or controller integration.
 
 ## Build
@@ -44,10 +45,11 @@ source install/setup.bash
 ros2 launch dynnav_nav2 dynnav_planner_bridge.launch.py
 ```
 
-The bridge publishes a simple string representation of the planned grid path on:
+The bridge publishes:
 
 ```text
-/dynnav/planned_path
+/dynnav/planned_path   # std_msgs/String debug path
+/dynnav/path           # nav_msgs/Path planner output
 ```
 
 ## Configuration
@@ -68,13 +70,14 @@ dynnav_planner_bridge:
     start: "0:0"
     goal: "9:9"
     obstacles: "3:3,3:4,3:5"
+    resolution_m: 1.0
+    frame_id: "map"
 ```
 
 ## Next milestone
 
-The next integration milestone is to replace the string publisher with:
+The next integration milestone is to add:
 
-- `nav_msgs/Path` output,
 - occupancy-grid to `GridMap` conversion,
 - a service or action interface,
 - eventually a Nav2-compatible planner plugin.

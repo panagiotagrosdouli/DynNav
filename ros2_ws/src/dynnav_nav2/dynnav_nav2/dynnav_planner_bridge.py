@@ -1,9 +1,4 @@
-"""ROS 2 bridge node for DynNav planners.
-
-This node is a scaffold: it exposes ROS 2 parameters and basic publishers so the
-research planner core can later be connected to Nav2 actions/plugins without
-entangling the pure-Python algorithms with ROS-specific message types.
-"""
+"""ROS 2 bridge node for DynNav planners."""
 
 from __future__ import annotations
 
@@ -12,14 +7,17 @@ from typing import Iterable
 
 try:
     import rclpy
+    from nav_msgs.msg import Path
     from rclpy.node import Node
     from std_msgs.msg import String
-except ImportError:  # pragma: no cover - allows non-ROS unit imports
+except ImportError:  # pragma: no cover
     rclpy = None
     Node = object
     String = None
+    Path = None
 
 from dynnav.planners import GridMap, self_aware_astar
+from dynnav_nav2.path_conversion import build_nav_path_message
 
 
 @dataclass(frozen=True)
@@ -29,6 +27,8 @@ class PlannerBridgeConfig:
     start: tuple[int, int]
     goal: tuple[int, int]
     obstacles: tuple[tuple[int, int], ...]
+    resolution_m: float = 1.0
+    frame_id: str = "map"
 
 
 def parse_cells(raw: str) -> tuple[tuple[int, int], ...]:
@@ -44,11 +44,7 @@ def parse_cells(raw: str) -> tuple[tuple[int, int], ...]:
 
 def plan_grid_path(config: PlannerBridgeConfig) -> list[tuple[int, int]]:
     """Plan a path using the research-core SelfAwareAStar implementation."""
-    grid = GridMap.from_obstacles(
-        width=config.width,
-        height=config.height,
-        obstacles=config.obstacles,
-    )
+    grid = GridMap.from_obstacles(width=config.width, height=config.height, obstacles=config.obstacles)
     result = self_aware_astar(grid, config.start, config.goal)
     return result.path if result.success else []
 
@@ -67,11 +63,13 @@ class DynNavPlannerBridge(Node):  # type: ignore[misc]
         self.declare_parameter("start", "0:0")
         self.declare_parameter("goal", "9:9")
         self.declare_parameter("obstacles", "")
+        self.declare_parameter("resolution_m", 1.0)
+        self.declare_parameter("frame_id", "map")
         self.declare_parameter("publish_period_s", 1.0)
 
-        self.publisher = self.create_publisher(String, "dynnav/planned_path", 10)
-        period = float(self.get_parameter("publish_period_s").value)
-        self.timer = self.create_timer(period, self.publish_plan_once)
+        self.debug_publisher = self.create_publisher(String, "dynnav/planned_path", 10)
+        self.path_publisher = self.create_publisher(Path, "dynnav/path", 10)
+        self.timer = self.create_timer(float(self.get_parameter("publish_period_s").value), self.publish_plan_once)
 
     def read_config(self) -> PlannerBridgeConfig:
         start = parse_cells(str(self.get_parameter("start").value))
@@ -84,15 +82,19 @@ class DynNavPlannerBridge(Node):  # type: ignore[misc]
             start=start[0],
             goal=goal[0],
             obstacles=parse_cells(str(self.get_parameter("obstacles").value)),
+            resolution_m=float(self.get_parameter("resolution_m").value),
+            frame_id=str(self.get_parameter("frame_id").value),
         )
 
     def publish_plan_once(self) -> None:
         config = self.read_config()
         path = plan_grid_path(config)
-        msg = String()
-        msg.data = format_path(path) if path else "NO_PATH"
-        self.publisher.publish(msg)
-        self.get_logger().info(f"DynNav planned path: {msg.data}")
+        debug_msg = String()
+        debug_msg.data = format_path(path) if path else "NO_PATH"
+        self.debug_publisher.publish(debug_msg)
+        if path:
+            self.path_publisher.publish(build_nav_path_message(path, config.frame_id, config.resolution_m, self.get_clock().now().to_msg()))
+        self.get_logger().info(f"DynNav planned path: {debug_msg.data}")
 
 
 def main(args=None) -> None:

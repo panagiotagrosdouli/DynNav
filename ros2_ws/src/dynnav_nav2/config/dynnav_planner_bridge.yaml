@@ -5,4 +5,6 @@ dynnav_planner_bridge:
     start: "0:0"
     goal: "9:9"
     obstacles: "3:3,3:4,3:5,4:5,5:5"
+    resolution_m: 1.0
+    frame_id: "map"
     publish_period_s: 1.0
