@@ -1,0 +1,3 @@
+<library path="dynnav_global_planner">
+  <class name="dynnav_nav2_cpp/DynNavGlobalPlanner" type="dynnav_nav2_cpp::DynNavGlobalPlanner" base_class_type="nav2_core::GlobalPlanner" />
+</library>
