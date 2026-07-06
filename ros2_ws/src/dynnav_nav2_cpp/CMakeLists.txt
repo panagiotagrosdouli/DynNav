@@ -18,6 +18,7 @@ include_directories(include)
 
 add_library(dynnav_global_planner SHARED
   src/dynnav_global_planner.cpp
+  src/costmap_adapter.cpp
 )
 
 ament_target_dependencies(dynnav_global_planner
