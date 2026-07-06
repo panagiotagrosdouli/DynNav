@@ -8,7 +8,3 @@ dynnav_planner_bridge:
     resolution_m: 1.0
     frame_id: "map"
     publish_period_s: 1.0
-    use_live_map: true
-    map_topic: "/map"
-    occupied_threshold: 65
-    unknown_is_obstacle: false
