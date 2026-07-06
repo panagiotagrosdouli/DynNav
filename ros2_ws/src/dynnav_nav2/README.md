@@ -19,12 +19,14 @@ Implemented:
 - bridge from ROS parameters to the DynNav `self_aware_astar` research core,
 - debug string publisher for planned grid paths,
 - `nav_msgs/Path` publisher on `/dynnav/path`,
-- grid-cell to map-frame coordinate conversion.
+- grid-cell to map-frame coordinate conversion,
+- `OccupancyGrid` to DynNav `GridMap` conversion,
+- optional live `/map` subscription with YAML fallback.
 
 Not implemented yet:
 
 - full Nav2 global planner plugin,
-- costmap conversion,
+- costmap-layer integration,
 - action server integration,
 - TF frame handling beyond configurable `frame_id`,
 - robot execution or controller integration.
@@ -45,12 +47,20 @@ source install/setup.bash
 ros2 launch dynnav_nav2 dynnav_planner_bridge.launch.py
 ```
 
-The bridge publishes:
+The bridge subscribes to:
 
 ```text
-/dynnav/planned_path   # std_msgs/String debug path
-/dynnav/path           # nav_msgs/Path planner output
+/map                  # nav_msgs/OccupancyGrid input
 ```
+
+and publishes:
+
+```text
+/dynnav/planned_path  # std_msgs/String debug path
+/dynnav/path          # nav_msgs/Path planner output
+```
+
+If no live map has been received yet, the node falls back to the YAML-configured grid dimensions and obstacle cells.
 
 ## Configuration
 
@@ -72,12 +82,16 @@ dynnav_planner_bridge:
     obstacles: "3:3,3:4,3:5"
     resolution_m: 1.0
     frame_id: "map"
+    use_live_map: true
+    map_topic: "/map"
+    occupied_threshold: 65
+    unknown_is_obstacle: false
 ```
 
 ## Next milestone
 
 The next integration milestone is to add:
 
-- occupancy-grid to `GridMap` conversion,
-- a service or action interface,
+- service/action planning requests,
+- start/goal conversion from poses,
 - eventually a Nav2-compatible planner plugin.
