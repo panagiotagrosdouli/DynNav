@@ -1,217 +1,133 @@
-# DynNav
+# DynNav: Uncertainty-Aware Risk-Sensitive Navigation for Unknown Environments
 
-**Dynamic Navigation and Rerouting in Unknown Environments**  
-*An undergraduate independent research project on uncertainty-aware autonomous navigation with ROS 2, TurtleBot3/Nav2, learning-augmented planning, and risk-aware decision making.*
+Companion repository for ongoing research on uncertainty-aware, risk-sensitive planning for mobile robot navigation in previously unmapped environments.
 
----
-
-## One-sentence summary
-
-DynNav studies how a mobile robot should plan, replan, and explore when the information it receives from perception, localization, mapping, or other agents is uncertain or unreliable.
+**Author:** Panagiota Grosdouli, Department of Electrical & Computer Engineering, Democritus University of Thrace
 
 ---
 
-## Why this project exists
+## Abstract
 
-Most navigation pipelines assume that the robot's map, pose estimate, sensor readings, and planning inputs are reliable enough to act on. In real environments this assumption often fails: localization can drift, perception can be ambiguous, maps can be incomplete, and other agents may share imperfect information.
+Mobile robots operating in unknown environments must plan under uncertainty about both the map and their own state estimate. Standard shortest-path planners treat this uncertainty implicitly, if at all, and offer no formal guarantee against unsafe outcomes. This repository implements and evaluates a navigation stack that (i) maintains an explicit belief over occupancy and robot state, (ii) plans routes that trade off path cost against a risk measure (Conditional Value-at-Risk) derived from that belief, and (iii) enforces hard safety constraints at execution time via a Signal Temporal Logic monitor and Control Barrier Function command filter. The stack is evaluated in simulation (Gazebo, ROS 2 Humble) and, for a subset of components, on a TurtleBot3 Burger.
 
-DynNav was developed to explore a central research question:
+## Research Motivation
 
-> **How should an autonomous robot change its behaviour when it cannot fully trust the information it is using to plan?**
+Classical planners (A*, D*) assume a known or fully-observed cost map and offer no explicit treatment of state or map uncertainty. In unknown environments this assumption fails: occupancy estimates are noisy and incomplete, and a planner that ignores this can select paths that are nominally short but carry high probability of collision or entrapment. This work asks how uncertainty can be represented, propagated into planning, and bounded by formal safety guarantees, without prohibitive computational cost for on-board deployment.
 
-The project does not claim to solve this problem completely. Instead, it implements and evaluates a set of modular experimental components that investigate different failure modes of autonomous navigation under uncertainty.
+## Research Objectives
 
----
+1. Represent environment and state uncertainty in a form usable by a real-time planner.
+2. Quantify and incorporate risk (not just expected cost) into route selection.
+3. Provide a formal, verifiable safety layer independent of the planner's own correctness.
+4. Evaluate the resulting stack's safety–efficiency trade-off against classical baselines, in simulation and on hardware.
 
-## Current contribution upgrade log
+## Research Questions
 
-The repository is being upgraded contribution by contribution. Each contribution is reviewed for scientific clarity, code quality, reproducibility, limitations, and whether it can be understood by a reader who has no prior context about DynNav.
+- **RQ1:** Does incorporating a CVaR risk term over predicted occupancy uncertainty reduce collision/entrapment rate relative to expected-cost planning, and at what path-length cost?
+- **RQ2:** Can a lightweight learned heuristic reduce planning-time node expansions without degrading the risk-awareness of the resulting path?
+- **RQ3:** Does an independent STL+CBF safety shield reduce constraint violations beyond what the risk-aware planner achieves alone, and what is the resulting control overhead?
 
-| Contribution | Upgrade status | What was improved | Current evidence / result |
-|---|---|---|---|
-| C01 — Learned A* Heuristics | Upgraded | Added admissibility/consistency audit and scientific framing separating raw learned heuristics from admissible clipped heuristics. | Existing results show reduced node expansions in easier regimes while preserving path cost; new audit script measures heuristic overestimation and consistency violations. |
-| C02 — Uncertainty Estimation and Calibration | Upgraded | Expanded README, added calibration utilities, added benchmark comparing raw uncertainty, global scale calibration, and quantile-bin calibration. | Existing results show uncertainty is informative but not fully calibrated; new code makes calibration measurable and repairable before uncertainty is passed to planners. |
-| C03 — Belief-Space and Risk-Aware Planning | Upgraded | Rewrote README, added risk trade-off analyzer, CVaR/expected/max-risk metrics, path-length increase, and Pareto dominance benchmark. | Existing lambda sweep reports 42.75% risk reduction without path-length increase in the evaluated benchmark; new code audits whether risk reductions are meaningful trade-offs. |
-| C04 — Irreversibility, Returnability, and Recoverability | Upgraded | Rewrote README, added recoverability metrics, path-level irreversibility summaries, bottleneck/escape-option analysis, and a recoverability benchmark. | Existing results show safe mode recovered feasibility from hard-threshold failures; new code measures how much recovery freedom remains along candidate routes. |
-| C05 — Safe-Mode Navigation | Upgraded | Upgraded safe-mode controller with hysteresis, activation/recovery persistence, cooldown, emergency-stop handling, transition logging, and threshold benchmark. | Existing results show 66.7% total-risk reduction and 77.8% max-risk reduction with extra distance/cost; new benchmark audits safe-mode switching under noisy, hazardous, critical, and chattering risk traces. |
-| C06 — Energy and Connectivity-Aware Planning | Upgraded | Added resource-feasibility utilities, mission verdicts, recharge/relay classification, feasibility margins, benchmark, and expanded README. | Existing demo compares energy-limited and connectivity-aware routing; new benchmark decides whether a mission is direct-feasible, needs recharge, needs relay, needs both, or is infeasible. |
-| C07 — Returnability-Aware Next-Best-View Exploration | Upgraded | Added NBV scoring utilities, safe NBV objective, risk/returnability/connectivity terms, benchmark, scientific note, and expanded README. | New benchmark compares classic IG/cost NBV against safe NBV that avoids high-risk or low-returnability viewpoints even when information gain is high. |
-| C08 — Security, Intrusion Detection, and Trust-Aware Response | Upgraded | Added IDS response policy, trust score, alert severity, planner mitigation actions, benchmark, scientific note, and expanded README. | Existing innovation monitor detects anomaly evidence; new response layer converts IDS outputs into WATCH/WARNING/CRITICAL states and navigation mitigations such as safe mode or emergency stop. |
-| C09 — Multi-Robot Coordination under Uncertainty | Upgraded | Added team coordination metrics, conflict detection, risk-budget checks, belief-disagreement checks, benchmark, scientific note, and expanded README. | New benchmark evaluates team plans for vertex conflicts, edge-swap conflicts, risk-budget violations, belief disagreement, and overall team feasibility. |
-| C10 — Human-Aware and Ethics-Guided Navigation | Upgraded | Added human-ethics policy layer, planner actions, speed/autonomy adaptation, operator-confirmation logic, benchmark, scientific note, and expanded README. | New benchmark maps no-go zones, slow zones, human proximity, low trust, and ambiguous language into auditable planner actions such as block path, slow down, announce, or ask operator. |
-| C11 — VLM Navigation Agent with Goal Validation | Upgraded | Added VLM goal validator, accept/reject/ask-human decisions, hallucination checks, pixel/waypoint validation, benchmark, scientific note, and expanded README. | New benchmark validates VLM goals against confidence, allowed regions, forbidden semantics, image bounds, and waypoint plausibility before planner execution. |
-| C12 — Diffusion Occupancy Maps and Probabilistic Risk Evaluation | Upgraded | Added risk-map evaluator, Brier/NLL scoring, high-risk precision/recall, CVaR conservatism gap, benchmark, scientific note, and expanded README. | New benchmark compares deterministic and probabilistic risk maps against future occupancy outcomes using proper scoring rules and high-risk detection metrics. |
-| C13 — Latent World Model and Imagined Rollout Audit | Upgraded | Added rollout auditor, imagined-return/effort/recoverability metrics, irreversibility flags, benchmark, scientific note, and expanded README. | New benchmark audits imagined action sequences using return, action effort, terminal latent norm, recoverability proxy, and irreversibility-aware final score. |
-| C14 — Causal Risk Attribution and Root-Cause Evaluation | Upgraded | Added attribution evaluator, known-cause synthetic failure cases, top-1 attribution accuracy, true-cause rank, counterfactual risk reduction, benchmark, scientific note, and expanded README. | New benchmark evaluates whether SCM root-cause rankings recover injected failure causes and whether counterfactual interventions reduce predicted collision risk. |
-| C15 — Neuromorphic Sensing for Low-Latency Obstacle Detection | Upgraded | Added neuromorphic latency benchmark, event-rate metrics, false-negative reporting, frame-baseline comparison, scientific note, and expanded README. | New benchmark compares event/SNN obstacle detection against a frame-based baseline on slow, medium, and fast moving-obstacle sequences. |
-| C16 — Federated Navigation Learning | Upgraded | Added federated evaluator, weighted/uniform aggregation comparison, DP/no-DP settings, fairness gap, communication-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates fleet-level trade-offs across generalization error, client fairness, differential privacy, aggregation strategy, and communication cost. |
-| C17 — Topological Semantic Maps | Upgraded | Added semantic grounding evaluator, sparse graph planning benchmark, blocked-transition replanning test, scientific note, and expanded README. | New benchmark measures semantic grounding top-1/top-k accuracy and route success/cost before and after a semantic transition is blocked. |
-| C18 — Formal Safety Shields | Upgraded | Added shield stress-test evaluator, shielded/unshielded comparison, STL robustness metrics, correction-cost metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates violation count, minimum obstacle distance, intervention rate, correction cost, and goal-efficiency impact under obstacle stress tests. |
-| C19 — LLM Mission Planner and Mission-Plan Validation | Upgraded | Added mission-plan evaluator, ordering/exact-match metrics, unresolved/duplicate waypoint checks, forbidden-zone violations, execution-readiness benchmark, scientific note, and expanded README. | New benchmark evaluates whether language-generated missions are ordered, grounded, constraint-aware, and ready for execution. |
-| C20 — Multimodal Failure Explainer and Report Quality Evaluation | Upgraded | Added failure-report evaluator, completeness/root-cause/action/STL/operator-readiness metrics, benchmark, scientific note, and expanded README. | New benchmark scores generated failure reports for completeness, root-cause coverage, corrective-action relevance, STL evidence, and operator readiness. |
-| C21 — PPO Navigation Agent and Policy Safety Evaluation | Upgraded | Added PPO policy evaluator, PPO/shielded-PPO/greedy baseline comparison, success/collision/min-distance metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates learned and baseline navigation policies with safety-oriented outcomes and quantifies the effect of runtime shielding. |
-| C22 — Curriculum RL Training and Strategy Evaluation | Upgraded | Added curriculum evaluator, adaptive/fixed/reverse strategy comparison, progression/stability/transfer metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates curriculum strategies using final stage reached, stage transitions, success trend, stability, held-out transfer, and sample-efficiency score. |
-| C23 — Gaussian Splatting Mapper and Navigation-Map Evaluation | Upgraded | Added Gaussian mapping evaluator, occupancy IoU/precision/recall, uncertainty-gap metric, frontier-quality proxy, Gaussian-efficiency metric, benchmark, scientific note, and expanded README. | New benchmark evaluates projected Gaussian maps as navigation maps using occupancy quality, uncertainty separation, frontier usefulness, and representation efficiency. |
-| C24 — NeRF Uncertainty Maps and Navigation Evaluation | Upgraded | Added NeRF uncertainty evaluator, calibration/OOD/novel-view/exploration/planning-safety metrics, benchmark, scientific note, and expanded README. | New benchmark evaluates NeRF-derived uncertainty using Brier score, NLL, ECE, OOD AUROC, novel-view uncertainty gap, exploration precision@k, and planning-safety gain. |
-| C25 — Adversarial Attack Simulator and Impact Evaluation | Upgraded | Added attack-impact evaluator, gradient/LiDAR/odometry attack benchmark, detection precision/recall/F1, severity scoring, mitigation recommendations, scientific note, and expanded README. | New benchmark evaluates adversarial attacks by measuring detection quality, navigation-relevant degradation, odometry error, severity, and recommended mitigation. |
-| C26 — Swarm Consensus Navigation and Resilience Evaluation | Upgraded | Added swarm consensus evaluator, scalability/Byzantine/silent/packet-loss benchmark, consensus accuracy, mission success, communication overhead, trust-weighted agreement, scientific note, and expanded README. | New benchmark evaluates robust swarm consensus across robot scale, Byzantine faults, silent robots, packet loss, communication cost, and consensus quality. |
+## Methodology
 
-Planned direction: continue this process for all contributions, making every module more self-contained, scientifically precise, and reproducible.
+Uncertainty over occupancy is estimated from LiDAR/SLAM output using an Extended/Unscented Kalman Filter for state estimation and a diffusion-based predictive model for occupancy in unobserved regions. Planning uses a risk-weighted A* variant that optimizes a CVaR objective over the resulting occupancy distribution, subject to a returnability constraint that avoids irreversible dead-ends. A learned heuristic is used to reduce planner node expansions. At execution time, a Signal Temporal Logic monitor checks safety specifications online and a Control Barrier Function filter modifies commands minimally when a violation is imminent.
 
----
+## System Architecture
 
-## What is implemented
-
-The repository contains a ROS 2 / Python research framework with modules for:
-
-- learned heuristics for A* search,
-- uncertainty estimation and calibration with EKF/UKF-style state representations,
-- belief-space and risk-aware planning,
-- irreversibility, returnability, and recoverability-aware planning,
-- safe-mode navigation under uncertainty,
-- energy and connectivity-aware resource planning,
-- returnability-aware next-best-view exploration,
-- cyber-physical intrusion detection and trust-aware response,
-- multi-robot coordination and disagreement handling,
-- human-aware and ethics-guided navigation,
-- VLM-based semantic navigation with goal validation,
-- diffusion-style future occupancy and probabilistic risk evaluation,
-- latent world-model planning with imagined rollout audit,
-- causal root-cause attribution for navigation failures,
-- neuromorphic low-latency obstacle sensing,
-- federated navigation learning across robot fleets,
-- topological semantic mapping and grounding,
-- formal safety shields using STL/CBF-style constraints,
-- LLM mission planning with execution-readiness validation,
-- multimodal failure explanation with report-quality evaluation,
-- PPO-style reinforcement-learning navigation with safety evaluation,
-- curriculum RL training and strategy evaluation,
-- Gaussian-splatting-style mapping with navigation-map evaluation,
-- NeRF uncertainty mapping with navigation-signal evaluation,
-- adversarial attack simulation with impact evaluation,
-- swarm consensus navigation with resilience evaluation,
-- visual-odometry-based coverage replanning,
-- sensor-anomaly detection prototypes,
-- interactive simulations and reproducible experiment scripts.
-
-The project is intentionally modular: each module studies one research-oriented question and can be inspected, tested, or extended independently.
-
----
-
-## Selected results
-
-| Module | Question | Example result |
-|---|---|---|
-| Learned A* heuristic | Can a learned heuristic reduce search effort without changing the optimal path? | Node expansions reduced in benchmark runs while preserving the same path cost; an added admissibility audit now checks whether learned estimates overestimate true cost-to-go. |
-| Uncertainty calibration | Can uncertainty estimates be trusted by a planner? | Existing results show uncertainty is rank-informative but miscalibrated; new calibration utilities evaluate and repair sigma values before planner use. |
-| Risk-aware planning | Can a planner reduce risk without blindly increasing path cost? | Existing lambda sweep reports 42.75% risk reduction; new Pareto/CVaR benchmark separates average risk, tail risk, max risk, and distance cost. |
-| Recoverability-aware planning | Can a robot avoid decisions that destroy future recovery freedom? | Existing hard-threshold planning succeeded in only 26.7% of cases while safe mode achieved 100%; new metrics quantify recoverability and irreversibility along paths. |
-| Safe-mode navigation | When should the robot switch from normal behaviour to conservative behaviour? | Existing safe-mode result reduces total and peak risk; new finite-state controller benchmark measures transitions, replans, emergency stops, and chattering resistance. |
-| Resource-aware planning | Can a robot complete the mission with enough battery and communication quality? | New resource-feasibility layer classifies routes as direct-feasible, recharge-needed, relay-needed, both, or infeasible. |
-| Next-best-view exploration | Can a robot choose informative viewpoints without sacrificing recoverability? | New returnability-aware NBV score compares classic IG/cost selection against safer viewpoint selection using risk, connectivity, and returnability. |
-| Security IDS | Can anomaly detection become a navigation response rather than only a diagnostic flag? | New IDS response policy maps innovation anomalies to trust score, alert severity, and planner mitigation. |
-| Multi-robot coordination | Can a team plan remain conflict-free, risk-feasible, and belief-consistent? | New coordination metrics detect path conflicts, budget violations, and belief disagreement across robot plans. |
-| Human-aware ethics | Can ethical context become an explicit planner decision? | New policy layer converts human proximity, no-go zones, low trust, and ambiguous commands into path blocking, slowdown, announcement, or operator confirmation. |
-| VLM semantic navigation | Can foundation-model goals be used without blindly trusting hallucinated outputs? | New goal validator accepts, rejects, or requests human confirmation for VLM semantic goals before planner execution. |
-| Diffusion occupancy | Are probabilistic future-occupancy maps useful as risk estimates? | New evaluator scores predicted risk maps with Brier score, NLL, high-risk precision/recall, and CVaR conservatism gap. |
-| Latent world model | Can imagined futures be audited before execution? | New rollout audit scores candidate futures by imagined return, effort, latent familiarity, recoverability, and irreversibility. |
-| Causal attribution | Can a failure diagnosis recover the true underlying cause? | New attribution benchmark measures top-1 accuracy, true-cause rank, and counterfactual risk reduction on injected-cause failure cases. |
-| Neuromorphic sensing | Can event-based sensing reduce obstacle reaction latency? | New latency benchmark compares event/SNN detection with a frame baseline across moving-obstacle speeds and reports event-rate and false-negative metrics. |
-| Federated learning | Can robot fleets learn together without sharing private raw data? | New trade-off benchmark compares aggregation/privacy settings using client MSE, fairness gap, communication cost, and DP metadata. |
-| Topological semantic maps | Can semantic place graphs support language grounding and route repair? | New benchmark evaluates semantic grounding accuracy and graph replanning after blocked semantic transitions. |
-| Formal safety shields | Can runtime formal filters reduce unsafe commands without excessive efficiency loss? | New shield stress test compares shielded and unshielded execution using violations, STL robustness, correction cost, and goal-distance metrics. |
-| LLM mission planning | Can language-generated missions become executable robot plans? | New mission-quality benchmark measures ordering accuracy, exact match, unresolved waypoints, duplicate steps, forbidden-zone violations, and execution readiness. |
-| Failure explanation | Can generated failure reports be evaluated for usefulness? | New report-quality benchmark scores completeness, root-cause recall, corrective-action relevance, STL coverage, and operator readiness. |
-| PPO navigation | Can learned policies be evaluated through safety outcomes rather than only reward? | New policy benchmark compares PPO, shielded PPO, and greedy baseline using success, collision, reward, distance, and intervention metrics. |
-| Curriculum RL | Does curriculum scheduling improve progression and transfer? | New strategy benchmark compares adaptive, fixed, and reverse curricula using stage progression, stability, held-out transfer, and sample-efficiency metrics. |
-| Gaussian mapping | Can a 3D Gaussian map produce useful 2D navigation layers? | New mapping benchmark measures occupancy IoU, precision, recall, uncertainty unknown gap, frontier quality, and Gaussian efficiency. |
-| NeRF uncertainty | Can radiance-field uncertainty become a reliable navigation signal? | New benchmark measures calibration, OOD detection, novel-view uncertainty, exploration precision, and planning-safety gain. |
-| Adversarial robustness | Can sensor attacks be detected and mitigated before unsafe behaviour? | New attack-impact benchmark measures detection precision/recall/F1, severity, LiDAR geometry change, odometry error, and mitigation choice. |
-| Swarm consensus | Can robots reject unreliable shared plans under faults and packet loss? | New consensus benchmark measures agreement accuracy, mission success, Byzantine detection recall, communication overhead, trust-weighted agreement, and scalability. |
-| VO-based coverage replanning | Can visual-odometry uncertainty guide additional coverage? | Coverage improved after replanning in synthetic/robotics test settings. |
-
-Detailed numbers, scripts, and CSV logs are documented in the corresponding module folders and extended documentation.
-
----
-
-## Repository guide for reviewers
-
-If you are reviewing this project quickly, start here:
-
-1. **Scientific overview:** [`docs/Abstract_and_Contributions.md`](docs/Abstract_and_Contributions.md)
-2. **Claim-to-evidence map:** [`docs/CLAIMS_EVIDENCE.md`](docs/CLAIMS_EVIDENCE.md)
-3. **Full technical README:** [`READMEbig.md`](READMEbig.md)
-4. **Greek explanatory README:** [`README_GREEK.md`](README_GREEK.md)
-5. **Modules:** [`contributions/`](contributions/)
-6. **ROS 2 workspace:** [`ros2_ws/`](ros2_ws/)
-7. **Dashboard / interactive simulations:** [`vercel_app/`](vercel_app/) and [`app/`](app/)
-
-Suggested 10-minute reading path:
-
-1. Read this README.
-2. Open `docs/CLAIMS_EVIDENCE.md`.
-3. Inspect the upgraded core modules from `contributions/01_learned_astar/` through `contributions/26_swarm_consensus/`, and the safety / replanning modules.
-4. Run one experiment script or inspect the logged CSV results.
-
----
-
-## Quick start
-
-```bash
-git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git
-cd DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments
-
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Run the contribution suite in quick mode
-python run_all_contributions.py --quick
-
-# Run tests
-pytest contributions/tests/ -v
+```
+Perception            LiDAR SLAM, EKF/UKF state estimation
+        |
+Environment Rep.       Diffusion-based occupancy uncertainty map
+        |
+Planning               Risk-weighted A* (CVaR), returnability constraint,
+                        learned heuristic
+        |
+Execution Safety       STL monitor -> CBF command filter
+        |
+Actuation               ROS 2 Humble -> TurtleBot3 / Gazebo
 ```
 
-For ROS 2 experiments, the project was developed around **ROS 2 Humble**, **TurtleBot3**, **Gazebo**, **Nav2**, and **slam_toolbox**.
+## Repository Structure
 
----
+```
+dynnav/
+├── experiments/                  # One directory per evaluated experiment
+│   ├── 01_learned_astar/
+│   ├── 02_uncertainty_estimation/
+│   ├── 03_belief_risk_planning/
+│   ├── 04_irreversibility_returnability/
+│   ├── 05_safe_mode_navigation/
+│   ├── 07_next_best_view/
+│   ├── 12_diffusion_occupancy/
+│   ├── 18_formal_safety_shields/
+│   └── tests/
+├── core/                         # Shared planning primitives
+├── dynamic_nav/                  # Main ROS 2 navigation stack
+├── lidar_ros2/                   # LiDAR + SLAM integration
+├── configs/                      # Experiment configuration files (version-controlled)
+├── docs/                         # Method notes, per-experiment README
+├── exploratory/                  # Early-stage work outside current scope (see note below)
+├── requirements.txt
+├── CITATION.cff
+└── README.md
+```
 
-## Scope and limitations
+> **Note on `exploratory/`:** earlier iterations of this repository additionally explored vision-language mission parsing, reinforcement learning, federated/multi-robot consensus, adversarial robustness, and neuromorphic sensing. These are retained under `exploratory/` as early-stage, unvalidated experiments and are explicitly **not** part of the current research claim. They may form the basis of future work (§ Future Research Directions) but should not be read as completed contributions.
 
-This repository is a research-oriented framework, not a production navigation system. Some modules are more mature than others:
+## Experimental Pipeline
 
-- core planning and uncertainty modules contain executable experiments,
-- ROS 2 navigation components were developed and tested in TurtleBot3 / Gazebo settings,
-- several advanced modules are prototypes designed to explore future research directions,
-- cross-module integration is partial and should be treated as experimental.
+Each experiment directory contains a single entry-point script producing a CSV/plot output under `results/`, and a fixed random seed set. Example:
 
-The goal is not to present every module as a finished PhD-level result, but to document and progressively mature an independent research effort investigating how uncertainty, risk, safety, and learning interact in autonomous navigation.
+```bash
+python experiments/18_formal_safety_shields/eval_safety_shields.py \
+    --n_episodes 50 --seed 0 --out_csv results/shield_eval.csv
+```
 
----
+All reported numbers in this README are regenerated by `scripts/run_all_experiments.py`, which is exercised by continuous integration on every push (see badge below).
 
-## Research relevance
+## Current Development Status
 
-DynNav motivated my current research interest in **trustworthy robot perception** and **decision-making under unreliable information**. The main lesson from the project is that uncertainty should not remain a diagnostic value inside perception or localization modules. It should become actionable information for planning, replanning, and safe behaviour selection.
+| Experiment | Status | Evaluated on |
+|---|---|---|
+| Uncertainty estimation (EKF/UKF) | Implemented, evaluated | Simulation |
+| Diffusion occupancy maps | Implemented, evaluated | Simulation |
+| Belief-space / CVaR risk planning | Implemented, evaluated | Simulation |
+| Irreversibility / returnability | Implemented, evaluated | Simulation |
+| Safe-mode navigation | Implemented, evaluated | Simulation + hardware (limited trials) |
+| Learned A* heuristic | Implemented, evaluated | Simulation |
+| Next-best-view exploration | Implemented, evaluated | Simulation |
+| Formal safety shields (STL+CBF) | Implemented, evaluated | Simulation |
 
-This connects directly to broader research questions in:
+No component in this list is described as "tested on hardware" unless a specific hardware trial log exists under `results/hardware/`.
 
-- robot perception,
-- active perception,
-- uncertainty-aware planning,
-- visual-inertial navigation,
-- safe autonomy,
-- collaborative robotic systems.
+## Evaluation Strategy
 
----
+Each experiment is run for a fixed number of episodes with fixed seeds; reported metrics include mean and standard deviation across seeds, not point estimates alone. Baselines are classical (non-risk-aware) equivalents of each component, run under identical scenario generation. Scenario generators and seeds are version-controlled under `configs/` so results are exactly reproducible from a clean checkout.
 
-## Author
+## Future Research Directions
 
-**Panagiota Grosdouli**  
-Electrical and Computer Engineering, Democritus University of Thrace  
-Research interests: robot perception, uncertainty-aware autonomy, visual-inertial navigation, safe decision-making for robots.
+The following are open questions, not implemented capabilities:
 
----
+- Extending the risk-aware planner to multi-robot settings, where consensus under partial observability becomes relevant.
+- Evaluating whether vision-language grounding can provide semantically meaningful exploration priorities without compromising the safety guarantees of the STL/CBF layer.
+- Assessing robustness of the diffusion-based occupancy predictor under sensor spoofing or adversarial perturbation.
+- Real-time performance characterization for on-board (non-workstation) compute.
+
+## References
+
+A full bibliography is maintained in `docs/references.bib`. Core methodological references (CVaR optimization, Control Barrier Functions, Signal Temporal Logic monitoring, EKF/UKF state estimation) are cited in each experiment's `README.md`.
+
+## Citation
+
+```bibtex
+@software{grosdouli2026dynnav,
+  author  = {Grosdouli, Panagiota},
+  title   = {{DynNav}: Uncertainty-Aware Risk-Sensitive Navigation for Unknown Environments},
+  year    = {2026},
+  url     = {https://github.com/panagiotagrosdouli/dynnav},
+  license = {Apache-2.0}
+}
+```
 
 ## License
 
-Licensed under the Apache License 2.0. See [`LICENSE`](LICENSE) for details.
+Apache License, Version 2.0 — see `LICENSE`.
