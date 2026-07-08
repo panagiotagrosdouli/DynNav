@@ -1,0 +1,46 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "dynnav"
+version = "0.1.0"
+description = "Risk-aware dynamic navigation and rerouting prototypes for unknown environments"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{name = "Panagiota Grosdouli"}]
+dependencies = [
+  "numpy>=1.24",
+  "PyYAML>=6.0",
+  "matplotlib>=3.7",
+  "pandas>=2.0",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.5", "black>=24", "mypy>=1.10"]
+web = []
+
+[project.scripts]
+dynnav-benchmark = "dynnav.benchmarks:main"
+dynnav-demo = "dynnav.demo:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/dynnav"]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "D"]
+ignore = ["D203", "D213"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=dynnav --cov-report=term-missing"
