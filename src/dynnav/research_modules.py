@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 
 import numpy as np
@@ -279,8 +279,12 @@ class RuntimeMonitor:
 class DynNavResearchStack:
     """Convenience facade wiring planning, rerouting, monitoring, and switching."""
 
-    nominal_planner: NavigationPolicy = RiskAwareAStar(risk_weight=2.5, returnability_weight=0.8)
-    conservative_planner: NavigationPolicy = RiskAwareAStar(risk_weight=6.0, returnability_weight=2.0)
+    nominal_planner: NavigationPolicy = field(
+        default_factory=lambda: RiskAwareAStar(risk_weight=2.5, returnability_weight=0.8)
+    )
+    conservative_planner: NavigationPolicy = field(
+        default_factory=lambda: RiskAwareAStar(risk_weight=6.0, returnability_weight=2.0)
+    )
 
     def __post_init__(self) -> None:
         self.switch = PlannerSwitch(self.nominal_planner, self.conservative_planner)
