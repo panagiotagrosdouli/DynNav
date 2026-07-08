@@ -1,0 +1,3 @@
+# Abstract
+
+This work presents DynNav, a research prototype for risk-aware dynamic navigation in unknown grid environments. The system represents occupancy as a probabilistic belief grid, plans with a risk-weighted A* objective, estimates trajectory recoverability, and triggers rerouting or safe-mode supervision when runtime risk exceeds configured thresholds. The repository emphasizes reproducible engineering: deterministic scenario generation, YAML configurations, CSV benchmark outputs, unit tests, continuous integration, and automatically generated figures and demo animations. The current implementation is a lightweight research scaffold intended for simulation and algorithmic evaluation; it does not yet constitute a fully validated robotic safety system.
