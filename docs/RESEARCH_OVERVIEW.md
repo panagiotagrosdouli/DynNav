@@ -1,28 +1,38 @@
 # DynNav Research Overview
 
-DynNav studies navigation in unknown or partially observed environments where a shortest path may be unsafe because map and state estimates are uncertain. The repository is organized around a conservative research claim: the implemented stack is a deterministic prototype for risk-aware planning, rerouting, monitoring, and reproducible benchmarking. It is not presented as a fully validated autonomy system.
+DynNav studies dynamic navigation and online rerouting in unknown or partially observed environments. The central setting is a robot that must reach a goal while reasoning about uncertain occupancy, localization error, dynamic obstacles, recoverability, and mission-level safety.
+
+## Research question
+
+How can an autonomous robot reroute online when its map, localization, and obstacle predictions are uncertain, while preserving a feasible recovery route and exposing interpretable safety signals?
 
 ## Scientific motivation
 
-Mobile robots often operate with incomplete occupancy information, noisy localization, and delayed perception updates. A planner that optimizes only geometric length can enter narrow passages, high-uncertainty regions, or locally irreversible states. DynNav introduces explicit risk and recoverability terms so that route selection accounts for uncertainty and the ability to return to a safer state.
+Shortest-path navigation is insufficient when map belief and robot state are uncertain. A geometrically short trajectory can pass through high-entropy regions, enter narrow passages with poor escape options, or continue after runtime evidence shows that the mission risk has changed. DynNav therefore treats risk, uncertainty, and recoverability as first-class quantities in the planning loop.
 
 ## Engineering motivation
 
-The project separates core algorithms from ROS 2 integration, visualization, benchmarking, and documentation. This makes the code testable in continuous integration while still leaving clear extension points for real robots.
+The repository is organized as research software rather than a single demo. Core algorithms live in the Python package; experiments are deterministic and configuration-driven; generated artifacts are separated into `assets/` and `results/`; ROS2 and website components are explicit integration layers.
 
-## Current scope
+## Current evidence
 
-Implemented in the research-grade scaffold:
+Implemented or directly supported by code:
 
-- typed grid and trajectory primitives;
-- deterministic synthetic scenario generation;
-- risk-aware A* with occupancy and returnability penalties;
-- CVaR-style risk utilities and uncertainty propagation prototypes;
-- dynamic rerouting based on trajectory risk and recoverability;
-- runtime monitoring and safe-mode supervision;
-- CSV benchmark generation and Markdown summaries;
-- static research figures and automated demo animation.
+- typed navigation primitives for grid maps, poses, trajectories, and path evaluations;
+- risk-aware A* planning with returnability penalties;
+- dynamic rerouting, planner switching, and runtime monitoring;
+- uncertainty propagation and bounded risk-field estimation;
+- recoverability and returnability scoring;
+- mission-risk reports and safe-mode supervision;
+- deterministic benchmarking, CSV outputs, and visualization scaffolds.
 
-## Limitations
+Prototype or scaffolded components:
 
-The current algorithms are intentionally lightweight and suitable for reproducible CI experiments. They do not replace a full SLAM stack, probabilistic occupancy mapper, nonlinear model-predictive controller, or formally verified safety shield. Hardware claims require separate logs under `results/hardware/`.
+- ROS2/Nav2 integration, pending workspace-level build and robot logs;
+- formal safety constraints, pending proofs and runtime certificates;
+- learning-augmented policies, pending trained models and ablation studies;
+- website and demo media, generated from deterministic synthetic scenarios.
+
+## Claim discipline
+
+DynNav should not be described as a certified autonomy stack. It is a reproducible research prototype whose claims must be traceable to code, tests, configurations, figures, or explicit future-work notes.
