@@ -1,0 +1,108 @@
+# DynNav deterministic research-suite configuration.
+# All numbers are configuration defaults for reproducible prototypes, not reported
+# benchmark claims. Generated metrics must be written under results/ before being
+# cited in papers, README text, or project pages.
+
+suite_name: dynnav_lab_grade_research_suite
+version: 0.2.0
+seed_policy: deterministic
+output_root: results/research_suite
+
+status_labels:
+  implemented: code exists and is covered by tests or smoke workflows
+  prototype: scaffold or deterministic prototype; validation incomplete
+  planned: documented direction only; no result claim
+
+planners:
+  - name: astar_shortest_path
+    status: Implemented
+    objective: path_length
+  - name: dijkstra_shortest_path
+    status: Implemented
+    objective: path_length
+  - name: risk_aware_astar
+    status: Implemented
+    objective: length + occupancy_risk + recoverability_penalty
+  - name: nav2_planner_plugin
+    status: Prototype
+    objective: ROS2/Nav2 integration scaffold
+
+metrics:
+  - path_length
+  - planning_time_ms
+  - expanded_nodes
+  - success
+  - collision_proxy
+  - near_miss_proxy
+  - reroute_count
+  - risk_exposure
+  - uncertainty_exposure
+  - terminal_recoverability
+  - safety_mode
+
+experiments:
+  - id: static_maze
+    status: Implemented
+    seed: 7
+    map: maze
+    dynamic_obstacles: 0
+    expected_outputs:
+      - metrics.csv
+      - summary.json
+      - trajectory.csv
+      - risk_heatmap.png
+  - id: dynamic_obstacle_corridor
+    status: Prototype
+    seed: 11
+    map: corridor
+    dynamic_obstacles: 3
+    expected_outputs:
+      - metrics.csv
+      - reroute_log.csv
+      - dynamic_obstacle_timeline.png
+  - id: blocked_path_rerouting
+    status: Prototype
+    seed: 13
+    map: blocked_corridor
+    dynamic_obstacles: 1
+    expected_outputs:
+      - metrics.csv
+      - reroute_timeline.png
+  - id: unknown_map_exploration
+    status: Prototype
+    seed: 17
+    map: partially_observed_grid
+    dynamic_obstacles: 2
+    expected_outputs:
+      - uncertainty_exposure.csv
+      - uncertainty_heatmap.png
+  - id: warehouse_layout
+    status: Planned
+    seed: 19
+    map: warehouse
+    dynamic_obstacles: 5
+    expected_outputs:
+      - pending_realistic_map_source.md
+  - id: narrow_passage
+    status: Implemented
+    seed: 23
+    map: narrow_passage
+    dynamic_obstacles: 0
+    expected_outputs:
+      - recoverability_map.png
+  - id: risk_aware_vs_shortest_path
+    status: Prototype
+    seed: 29
+    map: risk_gradient
+    dynamic_obstacles: 0
+    expected_outputs:
+      - planner_comparison.csv
+      - risk_exposure_plot.png
+  - id: safety_supervisor_ablation
+    status: Prototype
+    seed: 31
+    map: high_uncertainty
+    dynamic_obstacles: 2
+    expected_outputs:
+      - ablation_summary.json
+      - safety_mode_timeline.png
