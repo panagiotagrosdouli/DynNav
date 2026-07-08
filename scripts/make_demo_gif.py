@@ -25,10 +25,18 @@ def main() -> None:
     videos.mkdir(parents=True, exist_ok=True)
 
     config = DynNavConfig(width=40, height=40, n_scenarios=1)
-    scenario = generate_scenario(config.width, config.height, config.obstacle_density, config.unknown_fraction, config.seed)
-    trajectory, _ = RiskAwareAStar(config.risk_weight, config.returnability_weight, config.cvar_alpha).plan(
-        scenario.grid, scenario.start, scenario.goal
+    scenario = generate_scenario(
+        config.width,
+        config.height,
+        config.obstacle_density,
+        config.unknown_fraction,
+        config.seed,
     )
+    trajectory, _ = RiskAwareAStar(
+        config.risk_weight,
+        config.returnability_weight,
+        config.cvar_alpha,
+    ).plan(scenario.grid, scenario.start, scenario.goal)
 
     fig, ax = plt.subplots(figsize=(5, 5))
     ax.imshow(scenario.grid.occupancy, origin="lower")
@@ -39,14 +47,20 @@ def main() -> None:
     (point,) = ax.plot([], [], marker="o")
     poses = trajectory.poses or (scenario.start,)
 
-    def update(frame: int):
+    def update(frame: int) -> tuple[plt.Line2D, plt.Line2D]:
         xs = [pose.x for pose in poses[: frame + 1]]
         ys = [pose.y for pose in poses[: frame + 1]]
         line.set_data(xs, ys)
         point.set_data([xs[-1]], [ys[-1]])
         return line, point
 
-    anim = animation.FuncAnimation(fig, update, frames=len(poses), interval=80, blit=True)
+    anim = animation.FuncAnimation(
+        fig,
+        update,
+        frames=len(poses),
+        interval=80,
+        blit=True,
+    )
     anim.save(assets / "demo.gif", writer="pillow", fps=12)
     try:
         anim.save(videos / "demo.mp4", fps=12)
