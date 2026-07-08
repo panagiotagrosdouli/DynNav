@@ -45,5 +45,6 @@ select = ["E", "F", "I", "B", "UP"]
 "tests/**/*.py" = ["E501"]
 
 [tool.pytest.ini_options]
+pythonpath = ["src"]
 testpaths = ["tests"]
 addopts = "--cov=dynnav --cov-report=term-missing"
