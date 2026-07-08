@@ -1,6 +1,6 @@
 cff-version: 1.2.0
-title: "DynNav: Risk-Aware Dynamic Navigation in Unknown Environments"
-message: "If you use DynNav in academic work, please cite this software."
+title: "DynNav: Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments"
+message: "If you use DynNav in academic work, please cite this software repository."
 type: software
 authors:
   - family-names: Grosdouli
@@ -9,9 +9,12 @@ repository-code: "https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigatio
 license: Apache-2.0
 version: 0.1.0
 date-released: "2026-07-08"
+abstract: "A deterministic research software prototype for uncertainty-aware, risk-aware dynamic navigation, recoverability analysis, online rerouting, runtime monitoring, and reproducible synthetic benchmarking."
 keywords:
   - robotics
-  - navigation
-  - uncertainty
+  - autonomous navigation
   - risk-aware planning
   - dynamic rerouting
+  - uncertainty propagation
+  - recoverability
+  - runtime monitoring
