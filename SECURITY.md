@@ -1,21 +1,21 @@
 # Security Policy
 
-## Supported Versions
+DynNav is research software and should not be used as a sole safety mechanism for physical robots without independent validation.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+## Supported versions
 
-| Version | Supported          |
-| ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+The `main` branch and active research branches receive fixes. Archived experiment branches may not receive updates.
 
-## Reporting a Vulnerability
+## Reporting vulnerabilities
 
-Use this section to tell people how to report a vulnerability.
+Please report security or safety-critical issues privately to the repository owner. Include:
 
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+- affected component;
+- reproduction steps;
+- expected and observed behavior;
+- potential safety impact;
+- suggested mitigation if known.
+
+## Safety-critical limitations
+
+Runtime monitoring, safe-mode supervision, and risk-aware planning are research prototypes. They are not certified robotic safety systems and must be independently evaluated before hardware deployment.
