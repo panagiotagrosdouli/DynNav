@@ -54,7 +54,12 @@ class RuntimeMonitor:
                 trajectory.risk,
                 trajectory.recoverability,
             )
-        return MonitorState(True, "nominal", trajectory.risk, trajectory.recoverability)
+        return MonitorState(
+            True,
+            "nominal",
+            trajectory.risk,
+            trajectory.recoverability,
+        )
 
 
 @dataclass(slots=True)
