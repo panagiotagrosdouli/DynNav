@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import numpy as np
+
 from dynnav.benchmarks import run_benchmark, write_csv, write_summary
 from dynnav.config import DynNavConfig
 from dynnav.core import GridMap, NavigationState, Pose, estimate_self_awareness
@@ -8,7 +10,7 @@ from dynnav.scenarios import generate_scenario
 
 
 def test_risk_aware_astar_finds_path_on_empty_grid() -> None:
-    grid = GridMap.from_shape(width=8, height=8, fill=0.0)
+    grid = GridMap(np.zeros((8, 8), dtype=float))
     start = Pose(1, 1)
     goal = Pose(6, 6)
 
@@ -59,4 +61,4 @@ def test_scenario_generation_is_deterministic() -> None:
 
     assert first.start == second.start
     assert first.goal == second.goal
-    assert (first.grid.occupancy == second.grid.occupancy).all()
+    assert np.array_equal(first.grid.occupancy, second.grid.occupancy)
