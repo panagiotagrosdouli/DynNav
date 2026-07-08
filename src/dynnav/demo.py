@@ -19,8 +19,8 @@ from dynnav.scenarios import generate_scenario
 
 
 def generate_demo(
-    assets_dir: Path = Path("assets"),
-    videos_dir: Path = Path("results/videos"),
+    assets_dir: Path | None = None,
+    videos_dir: Path | None = None,
     *,
     width: int = 40,
     height: int = 40,
@@ -38,8 +38,10 @@ def generate_demo(
     Returns:
         A pair containing the GIF path and the MP4 path when export succeeds.
     """
-    assets_dir.mkdir(parents=True, exist_ok=True)
-    videos_dir.mkdir(parents=True, exist_ok=True)
+    assets = Path("assets") if assets_dir is None else assets_dir
+    videos = Path("results/videos") if videos_dir is None else videos_dir
+    assets.mkdir(parents=True, exist_ok=True)
+    videos.mkdir(parents=True, exist_ok=True)
 
     config = DynNavConfig(width=width, height=height, n_scenarios=1, seed=seed)
     scenario = generate_scenario(
@@ -80,10 +82,10 @@ def generate_demo(
         blit=True,
     )
 
-    gif_path = assets_dir / "demo.gif"
+    gif_path = assets / "demo.gif"
     anim.save(gif_path, writer="pillow", fps=12)
 
-    mp4_path = videos_dir / "demo.mp4"
+    mp4_path = videos / "demo.mp4"
     try:
         anim.save(mp4_path, fps=12)
     except Exception as exc:  # pragma: no cover - depends on system codecs
