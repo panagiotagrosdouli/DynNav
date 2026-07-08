@@ -33,9 +33,15 @@ class Ros2Adapter:
         should parse nav_msgs/OccupancyGrid and preserve unknown cells as
         probabilities rather than forcing a binary map.
         """
-        raise NotImplementedError("ROS 2 message conversion requires optional ROS dependencies")
+        raise NotImplementedError(
+            "ROS 2 message conversion requires optional ROS dependencies"
+        )
 
-    def command_from_trajectory(self, trajectory: Trajectory, mode: str = "nominal") -> Ros2NavigationCommand:
+    def command_from_trajectory(
+        self,
+        trajectory: Trajectory,
+        mode: str = "nominal",
+    ) -> Ros2NavigationCommand:
         """Convert a trajectory into a middleware-neutral navigation command."""
         target = trajectory.poses[1] if len(trajectory.poses) > 1 else None
         return Ros2NavigationCommand(mode=mode, target=target)
