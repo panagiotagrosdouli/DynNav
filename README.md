@@ -1,135 +1,135 @@
-# DynNav: Uncertainty-Aware Risk-Sensitive Navigation for Unknown Environments
+# DynNav: Risk-Aware Dynamic Navigation in Unknown Environments
 
-Companion repository for ongoing research on uncertainty-aware, risk-sensitive planning for mobile robot navigation in previously unmapped environments.
+[![CI](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.10%2B-green.svg)](pyproject.toml)
+
+DynNav is a research-grade software scaffold for studying risk-aware dynamic navigation and rerouting in unknown or partially observed environments. It focuses on scientifically honest, reproducible prototypes: occupancy-belief grids, risk-aware planning, recoverability estimation, runtime monitoring, deterministic benchmarks, automated figures, and a research website scaffold.
 
 **Author:** Panagiota Grosdouli, Department of Electrical & Computer Engineering, Democritus University of Thrace
 
----
+## Scope and maturity
 
-## Abstract
+This repository is a research prototype, not a certified robotic safety system. Components are labeled conservatively:
 
-Mobile robots operating in unknown environments must plan under uncertainty about both the map and their own state estimate. Standard shortest-path planners treat this uncertainty implicitly, if at all, and offer no formal guarantee against unsafe outcomes. This repository implements and evaluates a navigation stack that (i) maintains an explicit belief over occupancy and robot state, (ii) plans routes that trade off path cost against a risk measure (Conditional Value-at-Risk) derived from that belief, and (iii) enforces hard safety constraints at execution time via a Signal Temporal Logic monitor and Control Barrier Function command filter. The stack is evaluated in simulation (Gazebo, ROS 2 Humble) and, for a subset of components, on a TurtleBot3 Burger.
+- **Implemented:** code exists, has tests or smoke workflows, and can run in the default Python environment.
+- **Experimental:** code or documentation exists, but validation is incomplete or depends on optional middleware.
+- **Planned:** documented research direction without completed implementation.
 
-## Research Motivation
+| Component | Status | Default CI coverage |
+|---|---|---|
+| Typed grid, pose, and trajectory primitives | Implemented | Unit tests |
+| Risk-aware A* planning | Implemented | Unit tests + benchmark smoke test |
+| Recoverability / returnability scoring | Implemented | Planner tests |
+| Dynamic rerouting trigger | Implemented | Import-level coverage |
+| Runtime monitor and safe-mode supervisor | Implemented | Unit tests |
+| Uncertainty propagation prototype | Implemented | Unit tests |
+| Deterministic scenario generator | Implemented | Benchmark smoke test |
+| CSV benchmark runner and Markdown summaries | Implemented | CI smoke test |
+| Visualization and demo-generation scripts | Implemented | Manual/script execution |
+| ROS 2 / Nav2 integration | Experimental | Not in default CI |
+| Formal safety guarantees and hardware validation | Planned | Requires future logs/proofs |
 
-Classical planners (A*, D*) assume a known or fully-observed cost map and offer no explicit treatment of state or map uncertainty. In unknown environments this assumption fails: occupancy estimates are noisy and incomplete, and a planner that ignores this can select paths that are nominally short but carry high probability of collision or entrapment. This work asks how uncertainty can be represented, propagated into planning, and bounded by formal safety guarantees, without prohibitive computational cost for on-board deployment.
+## Scientific motivation
 
-## Research Objectives
+Navigation in unknown environments requires decisions under incomplete information. Shortest-path planners can select trajectories that are geometrically efficient but unsafe under map uncertainty, low recoverability, or delayed observations. DynNav exposes uncertainty as a first-class input to planning and supervision so that navigation behavior can be evaluated through safety-efficiency trade-offs rather than path length alone.
 
-1. Represent environment and state uncertainty in a form usable by a real-time planner.
-2. Quantify and incorporate risk (not just expected cost) into route selection.
-3. Provide a formal, verifiable safety layer independent of the planner's own correctness.
-4. Evaluate the resulting stack's safety–efficiency trade-off against classical baselines, in simulation and on hardware.
+## Architecture
 
-## Research Questions
-
-- **RQ1:** Does incorporating a CVaR risk term over predicted occupancy uncertainty reduce collision/entrapment rate relative to expected-cost planning, and at what path-length cost?
-- **RQ2:** Can a lightweight learned heuristic reduce planning-time node expansions without degrading the risk-awareness of the resulting path?
-- **RQ3:** Does an independent STL+CBF safety shield reduce constraint violations beyond what the risk-aware planner achieves alone, and what is the resulting control overhead?
-
-## Methodology
-
-Uncertainty over occupancy is estimated from LiDAR/SLAM output using an Extended/Unscented Kalman Filter for state estimation and a diffusion-based predictive model for occupancy in unobserved regions. Planning uses a risk-weighted A* variant that optimizes a CVaR objective over the resulting occupancy distribution, subject to a returnability constraint that avoids irreversible dead-ends. A learned heuristic is used to reduce planner node expansions. At execution time, a Signal Temporal Logic monitor checks safety specifications online and a Control Barrier Function filter modifies commands minimally when a violation is imminent.
-
-## System Architecture
-
-```
-Perception            LiDAR SLAM, EKF/UKF state estimation
-        |
-Environment Rep.       Diffusion-based occupancy uncertainty map
-        |
-Planning               Risk-weighted A* (CVaR), returnability constraint,
-                        learned heuristic
-        |
-Execution Safety       STL monitor -> CBF command filter
-        |
-Actuation               ROS 2 Humble -> TurtleBot3 / Gazebo
-```
-
-## Repository Structure
-
-```
-dynnav/
-├── experiments/                  # One directory per evaluated experiment
-│   ├── 01_learned_astar/
-│   ├── 02_uncertainty_estimation/
-│   ├── 03_belief_risk_planning/
-│   ├── 04_irreversibility_returnability/
-│   ├── 05_safe_mode_navigation/
-│   ├── 07_next_best_view/
-│   ├── 12_diffusion_occupancy/
-│   ├── 18_formal_safety_shields/
-│   └── tests/
-├── core/                         # Shared planning primitives
-├── dynamic_nav/                  # Main ROS 2 navigation stack
-├── lidar_ros2/                   # LiDAR + SLAM integration
-├── configs/                      # Experiment configuration files (version-controlled)
-├── docs/                         # Method notes, per-experiment README
-├── exploratory/                  # Early-stage work outside current scope (see note below)
-├── requirements.txt
-├── CITATION.cff
-└── README.md
+```text
+configs/          YAML experiment definitions
+src/dynnav/       reusable Python research package
+scripts/          benchmark, figure, and demo-generation entry points
+tests/            pytest suite
+.github/          CI workflows
+docs/             scientific and engineering documentation
+paper/            paper-facing text fragments
+website/          Next.js + TypeScript + Tailwind research site scaffold
+assets/           generated diagrams and demo GIFs
+results/          generated benchmark CSVs, summaries, figures, videos
 ```
 
-> **Note on `exploratory/`:** earlier iterations of this repository additionally explored vision-language mission parsing, reinforcement learning, federated/multi-robot consensus, adversarial robustness, and neuromorphic sensing. These are retained under `exploratory/` as early-stage, unvalidated experiments and are explicitly **not** part of the current research claim. They may form the basis of future work (§ Future Research Directions) but should not be read as completed contributions.
+Runtime flow:
 
-## Experimental Pipeline
+```text
+Scenario / perception -> occupancy belief -> uncertainty propagation
+        -> risk-aware planner -> recoverability estimator
+        -> runtime monitor -> reroute or safe-mode supervision
+        -> benchmark logs and figures
+```
 
-Each experiment directory contains a single entry-point script producing a CSV/plot output under `results/`, and a fixed random seed set. Example:
+## Installation
 
 ```bash
-python experiments/18_formal_safety_shields/eval_safety_shields.py \
-    --n_episodes 50 --seed 0 --out_csv results/shield_eval.csv
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .[dev]
 ```
 
-All reported numbers in this README are regenerated by `scripts/run_all_experiments.py`, which is exercised by continuous integration on every push (see badge below).
+Docker:
 
-## Current Development Status
+```bash
+docker build -t dynnav .
+docker run --rm dynnav
+```
 
-Maturity is reported using a fixed taxonomy: **Validated** (dedicated evaluation script, seeds/variance reported, reproducible under CI) / **Implemented** (runs end-to-end, evaluated, but variance/seed reporting incomplete) / **Experimental** (partial implementation or dependent on a non-default configuration).
+## Reproducible benchmark
 
-| Experiment | Maturity | Evaluated on |
-|---|---|---|
-| Uncertainty estimation (EKF/UKF) | Implemented | Simulation |
-| Belief-space / CVaR risk planning | Implemented | Simulation |
-| Irreversibility / returnability | Implemented | Simulation |
-| Safe-mode navigation | Implemented | Simulation + hardware (limited trials) |
-| Learned A* heuristic | Implemented | Simulation |
-| Next-best-view exploration | Implemented | Simulation |
-| Diffusion occupancy maps | Experimental | Simulation (requires full model stack; falls back to a placeholder estimator otherwise) |
-| Formal safety shields (STL+CBF) | Experimental | Simulation (evaluation protocol/variance reporting in progress) |
+```bash
+dynnav-benchmark \
+  --config configs/benchmark.yaml \
+  --out-csv results/benchmarks/dynnav_benchmark.csv \
+  --summary results/benchmarks/summary.md
+```
 
-No component in this list is described as "tested on hardware" unless a specific hardware trial log exists under `results/hardware/`. None are currently labeled "Validated" under the taxonomy above until seeds/variance are reported and reproduced under CI (see `exploratory/README.md` for modules excluded from this table).
+The benchmark uses deterministic seeds and keeps failed planning episodes in the CSV output.
 
-## Evaluation Strategy
+## Generate research assets
 
-Each experiment is run for a fixed number of episodes with fixed seeds; reported metrics include mean and standard deviation across seeds, not point estimates alone. Baselines are classical (non-risk-aware) equivalents of each component, run under identical scenario generation. Scenario generators and seeds are version-controlled under `configs/` so results are exactly reproducible from a clean checkout.
+```bash
+python scripts/generate_research_assets.py
+python scripts/make_demo_gif.py
+```
 
-## Future Research Directions
+Expected outputs include architecture diagrams, navigation pipeline diagrams, risk heatmaps, trajectory plots, uncertainty plots, `assets/demo.gif`, and `results/videos/demo.mp4` when local codecs are available.
 
-The following are open questions, not implemented capabilities:
+## Documentation map
 
-- Extending the risk-aware planner to multi-robot settings, where consensus under partial observability becomes relevant.
-- Evaluating whether vision-language grounding can provide semantically meaningful exploration priorities without compromising the safety guarantees of the STL/CBF layer.
-- Assessing robustness of the diffusion-based occupancy predictor under sensor spoofing or adversarial perturbation.
-- Real-time performance characterization for on-board (non-workstation) compute.
+- `docs/RESEARCH_OVERVIEW.md` — research scope, motivation, and limitations.
+- `docs/SYSTEM_ARCHITECTURE.md` — repository and runtime architecture.
+- `docs/NAVIGATION_PIPELINE.md` — closed-loop pipeline.
+- `docs/UNCERTAINTY_MODEL.md` — belief-grid uncertainty model.
+- `docs/RISK_ESTIMATION.md` — mission-risk and CVaR-style summaries.
+- `docs/EVALUATION_PROTOCOL.md` — benchmark reporting protocol.
+- `docs/REPRODUCIBILITY.md` — environment and deterministic execution.
+- `docs/ROADMAP.md` — staged future work.
 
-## References
+## Software quality
 
-A full bibliography is maintained in `docs/references.bib`. Core methodological references (CVaR optimization, Control Barrier Functions, Signal Temporal Logic monitoring, EKF/UKF state estimation) are cited in each experiment's `README.md`.
+The repository includes:
+
+- `pyproject.toml` with package metadata and tool configuration;
+- Black, Ruff, pytest, coverage configuration;
+- GitHub Actions CI;
+- pre-commit hooks;
+- Dockerfile;
+- typed Python modules with Google-style docstrings;
+- tests for core planning, monitoring, and uncertainty utilities.
+
+## Website
+
+A Next.js, TypeScript, TailwindCSS, and Framer Motion research-site scaffold is provided under `website/`.
+
+```bash
+cd website
+npm install
+npm run dev
+```
 
 ## Citation
 
-```bibtex
-@software{grosdouli2026dynnav,
-  author  = {Grosdouli, Panagiota},
-  title   = {{DynNav}: Uncertainty-Aware Risk-Sensitive Navigation for Unknown Environments},
-  year    = {2026},
-  url     = {https://github.com/panagiotagrosdouli/dynnav},
-  license = {Apache-2.0}
-}
-```
+See `CITATION.cff` and `paper/` for citation and manuscript-facing text fragments.
 
 ## License
 
-Apache License, Version 2.0 — see `LICENSE`.
+Apache License, Version 2.0. See `LICENSE`.
