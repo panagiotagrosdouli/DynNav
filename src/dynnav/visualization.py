@@ -34,7 +34,10 @@ def plot_trajectory(grid: GridMap, trajectory: Trajectory, path: Path) -> None:
         ys = [pose.y for pose in trajectory.poses]
         ax.plot(xs, ys, linewidth=2)
         ax.scatter([xs[0], xs[-1]], [ys[0], ys[-1]], s=50)
-    ax.set_title(f"Trajectory risk={trajectory.risk:.2f}, recoverability={trajectory.recoverability:.2f}")
+    ax.set_title(
+        f"Trajectory risk={trajectory.risk:.2f}, "
+        f"recoverability={trajectory.recoverability:.2f}"
+    )
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     fig.tight_layout()

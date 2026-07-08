@@ -19,7 +19,13 @@ class Scenario:
     seed: int
 
 
-def generate_scenario(width: int, height: int, obstacle_density: float, unknown_fraction: float, seed: int) -> Scenario:
+def generate_scenario(
+    width: int,
+    height: int,
+    obstacle_density: float,
+    unknown_fraction: float,
+    seed: int,
+) -> Scenario:
     """Generate a seeded grid-world scenario with soft uncertainty."""
     rng = np.random.default_rng(seed)
     occupancy = rng.random((height, width))

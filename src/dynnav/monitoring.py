@@ -25,15 +25,35 @@ class RuntimeMonitor:
     min_recoverability: float = 0.35
     max_local_occupancy: float = 0.7
 
-    def evaluate(self, grid: GridMap, pose: Pose, trajectory: Trajectory) -> MonitorState:
+    def evaluate(
+        self,
+        grid: GridMap,
+        pose: Pose,
+        trajectory: Trajectory,
+    ) -> MonitorState:
         """Evaluate safety invariants at the current pose."""
         local_probability = grid.probability(pose)
         if local_probability > self.max_local_occupancy:
-            return MonitorState(False, "local_collision_probability", trajectory.risk, trajectory.recoverability)
+            return MonitorState(
+                False,
+                "local_collision_probability",
+                trajectory.risk,
+                trajectory.recoverability,
+            )
         if trajectory.risk > self.max_risk:
-            return MonitorState(False, "mission_risk", trajectory.risk, trajectory.recoverability)
+            return MonitorState(
+                False,
+                "mission_risk",
+                trajectory.risk,
+                trajectory.recoverability,
+            )
         if trajectory.recoverability < self.min_recoverability:
-            return MonitorState(False, "low_recoverability", trajectory.risk, trajectory.recoverability)
+            return MonitorState(
+                False,
+                "low_recoverability",
+                trajectory.risk,
+                trajectory.recoverability,
+            )
         return MonitorState(True, "nominal", trajectory.risk, trajectory.recoverability)
 
 
