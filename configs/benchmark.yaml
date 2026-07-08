@@ -1,0 +1,10 @@
+seed: 0
+width: 48
+height: 48
+obstacle_density: 0.18
+unknown_fraction: 0.25
+risk_weight: 4.0
+cvar_alpha: 0.9
+returnability_weight: 1.5
+max_expansions: 10000
+n_scenarios: 20
