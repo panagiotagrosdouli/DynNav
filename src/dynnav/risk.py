@@ -37,7 +37,10 @@ def mission_risk(path_probabilities: list[float], alpha: float = 0.9) -> float:
     return max(collision_probability, cvar(samples, alpha=alpha))
 
 
-def propagate_uncertainty(occupancy: np.ndarray, process_noise: float = 0.02) -> np.ndarray:
+def propagate_uncertainty(
+    occupancy: np.ndarray,
+    process_noise: float = 0.02,
+) -> np.ndarray:
     """Apply a lightweight uncertainty propagation step.
 
     This is a deterministic prototype, not a replacement for a full Bayesian
