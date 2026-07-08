@@ -15,6 +15,7 @@ dependencies = [
   "PyYAML>=6.0",
   "matplotlib>=3.7",
   "pandas>=2.0",
+  "pillow>=10.0",
 ]
 
 [project.optional-dependencies]
@@ -26,7 +27,7 @@ dynnav-benchmark = "dynnav.benchmarks:main"
 dynnav-demo = "dynnav.demo:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/dynnav"]
+packages = ["src/dynnav", "src/dynnav_dashboard"]
 
 [tool.black]
 line-length = 88
