@@ -1,16 +1,23 @@
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'contributions', 'realtime_replanning', 'code'))
+import sys
 
-import pytest
-import numpy as np
-from dstar_lite import DStarLite
-from naive_replanner import NaiveReplanner
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(__file__), "..", "contributions", "realtime_replanning", "code"
+    ),
+)
+
+import numpy as np  # noqa: E402
+import pytest  # noqa: E402
+from dstar_lite import DStarLite  # noqa: E402
+from naive_replanner import NaiveReplanner  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
 # Shared fixtures
 # ---------------------------------------------------------------------------
+
 
 def _open_grid(H=10, W=10):
     return np.zeros((H, W), dtype=np.int32)
@@ -18,14 +25,15 @@ def _open_grid(H=10, W=10):
 
 def _maze_grid():
     g = np.zeros((8, 8), dtype=np.int32)
-    g[2, 1:6] = 1   # horizontal wall with gap at col 6
-    g[5, 2:7] = 1   # another wall
+    g[2, 1:6] = 1  # horizontal wall with gap at col 6
+    g[5, 2:7] = 1  # another wall
     return g
 
 
 # ---------------------------------------------------------------------------
 # DStarLite
 # ---------------------------------------------------------------------------
+
 
 class TestDStarLiteBasic:
     def test_simple_plan_found(self):
@@ -45,7 +53,7 @@ class TestDStarLiteBasic:
 
     def test_no_path_when_blocked(self):
         grid = np.zeros((5, 5), dtype=np.int32)
-        grid[:, 2] = 1   # full vertical wall — no passage
+        grid[:, 2] = 1  # full vertical wall — no passage
         d = DStarLite(grid, (0, 2), (4, 2))
         d.grid[:, 2] = 1
         # start is on the wall, so g(start) stays INF
@@ -105,6 +113,7 @@ class TestDStarLiteReplan:
         grid[0, 5] = 1
         d = DStarLite(grid, (0, 0), (9, 0))
         path1 = d.plan()
+        assert path1 is not None
         # clear the obstacle
         d.update_edge(5, 0, blocked=False)
         path2 = d.replan()
@@ -127,19 +136,19 @@ class TestDStarLiteVsNaive:
         naive = NaiveReplanner(grid.copy(), (0, 0), (14, 14))
         dstar.plan()
         naive.plan()
-        exp_before = dstar.expansions
         # force a replan
         dstar.update_edge(7, 7, blocked=True)
         dstar.replan()
         naive.update_edge(7, 7, blocked=True)
         naive.replan()
         # D* Lite total expansions should be <= naive (may be equal on tiny grids)
-        assert dstar.expansions >= 0   # sanity: never negative
+        assert dstar.expansions >= 0  # sanity: never negative
 
 
 # ---------------------------------------------------------------------------
 # NaiveReplanner
 # ---------------------------------------------------------------------------
+
 
 class TestNaiveReplanner:
     def test_plan_found(self):

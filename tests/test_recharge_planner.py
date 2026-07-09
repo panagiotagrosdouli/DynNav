@@ -1,10 +1,16 @@
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'contributions', '06_energy_connectivity', 'code'))
+import sys
 
-import pytest
-import numpy as np
-from recharge_planner import BatteryConfig, energy_astar, compare_energy_modes
+sys.path.insert(
+    0,
+    os.path.join(
+        os.path.dirname(__file__), "..", "contributions", "06_energy_connectivity", "code"
+    ),
+)
+
+import numpy as np  # noqa: E402
+import pytest  # noqa: E402
+from recharge_planner import BatteryConfig, compare_energy_modes, energy_astar  # noqa: E402
 
 
 def _open_grid(H=10, W=10):
@@ -14,6 +20,7 @@ def _open_grid(H=10, W=10):
 # ---------------------------------------------------------------------------
 # BatteryConfig
 # ---------------------------------------------------------------------------
+
 
 class TestBatteryConfig:
     def test_defaults(self):
@@ -32,6 +39,7 @@ class TestBatteryConfig:
 # ---------------------------------------------------------------------------
 # energy_astar — shortest mode
 # ---------------------------------------------------------------------------
+
 
 class TestEnergyAstarShortest:
     def test_finds_path(self):
@@ -64,6 +72,7 @@ class TestEnergyAstarShortest:
 # energy_astar — energy_optimal mode
 # ---------------------------------------------------------------------------
 
+
 class TestEnergyAstarEnergyOptimal:
     def test_finds_path_with_enough_battery(self):
         grid = _open_grid()
@@ -88,6 +97,7 @@ class TestEnergyAstarEnergyOptimal:
 # ---------------------------------------------------------------------------
 # energy_astar — recharge_aware mode
 # ---------------------------------------------------------------------------
+
 
 class TestEnergyAstarRechargeAware:
     def test_reaches_goal_with_midway_station(self):
@@ -117,6 +127,7 @@ class TestEnergyAstarRechargeAware:
 # ---------------------------------------------------------------------------
 # compare_energy_modes
 # ---------------------------------------------------------------------------
+
 
 class TestCompareEnergyModes:
     def test_returns_three_results(self):

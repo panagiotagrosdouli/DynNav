@@ -1,4 +1,7 @@
-from benchmarks.self_aware_astar.randomized_ablation_benchmark import aggregate, run_benchmark
+from benchmarks.self_aware_astar.randomized_ablation_benchmark import (
+    aggregate,
+    run_benchmark,
+)
 
 
 def test_randomized_ablation_benchmark_smoke_run():
