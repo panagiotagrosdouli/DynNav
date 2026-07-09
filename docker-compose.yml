@@ -1,0 +1,6 @@
+services:
+  dynnav:
+    build: .
+    volumes:
+      - ./results:/app/results
+    command: python scripts/run_all.py

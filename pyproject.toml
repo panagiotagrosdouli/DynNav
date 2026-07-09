@@ -1,50 +1,10 @@
-[build-system]
-requires = ["hatchling>=1.25"]
-build-backend = "hatchling.build"
-
 [project]
 name = "dynnav"
-version = "0.1.0"
-description = "Risk-aware dynamic navigation and rerouting prototypes for unknown environments"
-readme = "README.md"
+version = "0.4.0"
+description = "Synthetic dynamic navigation and rerouting research prototype"
 requires-python = ">=3.10"
-license = {text = "Apache-2.0"}
-authors = [{name = "Panagiota Grosdouli"}]
-dependencies = [
-  "numpy>=1.24",
-  "PyYAML>=6.0",
-  "matplotlib>=3.7",
-  "pandas>=2.0",
-  "pillow>=10.0",
-]
-
-[project.optional-dependencies]
-dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.5", "black>=24", "mypy>=1.10"]
-web = []
-
-[project.scripts]
-dynnav-benchmark = "dynnav.benchmarks:main"
-dynnav-demo = "dynnav.demo:main"
-
-[tool.hatch.build.targets.wheel]
-packages = ["src/dynnav", "src/dynnav_dashboard"]
-
-[tool.black]
-line-length = 88
-target-version = ["py310"]
-
-[tool.ruff]
-line-length = 88
-target-version = "py310"
-src = ["src", "tests", "scripts"]
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP"]
-
-[tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["E501"]
+dependencies = ["numpy", "matplotlib", "imageio", "imageio-ffmpeg", "pyyaml"]
 
 [tool.pytest.ini_options]
-pythonpath = ["src"]
+pythonpath = ["."]
 testpaths = ["tests"]
-addopts = "--cov=dynnav --cov-report=term-missing"
