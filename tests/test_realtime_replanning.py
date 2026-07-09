@@ -9,7 +9,6 @@ sys.path.insert(
 )
 
 import numpy as np  # noqa: E402
-import pytest  # noqa: E402
 from dstar_lite import DStarLite  # noqa: E402
 from naive_replanner import NaiveReplanner  # noqa: E402
 
