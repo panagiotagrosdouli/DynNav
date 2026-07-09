@@ -1,0 +1,16 @@
+seed: 17
+map_size: [32, 48]
+start: [2, 2]
+goal: [45, 28]
+obstacle_density: 0.20
+dynamic_obstacle_count: 6
+unknown_cell_ratio: 0.70
+planner: risk_astar
+lambda_risk: 3.5
+lambda_uncertainty: 0.6
+lambda_recoverability: 0.0
+risk_threshold: 0.55
+uncertainty_threshold: 0.70
+recoverability_threshold: 0.25
+max_steps: 220
+output_dir: results/blocked_path
