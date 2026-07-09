@@ -1,0 +1,16 @@
+seed: 29
+map_size: [32, 48]
+start: [2, 2]
+goal: [45, 28]
+obstacle_density: 0.28
+dynamic_obstacle_count: 3
+unknown_cell_ratio: 0.60
+planner: recoverability_astar
+lambda_risk: 2.5
+lambda_uncertainty: 1.0
+lambda_recoverability: 1.2
+risk_threshold: 0.58
+uncertainty_threshold: 0.70
+recoverability_threshold: 0.30
+max_steps: 240
+output_dir: results/narrow_passage
