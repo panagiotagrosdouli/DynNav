@@ -25,7 +25,7 @@ class DynNavConfig:
     n_scenarios: int = 20
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "DynNavConfig":
+    def from_yaml(cls, path: str | Path) -> DynNavConfig:
         """Load configuration from a YAML file."""
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
         return cls(
