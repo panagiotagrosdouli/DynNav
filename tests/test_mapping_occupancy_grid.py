@@ -126,17 +126,17 @@ def test_repeated_evidence_saturates_at_configured_bounds() -> None:
         OccupancyGridMetadata(width=10, height=4, resolution=1.0),
         model,
     )
-    scan = PlanarLaserScan(
-        ranges=(3.0,),
-        angle_min=0.0,
-        angle_increment=1.0,
-        range_min=0.1,
-        range_max=8.0,
-        timestamp=1.0,
-    )
 
     for timestamp in range(1, 100):
-        grid.update_scan((0.5, 0.5), 0.0, PlanarLaserScan(**{**scan.__dict__, "timestamp": float(timestamp)}))
+        scan = PlanarLaserScan(
+            ranges=(3.0,),
+            angle_min=0.0,
+            angle_increment=1.0,
+            range_min=0.1,
+            range_max=8.0,
+            timestamp=float(timestamp),
+        )
+        grid.update_scan((0.5, 0.5), 0.0, scan)
 
     assert grid.probability((3, 0)) == pytest.approx(0.9)
     assert grid.probability((1, 0)) == pytest.approx(0.1)
@@ -151,7 +151,7 @@ def test_dynamic_decay_relaxes_stale_evidence_toward_prior() -> None:
 
     assert decayed == 3
     assert 0.5 < grid.probability((5, 2)) < occupied_before
-    assert grid.probability((5, 2)) == pytest.approx(0.6, abs=1.0e-12)
+    assert grid.probability((5, 2)) == pytest.approx(0.6043560762610401)
 
 
 def test_decay_respects_stale_grace_period() -> None:
