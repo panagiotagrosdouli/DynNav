@@ -2,9 +2,11 @@ import numpy as np
 from ukf_fusion import UKF
 
 
-def run_sim(seed=0, T=120, attack_start=60, bias=np.array([1.0, 1.0, 0.5])):
+def run_sim(seed=0, T=120, attack_start=60, bias=None):
     np.random.seed(seed)
     ukf = UKF()
+    if bias is None:
+        bias = np.array([1.0, 1.0, 0.5])
 
     # ground-truth state (x, y, yaw)
     x_true = np.array([0.0, 0.0, 0.0], dtype=float)
@@ -40,7 +42,7 @@ def run_sim(seed=0, T=120, attack_start=60, bias=np.array([1.0, 1.0, 0.5])):
         if (t % 10 == 0) or (attack_start - 5 <= t <= attack_start + 10):
             info = ukf.last_vo_ids
             print(
-                f"t={t:03d} attack={'YES' if t>=attack_start else 'no '} "
+                f"t={t:03d} attack={'YES' if t >= attack_start else 'no '} "
                 f"d2={info['d2']:.3f} thr={info['thr']:.3f} "
                 f"flagged={info['flagged']} streak={info['streak']} trig={info['triggered']} "
                 f"security_alert={ukf.security_alert}"
@@ -59,4 +61,3 @@ if __name__ == "__main__":
     detected_at, triggered_steps = run_sim()
     print("Detected at step:", detected_at)
     print("VO triggered steps:", triggered_steps)
-
