@@ -4,13 +4,12 @@ from __future__ import annotations
 
 import argparse
 import csv
-from pathlib import Path
 import statistics
+from pathlib import Path
 
 from dynnav.config import DynNavConfig
 from dynnav.planning import RiskAwareAStar
 from dynnav.scenarios import generate_scenario
-
 
 CSV_FIELDS = [
     "seed",
