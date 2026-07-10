@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import heapq
 import json
+import time
 from pathlib import Path
 from typing import Any
 
@@ -47,7 +49,8 @@ def make_grid(cfg: dict[str, Any]) -> np.ndarray:
     grid = (rng.random((h, w)) < float(cfg["obstacle_density"])).astype(np.int8)
     sx, sy = cfg["start"]
     gx, gy = cfg["goal"]
-    grid[sy, sx] = grid[gy, gx] = 0
+    grid[sy, sx] = 0
+    grid[gy, gx] = 0
     for x in range(min(sx, gx), max(sx, gx) + 1):
         y = sy + round((gy - sy) * (x - sx) / max(1, gx - sx))
         grid[y, x] = 0
@@ -56,17 +59,30 @@ def make_grid(cfg: dict[str, Any]) -> np.ndarray:
     return grid
 
 
-def fields(grid: np.ndarray, known: np.ndarray, dyn: list[tuple[int, int]]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def fields(
+    grid: np.ndarray,
+    known: np.ndarray,
+    dyn: list[tuple[int, int]],
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     yy, xx = np.indices(grid.shape)
     obs = np.argwhere(grid == 1)
     proximity = np.zeros_like(grid, dtype=float)
     for y in range(grid.shape[0]):
         for x in range(grid.shape[1]):
-            dist = float(np.min((obs[:, 0] - y) ** 2 + (obs[:, 1] - x) ** 2)) ** 0.5 if len(obs) else 99.0
+            if len(obs):
+                squared_distances = (obs[:, 0] - y) ** 2 + (obs[:, 1] - x) ** 2
+                dist = float(np.min(squared_distances)) ** 0.5
+            else:
+                dist = 99.0
             proximity[y, x] = min(1.0, 1.0 / (dist + 1.0))
+
     dynamic = np.zeros_like(proximity)
     for x, y in dyn:
-        dynamic = np.maximum(dynamic, np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 18.0))
+        dynamic = np.maximum(
+            dynamic,
+            np.exp(-((xx - x) ** 2 + (yy - y) ** 2) / 18.0),
+        )
+
     uncertainty = (~known).astype(float)
     risk = np.clip(0.52 * proximity + 0.28 * dynamic + 0.20 * uncertainty, 0, 1)
     recoverability = np.clip(1.0 - 0.6 * proximity - 0.4 * uncertainty, 0, 1)
@@ -76,12 +92,14 @@ def fields(grid: np.ndarray, known: np.ndarray, dyn: list[tuple[int, int]]) -> t
 def neighbors(p: tuple[int, int], grid: np.ndarray) -> list[tuple[int, int]]:
     x, y = p
     pts = [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
-    return [(a, b) for a, b in pts if 0 <= a < grid.shape[1] and 0 <= b < grid.shape[0] and grid[b, a] == 0]
+    return [
+        (a, b)
+        for a, b in pts
+        if 0 <= a < grid.shape[1] and 0 <= b < grid.shape[0] and grid[b, a] == 0
+    ]
 
 
 def plan(grid, start, goal, risk, uncertainty, recoverability, planner):
-    import heapq, time
-
     t0 = time.perf_counter()
     wr, wu, wg = PLANNERS[planner]
     use_h = planner != "dijkstra"
@@ -89,6 +107,7 @@ def plan(grid, start, goal, risk, uncertainty, recoverability, planner):
     came = {start: None}
     cost = {start: 0.0}
     expanded = 0
+
     while pq:
         _, cur = heapq.heappop(pq)
         expanded += 1
@@ -96,27 +115,47 @@ def plan(grid, start, goal, risk, uncertainty, recoverability, planner):
             break
         for nxt in neighbors(cur, grid):
             x, y = nxt
-            step = max(0.05, 1.0 + wr * risk[y, x] + wu * uncertainty[y, x] - wg * recoverability[y, x])
+            step = max(
+                0.05,
+                1.0
+                + wr * risk[y, x]
+                + wu * uncertainty[y, x]
+                - wg * recoverability[y, x],
+            )
             new_cost = cost[cur] + step
             if nxt not in cost or new_cost < cost[nxt]:
                 cost[nxt] = new_cost
                 came[nxt] = cur
-                h = abs(nxt[0] - goal[0]) + abs(nxt[1] - goal[1]) if use_h else 0
-                heapq.heappush(pq, (new_cost + h, nxt))
+                heuristic = (
+                    abs(nxt[0] - goal[0]) + abs(nxt[1] - goal[1])
+                    if use_h
+                    else 0
+                )
+                heapq.heappush(pq, (new_cost + heuristic, nxt))
+
     if goal not in came:
-        return [], {"success": False, "planning_time": time.perf_counter() - t0, "expanded_nodes": expanded}
+        return [], {
+            "success": False,
+            "planning_time": time.perf_counter() - t0,
+            "expanded_nodes": expanded,
+        }
+
     path = []
     cur = goal
     while cur is not None:
         path.append(cur)
         cur = came[cur]
-    return path[::-1], {"success": True, "planning_time": time.perf_counter() - t0, "expanded_nodes": expanded}
+    return path[::-1], {
+        "success": True,
+        "planning_time": time.perf_counter() - t0,
+        "expanded_nodes": expanded,
+    }
 
 
 def write_csv(path: Path, rows: list[dict[str, Any]], cols: list[str]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=cols)
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=cols)
         writer.writeheader()
         writer.writerows(rows)
 
@@ -130,15 +169,33 @@ def save_fig(path: Path, arr: np.ndarray, title: str) -> None:
     plt.close(fig)
 
 
+def _move_dynamic_obstacles(
+    dyn: list[tuple[int, int]],
+    grid: np.ndarray,
+    width: int,
+) -> list[tuple[int, int]]:
+    moved: list[tuple[int, int]] = []
+    for index, (x, y) in enumerate(dyn):
+        candidate_x = (x + (1 if index % 2 == 0 else -1)) % width
+        moved.append((candidate_x, y) if grid[y, candidate_x] == 0 else (x, y))
+    return moved
+
+
 def run_pipeline(cfg: dict[str, Any], smoke: bool = False) -> dict[str, Any]:
     root = Path(cfg["output_dir"])
     mkdirs(root)
     grid = make_grid(cfg)
-    h, w = grid.shape
+    height, width = grid.shape
     start = tuple(cfg["start"])
     goal = tuple(cfg["goal"])
     rng = np.random.default_rng(int(cfg["seed"]))
-    dyn = [(int(rng.integers(5, w - 5)), int(rng.integers(5, h - 5))) for _ in range(int(cfg["dynamic_obstacle_count"]))]
+    dyn = [
+        (
+            int(rng.integers(5, width - 5)),
+            int(rng.integers(5, height - 5)),
+        )
+        for _ in range(int(cfg["dynamic_obstacle_count"]))
+    ]
     known = np.zeros_like(grid, dtype=bool)
     robot = start
     path: list[tuple[int, int]] = []
@@ -149,60 +206,288 @@ def run_pipeline(cfg: dict[str, Any], smoke: bool = False) -> dict[str, Any]:
     plan_times: list[float] = []
     max_steps = min(int(cfg["max_steps"]), 35) if smoke else int(cfg["max_steps"])
     planner = str(cfg["planner"])
-    for t in range(max_steps):
+
+    for timestep in range(max_steps):
         yy, xx = np.indices(grid.shape)
         known[((xx - robot[0]) ** 2 + (yy - robot[1]) ** 2) <= 25] = True
         risk, uncertainty, recoverability = fields(grid, known, dyn)
-        need = not path or len(path) < 2 or any(p in dyn for p in path[:5]) or risk[robot[1], robot[0]] > 0.62 or uncertainty[robot[1], robot[0]] > 0.70 or recoverability[robot[1], robot[0]] < 0.25
-        if need:
-            old = len(path)
-            path, info = plan(grid, robot, goal, risk, uncertainty, recoverability, planner)
+
+        needs_replan = (
+            not path
+            or len(path) < 2
+            or any(point in dyn for point in path[:5])
+            or risk[robot[1], robot[0]] > 0.62
+            or uncertainty[robot[1], robot[0]] > 0.70
+            or recoverability[robot[1], robot[0]] < 0.25
+        )
+        if needs_replan:
+            old_path_length = len(path)
+            path, info = plan(
+                grid,
+                robot,
+                goal,
+                risk,
+                uncertainty,
+                recoverability,
+                planner,
+            )
             plan_times.append(float(info["planning_time"]))
-            reroutes.append({"timestep": t, "robot_x": robot[0], "robot_y": robot[1], "trigger": "initial" if old == 0 else "risk_uncertainty_recoverability_or_blockage", "old_path_length": old, "new_path_length": len(path), "risk_before": float(risk[robot[1], robot[0]]), "risk_after": float(np.mean([risk[y, x] for x, y in path])) if path else 1.0, "uncertainty_before": float(uncertainty[robot[1], robot[0]]), "uncertainty_after": float(np.mean([uncertainty[y, x] for x, y in path])) if path else 1.0, "success": bool(path)})
-        nxt = path[1] if len(path) > 1 else robot
-        blocked = nxt in dyn
+            reroutes.append(
+                {
+                    "timestep": timestep,
+                    "robot_x": robot[0],
+                    "robot_y": robot[1],
+                    "trigger": (
+                        "initial"
+                        if old_path_length == 0
+                        else "risk_uncertainty_recoverability_or_blockage"
+                    ),
+                    "old_path_length": old_path_length,
+                    "new_path_length": len(path),
+                    "risk_before": float(risk[robot[1], robot[0]]),
+                    "risk_after": (
+                        float(np.mean([risk[y, x] for x, y in path])) if path else 1.0
+                    ),
+                    "uncertainty_before": float(uncertainty[robot[1], robot[0]]),
+                    "uncertainty_after": (
+                        float(np.mean([uncertainty[y, x] for x, y in path]))
+                        if path
+                        else 1.0
+                    ),
+                    "success": bool(path),
+                }
+            )
+
+        next_position = path[1] if len(path) > 1 else robot
+        blocked = next_position in dyn
         state = "REROUTE" if blocked else "NORMAL"
         if risk[robot[1], robot[0]] > 0.70:
             state = "SLOW_DOWN"
-        elif risk[robot[1], robot[0]] > 0.55 or uncertainty[robot[1], robot[0]] > 0.65 or recoverability[robot[1], robot[0]] < 0.25:
+        elif (
+            risk[robot[1], robot[0]] > 0.55
+            or uncertainty[robot[1], robot[0]] > 0.65
+            or recoverability[robot[1], robot[0]] < 0.25
+        ):
             state = "CAUTION"
-        safety.append({"timestep": t, "state": state, "risk": float(risk[robot[1], robot[0]]), "uncertainty": float(uncertainty[robot[1], robot[0]]), "recoverability": float(recoverability[robot[1], robot[0]]), "path_blocked": blocked})
+
+        safety.append(
+            {
+                "timestep": timestep,
+                "state": state,
+                "risk": float(risk[robot[1], robot[0]]),
+                "uncertainty": float(uncertainty[robot[1], robot[0]]),
+                "recoverability": float(recoverability[robot[1], robot[0]]),
+                "path_blocked": blocked,
+            }
+        )
+
         if not blocked and path:
-            robot = nxt
+            robot = next_position
             path = path[1:]
-        traj.append({"timestep": t, "x": robot[0], "y": robot[1], "risk": float(risk[robot[1], robot[0]]), "uncertainty": float(uncertainty[robot[1], robot[0]]), "recoverability": float(recoverability[robot[1], robot[0]]), "safety_state": state})
-        for i, (x, y) in enumerate(dyn):
-            dyn_rows.append({"timestep": t, "id": i, "x": x, "y": y})
+
+        traj.append(
+            {
+                "timestep": timestep,
+                "x": robot[0],
+                "y": robot[1],
+                "risk": float(risk[robot[1], robot[0]]),
+                "uncertainty": float(uncertainty[robot[1], robot[0]]),
+                "recoverability": float(recoverability[robot[1], robot[0]]),
+                "safety_state": state,
+            }
+        )
+
+        for obstacle_id, (x, y) in enumerate(dyn):
+            dyn_rows.append(
+                {
+                    "timestep": timestep,
+                    "id": obstacle_id,
+                    "x": x,
+                    "y": y,
+                }
+            )
+
         if robot == goal:
             break
-        dyn = [((x + (1 if i % 2 == 0 else -1)) % w, y) if grid[y, (x + (1 if i % 2 == 0 else -1)) % w] == 0 else (x, y) for i, (x, y) in enumerate(dyn)]
+        dyn = _move_dynamic_obstacles(dyn, grid, width)
+
     risk, uncertainty, recoverability = fields(grid, known, dyn)
-    np.save(root / "risk_map.npy", risk); np.save(root / "uncertainty_map.npy", uncertainty); np.save(root / "recoverability_map.npy", recoverability)
-    write_csv(root / "executed_trajectory.csv", traj, ["timestep", "x", "y", "risk", "uncertainty", "recoverability", "safety_state"])
-    write_csv(root / "dynamic_obstacles.csv", dyn_rows, ["timestep", "id", "x", "y"])
-    write_csv(root / "reroute_events.csv", reroutes, ["timestep", "robot_x", "robot_y", "trigger", "old_path_length", "new_path_length", "risk_before", "risk_after", "uncertainty_before", "uncertainty_after", "success"])
-    write_csv(root / "safety_events.csv", safety, ["timestep", "state", "risk", "uncertainty", "recoverability", "path_blocked"])
-    (root / "planned_paths.json").write_text(json.dumps([{"timestep": row["timestep"], "path": []} for row in traj]))
-    metrics = {"planner": planner, "path_length": len(traj), "executed_trajectory_length": len(traj), "planning_time": float(np.mean(plan_times)) if plan_times else 0.0, "replanning_count": len(reroutes), "reroute_success_rate": sum(1 for r in reroutes if r["success"]) / max(1, len(reroutes)), "collision_count": 0, "near_miss_count": sum(1 for s in safety if s["path_blocked"]), "mission_success": robot == goal, "mission_completion_time": len(traj), "risk_exposure": sum(r["risk"] for r in traj), "uncertainty_exposure": sum(r["uncertainty"] for r in traj), "recoverability_exposure": sum(r["recoverability"] for r in traj), "safety_intervention_count": sum(1 for s in safety if s["state"] != "NORMAL"), "average_replanning_latency": float(np.mean(plan_times)) if plan_times else 0.0}
+    np.save(root / "risk_map.npy", risk)
+    np.save(root / "uncertainty_map.npy", uncertainty)
+    np.save(root / "recoverability_map.npy", recoverability)
+
+    write_csv(
+        root / "executed_trajectory.csv",
+        traj,
+        [
+            "timestep",
+            "x",
+            "y",
+            "risk",
+            "uncertainty",
+            "recoverability",
+            "safety_state",
+        ],
+    )
+    write_csv(
+        root / "dynamic_obstacles.csv",
+        dyn_rows,
+        ["timestep", "id", "x", "y"],
+    )
+    write_csv(
+        root / "reroute_events.csv",
+        reroutes,
+        [
+            "timestep",
+            "robot_x",
+            "robot_y",
+            "trigger",
+            "old_path_length",
+            "new_path_length",
+            "risk_before",
+            "risk_after",
+            "uncertainty_before",
+            "uncertainty_after",
+            "success",
+        ],
+    )
+    write_csv(
+        root / "safety_events.csv",
+        safety,
+        [
+            "timestep",
+            "state",
+            "risk",
+            "uncertainty",
+            "recoverability",
+            "path_blocked",
+        ],
+    )
+    planned_paths = [{"timestep": row["timestep"], "path": []} for row in traj]
+    (root / "planned_paths.json").write_text(json.dumps(planned_paths))
+
+    metrics = {
+        "planner": planner,
+        "path_length": len(traj),
+        "executed_trajectory_length": len(traj),
+        "planning_time": float(np.mean(plan_times)) if plan_times else 0.0,
+        "replanning_count": len(reroutes),
+        "reroute_success_rate": (
+            sum(1 for row in reroutes if row["success"]) / max(1, len(reroutes))
+        ),
+        "collision_count": 0,
+        "near_miss_count": sum(1 for row in safety if row["path_blocked"]),
+        "mission_success": robot == goal,
+        "mission_completion_time": len(traj),
+        "risk_exposure": sum(row["risk"] for row in traj),
+        "uncertainty_exposure": sum(row["uncertainty"] for row in traj),
+        "recoverability_exposure": sum(row["recoverability"] for row in traj),
+        "safety_intervention_count": sum(
+            1 for row in safety if row["state"] != "NORMAL"
+        ),
+        "average_replanning_latency": (
+            float(np.mean(plan_times)) if plan_times else 0.0
+        ),
+    }
     write_csv(root / "metrics/metrics.csv", [metrics], list(metrics))
-    (root / "metrics/summary.json").write_text(json.dumps(metrics, indent=2)); (root / "mission_summary.json").write_text(json.dumps({**metrics, "limitations": ["Synthetic Demo; not ROS2/hardware validated."]}, indent=2))
-    save_fig(root / "figures/occupancy_grid.png", grid, "occupancy grid"); save_fig(root / "figures/risk_heatmap.png", risk, "risk heatmap"); save_fig(root / "figures/uncertainty_heatmap.png", uncertainty, "uncertainty heatmap"); save_fig(root / "figures/recoverability_heatmap.png", recoverability, "recoverability heatmap")
-    xs = [r["x"] for r in traj]; ys = [r["y"] for r in traj]
-    fig, ax = plt.subplots(figsize=(7, 4)); ax.imshow(grid, origin="lower", alpha=0.35); ax.plot(xs, ys); ax.set_title("trajectory"); fig.savefig(root / "figures/trajectory.png", bbox_inches="tight"); fig.savefig("assets/figures/trajectory.png", bbox_inches="tight"); plt.close(fig)
-    for name in ["dynamic_obstacle_timeline.png", "rerouting_timeline.png", "safety_timeline.png", "risk_aware_vs_shortest_path.png", "planning_time_comparison.png", "architecture_diagram.png", "navigation_pipeline_diagram.png", "benchmark_comparison.png"]:
-        fig, ax = plt.subplots(figsize=(6, 3)); ax.plot([r["risk"] for r in traj], label="risk"); ax.plot([r["uncertainty"] for r in traj], label="uncertainty"); ax.legend(); ax.set_title(name); fig.savefig(root / "figures" / name, bbox_inches="tight"); fig.savefig(Path("assets/figures") / name, bbox_inches="tight"); plt.close(fig)
+    (root / "metrics/summary.json").write_text(json.dumps(metrics, indent=2))
+    mission_summary = {
+        **metrics,
+        "limitations": ["Synthetic Demo; not ROS2/hardware validated."],
+    }
+    (root / "mission_summary.json").write_text(
+        json.dumps(mission_summary, indent=2)
+    )
+
+    save_fig(root / "figures/occupancy_grid.png", grid, "occupancy grid")
+    save_fig(root / "figures/risk_heatmap.png", risk, "risk heatmap")
+    save_fig(
+        root / "figures/uncertainty_heatmap.png",
+        uncertainty,
+        "uncertainty heatmap",
+    )
+    save_fig(
+        root / "figures/recoverability_heatmap.png",
+        recoverability,
+        "recoverability heatmap",
+    )
+
+    xs = [row["x"] for row in traj]
+    ys = [row["y"] for row in traj]
     fig, ax = plt.subplots(figsize=(7, 4))
-    def animate(i):
-        ax.clear(); ax.imshow(grid, origin="lower", alpha=0.35); ax.imshow(risk, origin="lower", alpha=0.35); ax.plot(xs[: i + 1], ys[: i + 1]); ax.scatter(xs[i], ys[i]); ax.set_title(f"DynNav t={i} {traj[i]['safety_state']}")
-    anim = FuncAnimation(fig, animate, frames=max(1, len(traj)), interval=80)
-    anim.save(root / "videos/dynnav_demo.gif", writer=PillowWriter(fps=8)); anim.save("assets/gifs/demo.gif", writer=PillowWriter(fps=8))
-    try:
-        anim.save(root / "videos/dynnav_demo.mp4", fps=8); anim.save("assets/videos/demo.mp4", fps=8)
-    except Exception as exc:
-        (root / "reports/mp4_fallback.md").write_text(f"MP4 export failed: {exc}; GIF fallback produced.\n")
+    ax.imshow(grid, origin="lower", alpha=0.35)
+    ax.plot(xs, ys)
+    ax.set_title("trajectory")
+    fig.savefig(root / "figures/trajectory.png", bbox_inches="tight")
+    fig.savefig("assets/figures/trajectory.png", bbox_inches="tight")
     plt.close(fig)
-    (root / "reports/evaluation_report.md").write_text("# Evaluation Report\n\nSynthetic Demo only; no real-world claim.\n\n```json\n" + json.dumps(metrics, indent=2) + "\n```\n")
-    (root / "reports/reproducibility_report.md").write_text("# Reproducibility Report\n\nRun `python scripts/run_all.py --config configs/default.yaml`. Seeded synthetic demo.\n")
+
+    figure_names = [
+        "dynamic_obstacle_timeline.png",
+        "rerouting_timeline.png",
+        "safety_timeline.png",
+        "risk_aware_vs_shortest_path.png",
+        "planning_time_comparison.png",
+        "architecture_diagram.png",
+        "navigation_pipeline_diagram.png",
+        "benchmark_comparison.png",
+    ]
+    for name in figure_names:
+        fig, ax = plt.subplots(figsize=(6, 3))
+        ax.plot([row["risk"] for row in traj], label="risk")
+        ax.plot([row["uncertainty"] for row in traj], label="uncertainty")
+        ax.legend()
+        ax.set_title(name)
+        fig.savefig(root / "figures" / name, bbox_inches="tight")
+        fig.savefig(Path("assets/figures") / name, bbox_inches="tight")
+        plt.close(fig)
+
+    fig, ax = plt.subplots(figsize=(7, 4))
+
+    def animate(index: int) -> None:
+        ax.clear()
+        ax.imshow(grid, origin="lower", alpha=0.35)
+        ax.imshow(risk, origin="lower", alpha=0.35)
+        ax.plot(xs[: index + 1], ys[: index + 1])
+        ax.scatter(xs[index], ys[index])
+        ax.set_title(f"DynNav t={index} {traj[index]['safety_state']}")
+
+    animation = FuncAnimation(
+        fig,
+        animate,
+        frames=max(1, len(traj)),
+        interval=80,
+    )
+    animation.save(
+        root / "videos/dynnav_demo.gif",
+        writer=PillowWriter(fps=8),
+    )
+    animation.save(
+        "assets/gifs/demo.gif",
+        writer=PillowWriter(fps=8),
+    )
+    try:
+        animation.save(root / "videos/dynnav_demo.mp4", fps=8)
+        animation.save("assets/videos/demo.mp4", fps=8)
+    except Exception as exc:
+        (root / "reports/mp4_fallback.md").write_text(
+            f"MP4 export failed: {exc}; GIF fallback produced.\n"
+        )
+    plt.close(fig)
+
+    evaluation_report = (
+        "# Evaluation Report\n\n"
+        "Synthetic Demo only; no real-world claim.\n\n"
+        "```json\n"
+        + json.dumps(metrics, indent=2)
+        + "\n```\n"
+    )
+    (root / "reports/evaluation_report.md").write_text(evaluation_report)
+    (root / "reports/reproducibility_report.md").write_text(
+        "# Reproducibility Report\n\n"
+        "Run `python scripts/run_all.py --config configs/default.yaml`. "
+        "Seeded synthetic demo.\n"
+    )
     return metrics
 
 
@@ -215,13 +500,25 @@ def main(argv=None):
     parser.add_argument("--smoke", action="store_true")
     args = parser.parse_args(argv)
     cfg = load_config(args.config)
-    if args.planner: cfg["planner"] = args.planner
-    if args.seed is not None: cfg["seed"] = args.seed
-    if args.out_dir: cfg["output_dir"] = args.out_dir
+    if args.planner:
+        cfg["planner"] = args.planner
+    if args.seed is not None:
+        cfg["seed"] = args.seed
+    if args.out_dir:
+        cfg["output_dir"] = args.out_dir
+
     metrics = run_pipeline(cfg, smoke=args.smoke)
     root = Path(cfg["output_dir"])
     print("DynNav pipeline complete")
-    for rel in ["metrics/metrics.csv", "figures/trajectory.png", "videos/dynnav_demo.gif", "videos/dynnav_demo.mp4", "reports/evaluation_report.md", "reports/reproducibility_report.md"]:
+    output_paths = [
+        "metrics/metrics.csv",
+        "figures/trajectory.png",
+        "videos/dynnav_demo.gif",
+        "videos/dynnav_demo.mp4",
+        "reports/evaluation_report.md",
+        "reports/reproducibility_report.md",
+    ]
+    for rel in output_paths:
         print(f"- {root / rel}: {(root / rel).exists()}")
     print("Remaining limitations: Synthetic Demo; ROS2/Nav2 needs runtime validation.")
     return metrics
