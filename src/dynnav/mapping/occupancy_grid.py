@@ -11,9 +11,13 @@ from dataclasses import dataclass
 from typing import Final
 
 import numpy as np
+from numpy.typing import NDArray
 
 GridIndex = tuple[int, int]
 WorldPoint = tuple[float, float]
+FloatGrid = NDArray[np.float64]
+BoolGrid = NDArray[np.bool_]
+Int8Grid = NDArray[np.int8]
 
 _EPSILON: Final[float] = 1.0e-12
 
@@ -61,7 +65,9 @@ class InverseSensorModel:
             self.maximum_probability,
         )
         if any(not math.isfinite(value) or not 0.0 < value < 1.0 for value in probabilities):
-            raise ValueError("sensor-model probabilities must be finite and strictly inside (0, 1)")
+            raise ValueError(
+                "sensor-model probabilities must be finite and strictly inside (0, 1)"
+            )
         if self.free_probability >= self.prior_probability:
             raise ValueError("free_probability must be lower than prior_probability")
         if self.occupied_probability <= self.prior_probability:
@@ -84,12 +90,12 @@ class InverseSensorModel:
 
     @property
     def free_increment(self) -> float:
-        """Return the additive free-space evidence relative to the prior."""
+        """Return additive free-space evidence relative to the prior."""
         return self._logit(self.free_probability) - self.prior_log_odds
 
     @property
     def occupied_increment(self) -> float:
-        """Return the additive occupied-space evidence relative to the prior."""
+        """Return additive occupied-space evidence relative to the prior."""
         return self._logit(self.occupied_probability) - self.prior_log_odds
 
     @property
@@ -105,11 +111,7 @@ class InverseSensorModel:
 
 @dataclass(frozen=True, slots=True)
 class PlanarLaserScan:
-    """Middleware-neutral planar laser scan.
-
-    Angles are expressed in radians in the sensor frame. Infinite ranges are treated as
-    valid no-return observations at ``range_max``; NaN and non-positive values are ignored.
-    """
+    """Middleware-neutral planar laser scan."""
 
     ranges: tuple[float, ...]
     angle_min: float
@@ -122,14 +124,14 @@ class PlanarLaserScan:
         """Validate scan geometry and timestamps."""
         if not self.ranges:
             raise ValueError("ranges must not be empty")
-        scalar_values = (
+        metadata = (
             self.angle_min,
             self.angle_increment,
             self.range_min,
             self.range_max,
             self.timestamp,
         )
-        if any(not math.isfinite(value) for value in scalar_values):
+        if any(not math.isfinite(value) for value in metadata):
             raise ValueError("scan metadata must be finite")
         if self.angle_increment == 0.0:
             raise ValueError("angle_increment must be non-zero")
@@ -149,11 +151,7 @@ class MappingUpdateStats:
 
 
 class OccupancyBeliefGrid:
-    """Bayesian occupancy belief grid using bounded additive log odds.
-
-    Array indexing follows NumPy convention ``[row, column] == [y, x]``. Grid indices
-    exposed by the public API use ``(x, y)`` to match robotics coordinate conventions.
-    """
+    """Bayesian occupancy belief grid using bounded additive log odds."""
 
     def __init__(
         self,
@@ -164,9 +162,13 @@ class OccupancyBeliefGrid:
         self.metadata = metadata
         self.sensor_model = sensor_model or InverseSensorModel()
         shape = (metadata.height, metadata.width)
-        self._log_odds = np.full(shape, self.sensor_model.prior_log_odds, dtype=np.float64)
-        self._observed = np.zeros(shape, dtype=np.bool_)
-        self._last_observed = np.full(shape, -np.inf, dtype=np.float64)
+        self._log_odds: FloatGrid = np.full(
+            shape,
+            self.sensor_model.prior_log_odds,
+            dtype=np.float64,
+        )
+        self._observed: BoolGrid = np.zeros(shape, dtype=np.bool_)
+        self._last_observed: FloatGrid = np.full(shape, -np.inf, dtype=np.float64)
 
     @property
     def shape(self) -> tuple[int, int]:
@@ -174,15 +176,15 @@ class OccupancyBeliefGrid:
         return self._log_odds.shape
 
     @property
-    def log_odds(self) -> np.ndarray:
+    def log_odds(self) -> FloatGrid:
         """Return a read-only view of the log-odds field."""
         view = self._log_odds.view()
         view.flags.writeable = False
         return view
 
     @property
-    def observed_mask(self) -> np.ndarray:
-        """Return a read-only Boolean view indicating cells observed at least once."""
+    def observed_mask(self) -> BoolGrid:
+        """Return a read-only Boolean view of cells observed at least once."""
         view = self._observed.view()
         view.flags.writeable = False
         return view
@@ -193,7 +195,7 @@ class OccupancyBeliefGrid:
         return 0 <= x < self.metadata.width and 0 <= y < self.metadata.height
 
     def world_to_grid(self, point: WorldPoint) -> GridIndex | None:
-        """Convert a world coordinate to a grid index, or return ``None`` outside the map."""
+        """Convert a world coordinate to a grid index, or return ``None`` outside."""
         x, y = point
         if not math.isfinite(x) or not math.isfinite(y):
             raise ValueError("world coordinates must be finite")
@@ -217,13 +219,13 @@ class OccupancyBeliefGrid:
         if not self.in_bounds(index):
             raise IndexError(f"grid index outside map: {index!r}")
         x, y = index
-        value = self._log_odds[y, x]
-        return float(1.0 / (1.0 + math.exp(-value)))
+        value = float(self._log_odds[y, x])
+        return 1.0 / (1.0 + math.exp(-value))
 
-    def probability_grid(self) -> np.ndarray:
+    def probability_grid(self) -> FloatGrid:
         """Return a copy of all occupancy probabilities."""
         positive = self._log_odds >= 0.0
-        probabilities = np.empty_like(self._log_odds)
+        probabilities: FloatGrid = np.empty_like(self._log_odds)
         probabilities[positive] = 1.0 / (1.0 + np.exp(-self._log_odds[positive]))
         exponential = np.exp(self._log_odds[~positive])
         probabilities[~positive] = exponential / (1.0 + exponential)
@@ -233,16 +235,12 @@ class OccupancyBeliefGrid:
         self,
         free_threshold: float = 0.35,
         occupied_threshold: float = 0.65,
-    ) -> np.ndarray:
-        """Return ROS-compatible values: unknown ``-1``, free ``0``, occupied ``100``.
-
-        Observed probabilities between the thresholds are represented by rounded values in
-        ``[1, 99]`` so downstream consumers retain probabilistic information.
-        """
+    ) -> Int8Grid:
+        """Return ROS-compatible values: unknown ``-1``, free ``0``, occupied ``100``."""
         if not 0.0 <= free_threshold < occupied_threshold <= 1.0:
             raise ValueError("thresholds must satisfy 0 <= free < occupied <= 1")
         probabilities = self.probability_grid()
-        values = np.rint(probabilities * 100.0).astype(np.int8)
+        values: Int8Grid = np.rint(probabilities * 100.0).astype(np.int8)
         values[probabilities <= free_threshold] = 0
         values[probabilities >= occupied_threshold] = 100
         values[~self._observed] = -1
@@ -254,13 +252,7 @@ class OccupancyBeliefGrid:
         sensor_yaw: float,
         scan: PlanarLaserScan,
     ) -> MappingUpdateStats:
-        """Fuse one planar scan into the map.
-
-        The method marks all traversed cells as free and the terminal cell as occupied only
-        when the beam contains a finite hit strictly below ``range_max``. Beams whose sensor
-        origin is outside the map are rejected because clipping them would create evidence
-        unsupported by the physical sensor origin.
-        """
+        """Fuse one planar scan into the map."""
         if not math.isfinite(sensor_yaw):
             raise ValueError("sensor_yaw must be finite")
         origin = self.world_to_grid(sensor_position)
@@ -274,16 +266,20 @@ class OccupancyBeliefGrid:
         touched: set[GridIndex] = set()
 
         for beam_index, measured_range in enumerate(scan.ranges):
-            if math.isnan(measured_range) or measured_range <= 0.0 or measured_range < scan.range_min:
+            if (
+                math.isnan(measured_range)
+                or measured_range <= 0.0
+                or measured_range < scan.range_min
+            ):
                 ignored += 1
                 continue
 
             has_hit = math.isfinite(measured_range) and measured_range < scan.range_max
-            effective_range = min(measured_range, scan.range_max) if math.isfinite(measured_range) else scan.range_max
-            if effective_range < scan.range_min:
-                ignored += 1
-                continue
-
+            effective_range = (
+                min(measured_range, scan.range_max)
+                if math.isfinite(measured_range)
+                else scan.range_max
+            )
             angle = sensor_yaw + scan.angle_min + beam_index * scan.angle_increment
             endpoint_world = (
                 sensor_position[0] + effective_range * math.cos(angle),
@@ -298,10 +294,6 @@ class OccupancyBeliefGrid:
                 continue
 
             ray = self._bresenham(origin, endpoint)
-            if not ray:
-                ignored += 1
-                continue
-
             free_cells = ray[1:-1] if has_hit else ray[1:]
             for cell in free_cells:
                 self._add_evidence(cell, self.sensor_model.free_increment, scan.timestamp)
@@ -309,10 +301,13 @@ class OccupancyBeliefGrid:
                 touched.add(cell)
 
             if has_hit and endpoint != origin:
-                self._add_evidence(endpoint, self.sensor_model.occupied_increment, scan.timestamp)
+                self._add_evidence(
+                    endpoint,
+                    self.sensor_model.occupied_increment,
+                    scan.timestamp,
+                )
                 occupied_updates += 1
                 touched.add(endpoint)
-
             processed += 1
 
         return MappingUpdateStats(
@@ -329,12 +324,7 @@ class OccupancyBeliefGrid:
         half_life: float,
         stale_after: float = 0.0,
     ) -> int:
-        """Exponentially relax stale evidence toward the prior belief.
-
-        This supports dynamic environments without deleting recent observations. For stale
-        age ``a`` and half-life ``h``, evidence relative to the prior is multiplied by
-        ``2**(-a/h)``. Cells remain observed because decay changes confidence, not provenance.
-        """
+        """Exponentially relax stale evidence toward the prior belief."""
         if not math.isfinite(current_time):
             raise ValueError("current_time must be finite")
         if not math.isfinite(half_life) or half_life <= 0.0:
@@ -344,7 +334,7 @@ class OccupancyBeliefGrid:
 
         age = current_time - self._last_observed
         stale = self._observed & (age > stale_after)
-        if not np.any(stale):
+        if not bool(np.any(stale)):
             return 0
         effective_age = np.maximum(age[stale] - stale_after, 0.0)
         retention = np.exp2(-effective_age / half_life)
@@ -354,17 +344,22 @@ class OccupancyBeliefGrid:
 
     def _add_evidence(self, index: GridIndex, increment: float, timestamp: float) -> None:
         x, y = index
-        updated = self._log_odds[y, x] + increment
-        self._log_odds[y, x] = np.clip(
-            updated,
-            self.sensor_model.minimum_log_odds,
-            self.sensor_model.maximum_log_odds,
+        updated = float(self._log_odds[y, x]) + increment
+        self._log_odds[y, x] = np.float64(
+            min(
+                max(updated, self.sensor_model.minimum_log_odds),
+                self.sensor_model.maximum_log_odds,
+            )
         )
         self._observed[y, x] = True
-        self._last_observed[y, x] = max(self._last_observed[y, x], timestamp)
+        self._last_observed[y, x] = max(float(self._last_observed[y, x]), timestamp)
 
-    def _clip_endpoint(self, origin: GridIndex, endpoint_world: WorldPoint) -> GridIndex | None:
-        """Return the final in-bounds cell along a ray whose endpoint leaves the map."""
+    def _clip_endpoint(
+        self,
+        origin: GridIndex,
+        endpoint_world: WorldPoint,
+    ) -> GridIndex | None:
+        """Return the final in-bounds cell along a ray leaving the map."""
         origin_world = self.grid_to_world(origin)
         delta_x = endpoint_world[0] - origin_world[0]
         delta_y = endpoint_world[1] - origin_world[1]
@@ -376,7 +371,10 @@ class OccupancyBeliefGrid:
         for step in range(1, steps + 1):
             ratio = step / steps
             candidate = self.world_to_grid(
-                (origin_world[0] + ratio * delta_x, origin_world[1] + ratio * delta_y)
+                (
+                    origin_world[0] + ratio * delta_x,
+                    origin_world[1] + ratio * delta_y,
+                )
             )
             if candidate is None:
                 break
