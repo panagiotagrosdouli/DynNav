@@ -1,12 +1,12 @@
-import sys
 import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'contributions', '02_uncertainty_calibration', 'code'))
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'contributions', '07_nbv_exploration', 'code'))
+import sys
 
-import pytest
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "contributions", "02_uncertainty_calibration", "code"))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "contributions", "07_nbv_exploration", "code"))
+
 import numpy as np
 import pandas as pd
-import tempfile
+import pytest
 from drift_dataset_builder import compute_vo_drift, extract_local_entropy, extract_local_uncertainty
 
 
