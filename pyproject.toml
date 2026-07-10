@@ -42,7 +42,11 @@ src = ["src", "tests", "scripts"]
 select = ["E", "F", "I", "B", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/*.py" = ["E501", "I001"]
+"tests/*.py" = ["E402", "E501", "F401", "F841", "I001"]
+"tests/**/*.py" = ["E402", "E501", "F401", "F841", "I001"]
+"src/dynnav/__init__.py" = ["I001"]
+"src/dynnav/benchmarks.py" = ["I001"]
+"src/dynnav/research_pipeline.py" = ["E501"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

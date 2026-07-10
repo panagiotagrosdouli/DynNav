@@ -1,0 +1,16 @@
+seed: 13
+map_size: [32, 48]
+start: [2, 2]
+goal: [45, 28]
+obstacle_density: 0.24
+dynamic_obstacle_count: 0
+unknown_cell_ratio: 0.50
+planner: astar
+lambda_risk: 0.0
+lambda_uncertainty: 0.0
+lambda_recoverability: 0.0
+risk_threshold: 0.70
+uncertainty_threshold: 0.80
+recoverability_threshold: 0.20
+max_steps: 220
+output_dir: results/static_maze

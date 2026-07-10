@@ -1,0 +1,16 @@
+seed: 23
+map_size: [36, 56]
+start: [2, 3]
+goal: [52, 32]
+obstacle_density: 0.18
+dynamic_obstacle_count: 7
+unknown_cell_ratio: 0.65
+planner: risk_astar
+lambda_risk: 3.0
+lambda_uncertainty: 0.5
+lambda_recoverability: 0.5
+risk_threshold: 0.60
+uncertainty_threshold: 0.70
+recoverability_threshold: 0.25
+max_steps: 240
+output_dir: results/warehouse

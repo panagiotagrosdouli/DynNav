@@ -1,0 +1,16 @@
+seed: 11
+map_size: [32, 48]
+start: [2, 2]
+goal: [45, 28]
+obstacle_density: 0.10
+dynamic_obstacle_count: 8
+unknown_cell_ratio: 0.65
+planner: risk_astar
+lambda_risk: 3.0
+lambda_uncertainty: 0.5
+lambda_recoverability: 0.0
+risk_threshold: 0.58
+uncertainty_threshold: 0.70
+recoverability_threshold: 0.25
+max_steps: 180
+output_dir: results/dynamic_corridor
