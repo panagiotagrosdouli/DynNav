@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import argparse
 import csv
-import statistics
 from pathlib import Path
+import statistics
 
 from dynnav.config import DynNavConfig
 from dynnav.planning import RiskAwareAStar
