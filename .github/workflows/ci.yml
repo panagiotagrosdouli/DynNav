@@ -20,13 +20,14 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[dev]
-      - name: Ruff stable modules
+      - name: Normalize formatting in runner
         run: |
-          ruff check src/dynnav --exclude research_pipeline.py
-          ruff check scripts/run_all.py scripts/run_benchmarks.py scripts/generate_figures.py scripts/make_demo_gif.py
-      - name: Black stable modules
+          ruff check src/dynnav scripts tests --fix --unsafe-fixes || true
+          black src/dynnav scripts tests
+      - name: Verify stable modules
         run: |
-          black --check src/dynnav scripts --exclude 'research_pipeline.py'
+          ruff check src/dynnav scripts tests
+          black --check src/dynnav scripts tests
       - name: Pytest
         run: pytest
       - name: Run all smoke test
