@@ -1,92 +1,170 @@
-# DynNav: Risk-Aware Dynamic Navigation in Unknown Environments
+<div align="center">
+
+# DynNav
+
+### Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments
+
+**A research platform for autonomous robots that must replan under uncertainty, dynamic obstacles, and mission-level safety constraints.**
 
 [![CI](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.10%2B-green.svg)](pyproject.toml)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
+[![License](https://img.shields.io/badge/License-Apache--2.0-4C1.svg)](LICENSE)
+[![Research](https://img.shields.io/badge/Research-Robotics%20%26%20Autonomy-6A5ACD)](#research-objective)
+[![Status](https://img.shields.io/badge/Status-Research%20Prototype-orange)](#project-status)
 
-DynNav is a research-grade software scaffold for studying **risk-aware dynamic navigation and rerouting in unknown or partially observed environments**. It focuses on scientifically honest, reproducible prototypes: occupancy-belief grids, A*/Dijkstra baselines, risk-aware planning, uncertainty fields, recoverability estimation, runtime safety supervision, deterministic benchmarks, automated figures, and ROS2/Nav2 integration scaffolds.
+[Research](#research-objective) · [Method](#method) · [Experiments](#experiments-and-evaluation) · [Installation](#installation) · [Documentation](#documentation) · [Citation](#citation)
 
-**Author:** Panagiota Grosdouli, Department of Electrical & Computer Engineering, Democritus University of Thrace
+</div>
 
-## Central research question
+---
 
-> How can an autonomous robot dynamically reroute in unknown and changing environments while reasoning about uncertainty, risk, recoverability, and mission safety?
+## Overview
 
-DynNav treats path length as only one part of the navigation objective. In unknown dynamic environments, a geometrically short route can be unsafe if it passes through uncertain cells, near moving obstacles, or into states with poor escape routes.
+DynNav is a research-oriented software platform for studying **dynamic robot navigation in unknown and partially observed environments**. The project investigates how an autonomous robot can reroute online while explicitly accounting for occupancy uncertainty, local risk, dynamic obstacles, recoverability, and mission safety.
 
-## Scientific identity
+Unlike shortest-path navigation alone, DynNav treats navigation as a closed-loop decision problem. A geometrically short route may still be undesirable when it crosses uncertain regions, approaches moving obstacles, or leads the robot into states with limited escape options.
 
-DynNav studies:
+> **Research question:** How can an autonomous robot dynamically reroute in unknown and changing environments while reasoning about uncertainty, risk, recoverability, and mission safety?
+
+**Researcher:** Panagiota Grosdouli  
+**Affiliation:** Department of Electrical and Computer Engineering, Democritus University of Thrace
+
+## Research objective
+
+The goal of DynNav is to provide a transparent and reproducible foundation for research on:
 
 - autonomous navigation in unknown environments;
-- dynamic rerouting and online replanning;
-- risk-aware and uncertainty-aware planning;
-- recoverability-aware autonomy;
-- mission-level safety supervision;
+- online replanning and dynamic rerouting;
+- risk-aware and uncertainty-aware path planning;
+- recoverability-aware autonomous decision-making;
+- runtime safety supervision;
 - learning-augmented planning interfaces;
-- ROS2/Nav2 integration as a transparent prototype path.
+- ROS 2 and Nav2 integration.
 
-## Scope and maturity
+The repository is designed around scientifically honest experimentation. Implemented capabilities, early prototypes, and future research directions are explicitly separated to avoid unsupported performance or safety claims.
 
-This repository is a research prototype, not a certified robotic safety system. Components are labeled conservatively:
+## Research contributions
 
-- **Implemented:** code exists, has tests or smoke workflows, and can run in the default Python environment.
-- **Prototype:** code or documentation exists, but validation is incomplete or depends on optional middleware.
-- **Planned:** documented research direction without completed implementation.
+| Research axis | Current contribution |
+|---|---|
+| **Belief-aware mapping** | Occupancy-belief grid representation for partially observed environments |
+| **Planning baselines** | Deterministic A* and Dijkstra implementations for controlled comparison |
+| **Risk-aware planning** | Path optimization that combines geometric cost with risk and uncertainty exposure |
+| **Recoverability reasoning** | Estimation of whether future states preserve viable escape or replanning options |
+| **Dynamic rerouting** | Trigger logic for blocked, high-risk, uncertain, or poorly recoverable paths |
+| **Runtime supervision** | Explicit replan, safe-mode, and safe-stop decisions at mission level |
+| **Reproducible evaluation** | Seeded experiments, configuration manifests, CSV/JSON outputs, and automated figures |
+| **Robotics integration** | Transparent ROS 2/Nav2 integration scaffold without claiming a completed plugin |
+
+## Method
+
+At time step $t$, the navigation system reasons over:
+
+- robot state $x_t$;
+- occupancy belief $b_t$;
+- local costmap $C_t$;
+- dynamic obstacles $O_t$;
+- uncertainty field $U_t$;
+- risk field $R_t$;
+- recoverability field $\Gamma_t$.
+
+A path $\pi_t$ is selected by balancing geometric path cost with risk exposure, uncertainty exposure, and loss of recoverability. Rerouting is initiated when the current route becomes blocked or when mission thresholds are exceeded.
+
+A conceptual objective is:
+
+$$
+J(\pi_t) = L(\pi_t) + \lambda_R \mathcal{R}(\pi_t) + \lambda_U \mathcal{U}(\pi_t) + \lambda_\Gamma \mathcal{G}(\pi_t),
+$$
+
+where $L$ denotes path length, $\mathcal{R}$ risk exposure, $\mathcal{U}$ uncertainty exposure, and $\mathcal{G}$ recoverability loss.
+
+The complete notation and decision rules are documented in [`docs/MATHEMATICAL_FORMULATION.md`](docs/MATHEMATICAL_FORMULATION.md).
+
+## Navigation pipeline
+
+```mermaid
+graph LR
+    A[Scenario / Sensors] --> B[Occupancy Belief]
+    B --> C[Uncertainty Propagation]
+    C --> D[Risk Estimation]
+    C --> E[Recoverability Estimation]
+    D --> F[Risk-Aware Planner]
+    E --> F
+    F --> G[Rerouting Supervisor]
+    G --> H[Runtime Safety Supervisor]
+    H --> I[Robot Command / Safe Mode]
+    H --> J[Logs, Metrics and Figures]
+```
+
+The software follows a modular closed-loop architecture:
+
+```text
+perception → occupancy belief → uncertainty propagation
+           → risk and recoverability fields → planning
+           → rerouting supervision → mission safety supervision
+           → metrics, logs and reproducible research artifacts
+```
+
+## Project status
+
+DynNav is a **research prototype**, not a certified robotic safety system.
 
 | Component | Status | Evidence |
 |---|---|---|
 | Typed grid, pose, trajectory, and mission-state primitives | Implemented | `src/dynnav/core.py`, tests |
-| A* and Dijkstra baselines | Implemented | `src/dynnav/lab_grade.py`, `tests/test_lab_grade.py` |
+| A* and Dijkstra baselines | Implemented | `src/dynnav/lab_grade.py`, tests |
 | Risk-aware A* planning | Implemented | `src/dynnav/planning.py`, tests |
-| Risk, uncertainty, and recoverability fields | Implemented | deterministic NumPy implementation + tests |
-| Dynamic rerouting trigger and cooldown | Prototype | threshold supervisor + tests |
-| Runtime safety supervisor | Prototype | explicit safe-stop / safe-mode / replan policy |
-| Reproducible research-suite manifest | Implemented | `configs/research_suite.yaml` |
+| Risk, uncertainty, and recoverability fields | Implemented | deterministic NumPy implementation and tests |
+| Dynamic rerouting trigger and cooldown | Prototype | threshold supervisor and tests |
+| Runtime safety supervisor | Prototype | explicit safe-stop, safe-mode, and replan policy |
+| Reproducible experiment manifest | Implemented | `configs/research_suite.yaml` |
 | CSV/JSON research-suite runner | Prototype | `scripts/run_research_suite.py` |
-| Visualization and demo-generation scripts | Implemented | script-level outputs, no fabricated metrics |
-| ROS 2 / Nav2 integration | Prototype | docs/scaffold only; no compiled plugin claim |
-| Formal safety guarantees and hardware validation | Planned | requires future proofs, logs, and experiments |
+| Automated figures and demo generation | Implemented | script-level outputs |
+| ROS 2 / Nav2 integration | Prototype | documentation and scaffold only |
+| Formal guarantees and hardware validation | Planned | future theoretical and experimental work |
 
-## Problem formulation
+**Status vocabulary**
 
-DynNav represents the robot state `x_t`, occupancy belief `b_t`, local costmap `C_t`, dynamic obstacles `O_t`, uncertainty field `U_t`, risk field `R_t`, and recoverability field `Γ_t`. A navigation policy chooses a path `π_t` that balances path length, risk exposure, uncertainty exposure, and loss of recoverability. Rerouting is triggered when a path is blocked or when risk, uncertainty, or recoverability cross mission thresholds.
+- **Implemented:** executable code exists and is supported by tests or smoke workflows.
+- **Prototype:** an initial implementation or interface exists, but validation is incomplete.
+- **Planned:** a documented research direction without a completed implementation.
 
-See [`docs/MATHEMATICAL_FORMULATION.md`](docs/MATHEMATICAL_FORMULATION.md) for the full notation and objective.
-
-## System architecture
-
-```text
-configs/          YAML experiment definitions
-src/dynnav/       reusable Python research package
-scripts/          benchmark, figure, and demo-generation entry points
-tests/            pytest suite
-.github/          CI workflows
-docs/             scientific and engineering documentation
-paper/            paper-facing text fragments
-website/          Next.js + TypeScript + Tailwind research site scaffold
-assets/           generated diagrams and demo GIFs
-results/          generated benchmark CSVs, summaries, figures, videos
-```
-
-Runtime flow:
+## Repository structure
 
 ```text
-Scenario / perception -> occupancy belief -> uncertainty propagation
-        -> risk and recoverability fields -> planner registry
-        -> risk-aware planner -> rerouting supervisor
-        -> safety supervisor -> benchmark logs and figures
+DynNav/
+├── configs/          # Experiment and benchmark configurations
+├── src/dynnav/       # Core Python research package
+├── scripts/          # Benchmark, figure, and demo entry points
+├── tests/            # Automated test suite
+├── docs/             # Scientific and engineering documentation
+├── paper/            # Manuscript-facing material
+├── website/          # Research website scaffold
+├── assets/           # Diagrams, images, and demo media
+├── results/          # Generated metrics, summaries, figures, and videos
+└── .github/          # Continuous integration workflows
 ```
 
 ## Installation
 
+### Local development
+
 ```bash
+git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git
+cd DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments
+
 python -m venv .venv
 source .venv/bin/activate
-pip install -e .[dev]
+pip install -e ".[dev]"
 ```
 
-Docker:
+On Windows PowerShell, activate the environment with:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+### Docker
 
 ```bash
 docker build -t dynnav .
@@ -95,19 +173,19 @@ docker run --rm dynnav
 
 ## Quick start
 
-Run the Python test suite:
+Run the complete test suite:
 
 ```bash
 pytest
 ```
 
-Run the deterministic research-suite smoke runner:
+Run the deterministic research-suite smoke experiment:
 
 ```bash
 python scripts/run_research_suite.py --out-dir results/research_suite
 ```
 
-Run the existing benchmark entry point:
+Run the benchmark entry point:
 
 ```bash
 dynnav-benchmark \
@@ -116,58 +194,81 @@ dynnav-benchmark \
   --summary results/benchmarks/summary.md
 ```
 
-The benchmark uses deterministic seeds and keeps failed planning episodes in the CSV output. Generated numbers should be reported only after the exact config, seed, and output files are committed.
-
-## Generate research assets
+Generate research figures and demo media:
 
 ```bash
 python scripts/generate_research_assets.py
 python scripts/make_demo_gif.py
 ```
 
-Expected outputs include architecture diagrams, navigation pipeline diagrams, risk heatmaps, trajectory plots, uncertainty plots, `assets/demo.gif`, and `results/videos/demo.mp4` when local codecs are available. If an output is missing, it should be marked Pending rather than described as a result.
+Expected artifacts include architecture diagrams, navigation-pipeline figures, risk heatmaps, trajectory plots, uncertainty visualizations, a demo GIF, and—when local codecs are available—an MP4 video.
 
-## Evaluation metrics
+## Experiments and evaluation
 
-DynNav tracks path length, planning time, expanded nodes, success, collision proxy, near-miss proxy, reroute count, risk exposure, uncertainty exposure, terminal recoverability, and mission safety mode. The metrics are defined for reproducible comparison, not for unsupported state-of-the-art claims.
+DynNav supports deterministic comparison of planning and rerouting strategies. The evaluation protocol tracks:
 
-## Documentation map
+| Category | Metrics |
+|---|---|
+| **Task performance** | success rate, path length, goal completion |
+| **Computational performance** | planning time, expanded nodes |
+| **Safety proxies** | collision proxy, near-miss proxy, risk exposure |
+| **Uncertainty** | cumulative uncertainty exposure |
+| **Adaptation** | reroute count and replanning behavior |
+| **Recoverability** | terminal recoverability and loss of escape options |
+| **Mission supervision** | nominal, replan, safe-mode, and safe-stop states |
 
-- `docs/REPOSITORY_AUDIT.md` — scientific, engineering, reproducibility, and presentation audit.
-- `docs/RESEARCH_OVERVIEW.md` — research scope, motivation, and limitations.
-- `docs/MATHEMATICAL_FORMULATION.md` — formal notation, risk objective, rerouting rule, and safety supervisor.
-- `docs/SYSTEM_ARCHITECTURE.md` — repository and runtime architecture.
-- `docs/NAVIGATION_PIPELINE.md` — closed-loop pipeline.
-- `docs/UNCERTAINTY_MODEL.md` — belief-grid uncertainty model.
-- `docs/RISK_ESTIMATION.md` — mission-risk and CVaR-style summaries.
-- `docs/ROS2_NAV2_INTEGRATION.md` — honest ROS2/Nav2 prototype interface.
-- `docs/EVALUATION_PROTOCOL.md` — benchmark reporting protocol.
-- `docs/REPRODUCIBILITY.md` — environment and deterministic execution.
-- `docs/ROADMAP.md` — staged future work.
+Failed planning episodes remain in experiment outputs rather than being silently discarded. Reported results should always be traceable to committed configurations, random seeds, software versions, and generated output files.
 
-## ROS2/Nav2 usage
+See [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) and [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
 
-ROS2/Nav2 integration is currently **Prototype**. The intended integration path is a Nav2 global planner plugin that consumes occupancy grids, publishes risk/uncertainty/recoverability debug grids, and exposes safety-mode events to a behavior tree. See [`docs/ROS2_NAV2_INTEGRATION.md`](docs/ROS2_NAV2_INTEGRATION.md).
+## ROS 2 and Nav2
+
+ROS 2/Nav2 support is currently at **prototype** level. The intended integration path is a Nav2 global-planner interface that:
+
+- consumes occupancy-grid information;
+- computes risk, uncertainty, and recoverability layers;
+- publishes diagnostic grids and safety events;
+- exposes rerouting and safety-mode decisions to a behavior tree.
+
+No compiled production-ready Nav2 plugin, Gazebo validation, or hardware validation is currently claimed. Integration details are available in [`docs/ROS2_NAV2_INTEGRATION.md`](docs/ROS2_NAV2_INTEGRATION.md).
+
+## Documentation
+
+| Document | Purpose |
+|---|---|
+| [`RESEARCH_OVERVIEW`](docs/RESEARCH_OVERVIEW.md) | Motivation, research scope, and limitations |
+| [`MATHEMATICAL_FORMULATION`](docs/MATHEMATICAL_FORMULATION.md) | Formal model, objectives, and rerouting rules |
+| [`SYSTEM_ARCHITECTURE`](docs/SYSTEM_ARCHITECTURE.md) | Software and runtime architecture |
+| [`NAVIGATION_PIPELINE`](docs/NAVIGATION_PIPELINE.md) | Closed-loop navigation workflow |
+| [`UNCERTAINTY_MODEL`](docs/UNCERTAINTY_MODEL.md) | Belief-grid and uncertainty representation |
+| [`RISK_ESTIMATION`](docs/RISK_ESTIMATION.md) | Risk metrics and CVaR-style summaries |
+| [`EVALUATION_PROTOCOL`](docs/EVALUATION_PROTOCOL.md) | Experimental methodology and reporting rules |
+| [`REPRODUCIBILITY`](docs/REPRODUCIBILITY.md) | Deterministic execution and environment setup |
+| [`ROS2_NAV2_INTEGRATION`](docs/ROS2_NAV2_INTEGRATION.md) | Robotics middleware integration plan |
+| [`ROADMAP`](docs/ROADMAP.md) | Staged future research work |
+| [`REPOSITORY_AUDIT`](docs/REPOSITORY_AUDIT.md) | Scientific, engineering, and presentation audit |
 
 ## Limitations
 
-- The current implementation is grid-world oriented.
-- Dynamic obstacle handling is a deterministic prototype.
-- ROS2/Nav2 support is not yet a compiled plugin.
-- No hardware validation, Gazebo validation, or formal safety guarantee is claimed.
-- No benchmark numbers should be quoted unless generated by scripts and traceable to committed configs.
+- The current implementation is primarily grid-world oriented.
+- Dynamic-obstacle handling remains a deterministic prototype.
+- ROS 2/Nav2 support is not yet a compiled plugin.
+- No physical-robot or Gazebo validation is currently claimed.
+- The project does not provide formal safety guarantees.
+- Benchmark values should not be presented as research results unless they are generated by the provided scripts and accompanied by their exact experimental configuration.
 
-## Future PhD directions
+## Research roadmap
 
 1. Belief-space planning with learned uncertainty calibration.
 2. Recoverability-aware model predictive control.
-3. Risk-sensitive dynamic obstacle prediction.
-4. Formal analysis of rerouting stability and safe-mode switching.
-5. Hardware experiments with ROS2/Nav2 and logged reproducibility artifacts.
+3. Risk-sensitive prediction of dynamic obstacles.
+4. Formal analysis of rerouting stability and safety-mode switching.
+5. ROS 2/Nav2 implementation and simulation-based validation.
+6. Physical robot experiments with reproducible sensor and mission logs.
 
-## Website
+## Research website
 
-A Next.js, TypeScript, TailwindCSS, and Framer Motion research-site scaffold is provided under `website/`.
+A Next.js, TypeScript, Tailwind CSS, and Framer Motion research-site scaffold is included in `website/`.
 
 ```bash
 cd website
@@ -177,8 +278,25 @@ npm run dev
 
 ## Citation
 
-See `CITATION.cff` and `paper/` for citation and manuscript-facing text fragments.
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Manuscript-facing material is available under `paper/`.
+
+```bibtex
+@software{grosdouli_dynnav,
+  author  = {Grosdouli, Panagiota},
+  title   = {DynNav: Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments},
+  year    = {2026},
+  url     = {https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments}
+}
+```
 
 ## License
 
-Apache License, Version 2.0. See `LICENSE`.
+This project is released under the [Apache License 2.0](LICENSE).
+
+---
+
+<div align="center">
+
+**DynNav explores autonomous navigation beyond shortest paths—toward robots that reason about uncertainty, risk, and the ability to recover.**
+
+</div>
