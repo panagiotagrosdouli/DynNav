@@ -29,7 +29,10 @@ jobs:
           ruff check src/dynnav scripts tests
           black --check src/dynnav scripts tests
       - name: Pytest first failure
-        run: pytest -x -q --tb=short
+        shell: bash
+        run: |
+          set -o pipefail
+          pytest -x -q --tb=short 2>&1 | tail -n 120
       - name: Run all smoke test
         run: python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke
       - name: Benchmark smoke test
