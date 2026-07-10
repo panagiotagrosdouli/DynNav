@@ -28,9 +28,7 @@ class DynNavConfig:
     def from_yaml(cls, path: str | Path) -> DynNavConfig:
         """Load configuration from a YAML file."""
         data = yaml.safe_load(Path(path).read_text(encoding="utf-8")) or {}
-        return cls(
-            **{key: value for key, value in data.items() if key in cls.__annotations__}
-        )
+        return cls(**{key: value for key, value in data.items() if key in cls.__annotations__})
 
     def to_dict(self) -> dict[str, Any]:
         """Return a serializable dictionary representation."""
