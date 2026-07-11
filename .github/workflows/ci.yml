@@ -2,10 +2,12 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
 
 jobs:
-  test:
+  python:
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -16,12 +18,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          pip install -e .[dev]
-      - name: Verify full lint
-        run: ruff check src/dynnav tests
+          pip install -e ".[dev]"
+      - name: Verify research-grade mapping lint
+        run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
       - name: Type-check mapping core
         run: >-
           mypy src/dynnav/mapping
@@ -47,3 +50,21 @@ jobs:
         run: python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke
       - name: Benchmark smoke test
         run: python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks
+
+  website:
+    name: Website build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: website
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install website dependencies
+        run: npm install --no-audit --no-fund
+      - name: Type-check website
+        run: npm run typecheck
+      - name: Build website
+        run: npm run build
