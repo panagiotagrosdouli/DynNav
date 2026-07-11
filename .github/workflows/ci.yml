@@ -61,10 +61,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: website/package-lock.json
       - name: Install website dependencies
-        run: npm install --package-lock-only --ignore-scripts && npm ci
+        run: npm install --no-audit --no-fund
       - name: Type-check website
         run: npm run typecheck
       - name: Build website
