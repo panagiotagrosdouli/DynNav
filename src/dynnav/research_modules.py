@@ -285,6 +285,9 @@ class DynNavResearchStack:
     conservative_planner: NavigationPolicy = field(
         default_factory=lambda: RiskAwareAStar(risk_weight=6.0, returnability_weight=2.0)
     )
+    switch: PlannerSwitch = field(init=False, repr=False)
+    rerouter: DynamicRerouter = field(init=False, repr=False)
+    monitor: RuntimeMonitor = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         self.switch = PlannerSwitch(self.nominal_planner, self.conservative_planner)
