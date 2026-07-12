@@ -17,7 +17,7 @@ except ImportError:  # pragma: no cover
     Path = None
 
 from dynnav.planners import GridMap, self_aware_astar
-from dynnav_nav2.path_conversion import build_nav_path_message
+from .path_conversion import build_nav_path_message
 
 
 @dataclass(frozen=True)
@@ -89,17 +89,17 @@ class DynNavPlannerBridge(Node):  # type: ignore[misc]
     def publish_plan_once(self) -> None:
         config = self.read_config()
         path = plan_grid_path(config)
-        debug_msg = String()
-        debug_msg.data = format_path(path) if path else "NO_PATH"
-        self.debug_publisher.publish(debug_msg)
-        if path:
-            self.path_publisher.publish(build_nav_path_message(path, config.frame_id, config.resolution_m, self.get_clock().now().to_msg()))
-        self.get_logger().info(f"DynNav planned path: {debug_msg.data}")
+        debug_message = String()
+        debug_message.data = format_path(path)
+        self.debug_publisher.publish(debug_message)
+        self.path_publisher.publish(
+            build_nav_path_message(path, frame_id=config.frame_id, resolution_m=config.resolution_m)
+        )
 
 
-def main(args=None) -> None:
+def main(args: list[str] | None = None) -> None:
     if rclpy is None:
-        raise RuntimeError("rclpy is required to run the DynNav ROS 2 bridge")
+        raise RuntimeError("ROS 2 dependencies are not installed")
     rclpy.init(args=args)
     node = DynNavPlannerBridge()
     try:
