@@ -20,12 +20,11 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install package
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           python -m pip install --upgrade pip
           python -m pip uninstall -y dynnav || true
           python -m pip install -e ".[dev]"
+          cd src
           python -c "import dynnav, dynnav.mapping; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__)"
       - name: Verify research-grade mapping lint
         run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
@@ -36,9 +35,9 @@ jobs:
           --no-warn-unused-ignores
           --show-error-codes
       - name: Mapping module tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: python -m pytest -q tests/test_mapping_occupancy_grid.py
+        run: |
+          cd src
+          python -m pytest -c ../pyproject.toml -q ../tests/test_mapping_occupancy_grid.py
       - name: Full regression suite
         shell: bash
         env:
