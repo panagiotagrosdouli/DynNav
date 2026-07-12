@@ -25,7 +25,7 @@ jobs:
           python -m pip uninstall -y dynnav || true
           python -m pip install -e ".[dev]"
           cd src
-          python -c "import dynnav, dynnav.mapping, dynnav.benchmarks, dynnav.lab_grade, dynnav.planning, dynnav.research_modules; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__); print('benchmarks:', dynnav.benchmarks.__file__); print('lab_grade:', dynnav.lab_grade.__file__); print('planning:', dynnav.planning.__file__); print('research_modules:', dynnav.research_modules.__file__)"
+          python -c "import dynnav, dynnav.mapping, dynnav.benchmarks, dynnav.lab_grade, dynnav.planning, dynnav.research_modules, dynnav.research_pipeline; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__); print('benchmarks:', dynnav.benchmarks.__file__); print('lab_grade:', dynnav.lab_grade.__file__); print('planning:', dynnav.planning.__file__); print('research_modules:', dynnav.research_modules.__file__); print('research_pipeline:', dynnav.research_pipeline.__file__)"
       - name: Verify research-grade mapping lint
         run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
       - name: Type-check mapping core
@@ -42,7 +42,8 @@ jobs:
             ../tests/test_dynnav_smoke.py \
             ../tests/test_lab_grade.py \
             ../tests/test_planning.py \
-            ../tests/test_research_modules.py
+            ../tests/test_research_modules.py \
+            ../tests/test_research_pipeline_phase2.py
       - name: Legacy regression suite
         shell: bash
         env:
@@ -55,6 +56,7 @@ jobs:
             --ignore=tests/test_lab_grade.py \
             --ignore=tests/test_planning.py \
             --ignore=tests/test_research_modules.py \
+            --ignore=tests/test_research_pipeline_phase2.py \
             > pytest.log 2>&1
           status=$?
           tail -n 100 pytest.log
