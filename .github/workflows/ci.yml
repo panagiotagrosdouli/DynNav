@@ -26,7 +26,24 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip uninstall -y dynnav || true
           python -m pip install -e ".[dev]"
-          python -P -c "import dynnav, dynnav.mapping, dynnav.benchmarks, dynnav.lab_grade, dynnav.planning, dynnav.research_modules, dynnav.research_pipeline; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__); print('benchmarks:', dynnav.benchmarks.__file__); print('lab_grade:', dynnav.lab_grade.__file__); print('planning:', dynnav.planning.__file__); print('research_modules:', dynnav.research_modules.__file__); print('research_pipeline:', dynnav.research_pipeline.__file__)"
+          cat > /tmp/verify_dynnav.py <<'PY'
+          import dynnav
+          import dynnav.mapping
+          import dynnav.benchmarks
+          import dynnav.lab_grade
+          import dynnav.planning
+          import dynnav.research_modules
+          import dynnav.research_pipeline
+
+          print("dynnav:", dynnav.__file__)
+          print("mapping:", dynnav.mapping.__file__)
+          print("benchmarks:", dynnav.benchmarks.__file__)
+          print("lab_grade:", dynnav.lab_grade.__file__)
+          print("planning:", dynnav.planning.__file__)
+          print("research_modules:", dynnav.research_modules.__file__)
+          print("research_pipeline:", dynnav.research_pipeline.__file__)
+          PY
+          python /tmp/verify_dynnav.py
       - name: Verify research-grade mapping lint
         run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
       - name: Type-check mapping core
@@ -39,13 +56,26 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}/src
         run: |
-          python -P -m pytest -c pyproject.toml -q \
-            tests/test_mapping_occupancy_grid.py \
-            tests/test_dynnav_smoke.py \
-            tests/test_lab_grade.py \
-            tests/test_planning.py \
-            tests/test_research_modules.py \
-            tests/test_research_pipeline_phase2.py
+          cat > /tmp/run_src_tests.py <<'PY'
+          import pytest
+
+          raise SystemExit(
+              pytest.main(
+                  [
+                      "-c",
+                      "pyproject.toml",
+                      "-q",
+                      "tests/test_mapping_occupancy_grid.py",
+                      "tests/test_dynnav_smoke.py",
+                      "tests/test_lab_grade.py",
+                      "tests/test_planning.py",
+                      "tests/test_research_modules.py",
+                      "tests/test_research_pipeline_phase2.py",
+                  ]
+              )
+          )
+          PY
+          python /tmp/run_src_tests.py
       - name: Legacy regression suite
         shell: bash
         env:
