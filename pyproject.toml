@@ -12,6 +12,7 @@ license = {text = "Apache-2.0"}
 authors = [{name = "Panagiota Grosdouli"}]
 dependencies = [
   "numpy>=1.24",
+  "scipy>=1.10",
   "PyYAML>=6.0",
   "matplotlib>=3.7",
   "pandas>=2.0",
