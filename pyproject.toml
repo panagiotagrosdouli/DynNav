@@ -56,6 +56,6 @@ select = ["E", "F", "I", "B", "UP"]
 "src/dynnav/research_pipeline.py" = ["E501"]
 
 [tool.pytest.ini_options]
-pythonpath = [".", "src"]
+pythonpath = ["src", "."]
 testpaths = ["tests"]
 addopts = "--cov=dynnav --cov-report=term-missing"
