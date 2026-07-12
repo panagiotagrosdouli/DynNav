@@ -108,10 +108,14 @@ jobs:
             fi
 
             echo "::group::Running $test_file"
-            if ! timeout --signal=TERM --kill-after=15s 5m \
-              python -m pytest -q --tb=short "$test_file"; then
-              status=$?
-              echo "::endgroup::"
+            set +e
+            timeout --signal=TERM --kill-after=15s 5m \
+              python -m pytest -q --tb=short "$test_file"
+            status=$?
+            set -e
+            echo "::endgroup::"
+
+            if [[ "$status" -ne 0 ]]; then
               if [[ "$status" -eq 124 || "$status" -eq 137 || "$status" -eq 143 ]]; then
                 echo "::error title=Pytest timeout (Python ${{ matrix.python-version }})::$test_file exceeded 5 minutes"
               else
@@ -119,7 +123,6 @@ jobs:
               fi
               exit "$status"
             fi
-            echo "::endgroup::"
           done
       - name: Run all smoke test
         env:
