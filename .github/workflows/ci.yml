@@ -10,7 +10,7 @@ jobs:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     env:
-      PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
+      PYTHONPATH: ${{ github.workspace }}/src:${{ github.workspace }}
     strategy:
       fail-fast: false
       matrix:
