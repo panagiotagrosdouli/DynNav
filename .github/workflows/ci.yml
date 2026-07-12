@@ -24,7 +24,9 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev]"
+          python -m pip uninstall -y dynnav || true
+          python -m pip install -e ".[dev]"
+          python -c "import dynnav, dynnav.mapping; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__)"
       - name: Verify research-grade mapping lint
         run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
       - name: Type-check mapping core
@@ -34,12 +36,12 @@ jobs:
           --no-warn-unused-ignores
           --show-error-codes
       - name: Mapping module tests
-        run: pytest -q tests/test_mapping_occupancy_grid.py
+        run: python -m pytest -q tests/test_mapping_occupancy_grid.py
       - name: Full regression suite
         shell: bash
         run: |
           set +e
-          pytest -x -q --tb=short > pytest.log 2>&1
+          python -m pytest -x -q --tb=short > pytest.log 2>&1
           status=$?
           tail -n 100 pytest.log
           if [ "$status" -ne 0 ]; then
