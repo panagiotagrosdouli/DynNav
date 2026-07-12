@@ -9,6 +9,7 @@ jobs:
   python:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
@@ -81,23 +82,45 @@ jobs:
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
-          set +e
-          python -m pytest -x -q --tb=short \
-            --ignore=tests/test_mapping_occupancy_grid.py \
-            --ignore=tests/test_dynnav_smoke.py \
-            --ignore=tests/test_lab_grade.py \
-            --ignore=tests/test_planning.py \
-            --ignore=tests/test_research_modules.py \
-            --ignore=tests/test_research_pipeline_phase2.py \
-            > pytest.log 2>&1
-          status=$?
-          tail -n 100 pytest.log
-          if [ "$status" -ne 0 ]; then
-            while IFS= read -r line; do
-              echo "::error title=Pytest failure (Python ${{ matrix.python-version }})::$line"
-            done < <(tail -n 30 pytest.log)
-          fi
-          exit "$status"
+          set -o pipefail
+          src_tests=(
+            tests/test_mapping_occupancy_grid.py
+            tests/test_dynnav_smoke.py
+            tests/test_lab_grade.py
+            tests/test_planning.py
+            tests/test_research_modules.py
+            tests/test_research_pipeline_phase2.py
+          )
+
+          is_src_test() {
+            local candidate="$1"
+            for item in "${src_tests[@]}"; do
+              if [[ "$candidate" == "$item" ]]; then
+                return 0
+              fi
+            done
+            return 1
+          }
+
+          for test_file in $(find tests -maxdepth 1 -name 'test_*.py' | sort); do
+            if is_src_test "$test_file"; then
+              continue
+            fi
+
+            echo "::group::Running $test_file"
+            if ! timeout --signal=TERM --kill-after=15s 5m \
+              python -m pytest -q --tb=short "$test_file"; then
+              status=$?
+              echo "::endgroup::"
+              if [[ "$status" -eq 124 || "$status" -eq 137 || "$status" -eq 143 ]]; then
+                echo "::error title=Pytest timeout (Python ${{ matrix.python-version }})::$test_file exceeded 5 minutes"
+              else
+                echo "::error title=Pytest failure (Python ${{ matrix.python-version }})::$test_file failed with exit code $status"
+              fi
+              exit "$status"
+            fi
+            echo "::endgroup::"
+          done
       - name: Run all smoke test
         env:
           PYTHONPATH: ${{ github.workspace }}/src
