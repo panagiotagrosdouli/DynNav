@@ -20,12 +20,13 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install package
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           python -m pip install --upgrade pip
           python -m pip uninstall -y dynnav || true
           python -m pip install -e ".[dev]"
-          cd src
-          python -c "import dynnav, dynnav.mapping, dynnav.benchmarks, dynnav.lab_grade, dynnav.planning, dynnav.research_modules, dynnav.research_pipeline; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__); print('benchmarks:', dynnav.benchmarks.__file__); print('lab_grade:', dynnav.lab_grade.__file__); print('planning:', dynnav.planning.__file__); print('research_modules:', dynnav.research_modules.__file__); print('research_pipeline:', dynnav.research_pipeline.__file__)"
+          python -P -c "import dynnav, dynnav.mapping, dynnav.benchmarks, dynnav.lab_grade, dynnav.planning, dynnav.research_modules, dynnav.research_pipeline; print('dynnav:', dynnav.__file__); print('mapping:', dynnav.mapping.__file__); print('benchmarks:', dynnav.benchmarks.__file__); print('lab_grade:', dynnav.lab_grade.__file__); print('planning:', dynnav.planning.__file__); print('research_modules:', dynnav.research_modules.__file__); print('research_pipeline:', dynnav.research_pipeline.__file__)"
       - name: Verify research-grade mapping lint
         run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
       - name: Type-check mapping core
@@ -35,15 +36,16 @@ jobs:
           --no-warn-unused-ignores
           --show-error-codes
       - name: Src package tests
+        env:
+          PYTHONPATH: ${{ github.workspace }}/src
         run: |
-          cd src
-          python -m pytest -c ../pyproject.toml -q \
-            ../tests/test_mapping_occupancy_grid.py \
-            ../tests/test_dynnav_smoke.py \
-            ../tests/test_lab_grade.py \
-            ../tests/test_planning.py \
-            ../tests/test_research_modules.py \
-            ../tests/test_research_pipeline_phase2.py
+          python -P -m pytest -c pyproject.toml -q \
+            tests/test_mapping_occupancy_grid.py \
+            tests/test_dynnav_smoke.py \
+            tests/test_lab_grade.py \
+            tests/test_planning.py \
+            tests/test_research_modules.py \
+            tests/test_research_pipeline_phase2.py
       - name: Legacy regression suite
         shell: bash
         env:
