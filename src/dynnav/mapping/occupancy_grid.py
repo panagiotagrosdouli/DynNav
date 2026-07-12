@@ -173,7 +173,7 @@ class OccupancyBeliefGrid:
     @property
     def shape(self) -> tuple[int, int]:
         """Return array shape as ``(height, width)``."""
-        return self._log_odds.shape
+        return self.metadata.height, self.metadata.width
 
     @property
     def log_odds(self) -> FloatGrid:
