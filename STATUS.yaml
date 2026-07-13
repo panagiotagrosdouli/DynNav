@@ -1,4 +1,5 @@
 project: DynNav
+repository: panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments
 branch: feature/dynnav-complete-redesign-repair
 status: in_progress
 completion_claimed: false
@@ -9,23 +10,23 @@ required:
     evidence: null
     reason: command runner cannot resolve github.com
   python_compileall:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: .github/workflows/ci.yml
   ruff:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: repository-wide ruff check configured
   black:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: repository-wide black check configured
   pytest:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: default and classified fast suites configured
   smoke_mode:
-    status: failing_interface
-    evidence: scripts/run_all.py has no --mode interface
+    status: implemented_pending_ci
+    evidence: scripts/run_all.py --mode smoke
   validate_mode:
-    status: missing
-    evidence: scripts/run_all.py has no --mode validate implementation
+    status: implemented_pending_ci
+    evidence: scripts/run_all.py --mode validate
   docker_build:
     status: not_run
     evidence: null
@@ -36,39 +37,48 @@ required:
     status: not_run
     evidence: null
   website_clean_install:
-    status: not_run
-    evidence: null
+    status: blocked_by_missing_lockfile
+    evidence: website/package-lock.json is absent
   website_lint:
-    status: missing
-    evidence: website/package.json has no lint script
+    status: implemented_pending_ci
+    evidence: npm run lint
   website_typecheck:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: npm run typecheck
   website_test:
-    status: missing
-    evidence: website/package.json has no test script
+    status: implemented_pending_ci
+    evidence: npm run test
   website_build:
-    status: not_run
-    evidence: null
+    status: pending_ci
+    evidence: npm run build
   link_audit:
-    status: not_run
-    evidence: null
+    status: partial_pending_ci
+    evidence: scripts/run_all.py validates required README references
   media_audit:
-    status: not_run
-    evidence: null
+    status: partial_pending_ci
+    evidence: smoke mode checks generated GIF and figure artifacts
   artifact_audit:
-    status: not_run
-    evidence: null
+    status: partial_pending_ci
+    evidence: scripts/run_all.py validates required generated artifacts
   draft_pull_request:
     status: pending
     evidence: null
+known_required_failures:
+  - website package lock is absent, so npm ci is not yet enabled
+  - planned_paths.json still contains empty paths
+  - public figure generation still reuses placeholder plots
+  - Docker mounted-results workflow remains unverified
+  - recursive README and documentation inventory remains incomplete
 optional:
   ros2_nav2:
-    status: not_run
+    status: skipped_unavailable
     reason: optional runtime dependency
   gazebo:
-    status: not_run
+    status: skipped_unavailable
     reason: optional runtime dependency
   hardware:
     status: not_claimed
     reason: no hardware validation is represented as complete
+  mp4_codec:
+    status: availability_not_verified
+    reason: optional codec-dependent export
