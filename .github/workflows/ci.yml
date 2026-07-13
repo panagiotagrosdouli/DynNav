@@ -5,8 +5,35 @@ on:
     branches: [main]
   pull_request:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  python:
+  quality:
+    name: Python quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+      - name: Compile Python sources
+        run: python -m compileall src scripts tests
+      - name: Ruff
+        run: ruff check .
+      - name: Black
+        run: black --check .
+      - name: Type-check mapping core
+        run: mypy src/dynnav/mapping --strict --no-warn-unused-ignores --show-error-codes
+
+  tests:
     name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     timeout-minutes: 45
@@ -21,121 +48,41 @@ jobs:
           python-version: ${{ matrix.python-version }}
           cache: pip
       - name: Install package
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
         run: |
           python -m pip install --upgrade pip
-          python -m pip uninstall -y dynnav || true
           python -m pip install -e ".[dev]"
-          cat > /tmp/verify_dynnav.py <<'PY'
-          import dynnav
-          import dynnav.mapping
-          import dynnav.benchmarks
-          import dynnav.lab_grade
-          import dynnav.planning
-          import dynnav.research_modules
-          import dynnav.research_pipeline
-
-          print("dynnav:", dynnav.__file__)
-          print("mapping:", dynnav.mapping.__file__)
-          print("benchmarks:", dynnav.benchmarks.__file__)
-          print("lab_grade:", dynnav.lab_grade.__file__)
-          print("planning:", dynnav.planning.__file__)
-          print("research_modules:", dynnav.research_modules.__file__)
-          print("research_pipeline:", dynnav.research_pipeline.__file__)
-          PY
-          python /tmp/verify_dynnav.py
-      - name: Verify research-grade mapping lint
-        run: ruff check src/dynnav/mapping tests/test_mapping_occupancy_grid.py
-      - name: Type-check mapping core
-        run: >-
-          mypy src/dynnav/mapping
-          --strict
-          --no-warn-unused-ignores
-          --show-error-codes
-      - name: Src package tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
+      - name: Verify CLI entry points
         run: |
-          cat > /tmp/run_src_tests.py <<'PY'
-          import pytest
-
-          raise SystemExit(
-              pytest.main(
-                  [
-                      "-c",
-                      "pyproject.toml",
-                      "-q",
-                      "tests/test_mapping_occupancy_grid.py",
-                      "tests/test_dynnav_smoke.py",
-                      "tests/test_lab_grade.py",
-                      "tests/test_planning.py",
-                      "tests/test_research_modules.py",
-                      "tests/test_research_pipeline_phase2.py",
-                  ]
-              )
-          )
-          PY
-          python /tmp/run_src_tests.py
-      - name: Legacy regression suite
-        shell: bash
-        env:
-          PYTHONPATH: ${{ github.workspace }}
+          dynnav-benchmark --help
+          dynnav-demo --help
+          python scripts/run_all.py --help
+      - name: Default test suite
+        run: pytest -q
+      - name: Fast classified suite
+        run: pytest -q -m "not slow and not ros2"
+      - name: Deterministic smoke pipeline
+        run: python scripts/run_all.py --mode smoke --config configs/default.yaml --out-dir results/ci_smoke
+      - name: Repository validation
+        run: python scripts/run_all.py --mode validate --config configs/default.yaml --out-dir results/ci_smoke
+      - name: Validate generated smoke artifacts
         run: |
-          set -o pipefail
-          src_tests=(
-            tests/test_mapping_occupancy_grid.py
-            tests/test_dynnav_smoke.py
-            tests/test_lab_grade.py
-            tests/test_planning.py
-            tests/test_research_modules.py
-            tests/test_research_pipeline_phase2.py
-          )
-
-          is_src_test() {
-            local candidate="$1"
-            for item in "${src_tests[@]}"; do
-              if [[ "$candidate" == "$item" ]]; then
-                return 0
-              fi
-            done
-            return 1
-          }
-
-          for test_file in $(find tests -maxdepth 1 -name 'test_*.py' | sort); do
-            if is_src_test "$test_file"; then
-              continue
-            fi
-
-            echo "::group::Running $test_file"
-            set +e
-            timeout --signal=TERM --kill-after=15s 5m \
-              python -m pytest -q --tb=short "$test_file"
-            status=$?
-            set -e
-            echo "::endgroup::"
-
-            if [[ "$status" -ne 0 ]]; then
-              if [[ "$status" -eq 124 || "$status" -eq 137 || "$status" -eq 143 ]]; then
-                echo "::error title=Pytest timeout (Python ${{ matrix.python-version }})::$test_file exceeded 5 minutes"
-              else
-                echo "::error title=Pytest failure (Python ${{ matrix.python-version }})::$test_file failed with exit code $status"
-              fi
-              exit "$status"
-            fi
-          done
-      - name: Run all smoke test
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke
-      - name: Benchmark smoke test
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
-        run: python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks
+          test -s results/ci_smoke/metrics/metrics.csv
+          test -s results/ci_smoke/metrics/summary.json
+          test -s results/ci_smoke/figures/trajectory.png
+          test -s results/ci_smoke/videos/dynnav_demo.gif
+          test -s results/ci_smoke/reports/reproducibility_report.md
+      - name: Upload smoke artifacts
+        if: always() && matrix.python-version == '3.11'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-smoke-artifacts
+          path: results/ci_smoke
+          if-no-files-found: error
 
   website:
-    name: Website build
+    name: Website production validation
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: website
@@ -144,9 +91,15 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: website/package.json
       - name: Install website dependencies
         run: npm install --no-audit --no-fund
+      - name: Lint website
+        run: npm run lint
       - name: Type-check website
         run: npm run typecheck
+      - name: Test website
+        run: npm run test
       - name: Build website
         run: npm run build
