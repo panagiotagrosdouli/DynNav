@@ -59,3 +59,13 @@ select = ["E", "F", "I", "B", "UP"]
 pythonpath = ["src", "."]
 testpaths = ["tests"]
 addopts = "--cov=dynnav --cov-report=term-missing"
+markers = [
+  "unit: isolated deterministic unit tests",
+  "integration: multi-component integration tests",
+  "regression: tests that preserve repaired historical behavior",
+  "smoke: fast end-to-end verification",
+  "media: generated image and video artifact validation",
+  "website: website contract or integration validation",
+  "ros2: optional tests requiring ROS 2 or Nav2",
+  "slow: tests intentionally excluded from fast development loops",
+]
