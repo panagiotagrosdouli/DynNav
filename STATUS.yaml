@@ -1,0 +1,74 @@
+project: DynNav
+branch: feature/dynnav-complete-redesign-repair
+status: in_progress
+completion_claimed: false
+last_updated: 2026-07-13
+required:
+  clean_clone_install:
+    status: blocked
+    evidence: null
+    reason: command runner cannot resolve github.com
+  python_compileall:
+    status: not_run
+    evidence: null
+  ruff:
+    status: not_run
+    evidence: null
+  black:
+    status: not_run
+    evidence: null
+  pytest:
+    status: not_run
+    evidence: null
+  smoke_mode:
+    status: failing_interface
+    evidence: scripts/run_all.py has no --mode interface
+  validate_mode:
+    status: missing
+    evidence: scripts/run_all.py has no --mode validate implementation
+  docker_build:
+    status: not_run
+    evidence: null
+  docker_default_run:
+    status: not_run
+    evidence: null
+  docker_mounted_results:
+    status: not_run
+    evidence: null
+  website_clean_install:
+    status: not_run
+    evidence: null
+  website_lint:
+    status: missing
+    evidence: website/package.json has no lint script
+  website_typecheck:
+    status: not_run
+    evidence: null
+  website_test:
+    status: missing
+    evidence: website/package.json has no test script
+  website_build:
+    status: not_run
+    evidence: null
+  link_audit:
+    status: not_run
+    evidence: null
+  media_audit:
+    status: not_run
+    evidence: null
+  artifact_audit:
+    status: not_run
+    evidence: null
+  draft_pull_request:
+    status: pending
+    evidence: null
+optional:
+  ros2_nav2:
+    status: not_run
+    reason: optional runtime dependency
+  gazebo:
+    status: not_run
+    reason: optional runtime dependency
+  hardware:
+    status: not_claimed
+    reason: no hardware validation is represented as complete
