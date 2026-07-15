@@ -12,6 +12,7 @@ from dynnav_dashboard.registry import load_contribution_registry
 REQUIRED_PAGES = {
     "app/dashboard.py",
     "app/pages/01_Home.py",
+    "app/pages/02_Robot_Lab.py",
     "app/pages/09_Contribution_Explorer.py",
     "app/pages/13_System_Status.py",
 }
