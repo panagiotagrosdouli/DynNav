@@ -4,16 +4,27 @@
 from __future__ import annotations
 
 import argparse
+import shlex
 from dataclasses import asdict
 from pathlib import Path
 
-from markdown_audit_core import (
-    build_inventory,
-    write_csv,
-    write_documentation_map,
-    write_inventory_markdown,
-    write_json,
-)
+import markdown_audit_core
+
+
+def _safe_shlex_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
+    """Return a conservative token when a documented command is malformed.
+
+    Inventory generation must complete so it can emit its structured findings and
+    artifacts. Command syntax remains a required check in
+    ``validate_documented_commands.py``; this fallback does not mark malformed
+    commands as valid.
+    """
+
+    try:
+        return shlex.split(command, comments=comments, posix=posix)
+    except ValueError:
+        stripped = command.strip()
+        return [stripped] if stripped else []
 
 
 def main() -> int:
@@ -22,20 +33,28 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("results/manifests/markdown_inventory.json"))
     args = parser.parse_args()
 
+    # build_inventory classifies the first token of every documented command.
+    # A trailing escape or unmatched quote must not prevent inventory artifacts
+    # from being written; the dedicated command validator reports the defect.
+    markdown_audit_core.shlex.split = _safe_shlex_split
+
     root = args.root.resolve()
-    records, findings, graph, commands = build_inventory(root)
-    write_json(root / args.output, [asdict(record) for record in records])
-    write_csv(root / "results/manifests/markdown_inventory.csv", records)
-    write_inventory_markdown(root / "docs/MARKDOWN_INVENTORY.md", records, findings)
-    write_json(root / "results/manifests/markdown_link_graph.json", graph)
-    write_json(root / "results/manifests/documented_commands.json", commands)
-    write_documentation_map(root / "docs/DOCUMENTATION_MAP.md", records, graph)
+    records, findings, graph, commands = markdown_audit_core.build_inventory(root)
+    markdown_audit_core.write_json(root / args.output, [asdict(record) for record in records])
+    markdown_audit_core.write_csv(root / "results/manifests/markdown_inventory.csv", records)
+    markdown_audit_core.write_inventory_markdown(root / "docs/MARKDOWN_INVENTORY.md", records, findings)
+    markdown_audit_core.write_json(root / "results/manifests/markdown_link_graph.json", graph)
+    markdown_audit_core.write_json(root / "results/manifests/documented_commands.json", commands)
+    markdown_audit_core.write_documentation_map(root / "docs/DOCUMENTATION_MAP.md", records, graph)
 
     errors = [item for item in findings if item.severity == "error"]
     print(f"Discovered {len(records)} documentation-like files")
     print(f"Validation errors: {len(errors)}")
     for finding in findings:
-        print(f"{finding.severity.upper()} {finding.file}:{finding.line} {finding.kind}: {finding.target} — {finding.message}")
+        print(
+            f"{finding.severity.upper()} {finding.file}:{finding.line} "
+            f"{finding.kind}: {finding.target} — {finding.message}"
+        )
     return 1 if errors else 0
 
 
