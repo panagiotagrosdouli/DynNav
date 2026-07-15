@@ -1,110 +1,91 @@
-# Contribution 07 — Returnability-Aware Next-Best-View Exploration
+# Returnability-Aware Next-Best-View Exploration
 
-[![Module](https://img.shields.io/badge/Module-07-purple)](.) [![Type](https://img.shields.io/badge/Type-Active%20Exploration-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/DynNav-Contribution%2007-6f42c1)](.)
+[![Topic](https://img.shields.io/badge/Topic-Active%20Exploration-0366d6)](.)
+[![Status](https://img.shields.io/badge/Status-Research%20Prototype-2ea44f)](.)
 
-## Plain-language summary
+**English** | [Ελληνικά](README_GR.md)
 
-A robot exploring an unknown environment should not simply choose the viewpoint that reveals the most new map information.
+<p align="center">
+  <img src="assets/next_best_view_pipeline.svg" alt="Conceptual returnability-aware next-best-view exploration pipeline" width="100%" />
+</p>
 
-It should also ask:
+<p align="center"><em>Conceptual overview. The figure is not experimental evidence, a formal exploration-optimality result, or a safety guarantee.</em></p>
 
-```text
-Can I reach that viewpoint safely?
-Can I still return or recover afterwards?
-Will I remain connected enough to communicate?
-```
+This contribution studies **active exploration** in unknown environments. It extends classical next-best-view selection beyond information gain and travel cost by explicitly accounting for path risk, returnability, and connectivity.
 
-Contribution 07 studies next-best-view exploration. The upgraded version adds returnability-aware viewpoint scoring, so the robot can balance information gain with risk, recovery freedom, and connectivity.
-
----
-
-## Research Question
-
-> **RQ7:** How can a robot explore unknown environments efficiently while preserving safety, returnability, and communication quality?
-
-This contribution studies:
-
-- frontier-based exploration,
-- information gain,
-- travel cost,
-- risk-aware viewpoint selection,
-- returnability-aware viewpoint selection,
-- connectivity-aware exploration.
+The central premise is that an informative viewpoint is not necessarily an operationally acceptable viewpoint.
 
 ---
 
-## Motivation
+## Research question
 
-Classic next-best-view selection often uses:
+> **How can a robot select informative viewpoints while preserving recovery freedom, limiting risk exposure, and maintaining communication quality?**
 
-```text
-score = information_gain / travel_cost
-```
+The contribution evaluates whether candidate viewpoints should be preferred based on:
 
-This is useful, but incomplete.
-
-A viewpoint may reveal many unknown cells while forcing the robot to enter a bottleneck, cross a high-risk region, or lose communication. In that case, the best information-theoretic viewpoint may not be the best operational viewpoint.
-
-C07 therefore upgrades NBV selection from pure information gain to safety-aware exploration.
+1. expected information gain;
+2. travel cost;
+3. path risk;
+4. returnability; and
+5. communication quality.
 
 ---
 
-## Conceptual Pipeline
+## Problem formulation
 
-```text
-current map
-      ↓
-frontier / candidate viewpoint generation
-      ↓
-information gain estimate
-      ↓
-travel cost + risk + returnability + connectivity evaluation
-      ↓
-classic NBV score and safe NBV score
-      ↓
-selected viewpoint
-```
+For candidate viewpoint \(v\), the classical score is
 
----
+\[
+S_{\mathrm{classic}}(v)=\frac{I(v)}{\max(C(v),\epsilon)},
+\]
 
-## Scoring
+where \(I(v)\) is information gain and \(C(v)\) is travel cost.
 
-### Classic NBV
+The implemented safety-aware score is
 
-```text
-score_classic = information_gain / travel_cost
-```
+\[
+S_{\mathrm{safe}}(v)=
+\frac{I(v)\left(1+w_R R(v)\right)\left(1+w_Q Q(v)\right)}
+{\max(C(v),\epsilon)\left(1+w_P P(v)\right)},
+\]
 
-### Returnability-aware NBV
+where:
 
-```text
-score_safe = information_gain × recovery_bonus × connectivity_bonus
-             -----------------------------------------------------
-                    travel_cost × risk_penalty
-```
+- \(R(v)\in[0,1]\) is returnability;
+- \(Q(v)\in[0,1]\) is connectivity;
+- \(P(v)\geq0\) is path risk;
+- \(w_R,w_Q,w_P\) are configurable weights.
 
-This makes the robot prefer viewpoints that are not only informative, but also safer to reach and recover from.
+The implementation reports both scores and records whether each candidate is selected by the classical or safety-aware policy.
 
 ---
 
-## Key Concepts
+## Interpretation of the scoring rule
 
-| Concept | Description |
-|---|---|
-| Frontier cells | Boundary between known and unknown space |
-| Information gain | Expected entropy reduction from a viewpoint |
-| Travel cost | Distance or planning cost needed to reach the viewpoint |
-| Path risk | Risk exposure while reaching the viewpoint |
-| Returnability | Ability to return to a trusted base or safe region after visiting the viewpoint |
-| Connectivity | Expected communication quality at or along the route to the viewpoint |
+The safety-aware score rewards:
+
+- high expected information gain;
+- strong returnability; and
+- preserved connectivity.
+
+It penalizes:
+
+- long travel cost; and
+- high route risk.
+
+This is a transparent scalarization of competing objectives. It is not a proof that the selected viewpoint is globally optimal or formally safe.
 
 ---
 
-## Files
+## Repository structure
 
 ```text
 07_next_best_view/
 ├── README.md
+├── README_GR.md
+├── assets/
+│   └── next_best_view_pipeline.svg
 ├── code/
 │   └── nbv_scoring.py
 ├── docs/
@@ -112,133 +93,101 @@ This makes the robot prefer viewpoints that are not only informative, but also s
 ├── experiments/
 │   └── eval_returnability_aware_nbv.py
 └── results/
-    └── c07_returnability_aware_nbv.csv       # generated by the new benchmark
+    └── c07_returnability_aware_nbv.csv
 ```
 
 ---
 
-## Quick Start
+## Reproducibility
 
-Run the returnability-aware NBV benchmark:
+Run the benchmark from the repository root:
 
 ```bash
 python contributions/07_next_best_view/experiments/eval_returnability_aware_nbv.py
 ```
 
-This generates:
+The command writes:
 
 ```text
 contributions/07_next_best_view/results/c07_returnability_aware_nbv.csv
 ```
 
----
-
-## Original Formulation
-
-The original C07 formulation selected a viewpoint using information gain and travel cost:
-
-```text
-Current map → entropy map → candidate viewpoints → information gain estimate → cost-weighted selection → navigate
-```
-
-This captures the core active-exploration idea: reduce map uncertainty efficiently.
+A reportable experiment should preserve the exact commit, candidate definitions, scoring weights, map assumptions, and random seed where applicable.
 
 ---
 
-## New Upgrade Added
+## Evaluation protocol
 
-C07 now includes:
+The benchmark compares synthetic viewpoint candidates representing distinct exploration trade-offs, including:
 
-```text
-code/nbv_scoring.py
-```
+- a nearby low-information viewpoint;
+- a distant high-information viewpoint;
+- a bottleneck frontier;
+- a balanced low-risk and returnable frontier; and
+- a relay-supported frontier.
 
-The new scoring module evaluates candidate viewpoints using:
+For each candidate, the benchmark records information gain, travel cost, path risk, returnability, connectivity, classical score, safety-aware score, and policy selections.
 
-- information gain,
-- travel cost,
-- path risk,
-- returnability,
-- connectivity.
-
-The new benchmark:
-
-```text
-experiments/eval_returnability_aware_nbv.py
-```
-
-compares candidates such as:
-
-- near low-gain viewpoint,
-- far high-gain viewpoint,
-- bottleneck frontier,
-- balanced safe frontier,
-- relay-supported frontier.
+The benchmark is intended for auditability of the scoring logic. It is not equivalent to closed-loop exploration with real sensor observations.
 
 ---
 
-## Scientific Contribution
+## Scientific contribution
 
-The upgraded C07 contribution is not simply:
+C07 reframes next-best-view selection as an **information–risk–recoverability trade-off** rather than a purely entropy-driven objective.
 
-> Choose the viewpoint with the highest information gain per cost.
-
-It is stronger:
-
-> Choose viewpoints that improve the map while preserving future recovery freedom, limiting risk exposure, and maintaining communication quality.
-
-This directly connects exploration to the broader DynNav thesis: information is useful only if the robot can safely act on it.
-
----
-
-## Integration
-
-- **Uses:** uncertainty and entropy estimates from mapping modules
-- **Uses:** C03 risk-aware planning for route risk
-- **Uses:** C04 returnability/recoverability metrics
-- **Uses:** C06 connectivity metrics
-- **Can trigger:** C05 safe mode when candidate viewpoints are too risky
-- **Extended by:** C23 Gaussian Splatting frontiers
-- **Extended by:** C24 NeRF uncertainty for richer information-gain estimation
-
-Recommended planner interface:
-
-```text
-nbv_input = {
-    candidate_viewpoints,
-    information_gain,
-    travel_cost,
-    path_risk,
-    returnability,
-    connectivity
-}
-```
+The contribution is stronger than choosing the largest information-gain-to-cost ratio because it asks whether the robot can safely exploit the acquired information and preserve future decision freedom after reaching the viewpoint.
 
 ---
 
 ## Limitations
 
-- The benchmark uses synthetic candidate viewpoints for auditability.
-- Information gain is provided as a candidate attribute rather than computed from a full sensor model.
-- The safe NBV score is hand-weighted.
-- Real exploration should include field of view, occlusion, sensor range, dynamic obstacles, and map-update feedback.
+1. Candidate viewpoints and their attributes are synthetically specified in the current benchmark.
+2. Information gain is not computed from a full probabilistic sensor and occlusion model.
+3. The score weights are manually selected.
+4. Returnability and path risk depend on upstream approximations.
+5. Connectivity is represented as a scalar candidate attribute.
+6. The benchmark does not implement repeated sensing, map update, frontier regeneration, and closed-loop replanning.
+7. A high safety-aware score does not constitute a formal safety guarantee.
 
 ---
 
-## Next Research Step
+## Research directions
 
-The strongest extension is adaptive NBV weighting:
+Relevant extensions include:
 
-```text
-score = f(information_gain, travel_cost, risk, returnability, connectivity, mission_phase)
-```
+- map-derived frontier generation;
+- entropy reduction from realistic sensor models;
+- occlusion and field-of-view reasoning;
+- adaptive or learned scoring weights;
+- Pareto-front viewpoint selection;
+- uncertainty-aware returnability estimation;
+- connectivity prediction along the full route; and
+- closed-loop exploration under dynamic obstacles and distribution shift.
 
-The robot should become more exploratory when safety margins are high and more conservative when returnability or connectivity becomes weak.
+A future system should adapt exploration aggressiveness to mission phase, resource margins, uncertainty, and safe-mode state.
 
 ---
 
-## Conclusion
+## Scientific claims
 
-Contribution 07 establishes the active-exploration layer of DynNav.
+The implementation supports the following limited claims:
 
-The upgraded version makes next-best-view selection safer by connecting information gain to risk, returnability, and connectivity rather than treating exploration as a purely entropy-driven objective.
+- classical and returnability-aware NBV scores are computed explicitly;
+- risk, returnability, and connectivity can change viewpoint ranking relative to the classical information-gain policy;
+- viewpoint selection decisions are auditable through per-candidate metrics; and
+- the benchmark exposes the operational trade-offs encoded by the chosen weights.
+
+It does **not** establish globally optimal exploration, guaranteed map-completion efficiency, realistic sensor performance, or certified navigation safety.
+
+---
+
+## Role within DynNav
+
+C07 consumes uncertainty and map information, route risk from C03, recoverability from C04, and connectivity from C06. It can also trigger C05 safe-mode behavior when all informative candidates have weak operational margins.
+
+---
+
+## Citation and reproducibility
+
+When using this module academically, report the exact commit, candidate set, scoring weights, definitions of information gain, risk, returnability and connectivity, benchmark command, and random seed.
