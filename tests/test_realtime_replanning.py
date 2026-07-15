@@ -13,25 +13,15 @@ from dstar_lite import DStarLite  # noqa: E402
 from naive_replanner import NaiveReplanner  # noqa: E402
 
 
-# ---------------------------------------------------------------------------
-# Shared fixtures
-# ---------------------------------------------------------------------------
-
-
 def _open_grid(H=10, W=10):
     return np.zeros((H, W), dtype=np.int32)
 
 
 def _maze_grid():
     g = np.zeros((8, 8), dtype=np.int32)
-    g[2, 1:6] = 1  # horizontal wall with gap at col 6
-    g[5, 2:7] = 1  # another wall
+    g[2, 1:6] = 1
+    g[5, 2:7] = 1
     return g
-
-
-# ---------------------------------------------------------------------------
-# DStarLite
-# ---------------------------------------------------------------------------
 
 
 class TestDStarLiteBasic:
@@ -48,17 +38,14 @@ class TestDStarLiteBasic:
         d = DStarLite(grid, (0, 0), (5, 5))
         path = d.plan()
         assert path is not None
-        assert len(path) - 1 >= 10  # Manhattan distance
+        assert len(path) - 1 >= 10
 
     def test_no_path_when_blocked(self):
         grid = np.zeros((5, 5), dtype=np.int32)
-        grid[:, 2] = 1  # full vertical wall — no passage
+        grid[:, 2] = 1
         d = DStarLite(grid, (0, 2), (4, 2))
-        d.grid[:, 2] = 1
-        # start is on the wall, so g(start) stays INF
         path = d.plan()
-        # start itself is on the wall; expect None
-        assert path is None or path[0] == (0, 2)
+        assert path is None
 
     def test_path_all_cells_free(self):
         grid = _open_grid()
@@ -71,9 +58,7 @@ class TestDStarLiteBasic:
     def test_goal_equals_start(self):
         grid = _open_grid()
         d = DStarLite(grid, (5, 5), (5, 5))
-        path = d.plan()
-        assert path is not None
-        assert path == [(5, 5)]
+        assert d.plan() == [(5, 5)]
 
 
 class TestDStarLiteReplan:
@@ -81,26 +66,22 @@ class TestDStarLiteReplan:
         grid = _open_grid()
         d = DStarLite(grid, (0, 0), (9, 9))
         path1 = d.plan()
-        # block a cell on the path
-        if path1 and len(path1) > 2:
-            bx, by = path1[2]
-            d.update_edge(bx, by, blocked=True)
-            path2 = d.replan()
-            assert path2 is not None
-            # blocked cell must not appear in new path
-            assert (bx, by) not in path2
+        assert path1 is not None
+        bx, by = path1[2]
+        d.update_edge(bx, by, blocked=True)
+        path2 = d.replan()
+        assert path2 is not None
+        assert (bx, by) not in path2
 
     def test_replan_incremental_count(self):
-        grid = _open_grid()
-        d = DStarLite(grid, (0, 0), (5, 5))
+        d = DStarLite(_open_grid(), (0, 0), (5, 5))
         d.plan()
         d.replan()
         d.replan()
         assert d.replan_count == 2
 
     def test_replan_with_new_start(self):
-        grid = _open_grid()
-        d = DStarLite(grid, (0, 0), (9, 9))
+        d = DStarLite(_open_grid(), (0, 0), (9, 9))
         d.plan()
         path = d.replan(new_start=(3, 3))
         assert path is not None
@@ -111,12 +92,37 @@ class TestDStarLiteReplan:
         grid = _open_grid()
         grid[0, 5] = 1
         d = DStarLite(grid, (0, 0), (9, 0))
-        path1 = d.plan()
-        assert path1 is not None
-        # clear the obstacle
+        assert d.plan() is not None
         d.update_edge(5, 0, blocked=False)
-        path2 = d.replan()
-        assert path2 is not None
+        assert d.replan() is not None
+
+    def test_repeated_block_and_clear_terminates(self):
+        d = DStarLite(_open_grid(15, 15), (0, 0), (14, 14))
+        path = d.plan()
+        assert path is not None
+
+        for _ in range(25):
+            d.update_edge(7, 7, blocked=True)
+            blocked_path = d.replan()
+            assert blocked_path is not None
+            assert (7, 7) not in blocked_path
+
+            d.update_edge(7, 7, blocked=False)
+            assert d.replan() is not None
+
+        assert d.replan_count == 50
+        assert d.expansions < 15 * 15 * 50 * 51
+
+    def test_moving_start_replans_remain_bounded(self):
+        d = DStarLite(_open_grid(20, 20), (0, 0), (19, 19))
+        path = d.plan()
+        assert path is not None
+
+        for new_start in path[1:12]:
+            repaired = d.replan(new_start=new_start)
+            assert repaired is not None
+            assert repaired[0] == new_start
+            assert repaired[-1] == (19, 19)
 
 
 class TestDStarLiteVsNaive:
@@ -129,30 +135,22 @@ class TestDStarLiteVsNaive:
         assert p_dstar is not None and p_naive is not None
         assert len(p_dstar) == len(p_naive)
 
-    def test_dstar_fewer_expansions_on_replan(self):
+    def test_dstar_expansions_are_non_negative(self):
         grid = _open_grid(15, 15)
         dstar = DStarLite(grid.copy(), (0, 0), (14, 14))
         naive = NaiveReplanner(grid.copy(), (0, 0), (14, 14))
         dstar.plan()
         naive.plan()
-        # force a replan
         dstar.update_edge(7, 7, blocked=True)
         dstar.replan()
         naive.update_edge(7, 7, blocked=True)
         naive.replan()
-        # D* Lite total expansions should be <= naive (may be equal on tiny grids)
-        assert dstar.expansions >= 0  # sanity: never negative
-
-
-# ---------------------------------------------------------------------------
-# NaiveReplanner
-# ---------------------------------------------------------------------------
+        assert dstar.expansions >= 0
 
 
 class TestNaiveReplanner:
     def test_plan_found(self):
-        grid = _open_grid()
-        r = NaiveReplanner(grid, (0, 0), (9, 9))
+        r = NaiveReplanner(_open_grid(), (0, 0), (9, 9))
         path = r.plan()
         assert path is not None
         assert path[0] == (0, 0)
@@ -160,34 +158,28 @@ class TestNaiveReplanner:
 
     def test_no_path_isolated_goal(self):
         grid = np.zeros((5, 5), dtype=np.int32)
-        grid[0:5, 3] = 1  # complete vertical wall
+        grid[:, 3] = 1
         r = NaiveReplanner(grid, (0, 0), (4, 0))
-        # goal is cut off
-        path = r.plan()
-        # can't reach col 4 from col 0 due to wall at col 3
-        assert path is None
+        assert r.plan() is None
 
     def test_replan_count_increments(self):
-        grid = _open_grid()
-        r = NaiveReplanner(grid, (0, 0), (5, 5))
+        r = NaiveReplanner(_open_grid(), (0, 0), (5, 5))
         r.plan()
         r.replan()
         r.replan()
         assert r.replan_count == 2
 
     def test_update_edge_blocks_cell(self):
-        grid = _open_grid(6, 6)
-        r = NaiveReplanner(grid, (0, 0), (5, 5))
+        r = NaiveReplanner(_open_grid(6, 6), (0, 0), (5, 5))
         path1 = r.plan()
-        if path1 and len(path1) > 2:
-            bx, by = path1[2]
-            r.update_edge(bx, by, blocked=True)
-            path2 = r.replan()
-            assert path2 is None or (bx, by) not in path2
+        assert path1 is not None
+        bx, by = path1[2]
+        r.update_edge(bx, by, blocked=True)
+        path2 = r.replan()
+        assert path2 is None or (bx, by) not in path2
 
     def test_replan_with_new_start(self):
-        grid = _open_grid()
-        r = NaiveReplanner(grid, (0, 0), (9, 9))
+        r = NaiveReplanner(_open_grid(), (0, 0), (9, 9))
         r.plan()
         path = r.replan(new_start=(4, 4))
         assert path is not None
