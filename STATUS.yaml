@@ -1,74 +1,63 @@
 project: DynNav
-branch: feature/dynnav-complete-redesign-repair
+branch: research/repository-audit-m0
 status: in_progress
 completion_claimed: false
-last_updated: 2026-07-13
-required:
-  clean_clone_install:
+last_updated: 2026-07-15
+baseline:
+  merged_pr: 64
+  merge_commit: 28717f0dc2f04ae0f35b2b8b29fad3f168ced2cc
+  ci_run: 268
+  ci_conclusion: success
+documentation_audit:
+  root_readme:
+    status: updated
+    evidence: README.md rebuilt as the research landing page
+  nested_readmes:
+    status: partially_verified
+    added_or_updated:
+      - configs/README.md
+      - src/README.md
+      - src/dynnav/README.md
+      - scripts/README.md
+      - tests/README.md
+      - docs/README.md
+      - assets/README.md
+      - results/README.md
+      - paper/README.md
+      - website/README.md
+    reason: GitHub Contents API verified these paths; recursive filesystem enumeration is blocked
+  misleading_claims:
+    status: repaired
+    evidence: docs/README.md no longer claims formal verification, 26 completed modules, ROS2/Gazebo/TurtleBot or hardware validation
+  strongest_gif:
+    status: unavailable
+    evidence: assets/demo.gif does not exist on the branch
+    action: root README retains the verified conceptual SVG and labels GIF generation as pending
+  markdown_link_audit:
     status: blocked
-    evidence: null
-    reason: command runner cannot resolve github.com
-  python_compileall:
+    reason: execution container cannot resolve github.com and no recursive checkout is available
+  markdown_anchor_audit:
     status: not_run
-    evidence: null
-  ruff:
-    status: not_run
-    evidence: null
-  black:
-    status: not_run
-    evidence: null
-  pytest:
-    status: not_run
-    evidence: null
-  smoke_mode:
-    status: failing_interface
-    evidence: scripts/run_all.py has no --mode interface
-  validate_mode:
-    status: missing
-    evidence: scripts/run_all.py has no --mode validate implementation
-  docker_build:
-    status: not_run
-    evidence: null
-  docker_default_run:
-    status: not_run
-    evidence: null
-  docker_mounted_results:
-    status: not_run
-    evidence: null
-  website_clean_install:
-    status: not_run
-    evidence: null
-  website_lint:
-    status: missing
-    evidence: website/package.json has no lint script
-  website_typecheck:
-    status: not_run
-    evidence: null
-  website_test:
-    status: missing
-    evidence: website/package.json has no test script
-  website_build:
-    status: not_run
-    evidence: null
-  link_audit:
-    status: not_run
-    evidence: null
-  media_audit:
-    status: not_run
-    evidence: null
-  artifact_audit:
-    status: not_run
-    evidence: null
-  draft_pull_request:
-    status: pending
-    evidence: null
+    reason: requires recursive checkout or repository tree access
+  command_validation:
+    status: partially_verified
+    evidence:
+      - PR 64 CI passed pytest and both Python smoke commands
+      - website install, typecheck and build passed
+    not_verified:
+      - Docker build and run
+      - recursive README commands outside CI
+      - ROS2, Nav2, Gazebo and hardware commands
+required_next:
+  - run recursive README inventory from a clean checkout
+  - run Markdown link, asset and anchor validators
+  - validate Docker commands
+  - inspect any README files outside the verified top-level subsystem paths
+  - repair all failures before claiming documentation completion
 optional:
   ros2_nav2:
-    status: not_run
-    reason: optional runtime dependency
+    status: not_validated
   gazebo:
-    status: not_run
-    reason: optional runtime dependency
+    status: not_validated
   hardware:
     status: not_claimed
-    reason: no hardware validation is represented as complete
