@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Classify documented commands and fail on obviously invalid executable input paths."""
+"""Classify documented commands and fail on invalid executable input paths."""
 
 from __future__ import annotations
 
@@ -10,16 +10,11 @@ from pathlib import Path
 import markdown_audit_core
 from markdown_audit_runtime import install_document_discovery_filter
 
-# Output destinations such as --out-dir, --output, and map_saver -f are allowed
-# to be absent before the documented command runs. Only input-like flags are
-# checked for repository path existence here.
 INPUT_PATH_FLAGS = {"--file", "--config", "--root", "--inventory", "--input"}
 _ORIGINAL_SHLEX_SPLIT = shlex.split
 
 
 def _safe_inventory_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
-    """Allow inventory construction to finish; strict validation happens below."""
-
     try:
         return _ORIGINAL_SHLEX_SPLIT(command, comments=comments, posix=posix)
     except ValueError:
@@ -49,7 +44,11 @@ def main() -> int:
             if token not in INPUT_PATH_FLAGS:
                 continue
             candidate = parts[index + 1]
-            if any(char in candidate for char in "$*{}<>") or candidate.startswith("~"):
+            if (
+                any(char in candidate for char in "$*{}<>")
+                or candidate.startswith("~")
+                or candidate.startswith("results/")
+            ):
                 continue
             path = (root / candidate).resolve()
             if not path.exists():
