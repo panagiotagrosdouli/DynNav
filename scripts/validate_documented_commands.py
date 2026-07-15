@@ -22,6 +22,17 @@ def _safe_inventory_split(command: str, comments: bool = False, posix: bool = Tr
         return [stripped] if stripped else []
 
 
+def _is_illustrative_input(candidate: str) -> bool:
+    """Return True for documented placeholders or generated-output locations."""
+
+    return (
+        any(char in candidate for char in "$*{}<>")
+        or candidate.startswith("~")
+        or candidate.startswith("results/")
+        or Path(candidate).is_absolute()
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", type=Path, default=Path("."))
@@ -44,11 +55,7 @@ def main() -> int:
             if token not in INPUT_PATH_FLAGS:
                 continue
             candidate = parts[index + 1]
-            if (
-                any(char in candidate for char in "$*{}<>")
-                or candidate.startswith("~")
-                or candidate.startswith("results/")
-            ):
+            if _is_illustrative_input(candidate):
                 continue
             path = (root / candidate).resolve()
             if not path.exists():
