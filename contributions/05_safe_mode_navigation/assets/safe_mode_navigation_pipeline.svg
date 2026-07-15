@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Contribution 05 safe-mode navigation supervisor</title>
+  <desc id="desc">Conceptual diagram showing risk inputs, finite-state supervision, conservative commands, emergency stop, and recovery.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#071426"/><stop offset="100%" stop-color="#102a43"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#44d7b6"/><stop offset="100%" stop-color="#65a7ff"/></linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-opacity="0.28"/></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#7fc8ff"/></marker>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="url(#bg)"/>
+  <text x="800" y="72" text-anchor="middle" fill="#f5f9ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="700">Contribution 05 — Safe-Mode Navigation</text>
+  <text x="800" y="112" text-anchor="middle" fill="#b7c9dc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21">Runtime supervision for conservative navigation, emergency stopping, and controlled recovery</text>
+  <g filter="url(#shadow)">
+    <rect x="80" y="210" width="285" height="260" rx="24" fill="#102f4c" stroke="#3c6f96" stroke-width="2"/>
+    <rect x="430" y="210" width="330" height="260" rx="24" fill="#123649" stroke="#3c7b8b" stroke-width="2"/>
+    <rect x="825" y="210" width="300" height="260" rx="24" fill="#143b43" stroke="#42a398" stroke-width="2"/>
+    <rect x="1190" y="210" width="330" height="260" rx="24" fill="#173548" stroke="#5b91b7" stroke-width="2"/>
+  </g>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <text x="222" y="255" text-anchor="middle" fill="#8ed8ff" font-size="18" font-weight="700">RUNTIME SIGNALS</text>
+    <text x="222" y="315" text-anchor="middle" fill="#f4f8fc" font-size="24" font-weight="700">Risk • uncertainty</text>
+    <text x="222" y="352" text-anchor="middle" fill="#f4f8fc" font-size="24" font-weight="700">recoverability • IDS</text>
+    <text x="222" y="414" text-anchor="middle" fill="#b7c9dc" font-size="18">Audited inputs from C02–C04/C08</text>
+
+    <text x="595" y="255" text-anchor="middle" fill="#8ee8dd" font-size="18" font-weight="700">FINITE-STATE SUPERVISOR</text>
+    <rect x="474" y="290" width="105" height="58" rx="15" fill="#0b2137" stroke="#65a7ff" stroke-width="2"/>
+    <rect x="610" y="290" width="110" height="58" rx="15" fill="#123d45" stroke="#44d7b6" stroke-width="2"/>
+    <rect x="535" y="378" width="145" height="58" rx="15" fill="#46252b" stroke="#ff8b8b" stroke-width="2"/>
+    <text x="526" y="326" text-anchor="middle" fill="#f4f8fc" font-size="17" font-weight="700">NORMAL</text>
+    <text x="665" y="326" text-anchor="middle" fill="#f4f8fc" font-size="17" font-weight="700">SAFE MODE</text>
+    <text x="607" y="414" text-anchor="middle" fill="#f4f8fc" font-size="17" font-weight="700">EMERGENCY STOP</text>
+    <path d="M579 319 L600 319" stroke="#7fc8ff" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M665 350 L630 374" stroke="#ff9b9b" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="595" y="458" text-anchor="middle" fill="#b7c9dc" font-size="16">Hysteresis • persistence • cooldown</text>
+
+    <text x="975" y="255" text-anchor="middle" fill="#8ef0d5" font-size="18" font-weight="700">ADAPTIVE COMMANDS</text>
+    <text x="975" y="310" text-anchor="middle" fill="#f4f8fc" font-size="23" font-weight="700">Reduce speed</text>
+    <text x="975" y="348" text-anchor="middle" fill="#f4f8fc" font-size="23" font-weight="700">Increase inflation radius</text>
+    <text x="975" y="386" text-anchor="middle" fill="#f4f8fc" font-size="23" font-weight="700">Replan / alert operator</text>
+    <text x="975" y="431" text-anchor="middle" fill="#b7c9dc" font-size="18">Stop when risk is critical</text>
+
+    <text x="1355" y="255" text-anchor="middle" fill="#9ed3ff" font-size="18" font-weight="700">NAVIGATION OUTCOME</text>
+    <path d="M1270 365 C1305 300,1340 300,1360 350 C1380 400,1420 390,1450 305" fill="none" stroke="url(#accent)" stroke-width="7" stroke-linecap="round"/>
+    <text x="1355" y="410" text-anchor="middle" fill="#f4f8fc" font-size="23" font-weight="700">Continue • replan</text>
+    <text x="1355" y="442" text-anchor="middle" fill="#f4f8fc" font-size="23" font-weight="700">recover • stop</text>
+  </g>
+  <g stroke="#7fc8ff" stroke-width="4" fill="none" marker-end="url(#arrow)"><line x1="365" y1="340" x2="417" y2="340"/><line x1="760" y1="340" x2="812" y2="340"/><line x1="1125" y1="340" x2="1177" y2="340"/></g>
+  <rect x="170" y="560" width="1260" height="112" rx="22" fill="#0a1d30" stroke="#244c6b" stroke-width="2"/>
+  <text x="800" y="603" text-anchor="middle" fill="#f4f8fc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Scientific distinction</text>
+  <text x="800" y="642" text-anchor="middle" fill="#b9cde0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">Safe mode reduces operational exposure; it is not a formal proof of safety or a certified hardware stop.</text>
+  <text x="800" y="705" text-anchor="middle" fill="#7994aa" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">Conceptual overview — not experimental evidence and not a safety guarantee</text>
+</svg>
