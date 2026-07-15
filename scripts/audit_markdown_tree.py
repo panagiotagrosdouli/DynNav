@@ -9,6 +9,7 @@ from dataclasses import asdict
 from pathlib import Path
 
 import markdown_audit_core
+from markdown_audit_runtime import install_document_discovery_filter
 
 _ORIGINAL_SHLEX_SPLIT = shlex.split
 
@@ -35,9 +36,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=Path("results/manifests/markdown_inventory.json"))
     args = parser.parse_args()
 
-    # build_inventory classifies the first token of every documented command.
-    # A trailing escape or unmatched quote must not prevent inventory artifacts
-    # from being written; the dedicated command validator reports the defect.
+    install_document_discovery_filter()
     markdown_audit_core.shlex.split = _safe_shlex_split
 
     root = args.root.resolve()
