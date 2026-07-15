@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="760" viewBox="0 0 1600 760" role="img" aria-labelledby="title desc">
+  <title id="title">Contribution 02 uncertainty estimation and calibration pipeline</title>
+  <desc id="desc">A conceptual diagram showing how raw model uncertainty is audited against observed error, calibrated, and passed to downstream navigation planners.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#071426"/><stop offset="100%" stop-color="#102a43"/></linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#44d7b6"/><stop offset="100%" stop-color="#65a7ff"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#000000" flood-opacity="0.28"/></filter>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 Z" fill="#7fc8ff"/></marker>
+  </defs>
+  <rect width="1600" height="760" rx="28" fill="url(#bg)"/>
+  <circle cx="1450" cy="90" r="170" fill="#163c5c" opacity="0.35"/><circle cx="120" cy="700" r="210" fill="#0d4c4b" opacity="0.25"/>
+  <text x="800" y="72" text-anchor="middle" fill="#f5f9ff" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="42" font-weight="700">Contribution 02 — Uncertainty Estimation &amp; Calibration</text>
+  <text x="800" y="112" text-anchor="middle" fill="#b7c9dc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="21">Turning a raw uncertainty signal into an audited, calibrated input for navigation decisions</text>
+  <g filter="url(#shadow)">
+    <rect x="80" y="205" width="270" height="270" rx="24" fill="#102f4c" stroke="#3c6f96" stroke-width="2"/>
+    <rect x="410" y="205" width="270" height="270" rx="24" fill="#123649" stroke="#3c7b8b" stroke-width="2"/>
+    <rect x="740" y="205" width="270" height="270" rx="24" fill="#143b43" stroke="#42a398" stroke-width="2"/>
+    <rect x="1070" y="205" width="270" height="270" rx="24" fill="#173548" stroke="#5b91b7" stroke-width="2"/>
+    <rect x="1385" y="244" width="155" height="192" rx="24" fill="#15304a" stroke="#6aa8d8" stroke-width="2"/>
+  </g>
+  <g font-family="Inter,Segoe UI,Arial,sans-serif">
+    <text x="215" y="252" text-anchor="middle" fill="#8ed8ff" font-size="18" font-weight="700" letter-spacing="1.2">MODEL OUTPUT</text>
+    <circle cx="215" cy="318" r="42" fill="#0b2137" stroke="#65a7ff" stroke-width="3"/><path d="M187 327 Q215 278 243 327" fill="none" stroke="#65a7ff" stroke-width="5" stroke-linecap="round"/><circle cx="215" cy="306" r="7" fill="#44d7b6"/>
+    <text x="215" y="391" text-anchor="middle" fill="#f4f8fc" font-size="25" font-weight="700">Prediction ŷ</text><text x="215" y="423" text-anchor="middle" fill="#b7c9dc" font-size="20">Raw uncertainty σ</text>
+    <text x="545" y="252" text-anchor="middle" fill="#8ee8dd" font-size="18" font-weight="700" letter-spacing="1.2">UNCERTAINTY AUDIT</text>
+    <line x1="475" y1="342" x2="615" y2="342" stroke="#44d7b6" stroke-width="4"/><polyline points="478,355 505,326 530,349 557,301 585,334 613,290" fill="none" stroke="#7fc8ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="545" y="391" text-anchor="middle" fill="#f4f8fc" font-size="24" font-weight="700">Compare σ with |ŷ − y|</text><text x="545" y="423" text-anchor="middle" fill="#b7c9dc" font-size="18">Correlation • ECE • Coverage</text>
+    <text x="875" y="252" text-anchor="middle" fill="#8ef0d5" font-size="18" font-weight="700" letter-spacing="1.2">CALIBRATION LAYER</text>
+    <rect x="800" y="292" width="150" height="78" rx="16" fill="#0d252d" stroke="#44d7b6" stroke-width="3"/><text x="875" y="326" text-anchor="middle" fill="#f4f8fc" font-size="21" font-weight="700">σcal = C(σ)</text><text x="875" y="354" text-anchor="middle" fill="#a8d8d1" font-size="15">scale / quantile bins</text>
+    <text x="875" y="410" text-anchor="middle" fill="#f4f8fc" font-size="24" font-weight="700">Correct confidence mismatch</text><text x="875" y="439" text-anchor="middle" fill="#b7c9dc" font-size="18">Fit on validation data</text>
+    <text x="1205" y="252" text-anchor="middle" fill="#9ed3ff" font-size="18" font-weight="700" letter-spacing="1.2">CALIBRATED SIGNAL</text>
+    <path d="M1138 356 C1160 300,1190 292,1206 332 C1223 374,1250 374,1273 310" fill="none" stroke="url(#accent)" stroke-width="7" stroke-linecap="round"/><line x1="1138" y1="365" x2="1274" y2="365" stroke="#54718a" stroke-width="2" stroke-dasharray="8 8"/>
+    <text x="1205" y="410" text-anchor="middle" fill="#f4f8fc" font-size="25" font-weight="700">Planner-ready σcal</text><text x="1205" y="441" text-anchor="middle" fill="#b7c9dc" font-size="18">Measured reliability</text>
+    <text x="1462" y="280" text-anchor="middle" fill="#9ed3ff" font-size="15" font-weight="700" letter-spacing="1">DOWNSTREAM</text><circle cx="1462" cy="331" r="29" fill="#0a2137" stroke="#65a7ff" stroke-width="3"/><path d="M1445 338 L1457 348 L1480 317" fill="none" stroke="#44d7b6" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="1462" y="390" text-anchor="middle" fill="#f4f8fc" font-size="17" font-weight="700">Risk-aware</text><text x="1462" y="414" text-anchor="middle" fill="#f4f8fc" font-size="17" font-weight="700">planning</text>
+  </g>
+  <g stroke="#7fc8ff" stroke-width="4" fill="none" marker-end="url(#arrow)"><line x1="350" y1="340" x2="397" y2="340"/><line x1="680" y1="340" x2="727" y2="340"/><line x1="1010" y1="340" x2="1057" y2="340"/><line x1="1340" y1="340" x2="1372" y2="340"/></g>
+  <rect x="150" y="560" width="1300" height="112" rx="22" fill="#0a1d30" stroke="#244c6b" stroke-width="2"/>
+  <text x="800" y="602" text-anchor="middle" fill="#f4f8fc" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="24" font-weight="700">Scientific distinction</text>
+  <text x="800" y="641" text-anchor="middle" fill="#b9cde0" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="20">An informative uncertainty ranking is not automatically a calibrated probability statement.</text>
+  <text x="800" y="705" text-anchor="middle" fill="#7994aa" font-family="Inter,Segoe UI,Arial,sans-serif" font-size="16">Conceptual overview — not experimental evidence and not a safety guarantee</text>
+</svg>
