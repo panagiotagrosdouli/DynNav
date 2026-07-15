@@ -1,37 +1,44 @@
 # DynNav Contributions
 
-This directory contains the numbered DynNav research contributions and supporting experimental modules.
+This directory contains the numbered research contributions of DynNav.
 
-## Documentation convention
+## Canonical structure
 
-Each numbered contribution should use the following structure where applicable:
+Each contribution should use one canonical directory and follow this structure where applicable:
 
 ```text
 NN_module_name/
-├── README.md          # Primary English overview
-├── README_GR.md       # Optional Greek overview
-├── code/              # Implementation, when separated from experiments
-├── experiments/       # Reproducible experiment entry points
-├── results/           # Generated or committed result artifacts
-├── models/            # Model artifacts or model definitions
-└── docs/              # Extended theory, protocols, and evidence notes
+├── README.md
+├── README_GR.md          # optional Greek version
+├── code/                 # implementation specific to the contribution
+├── experiments/          # reproducible experiment entry points
+├── results/              # generated summaries and traceable artifacts
+├── docs/                 # theory or extended technical notes
+└── tests/                # module-local tests when appropriate
 ```
 
-Only `README.md` and, optionally, `README_GR.md` should serve as module entry points. Legacy variants such as `readmegr.md` are consolidated to prevent duplication and broken navigation.
+Use one primary English `README.md` and at most one Greek `README_GR.md`. Legacy names such as `readmegr.md` should not be added.
 
-## Evidence and maturity
+## Evidence maturity
 
-Documentation should distinguish clearly between:
+Documentation must distinguish among:
 
-- **Implemented**: source code and tests are present;
-- **Experimental**: evidence is limited to controlled synthetic or benchmark runs;
-- **Planned**: design or roadmap material exists without validated implementation;
-- **Hardware validation required**: no physical-robot evidence is currently available.
+- **Implemented** — code exists and is exercised by tests or reproducible commands.
+- **Experimental** — prototype code or synthetic evaluation exists, but broader validation is incomplete.
+- **Planned** — design documentation exists without a verified implementation.
+- **Hardware validation required** — physical-robot evidence is not available.
 
-Passing tests or synthetic experiments must not be described as formal safety certification or real-world validation.
+Passing unit tests does not establish a formal safety guarantee, real-world robustness, or state-of-the-art performance.
 
-## Numbered contributions
+## Numbering
 
-The canonical numbered modules are `01` through `27`. Supporting folders such as benchmarking, ablation studies, hybrid planners, and realtime replanning are shared research infrastructure rather than separate numbered contributions.
+One contribution number should map to one canonical directory. See [`CONTRIBUTION_NUMBERING.md`](CONTRIBUTION_NUMBERING.md).
 
-See the repository root [`README.md`](../README.md) and [`docs/REPOSITORY_AUDIT.md`](../docs/REPOSITORY_AUDIT.md) for the authoritative project-level status and evidence boundaries.
+Current consolidation notes:
+
+- Contribution 02 is canonical under [`02_uncertainty_calibration/`](02_uncertainty_calibration/).
+- Contribution 07 still spans a legacy implementation and an upgraded module; see [`07_next_best_view/MIGRATION.md`](07_next_best_view/MIGRATION.md) before moving or deleting files.
+
+## Supporting research directories
+
+Unnumbered directories such as ablation studies, benchmarking, hybrid planners, and realtime replanning are supporting experiments rather than standalone numbered contributions. They should remain clearly identified as support material until a later repository-wide move updates all code, tests, and links.
