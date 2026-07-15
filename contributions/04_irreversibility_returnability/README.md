@@ -1,124 +1,91 @@
-# Contribution 04 — Irreversibility, Returnability, and Recoverability
+# Irreversibility, Returnability, and Recoverability
 
-[![Module](https://img.shields.io/badge/Module-04-purple)](.) [![Type](https://img.shields.io/badge/Type-Safety%20%2F%20Planning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/DynNav-Contribution%2004-6f42c1)](.)
+[![Topic](https://img.shields.io/badge/Topic-Recoverability--Aware%20Planning-0366d6)](.)
+[![Status](https://img.shields.io/badge/Status-Research%20Prototype-2ea44f)](.)
 
-## Plain-language summary
+<p align="center">
+  <img src="assets/recoverability_pipeline.svg" alt="Conceptual pipeline for returnability, recoverability, irreversibility, and safe-mode decisions" width="100%" />
+</p>
 
-A robot should not only ask:
+<p align="center"><em>Conceptual overview of Contribution 04. The figure is explanatory and does not constitute experimental evidence or a formal safety certificate.</em></p>
 
-```text
-Can I move there?
-```
+A path can be collision-free and immediately feasible while still reducing the robot's ability to escape, return, or recover later. Contribution 04 introduces planning signals that evaluate **future recovery freedom before commitment**.
 
-It should also ask:
-
-```text
-If I move there, can I still recover, escape, or return later?
-```
-
-Contribution 04 studies this question. It prevents the robot from blindly entering narrow passages, cul-de-sacs, or uncertain regions where future recovery becomes difficult.
-
-The central idea is:
-
-> A path can be collision-free and still be unsafe if it destroys the robot's ability to return or recover.
+The module distinguishes binary returnability from continuous recoverability and interprets irreversibility as the progressive loss of future recovery options.
 
 ---
 
-## Research Question
+## Research question
 
-> **RQ4:** How can a navigation system avoid irreversible decisions while still preserving planning feasibility?
+> **How can a navigation system avoid or manage irreversible decisions while preserving planning feasibility?**
 
-This contribution studies:
+The contribution studies:
 
-- returnability,
-- irreversibility,
-- recoverability,
-- feasibility thresholds,
-- bottleneck commitments,
-- cul-de-sac detection,
-- safe-mode relaxation when constraints become infeasible.
-
----
-
-## Motivation
-
-Classical planners usually optimize distance, cost, or collision avoidance.
-
-But some decisions are dangerous even if they are currently feasible. For example:
-
-- entering a narrow corridor with no turning space,
-- moving into a cul-de-sac under uncertainty,
-- crossing a bottleneck when localization is unreliable,
-- choosing a frontier that cannot be safely exited.
-
-Contribution 04 introduces a way to reason about these decisions before the robot commits to them.
+1. returnability to a trusted base or safe region;
+2. recoverability as retained future decision freedom;
+3. irreversibility as loss of that freedom;
+4. bottlenecks and cul-de-sac commitments;
+5. threshold-based acceptance or rejection; and
+6. minimal safe-mode relaxation when strict constraints become infeasible.
 
 ---
 
-## Core Concepts
+## Core concepts
 
-| Concept | Meaning |
+| Concept | Interpretation |
 |---|---|
-| Returnability | Whether the robot can reach a trusted base or safe region from a candidate state |
-| Recoverability | How much future recovery freedom remains from a state |
-| Irreversibility | How close the robot is to losing recovery freedom |
-| Bottleneck score | How locally constrained the state is |
-| Escape options | How many safe neighbouring actions remain available |
-| Threshold τ | Maximum allowed irreversibility before a state/path is rejected |
+| Returnability | Whether a trusted base or safe region remains reachable |
+| Recoverability | How much future recovery freedom remains |
+| Irreversibility | Proximity to losing recovery freedom |
+| Bottleneck score | Degree of local spatial constraint |
+| Escape options | Number of locally available safe transitions |
+| Threshold \(\tau\) | Maximum permitted irreversibility before rejection or relaxation |
+
+Returnability is binary. Recoverability is continuous and allows two technically returnable states to be ranked according to how fragile they are.
 
 ---
 
-## Conceptual Pipeline
+## Operational formulation
 
-```text
-candidate state or path
-      ↓
-returnability check
-      ↓
-recoverability / irreversibility score
-      ↓
-threshold or penalty decision
-      ↓
-allow, penalize, reroute, or trigger safe mode
-```
+For a candidate state \(x\), the implementation combines interpretable signals such as:
 
----
+- shortest return distance to a trusted base;
+- local escape-option count;
+- local obstacle density or clearance;
+- bottleneck structure; and
+- route-level minimum recoverability.
 
-## How It Works
+A normalized score may be interpreted as
 
-The original C04 idea used returnability as a pre-screening mechanism:
+\[
+R_{\mathrm{rec}}(x)\in[0,1],
+\]
 
-```text
-Candidate action → simulate forward → check return path → allow/block
-```
+with the corresponding irreversibility score
 
-The upgraded module adds a continuous recoverability metric.
+\[
+I(x)=1-R_{\mathrm{rec}}(x).
+\]
 
-Instead of only asking whether a state is returnable, the planner can now measure how recoverable it is.
+A threshold policy may reject a state when
 
-A simplified interpretation is:
+\[
+I(x)>\tau.
+\]
 
-```text
-recoverability = return distance quality
-               + local escape freedom
-               + local obstacle margin
-```
-
-Irreversibility can then be interpreted as:
-
-```text
-irreversibility = 1 - recoverability
-```
-
-This makes it possible to rank states instead of only accepting or rejecting them.
+When no feasible route satisfies a strict threshold, safe mode may increase \(\tau\) only as much as necessary to restore feasibility. This is a pragmatic relaxation mechanism, not a formal proof of safety.
 
 ---
 
-## Files
+## Repository structure
 
 ```text
 04_irreversibility_returnability/
 ├── README.md
+├── README_GR.md
+├── assets/
+│   └── recoverability_pipeline.svg
 ├── code/
 │   └── recoverability_metrics.py
 ├── docs/
@@ -126,143 +93,96 @@ This makes it possible to rank states instead of only accepting or rejecting the
 ├── experiments/
 │   └── eval_recoverability_metrics.py
 └── results/
-    └── c04_recoverability_metrics.csv       # generated by the new benchmark
+    └── c04_recoverability_metrics.csv
 ```
 
 ---
 
-## Quick Start
+## Reproducibility
 
-Run the new recoverability benchmark:
+Run from the repository root:
 
 ```bash
 python contributions/04_irreversibility_returnability/experiments/eval_recoverability_metrics.py
 ```
 
-This generates:
+The benchmark writes:
 
 ```text
 contributions/04_irreversibility_returnability/results/c04_recoverability_metrics.csv
 ```
 
-The benchmark evaluates routes through:
+It evaluates routes through open areas, bottlenecks, cul-de-sac-like commitments, and recovery-preserving alternatives.
 
-- open space,
-- bottlenecks,
-- cul-de-sac-like commitments,
-- recovery-preserving alternatives.
+Reportable experiments should preserve the commit, map, trusted-base definition, threshold policy, normalization parameters, random seed, and any safe-mode relaxation rule.
 
 ---
 
-## Original Results
+## Reported results
 
-The original threshold-sweep experiment evaluated whether returnability-aware planning can preserve feasibility when strict irreversibility constraints would otherwise prevent path generation.
-
-### Reported quantitative result
+The original threshold-sweep experiment reported:
 
 | Metric | Value |
 |---|---:|
 | Hard-threshold success rate | 26.7% |
-| Minimum feasible τ | 0.85 |
+| Minimum feasible \(\tau\) | 0.85 |
 | Safe-mode success rate | 100% |
 | Safe-mode relaxed cases | 15 / 26 |
-| Mean τ relaxation gap | 0.080 |
+| Mean \(\tau\) relaxation gap | 0.080 |
 | Safe-mode path length | 45 |
 | Mean irreversibility on path | 0.480 |
 | Maximum irreversibility on path | 0.850 |
 | Returnability sweep success rate | 100% |
 
-### Interpretation
+The strict threshold frequently removed all feasible paths. Safe mode restored feasibility by relaxing \(\tau\) only as much as required in the evaluated cases. The reported mean relaxation gap was small, but this does not establish optimality or safety of the relaxation policy in general.
 
-The hard-threshold planner frequently failed because no path satisfied the strict irreversibility constraint.
-
-Safe mode recovered feasibility by relaxing τ only as much as needed. The average relaxation gap was small, suggesting that feasibility was restored without completely abandoning the safety objective.
+The upgraded benchmark additionally computes binary returnability, return distance, escape options, bottleneck score, local obstacle density, normalized recoverability, irreversibility, path-level minimum recoverability, and path-level maximum irreversibility.
 
 ---
 
-## New Upgrade Added
+## Interpretation
 
-C04 now includes:
+> Contribution 04 evaluates not only whether a move is currently possible, but whether it preserves sufficient future recovery freedom.
 
-```text
-code/recoverability_metrics.py
-```
+This distinction matters because two states may both remain geometrically connected to a base while differing substantially in bottleneck exposure, local escape options, and sensitivity to uncertainty.
 
-This module computes:
-
-- binary returnability,
-- shortest distance back to base,
-- number of local escape options,
-- bottleneck score,
-- local obstacle density,
-- normalized recoverability score,
-- irreversibility score,
-- path-level minimum recoverability,
-- path-level maximum irreversibility.
-
-The new benchmark:
-
-```text
-experiments/eval_recoverability_metrics.py
-```
-
-shows how different route types produce different recoverability profiles.
-
----
-
-## Scientific Contribution
-
-The upgraded C04 contribution is not simply:
-
-> The robot checks whether it can return.
-
-It is stronger:
-
-> The robot evaluates how much recovery freedom remains before committing to a state or path.
-
-This distinction matters because two states can both be technically returnable, but one may still be much more fragile because it lies inside a bottleneck or has very few escape options.
-
----
-
-## Relationship to Recoverability Theory
-
-C04 is the practical foundation for the broader C27 Recoverability Theory module.
-
-C04 provides concrete metrics and benchmarks.
-
-C27 can generalize these ideas into a full theory of:
-
-- recoverability,
-- irreversibility,
-- future decision freedom,
-- information debt,
-- trust margin,
-- dynamic recoverability.
+The module therefore provides an auditable planning signal for fragile commitments. It does **not** provide a certified safety barrier or a complete kinodynamic notion of recoverability.
 
 ---
 
 ## Limitations
 
-- The recoverability score is an interpretable planning signal, not a formal proof of safety.
-- The current implementation assumes a grid representation.
-- Returnability is computed geometrically and does not yet include full robot dynamics.
-- Local escape options do not capture orientation, velocity, or kinodynamic constraints.
-- A state may be returnable in the map but unsafe under actuator limits or localization drift.
-- Formal safety should still be enforced by C18.
+1. The current score is interpretable but heuristic.
+2. The environment is represented as a grid.
+3. Returnability is primarily geometric and omits full robot dynamics.
+4. Escape-option counts omit orientation, velocity, and actuator constraints.
+5. A geometrically returnable state may be unsafe under localization drift or dynamic obstacles.
+6. Safe-mode threshold relaxation can restore feasibility but may increase exposure.
+7. Formal safety enforcement remains outside this contribution.
 
 ---
 
-## Integration
+## Research directions
 
-- **Receives:** calibrated uncertainty from C02
-- **Complements:** risk-aware planning in C03
-- **Triggers:** safe-mode logic in C05
-- **Supports:** returnability-aware NBV in C07
-- **Extended by:** world-model rollouts in C13
-- **Constrained by:** formal safety shields in C18
-- **Theoretical extension:** C27 Recoverability Theory
+The strongest extension is dynamic recoverability:
 
-Recommended planner interface:
+\[
+R(x_t),\qquad \frac{dR}{dt}.
+\]
+
+The planner should react not only when recoverability is low, but also when it is decreasing rapidly. Further directions include kinodynamic returnability, uncertainty-conditioned reachability, learned recovery models, temporal bottleneck prediction, and constrained optimization with hard viability sets.
+
+---
+
+## Role within DynNav
+
+- **Receives:** calibrated uncertainty from Contribution 02.
+- **Complements:** risk-aware planning in Contribution 03.
+- **Supports:** safe-mode logic in Contribution 05.
+- **Can inform:** returnability-aware exploration and world-model rollouts.
+- **Requires separate enforcement for:** formal safety constraints.
+
+Recommended interface:
 
 ```text
 planner_input = {
@@ -277,22 +197,12 @@ planner_input = {
 
 ---
 
-## Next Research Step
+## Scientific claims
 
-The strongest next extension is dynamic recoverability:
-
-```text
-R(x_t), dR/dt
-```
-
-The planner should react not only when recoverability is low, but also when recoverability is dropping quickly.
-
-This would allow the robot to reroute before it becomes trapped.
+The current evidence supports the claim that recoverability-related metrics can distinguish route types and that threshold relaxation restored feasibility in the reported benchmark. It does not establish formal safety, universal threshold validity, kinodynamic returnability, or generalization to arbitrary environments.
 
 ---
 
-## Conclusion
+## Citation
 
-Contribution 04 establishes the recoverability-aware safety layer of DynNav.
-
-The upgraded version makes the contribution more rigorous by converting returnability and irreversibility into measurable quantities that can be logged, compared, and used by downstream planners.
+Academic use should report the repository commit, experiment command, trusted-base definition, recoverability formula, threshold policy, relaxation rule, map parameters, and random seed.
