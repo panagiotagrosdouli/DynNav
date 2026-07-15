@@ -1,63 +1,55 @@
 project: DynNav
-branch: research/repository-audit-m0
+branch: docs/all-markdown-evidence-pass
 status: in_progress
 completion_claimed: false
 last_updated: 2026-07-15
-baseline:
-  merged_pr: 64
-  merge_commit: 28717f0dc2f04ae0f35b2b8b29fad3f168ced2cc
-  ci_run: 268
-  ci_conclusion: success
-documentation_audit:
-  root_readme:
-    status: updated
-    evidence: README.md rebuilt as the research landing page
-  nested_readmes:
-    status: partially_verified
-    added_or_updated:
-      - configs/README.md
-      - src/README.md
-      - src/dynnav/README.md
-      - scripts/README.md
-      - tests/README.md
-      - docs/README.md
-      - assets/README.md
-      - results/README.md
-      - paper/README.md
-      - website/README.md
-    reason: GitHub Contents API verified these paths; recursive filesystem enumeration is blocked
-  misleading_claims:
-    status: repaired
-    evidence: docs/README.md no longer claims formal verification, 26 completed modules, ROS2/Gazebo/TurtleBot or hardware validation
-  strongest_gif:
-    status: unavailable
-    evidence: assets/demo.gif does not exist on the branch
-    action: root README retains the verified conceptual SVG and labels GIF generation as pending
-  markdown_link_audit:
-    status: blocked
-    reason: execution container cannot resolve github.com and no recursive checkout is available
-  markdown_anchor_audit:
+scope:
+  all_markdown_files: true
+  readmes_only: false
+verified_baseline:
+  source: PR #64 CI run #268
+  python_versions: ["3.10", "3.11", "3.12"]
+  python_tests: passed
+  realtime_replanning: passed
+  smoke_run: passed
+  benchmark_smoke: passed
+  website_install: passed
+  website_typecheck: passed
+  website_build: passed
+markdown_audit:
+  recursive_inventory:
+    status: running_in_github_actions
+    implementation: scripts/audit_markdown.py
+  local_links:
+    status: running_in_github_actions
+  local_assets:
+    status: running_in_github_actions
+  anchors:
+    status: running_in_github_actions
+  unsupported_claim_review:
+    status: warnings_enabled
+  machine_readable_report:
+    path: results/markdown_audit.json
+    status: generated_by_ci
+remaining:
+  inspect_every_markdown_file:
+    status: required
+  repair_every_reported_reference:
+    status: required
+  validate_documented_commands:
+    status: required
+  generated_markdown_regeneration:
+    status: required
+  docker:
     status: not_run
-    reason: requires recursive checkout or repository tree access
-  command_validation:
-    status: partially_verified
-    evidence:
-      - PR 64 CI passed pytest and both Python smoke commands
-      - website install, typecheck and build passed
-    not_verified:
-      - Docker build and run
-      - recursive README commands outside CI
-      - ROS2, Nav2, Gazebo and hardware commands
-required_next:
-  - run recursive README inventory from a clean checkout
-  - run Markdown link, asset and anchor validators
-  - validate Docker commands
-  - inspect any README files outside the verified top-level subsystem paths
-  - repair all failures before claiming documentation completion
-optional:
   ros2_nav2:
-    status: not_validated
+    status: not_run
   gazebo:
-    status: not_validated
+    status: not_run
   hardware:
     status: not_claimed
+blocker:
+  local_clean_checkout:
+    status: blocked
+    reason: execution container cannot resolve github.com
+    mitigation: required Markdown audit runs in GitHub Actions against a complete checkout
