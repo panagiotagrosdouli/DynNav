@@ -150,3 +150,22 @@ jobs:
         run: npm run typecheck
       - name: Build website
         run: npm run build
+
+  markdown:
+    name: Markdown inventory and local links
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit every Markdown file
+        run: python scripts/audit_markdown.py --root . --json-out results/markdown_audit.json
+      - name: Upload Markdown audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown-audit
+          path: results/markdown_audit.json
+          if-no-files-found: error
