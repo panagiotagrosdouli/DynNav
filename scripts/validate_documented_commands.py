@@ -11,6 +11,7 @@ import markdown_audit_core
 from markdown_audit_runtime import install_document_discovery_filter
 
 INPUT_PATH_FLAGS = {"--file", "--config", "--root", "--inventory", "--input"}
+DOCUMENTATION_PATH_PREFIXES = ("path/to/", "path\\to\\")
 _ORIGINAL_SHLEX_SPLIT = shlex.split
 
 
@@ -20,6 +21,12 @@ def _safe_inventory_split(command: str, comments: bool = False, posix: bool = Tr
     except ValueError:
         stripped = command.strip()
         return [stripped] if stripped else []
+
+
+def _is_documentation_placeholder(candidate: str) -> bool:
+    """Return true for conventional example paths that are not repository inputs."""
+    normalized = candidate.strip().lower()
+    return normalized.startswith(DOCUMENTATION_PATH_PREFIXES)
 
 
 def main() -> int:
@@ -48,6 +55,7 @@ def main() -> int:
                 any(char in candidate for char in "$*{}<>")
                 or candidate.startswith("~")
                 or candidate.startswith("results/")
+                or _is_documentation_placeholder(candidate)
                 or Path(candidate).is_absolute()
             ):
                 continue
