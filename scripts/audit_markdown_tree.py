@@ -10,6 +10,8 @@ from pathlib import Path
 
 import markdown_audit_core
 
+_ORIGINAL_SHLEX_SPLIT = shlex.split
+
 
 def _safe_shlex_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
     """Return a conservative token when a documented command is malformed.
@@ -21,7 +23,7 @@ def _safe_shlex_split(command: str, comments: bool = False, posix: bool = True) 
     """
 
     try:
-        return shlex.split(command, comments=comments, posix=posix)
+        return _ORIGINAL_SHLEX_SPLIT(command, comments=comments, posix=posix)
     except ValueError:
         stripped = command.strip()
         return [stripped] if stripped else []
