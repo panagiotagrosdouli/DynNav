@@ -28,7 +28,10 @@ jobs:
             --output results/manifests/markdown_inventory.json
 
       - name: Validate documentation links and anchors
-        run: python scripts/validate_markdown_links.py --root .
+        run: |
+          set -o pipefail
+          python scripts/validate_markdown_links.py --root . \
+            2>&1 | tee results/manifests/markdown_link_validation.log
 
       - name: Validate documentation assets
         run: python scripts/validate_markdown_assets.py --root .
@@ -59,3 +62,4 @@ jobs:
             results/manifests/markdown_inventory.csv
             results/manifests/markdown_link_graph.json
             results/manifests/documented_commands.json
+            results/manifests/markdown_link_validation.log
