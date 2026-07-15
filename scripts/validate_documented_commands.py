@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Classify documented commands and fail on obviously invalid executable paths."""
+"""Classify documented commands and fail on invalid executable input paths."""
 
 from __future__ import annotations
 
@@ -8,14 +8,13 @@ import shlex
 from pathlib import Path
 
 import markdown_audit_core
+from markdown_audit_runtime import install_document_discovery_filter
 
-PATH_FLAGS = {"-f", "--file", "--config", "--root", "--output", "--inventory", "--out-dir"}
+INPUT_PATH_FLAGS = {"--file", "--config", "--root", "--inventory", "--input"}
 _ORIGINAL_SHLEX_SPLIT = shlex.split
 
 
 def _safe_inventory_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
-    """Allow inventory construction to finish; strict validation happens below."""
-
     try:
         return _ORIGINAL_SHLEX_SPLIT(command, comments=comments, posix=posix)
     except ValueError:
@@ -29,8 +28,7 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
 
-    # build_inventory classifies command prefixes and previously crashed before
-    # this validator could report which document contained malformed shell text.
+    install_document_discovery_filter()
     markdown_audit_core.shlex.split = _safe_inventory_split
     _, _, _, commands = markdown_audit_core.build_inventory(root)
 
@@ -43,14 +41,18 @@ def main() -> int:
             failures.append(f"{row['document']}: malformed command: {exc}: {command}")
             continue
         for index, token in enumerate(parts[:-1]):
-            if token not in PATH_FLAGS:
+            if token not in INPUT_PATH_FLAGS:
                 continue
             candidate = parts[index + 1]
-            if any(char in candidate for char in "$*{}<>"):
+            if (
+                any(char in candidate for char in "$*{}<>")
+                or candidate.startswith("~")
+                or candidate.startswith("results/")
+            ):
                 continue
             path = (root / candidate).resolve()
             if not path.exists():
-                failures.append(f"{row['document']}: missing command path {candidate}: {command}")
+                failures.append(f"{row['document']}: missing command input {candidate}: {command}")
     for failure in failures:
         print(f"ERROR {failure}")
     print(f"Documented commands classified: {len(commands)}")

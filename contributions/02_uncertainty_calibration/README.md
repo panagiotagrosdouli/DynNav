@@ -1,312 +1,64 @@
 # Contribution 02 — Uncertainty Estimation and Calibration
 
-[![Module](https://img.shields.io/badge/Module-02-purple)](.) [![Type](https://img.shields.io/badge/Type-Probabilistic%20Sensing-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[Back to the repository README](../../README.md)
 
-## Plain-language summary
+## Purpose
 
-A robot should not only estimate where it is. It should also know how uncertain that estimate is.
+This contribution evaluates whether a model's uncertainty signal is informative and whether its numerical scale is calibrated well enough for downstream navigation decisions.
 
-Contribution 02 studies this problem. It asks whether uncertainty estimates produced by a navigation model are actually useful and whether they can be trusted as probabilistic confidence values.
+## Maturity
 
-The key finding is important:
+**Research Prototype / Synthetic Validation.** The repository contains deterministic Python evaluation code. The contribution is not a formal safety guarantee and has not been validated on hardware through this document.
 
-> The uncertainty signal is informative, but not automatically calibrated.
+## Concepts
 
-That means high uncertainty often indicates higher error, but the numerical uncertainty value should not be blindly interpreted as a reliable confidence interval before calibration.
+- **Uncertainty estimation:** produce a sigma-like confidence value.
+- **Informativeness:** larger uncertainty tends to coincide with larger error.
+- **Calibration:** uncertainty intervals have reliable empirical coverage.
 
----
+A useful ranking signal can still be poorly calibrated. Downstream planners should therefore distinguish raw uncertainty from calibrated uncertainty.
 
-## Research Question
+## Implementation
 
-> **RQ2:** How can uncertainty be estimated, audited, calibrated, and safely passed into downstream navigation planners?
+- [`code/uncertainty_calibrator.py`](code/uncertainty_calibrator.py)
+- [`experiments/eval_uncertainty_calibration.py`](experiments/eval_uncertainty_calibration.py)
+- [`docs/SCIENTIFIC_UPGRADE.md`](docs/SCIENTIFIC_UPGRADE.md)
 
-This contribution separates three concepts that are often confused:
+## Synthetic benchmark
 
-1. **Uncertainty estimation** — the model outputs a sigma-like uncertainty value.
-2. **Uncertainty informativeness** — larger uncertainty tends to correspond to larger prediction error.
-3. **Uncertainty calibration** — the numerical uncertainty value has a reliable probabilistic meaning.
-
-A navigation system needs all three if uncertainty is going to influence safety-critical planning.
-
----
-
-## Motivation
-
-Risk-aware planning depends on uncertainty. If a robot enters an unknown corridor, explores a frontier, or navigates under sensor drift, it should increase caution when its state estimate becomes unreliable.
-
-However, raw uncertainty values can be misleading.
-
-A model may say:
-
-```text
-sigma = 0.5
-```
-
-but the actual prediction error may behave like:
-
-```text
-error ≈ 2.0
-```
-
-In that case, the planner is underestimating danger. Contribution 02 therefore treats uncertainty as a quantity that must be measured, audited, and calibrated before being used by planning modules.
-
----
-
-## Conceptual Pipeline
-
-```text
-sensor/model output
-      ↓
-prediction + raw uncertainty
-      ↓
-uncertainty-error audit
-      ↓
-calibration layer
-      ↓
-calibrated uncertainty
-      ↓
-risk map / belief-space planner / safe-mode trigger
-```
-
-The upgraded version of C02 adds the calibration layer explicitly.
-
----
-
-## How It Works
-
-### 1. Estimate uncertainty
-
-The system produces a prediction and an uncertainty estimate.
-
-```text
-prediction: y_hat
-uncertainty: sigma_raw
-```
-
-### 2. Compare uncertainty with real error
-
-When ground truth or delayed feedback is available, compute:
-
-```text
-absolute_error = |y_hat - y_true|
-```
-
-Then evaluate whether `sigma_raw` is related to the observed error.
-
-### 3. Measure calibration
-
-C02 evaluates:
-
-- MAE,
-- Pearson correlation between sigma and absolute error,
-- Spearman correlation between sigma and absolute error,
-- ECE-style calibration error,
-- coverage at 1σ, 2σ, and 3σ.
-
-### 4. Calibrate uncertainty
-
-The upgraded module provides two calibration methods:
-
-| Method | Purpose |
-|---|---|
-| Global scale calibration | Correct systematic over/under-confidence with one multiplier |
-| Quantile-bin calibration | Correct different uncertainty ranges separately |
-
-### 5. Send calibrated uncertainty to planners
-
-Downstream modules should prefer:
-
-```text
-calibrated_sigma
-```
-
-instead of raw uncertainty values.
-
----
-
-## Files
-
-```text
-02_uncertainty_calibration/
-├── README.md
-├── code/
-│   └── uncertainty_calibrator.py
-├── docs/
-│   └── SCIENTIFIC_UPGRADE.md
-├── experiments/
-│   └── eval_uncertainty_calibration.py
-└── results/
-    └── c02_calibration_benchmark.csv        # generated by the benchmark
-```
-
----
-
-## Quick Start
-
-Run the calibration benchmark:
+From the repository root:
 
 ```bash
 python contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py
 ```
 
-This generates:
+The benchmark writes its generated CSV under this contribution's `results/` directory. Generated values should only be treated as evidence together with the exact configuration, seed, command, and raw output.
 
-```text
-contributions/02_uncertainty_calibration/results/c02_calibration_benchmark.csv
-```
+## External dataset interface
 
-To evaluate an external dataset, provide a CSV with columns:
+An external CSV must contain these columns:
 
 ```text
 prediction,target,sigma
 ```
 
-Example:
-
-```bash
-python contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py \
-  --input path/to/uncertainty_predictions.csv
-```
-
----
-
-## Original Experimental Results
-
-The original evaluation tested whether predicted uncertainty correlates with actual prediction error.
-
-Evaluation setting:
-
-- 25,235 navigation states,
-- 30 randomly generated grid-world planning tasks,
-- uncertainty-error benchmark dataset,
-- drift-aware navigation dataset.
-
-### Quantitative results
-
-| Metric | Value |
-|---|---:|
-| Total Samples | 25,235 |
-| Mean Absolute Error (MAE) | 0.8986 |
-| Pearson Correlation (σ, \|error\|) | -0.0504 |
-| Spearman Correlation (σ, \|error\|) | 0.4040 |
-| ECE-style Calibration Error | 3.0011 |
-| Coverage @ 1σ | 86.84% |
-| Coverage @ 2σ | 88.73% |
-| Coverage @ 3σ | 89.53% |
-
----
-
-## Interpretation of the Results
-
-### Prediction accuracy
-
-The model achieved MAE = 0.8986 across 25,235 evaluated states.
-
-### Uncertainty-error relationship
-
-The Pearson correlation was close to zero, which means the relationship between uncertainty and error was not strongly linear.
-
-The Spearman correlation was 0.4040, which means uncertainty still carried useful ranking information: larger uncertainty values tended to correspond to larger errors.
-
-### Calibration quality
-
-The coverage values were far from ideal Gaussian calibration:
-
-| Band | Ideal Gaussian Coverage | Observed Coverage |
-|---|---:|---:|
-| 1σ | 68.3% | 86.84% |
-| 2σ | 95.4% | 88.73% |
-| 3σ | 99.7% | 89.53% |
-
-This means the uncertainty estimate should not yet be treated as a perfectly calibrated probabilistic confidence interval.
-
----
-
-## New Upgrade Added
-
-C02 now includes a calibration module:
+The input path is user supplied and is therefore shown as a template rather than an executable repository command:
 
 ```text
-code/uncertainty_calibrator.py
+python contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py --input /absolute/path/to/uncertainty_predictions.csv
 ```
 
-It provides:
+## Metrics
 
-- uncertainty-error correlation metrics,
-- coverage analysis,
-- ECE-style calibration error,
-- global scale calibration,
-- quantile-bin calibration.
-
-The new benchmark:
-
-```text
-experiments/eval_uncertainty_calibration.py
-```
-
-compares:
-
-| Method | Meaning |
-|---|---|
-| `raw_sigma` | original uncertainty estimate |
-| `global_scale` | one learned correction multiplier |
-| `quantile_bin_calibrated` | piecewise correction by uncertainty range |
-
----
-
-## Scientific Contribution
-
-The upgraded C02 contribution is not simply:
-
-> We estimate uncertainty.
-
-It is stronger:
-
-> We evaluate whether uncertainty is informative, measure whether it is calibrated, and provide a calibration layer so downstream planners receive a more trustworthy uncertainty signal.
-
-This makes C02 a foundation for:
-
-- risk-aware planning,
-- belief-space planning,
-- safe-mode switching,
-- trust-aware navigation,
-- dynamic rerouting under degraded sensing.
-
----
+- mean absolute error;
+- Pearson and Spearman association between uncertainty and absolute error;
+- calibration error;
+- empirical coverage at selected uncertainty multiples;
+- before/after calibration comparison.
 
 ## Limitations
 
-- Correlation does not imply reliable probabilistic calibration.
-- Calibration may change under distribution shift.
-- A calibration layer fitted on one map distribution may not generalize to another.
-- The synthetic benchmark is useful for reproducibility, but final scientific claims should use real navigation logs when available.
-- Calibrated uncertainty improves risk estimates but does not by itself guarantee safe control.
-
----
-
-## Integration
-
-- **Feeds into:** Contribution 03 — belief-space / risk-aware planning
-- **Supports:** safe-mode policies when uncertainty becomes unreliable
-- **Extended by:** Contribution 12 — diffusion maps for occupancy uncertainty
-- **Extended by:** Contribution 24 — NeRF uncertainty for exploration
-
-Recommended planner interface:
-
-```text
-planner_input = {
-    prediction,
-    raw_sigma,
-    calibrated_sigma,
-    calibration_error,
-    reliability_score
-}
-```
-
----
-
-## Conclusion
-
-Contribution 02 establishes the uncertainty layer of DynNav.
-
-The upgraded version makes the contribution more rigorous by distinguishing raw uncertainty from calibrated uncertainty. This is essential because downstream navigation modules should not use uncertainty as a safety signal unless its reliability has been measured.
+- Correlation does not establish probabilistic calibration.
+- Calibration can degrade under distribution shift.
+- Synthetic data does not establish real-sensor performance.
+- Calibrated uncertainty improves auditability but does not guarantee safe control.

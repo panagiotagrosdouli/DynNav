@@ -21,6 +21,21 @@ def test_inventory_split_survives_trailing_escape() -> None:
     assert module._safe_shlex_split("python script.py \\") == ["python script.py \\"]
 
 
+def test_inventory_split_still_parses_valid_commands_after_patch() -> None:
+    module = _load_script("audit_markdown_tree.py")
+    original = module.markdown_audit_core.shlex.split
+    try:
+        module.markdown_audit_core.shlex.split = module._safe_shlex_split
+        assert module._safe_shlex_split("python script.py --flag value") == [
+            "python",
+            "script.py",
+            "--flag",
+            "value",
+        ]
+    finally:
+        module.markdown_audit_core.shlex.split = original
+
+
 def test_command_validator_keeps_strict_parser() -> None:
     module = _load_script("validate_documented_commands.py")
     assert module._safe_inventory_split("python script.py \\") == ["python script.py \\"]
