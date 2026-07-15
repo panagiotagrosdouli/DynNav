@@ -17,6 +17,8 @@ REQUIRED_PAGES = {
     "app/pages/04_Planner_Arena.py",
     "app/pages/05_Belief_Mapping_Lab.py",
     "app/pages/06_Risk_Safety_Lab.py",
+    "app/pages/07_Dynamic_Obstacles.py",
+    "app/pages/08_Multi_Robot_Lab.py",
     "app/pages/09_Contribution_Explorer.py",
     "app/pages/13_System_Status.py",
 }
@@ -40,7 +42,7 @@ def main() -> int:
     for item in registry:
         try:
             importlib.import_module(f"dynnav_dashboard.contributions.{item.renderer}")
-        except Exception as exc:  # validation must report every broken renderer
+        except Exception as exc:
             failures.append(f"{item.id} renderer import failed: {exc}")
 
     report = {
