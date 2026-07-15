@@ -1,45 +1,69 @@
 # DynNav Work Log
 
-## 2026-07-13
+## 2026-07-15 — README and documentation hardening
 
-### Repository access and branch
+### Baseline
 
-- Confirmed repository: `panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments`.
-- Confirmed default branch: `main`.
-- Created `feature/dynnav-complete-redesign-repair` from the current `main` head.
-- Attempted a fresh HTTPS clone in the command execution environment.
-- Clone failed before checkout because the environment could not resolve `github.com`.
-- Continued read/write inspection through the connected GitHub integration.
+- PR #64 completed GitHub Actions run #268 successfully.
+- PR #64 was merged into `main` as commit `28717f0dc2f04ae0f35b2b8b29fad3f168ced2cc`.
+- Created branch `research/repository-audit-m0` and opened PR #65.
 
-### Files inspected
+### Repository access
+
+- The execution container still cannot resolve `github.com`, so a recursive clean checkout and local filesystem inventory could not run.
+- GitHub Contents API access was used to inspect and update verified paths.
+- Completion of a truly recursive README, Markdown-link, asset, and anchor audit is therefore not claimed.
+
+### README work completed
+
+Updated or added:
 
 - `README.md`
-- `pyproject.toml`
-- `.github/workflows/ci.yml`
-- `Dockerfile`
-- `website/package.json`
-- `scripts/run_all.py`
-- `src/dynnav/research_pipeline.py`
+- `configs/README.md`
+- `src/README.md`
+- `src/dynnav/README.md`
+- `scripts/README.md`
+- `tests/README.md`
+- `docs/README.md`
+- `assets/README.md`
+- `results/README.md`
+- `paper/README.md`
+- `website/README.md`
 
-### Confirmed findings
+### Critical documentation repair
 
-- The root README already uses the DynNav living-map visual and distinguishes prototypes, planned work, and unclaimed validation.
-- Python CI currently exercises selected source tests plus a per-file legacy loop, but does not run repository-wide Ruff or Black.
-- Website CI currently installs with `npm install`, then only type-checks and builds.
-- `website/package.json` does not define `lint` or `test` scripts.
-- The unified runner requested by the release specification is not implemented; `scripts/run_all.py` only forwards to the research pipeline.
-- The current research pipeline writes empty paths into `planned_paths.json`.
-- Several differently named public figures are produced by the same placeholder plotting loop.
-- Docker's default action is `pytest`, not a useful reproducible DynNav execution that supports the documented mounted-results workflow.
+The previous `docs/README.md` claimed formal verification, 26 completed research modules, ROS2 Humble integration, TurtleBot3, Gazebo, real-robot validation, and numerical performance results. Those statements contradicted the current root README, CI evidence, and repository audit. The file was replaced with an evidence-based documentation index.
 
-### Artifacts added
+### Root landing-page changes
 
-- `AUDIT.md`
-- `STATUS.yaml`
-- `WORK_LOG.md`
-- `BLOCKERS.md`
-- `REPRODUCIBILITY_REPORT.md`
+- Preserved the verified CI, Python, licence, and research-prototype badges.
+- Retained the existing conceptual SVG near the top.
+- Verified that `assets/demo.gif` does not exist; the README does not fabricate or link a missing GIF.
+- Added research question, architecture, mathematical objective, maturity table, installation, five-minute quick start, run commands, configuration, artifacts, metrics, repository map, website, Docker, ROS2/Nav2 status, limitations, roadmap, responsible use, citation, and licence sections.
+- Explicitly distinguished implemented, prototype, experimental, planned, pending-validation, simulation-only, and hardware-validation-required states.
+
+### Validation evidence
+
+Already passed in PR #64 CI:
+
+- Python 3.10, 3.11, and 3.12 tests;
+- realtime replanning regression suite;
+- Python smoke runner;
+- benchmark smoke runner;
+- website dependency installation;
+- website TypeScript checking;
+- website production build.
+
+Not executed in this environment:
+
+- recursive Markdown-link audit;
+- Markdown anchor validation;
+- recursive README inventory outside verified paths;
+- Docker build and run;
+- ROS2/Nav2 compilation;
+- Gazebo simulation;
+- hardware validation.
 
 ### Completion state
 
-Completion is not claimed. Required executable verification remains open until a clean runner can clone the branch and execute the complete Python, Docker, website, link, media, and artifact pipelines.
+Documentation hardening is materially advanced but not complete. The remaining blockers are recorded in `STATUS.yaml` and `AUDIT.md`.
