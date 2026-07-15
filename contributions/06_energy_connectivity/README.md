@@ -1,88 +1,85 @@
-# Contribution 06 — Energy and Connectivity-Aware Planning
+# Energy and Connectivity-Aware Planning
 
-[![Module](https://img.shields.io/badge/Module-06-purple)](.) [![Type](https://img.shields.io/badge/Type-Resource--Aware%20Planning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/DynNav-Contribution%2006-6f42c1)](.)
+[![Topic](https://img.shields.io/badge/Topic-Resource--Aware%20Planning-0366d6)](.)
+[![Status](https://img.shields.io/badge/Status-Research%20Prototype-2ea44f)](.)
 
-## Plain-language summary
+**English** | [Ελληνικά](README_GR.md)
 
-A robot should not choose a path only because it is short.
+<p align="center">
+  <img src="assets/energy_connectivity_pipeline.svg" alt="Conceptual energy and connectivity-aware mission-feasibility pipeline" width="100%" />
+</p>
 
-It also has to ask:
+<p align="center"><em>Conceptual overview. The figure is not experimental evidence, a collision-safety guarantee, or a formal mission-assurance certificate.</em></p>
 
-```text
-Do I have enough battery to finish this mission?
-Will I remain connected enough to communicate or receive help?
-```
-
-Contribution 06 adds resource-awareness to navigation. It evaluates whether a route is feasible under battery and communication constraints, and whether the robot should go directly, route through a charger, use a relay, or reject the mission as infeasible.
-
----
-
-## Research Question
-
-> **RQ6:** How should navigation adapt when energy and communication resources constrain what the robot can safely do?
-
-This contribution studies:
-
-- battery budget constraints,
-- energy reserve margins,
-- connectivity maps,
-- minimum link quality,
-- charger-aware routing,
-- relay-aware routing,
-- resource-feasibility verdicts.
+This contribution studies navigation under two operational constraints that geometric planners usually omit: **finite energy** and **limited communication quality**. It evaluates candidate routes using explicit resource margins and returns an auditable mission verdict rather than treating battery and connectivity as informal penalties.
 
 ---
 
-## Motivation
+## Research question
 
-A path may be valid in a geometric planner but invalid in a real robot mission.
+> **How should a navigation system classify and select routes when battery reserve and communication constraints determine mission feasibility?**
 
-Examples:
+The contribution separates three questions:
 
-- the robot can reach the goal but cannot return with enough battery reserve,
-- the shortest path passes through a communication dead zone,
-- the robot needs a relay robot to maintain team connectivity,
-- the robot should visit a charging station before continuing,
-- the mission should be rejected before failure becomes inevitable.
-
-C06 turns these concerns into explicit metrics and mission decisions.
+1. Is the route feasible with the currently usable battery energy?
+2. Does the route maintain the required minimum communication quality?
+3. Can recharge or relay support repair an otherwise infeasible route?
 
 ---
 
-## Conceptual Pipeline
+## Problem formulation
 
-```text
-battery state + reserve requirement + connectivity map
-      ↓
-energy and link-quality evaluation
-      ↓
-route feasibility classification
-      ↓
-direct / recharge / relay / infeasible verdict
-      ↓
-resource-aware planner or safe-mode trigger
-```
+For a candidate route \(\pi\), the current implementation estimates energy as
+
+\[
+E_{\mathrm{req}}(\pi)=d(\pi)c_E,
+\]
+
+where \(d(\pi)\) is route distance and \(c_E\) is a scalar energy cost per metre. Usable energy is
+
+\[
+E_{\mathrm{use}}=\max(0,E_{\mathrm{battery}}-E_{\mathrm{reserve}}),
+\]
+
+and the energy margin is
+
+\[
+m_E=E_{\mathrm{use}}-E_{\mathrm{req}}.
+\]
+
+For a route-level minimum connectivity estimate \(q_{\min}(\pi)\) and required threshold \(q_{\mathrm{req}}\), the connectivity margin is
+
+\[
+m_Q=q_{\min}(\pi)-q_{\mathrm{req}}.
+\]
+
+A direct route is feasible when \(m_E\geq0\) and \(m_Q\geq0\). Recharge and relay flags represent simplified mitigation options.
 
 ---
 
-## Resource Metrics
+## Implemented mission verdicts
 
-| Metric | Description |
+| Verdict | Interpretation |
 |---|---|
-| Energy required | Estimated energy needed to execute the route |
-| Usable energy | Battery budget after keeping a safety reserve |
-| Energy margin | Usable energy minus required energy |
-| Minimum connectivity | Worst link quality along the route |
-| Connectivity margin | Minimum route connectivity minus required minimum |
-| Resource verdict | Whether the mission is directly feasible, needs support, or is infeasible |
+| `DIRECT_FEASIBLE` | Energy and connectivity constraints are satisfied directly |
+| `NEEDS_RECHARGE` | Energy feasibility depends on recharge support |
+| `NEEDS_RELAY` | Connectivity feasibility depends on relay support |
+| `NEEDS_RECHARGE_AND_RELAY` | Both support mechanisms are required |
+| `INFEASIBLE` | Available support does not repair all resource violations |
+
+The route selector first prefers lower-support verdicts, then shorter routes, and finally larger resource margins.
 
 ---
 
-## Files
+## Repository structure
 
 ```text
 06_energy_connectivity/
 ├── README.md
+├── README_GR.md
+├── assets/
+│   └── energy_connectivity_pipeline.svg
 ├── code/
 │   └── resource_feasibility.py
 ├── docs/
@@ -91,142 +88,106 @@ resource-aware planner or safe-mode trigger
 │   ├── eval_energy_connectivity.py
 │   └── eval_resource_feasibility.py
 └── results/
-    ├── c06_energy_connectivity_summary.csv        # generated by existing demo
-    ├── c06_energy_connectivity_summary.md         # generated by existing demo
-    └── c06_resource_feasibility.csv               # generated by new benchmark
+    ├── c06_energy_connectivity_summary.csv
+    ├── c06_energy_connectivity_summary.md
+    └── c06_resource_feasibility.csv
 ```
 
 ---
 
-## Quick Start
+## Reproducibility
 
-Run the original energy/connectivity demo:
+Run all commands from the repository root.
+
+### Energy/connectivity route demo
 
 ```bash
 python contributions/06_energy_connectivity/experiments/eval_energy_connectivity.py
 ```
 
-Run the new resource-feasibility benchmark:
+### Mission-feasibility benchmark
 
 ```bash
 python contributions/06_energy_connectivity/experiments/eval_resource_feasibility.py
 ```
 
-This generates:
+The second command writes:
 
 ```text
 contributions/06_energy_connectivity/results/c06_resource_feasibility.csv
 ```
 
----
-
-## Original Experiment
-
-The original experiment creates a synthetic world with two route types:
-
-1. a short central corridor with poor connectivity,
-2. a longer outer corridor with better connectivity.
-
-This setup demonstrates that a planner may choose a longer path when communication quality matters.
+A reportable run should preserve the repository commit, configuration values, route definitions, thresholds, and random seed where applicable.
 
 ---
 
-## New Upgrade Added
+## Evaluation protocol
 
-C06 now includes a mission-level feasibility layer:
+The benchmark compares candidate routes representing different operational cases, including:
 
-```text
-code/resource_feasibility.py
-```
+- a short route with weak link quality;
+- a longer route with stronger connectivity;
+- a route that uses recharge support;
+- a route that uses a communication relay;
+- a route requiring both support mechanisms; and
+- an unrepaired infeasible route.
 
-It classifies candidate routes into explicit verdicts:
-
-| Verdict | Meaning |
-|---|---|
-| `DIRECT_FEASIBLE` | The route satisfies energy and connectivity constraints directly |
-| `NEEDS_RECHARGE` | The route is feasible only with recharge support |
-| `NEEDS_RELAY` | The route is feasible only with communication relay support |
-| `NEEDS_RECHARGE_AND_RELAY` | The route requires both resource supports |
-| `INFEASIBLE` | The route violates resource constraints without available mitigation |
-
-The benchmark:
-
-```text
-experiments/eval_resource_feasibility.py
-```
-
-compares routes such as:
-
-- short low-link route,
-- longer high-link route,
-- route via recharge,
-- route via relay,
-- route requiring both recharge and relay.
+Primary outputs are energy required, usable energy, energy margin, minimum connectivity, connectivity margin, support flags, feasibility, and mission verdict.
 
 ---
 
-## Scientific Contribution
+## Interpretation
 
-The upgraded C06 contribution is not simply:
+C06 should be interpreted as a **resource-feasibility layer**. It makes mission assumptions explicit and allows the planner or supervisor to distinguish direct execution, supported execution, and rejection.
 
-> Add battery and WiFi penalties to a planner.
-
-It is stronger:
-
-> Evaluate whether a mission is operationally feasible under energy and communication constraints, and explicitly identify whether the robot needs recharge, relay support, both, or mission rejection.
-
-This makes C06 a resource-feasibility layer rather than only a path-cost modification.
-
----
-
-## Integration
-
-- **Receives:** battery state from robot hardware or ROS 2 topic
-- **Receives:** connectivity map or link-quality estimate
-- **Supports:** C05 safe mode when resource margins become unsafe
-- **Combines with:** C03 risk-aware planning for multi-objective routing
-- **Supports:** C09 multi-robot coordination when robots can act as relays
-- **Extended by:** C22 curriculum RL with energy/connectivity reward shaping
-
-Recommended planner interface:
-
-```text
-resource_input = {
-    route,
-    battery_budget,
-    reserve_energy,
-    min_connectivity,
-    relay_available,
-    charger_locations
-}
-```
+It does not establish that the selected route is collision-free, dynamically feasible, cyber-secure, or formally safe. Those properties require separate planning and safety modules.
 
 ---
 
 ## Limitations
 
-- Energy is modeled as distance times a scalar cost.
-- Connectivity is summarized with minimum and mean route quality.
-- Recharge and relay are route attributes, not full scheduling decisions.
-- Real deployment should model terrain, speed, payload, packet loss, ROS 2 QoS, and network latency.
-- Resource feasibility does not replace collision safety or formal constraints.
+1. Energy consumption is modeled as distance multiplied by a scalar coefficient.
+2. Terrain, payload, acceleration, turning, sensing, computation, and battery dynamics are omitted.
+3. Connectivity is represented by route-level summary values rather than packet-level network behavior.
+4. Recharge and relay are Boolean route attributes, not scheduling or allocation decisions.
+5. Communication latency, packet loss, ROS 2 QoS, interference, and multi-hop topology are not modeled.
+6. Resource feasibility does not replace collision avoidance or formal safety verification.
 
 ---
 
-## Next Research Step
+## Research directions
 
-The strongest next extension is joint resource-aware replanning:
+Relevant extensions include energy models conditioned on terrain and velocity, probabilistic connectivity fields, relay assignment, charger scheduling, joint resource-risk optimization, online battery estimation, and dynamic replanning before resource margins become negative.
 
-```text
-route = f(goal, battery, connectivity, relay availability, safe-mode state)
-```
+A stronger future objective could optimize
 
-This would allow the robot to reroute before battery or connectivity failure becomes unavoidable.
+\[
+J(\pi)=w_L L(\pi)+w_E E(\pi)+w_Q Q_{\mathrm{loss}}(\pi)
+\]
+
+subject to explicit reserve and link-quality constraints.
 
 ---
 
-## Conclusion
+## Scientific claims
 
-Contribution 06 establishes the resource-awareness layer of DynNav.
+The implementation supports the following limited claims:
 
-The upgraded version makes the contribution more rigorous by converting energy and connectivity from vague constraints into explicit feasibility margins and mission verdicts.
+- route energy and connectivity margins are computed explicitly;
+- candidate routes are assigned auditable mission-feasibility verdicts;
+- simplified recharge and relay support can be represented in the decision layer; and
+- feasible routes can be ranked using support requirements, distance, and margins.
+
+It does **not** support unrestricted claims of realistic battery prediction, guaranteed network availability, optimal support scheduling, or certified mission safety.
+
+---
+
+## Role within DynNav
+
+C06 provides resource constraints to risk-aware planning, safe-mode supervision, multi-robot relay coordination, and active exploration. It is particularly relevant when a geometrically valid mission would become operationally fragile because of low battery reserve or communication loss.
+
+---
+
+## Citation and reproducibility
+
+When using this module academically, report the exact commit, route definitions, battery budget, reserve requirement, energy coefficient, connectivity threshold, support assumptions, and benchmark command.
