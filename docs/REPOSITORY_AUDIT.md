@@ -1,49 +1,242 @@
 # DynNav Repository Audit
 
-This audit records the scientific and engineering state of the repository after the autonomous transformation pass. It is intentionally conservative: it distinguishes working code from prototypes and planned research.
+**Baseline:** `main` at `28717f0dc2f04ae0f35b2b8b29fad3f168ced2cc`  
+**Audit date:** 2026-07-15  
+**Scope:** Milestone 0 — truthfulness, executable baseline, architecture, tests, scientific evidence.  
+**Policy:** This pull request changes documentation only.
 
-## Severity ranking
+## Executive assessment
 
-| Severity | Area | Finding | Action taken |
-|---|---|---|---|
-| Critical | Scientific honesty | Benchmark outputs must not be presented as evidence before deterministic runs are generated and reviewed. | Added explicit Implemented / Prototype / Planned status policy and research-suite configuration. |
-| High | Architecture | Earlier code concentrated several research ideas in flat modules, which made it harder to expose planning, risk, uncertainty, recoverability, and supervision as separate concepts. | Added `src/dynnav/lab_grade.py` as a typed integration layer with registry, fields, rerouting, and safety primitives. |
-| High | Reproducibility | Experiment expectations were not fully encoded as a single deterministic suite manifest. | Added `configs/research_suite.yaml` with seeds, statuses, metrics, and expected outputs. |
-| High | ROS2/Nav2 | Integration should be presented as a prototype unless a compiled Nav2 plugin and launch-tested package exist. | Added ROS2/Nav2 documentation that labels package, plugin, BT, RViz, and bag playback items as Prototype. |
-| Medium | Evaluation | Metrics existed conceptually, but ablation status needed clearer separation from reported results. | Added deterministic episode metric API and tests; marked ablations as Prototype until result files exist. |
-| Medium | Safety | Runtime safety policy must be described as a supervisor prototype, not a certified safety controller. | Added threshold-based `SafetySupervisor` with explicit limitations. |
-| Medium | Documentation | Mathematical notation and mission-level safety definitions needed one canonical reference. | Added formal mathematical formulation documentation. |
-| Low | Presentation | The README was already research-oriented but did not yet emphasize the new lab-grade audit output. | Added a branch-ready change set and can update README after CI validation. |
+DynNav is a substantial research-prototype repository, not an empty scaffold. It contains a Python package, deterministic grid-navigation experiments, multiple planners and contributed modules, probabilistic occupancy mapping, benchmark/media scripts, automated tests, CI, documentation and a buildable research website.
 
-## Scientific audit
+Its strongest current evidence is deterministic synthetic grid-world validation. The repository does **not** yet support claims of a compiled Nav2 plugin, Gazebo validation, hardware validation, formal safety guarantees, calibrated uncertainty, statistically significant performance improvements or state-of-the-art results.
 
-DynNav now states the central research question directly: how can a robot reroute online in unknown dynamic environments while reasoning about uncertainty, risk, recoverability, and mission safety? The current code supports deterministic grid-world experiments and interpretable planning costs. It does not yet support hardware-validated safety claims, formal completeness under dynamic obstacles, or state-of-the-art comparisons.
+The central research question should remain:
 
-## Engineering audit
+> How can an autonomous mobile robot dynamically replan in a partially observed environment while jointly accounting for occupancy risk, uncertainty, future dynamic-obstacle motion, recoverability and mission-level safety?
 
-The added primitives are dependency-light, typed, deterministic, and covered by pytest. They avoid ROS2 dependencies so the default Python CI remains fast. ROS2/Nav2 work remains a documented prototype scaffold until plugin code is compiled and exercised in a ROS workspace.
+## Severity scale
 
-## Documentation audit
+- **CRITICAL:** blocks scientific or integration claims.
+- **HIGH:** major correctness, reproducibility or architecture risk.
+- **MEDIUM:** important quality/evidence gap.
+- **LOW:** documentation or maintenance improvement.
 
-The repository has research overview, architecture, reproducibility, and roadmap material. This pass adds a formal formulation and ROS2/Nav2 maturity statement so readers can distinguish current implementation from planned lab integration.
+## Implemented capabilities that must not be reimplemented
 
-## Reproducibility audit
+### HIGH — Grid and planning foundations
 
-The new `configs/research_suite.yaml` enumerates seeds, metrics, and expected outputs. The suite is a configuration contract; it is not a substitute for measured results. Any generated CSV, JSON, figure, or GIF should be committed only when produced by scripts and traceable to a seed.
+The root README records typed grid/pose/trajectory primitives, A*, Dijkstra, risk-aware A*, and risk/uncertainty/recoverability fields as implemented (`README.md`, capability table and objective, lines 47–82). These components should be traced and reused rather than recreated.
 
-## Visual presentation audit
+### HIGH — Probabilistic occupancy mapping
 
-Publication-quality figures and demo assets should be generated only from scripts. Existing and future images must avoid fabricated benchmark numbers. Placeholder logos and diagrams are acceptable when labeled as placeholders or schematics.
+CI imports `dynnav.mapping`, runs Ruff on the mapping package and its focused test, and runs strict mypy on the mapping core (`.github/workflows/ci.yml`, lines 32–57). This is stronger evidence than prose and should remain an independently testable component.
 
-## Current status summary
+### HIGH — Incremental realtime replanning
 
-| Component | Status | Evidence | Limitation |
-|---|---|---|---|
-| A* / Dijkstra baselines | Implemented | `src/dynnav/lab_grade.py`, `tests/test_lab_grade.py` | Grid-world validation only |
-| Risk-aware A* | Implemented | existing planner + tests | No hardware validation |
-| Risk / uncertainty fields | Implemented | deterministic NumPy fields + tests | Simplified belief model |
-| Recoverability field | Prototype | reachability-based field | Expensive for large grids |
-| Dynamic rerouting | Prototype | threshold + cooldown supervisor | No continuous-time robot dynamics |
-| Safety supervisor | Prototype | threshold policy + tests | Not certified safety control |
-| ROS2/Nav2 integration | Prototype | docs/scaffold | No compiled plugin claim |
-| Formal guarantees | Planned | roadmap | Requires future proof and experiments |
+`contributions/realtime_replanning/code/dstar_lite.py` contains the current D* Lite implementation. `tests/test_realtime_replanning.py` now covers repeated block/clear cycles and moving-start replanning. PR #64 passed the complete Python 3.10, 3.11 and 3.12 regression jobs without increasing the five-minute timeout.
+
+### MEDIUM — Benchmark and smoke entry points
+
+The package exposes `dynnav-benchmark` and `dynnav-demo` (`pyproject.toml`, lines 37–40). CI also runs `scripts/run_all.py` and `scripts/run_benchmarks.py` smoke commands (`.github/workflows/ci.yml`, lines 129–136). These paths need consolidation and traceability, not wholesale replacement.
+
+### MEDIUM — Claim-disciplined documentation
+
+The README explicitly labels ROS 2/Nav2 as prototype-only and rejects Gazebo, hardware and formal-safety claims (`README.md`, lines 210–225). This language is scientifically appropriate and must be preserved.
+
+## Prototype-only capabilities
+
+### HIGH — Dynamic rerouting and mission supervision
+
+The README classifies rerouting cooldown and the mission supervisor as prototypes (`README.md`, lines 55–57). Their scientific value depends on an explicit state machine, hysteresis, transition reasons, failed-replan handling and scenario-level tests.
+
+### HIGH — Research suite and generated artifacts
+
+The repository has CSV/JSON outputs, manifests, figures and demos, but the audit has not yet established that every public artifact is generated by one canonical pipeline or corresponds to the current commit.
+
+### HIGH — ROS 2/Nav2 integration
+
+Documentation and scaffolding exist, but there is no verified `colcon build`, pluginlib discovery, Nav2 load test or generated `nav_msgs::msg::Path`. Status must remain **Prototype / Not validated**.
+
+### MEDIUM — Research website
+
+The restored Next.js website passed install, type-check and build in CI. It is an explanatory surface, not experimental evidence or a robotics contribution.
+
+## Planned capabilities
+
+- Real ROS 2/Nav2 global-planner package and runtime loading.
+- Deterministic Gazebo scenarios.
+- Physical-robot validation.
+- Time-indexed probabilistic dynamic-obstacle prediction.
+- Calibrated uncertainty and collision probabilities.
+- Multi-seed statistical comparisons and effect sizes.
+- Formal supervisor analysis or safety guarantees.
+
+These are consistent with the README roadmap (`README.md`, lines 218–247), but none should be described as implemented before executable evidence exists.
+
+## Critical findings
+
+### CRITICAL — No verified ROS 2/Nav2 implementation path
+
+**Evidence:** The README states that ROS 2/Nav2 is documentation/scaffold only (`README.md`, lines 210–225). CI contains no ROS image, `colcon build`, pluginlib test or Nav2 runtime job (`.github/workflows/ci.yml`, lines 10–154).
+
+**Risk:** The repository cannot support integration or simulation claims.
+
+**Required action:** Select one ROS distribution, build a separate ROS package, add plugin discovery and occupancy-grid conversion tests, then add ROS CI. Gazebo work must follow successful plugin loading.
+
+### CRITICAL — Objective terms are not yet proven dimensionally coherent
+
+**Evidence:** The README combines path length, risk, uncertainty and recoverability loss in one conceptual objective (`README.md`, lines 65–82), but no repository-wide contract has yet been verified for units, ranges, normalization, disable/ablation behaviour and logging.
+
+**Risk:** Planner weights may mix incompatible quantities, making comparisons scientifically uninterpretable.
+
+**Required action:** Trace each term from equation to implementation and tests. Document units/ranges and validate configurations before extending the planner.
+
+## High-priority findings
+
+### HIGH — CI checks only a selected lint/type subset
+
+Ruff and strict mypy currently target only the mapping core and one focused test (`.github/workflows/ci.yml`, lines 50–57). Repository-wide Ruff configuration exists (`pyproject.toml`, lines 44–61), but CI does not run `ruff check .` or `black --check .`.
+
+**Action:** Add separate quality jobs and repair failures at source. Do not add broad ignores.
+
+### HIGH — Test execution is split and manually curated
+
+CI runs six selected tests through an embedded Python script, then discovers remaining top-level tests with a shell loop and per-file timeout (`.github/workflows/ci.yml`, lines 58–128).
+
+**Risk:** Nested tests may be missed, collection logic is duplicated and coverage is harder to interpret.
+
+**Action:** Register unit/integration/regression/smoke/slow/ROS markers and move toward normal pytest collection while preserving explicit timeout protection.
+
+### HIGH — Packaging may include disconnected presentation code
+
+The wheel includes both `src/dynnav` and `src/dynnav_dashboard`, while dashboard dependencies are optional and the active website is separate (`pyproject.toml`, lines 24–42).
+
+**Action:** Determine whether `dynnav_dashboard` is actively used and tested. Remove it only if verified dead; otherwise define its contract and add a smoke test.
+
+### HIGH — Runtime dependencies are not a locked research environment
+
+Runtime dependencies use broad lower bounds (`pyproject.toml`, lines 15–22). CI installs the resolver’s current solution.
+
+**Action:** Keep flexible package metadata but add an experiment constraints/lock file and record resolved versions in manifests.
+
+### HIGH — Experimental evidence is primarily synthetic
+
+The README explicitly states grid-world orientation and synthetic limitations (`README.md`, lines 218–225). No verified Gazebo, hardware or statistically analysed multi-seed evidence exists.
+
+**Action:** Build fair geometric, risk-only, risk+uncertainty, recoverability-aware and supervised comparisons with identical maps, seeds and obstacle trajectories.
+
+## Medium-priority findings
+
+### MEDIUM — Capability claims need code-to-test links
+
+The README status table is useful but broad. Every “Implemented” row should eventually link to exact modules and tests (`README.md`, lines 47–61).
+
+### MEDIUM — Website dependency installation is not immutable
+
+CI uses `npm install` rather than `npm ci` (`.github/workflows/ci.yml`, lines 138–154). A generated lockfile should be committed before switching.
+
+### MEDIUM — Coverage has no threshold or component policy
+
+Pytest always enables coverage (`pyproject.toml`, lines 63–66), but there is no threshold or component report. Establish a measured baseline before introducing a threshold.
+
+### MEDIUM — Scientific terminology requires code-level review
+
+Any use of “CVaR-like”, mission risk, uncertainty pressure, returnability or recoverability must be traced to equations and implementation. Heuristic tail statistics must not be called CVaR unless they implement a valid estimator.
+
+### MEDIUM — Dynamic obstacles are not yet verified as time-indexed predictions
+
+The README describes deterministic dynamic-obstacle handling as a prototype (`README.md`, lines 220–222). A prediction interface and `R(x,y,t)` representation are required before claiming temporal interaction reasoning.
+
+## Missing tests and integration evidence
+
+- Objective-term normalization and zero-weight ablations.
+- Empirical VaR/CVaR tests on known distributions.
+- Uncertainty-channel validation and stale-data handling.
+- Return-to-origin versus any-safe-region recoverability.
+- Dynamic-agent interpolation and space-time collision checking.
+- Supervisor transition table, dwell time, hysteresis and cooldown.
+- Planner + risk + uncertainty + recoverability integration.
+- Deterministic failure-reason reporting.
+- Experiment-manifest schema and version capture.
+- ROS occupancy-grid conversion.
+- Pluginlib discovery and Nav2 load.
+- Deterministic Gazebo smoke test.
+
+## Architectural inconsistencies
+
+1. **Core package versus contributions:** reusable algorithms exist under both `src/dynnav` and `contributions/`. Canonical ownership must be established before moving files.
+2. **Multiple orchestration paths:** package CLIs, `run_all.py`, `run_benchmarks.py`, research-suite scripts and contributed experiments may overlap.
+3. **Multiple presentation layers:** Python dashboard, Next.js website and generated media must consume artifacts rather than becoming independent scientific sources.
+4. **Documented versus executable architecture:** the README flow is coherent, but module ownership and interfaces need exact traceability.
+
+## Prioritized implementation plan
+
+### P0.1 — Complete code-to-claim traceability — Medium
+
+- **Rationale:** identify the canonical implementation and tests for each README capability.
+- **Scientific benefit:** prevents duplicate contributions and unsupported claims.
+- **Engineering benefit:** identifies dead/disconnected code before refactoring.
+- **Acceptance:** every capability maps to exact implementation and test files.
+
+### P0.2 — Normalize CI and test collection — Medium
+
+- **Files:** `.github/workflows/ci.yml`, `pyproject.toml`, tests.
+- **Acceptance:** normal pytest collection passes on Python 3.10–3.12; registered categories replace manual exclusions; no required skip or relaxed timeout.
+
+### P1.1 — Mathematical terminology and configuration validation — Medium
+
+- **Files:** planner, risk, uncertainty, recoverability, configuration and mathematical docs.
+- **Acceptance:** definitions, ranges, validation and disable/ablation tests exist for every objective term.
+
+### P1.2 — CVaR truthfulness — Small/Medium
+
+- **Acceptance:** expected risk, maximum risk, VaR and empirical CVaR are distinct and tested on synthetic distributions; unsupported “CVaR-like” wording is removed.
+
+### P2 — Dynamic prediction and space-time risk — Large
+
+- **Dependency:** P1 contracts.
+- **Acceptance:** constant-velocity baseline, time-indexed risk, footprint-aware collision checking and deterministic tests.
+
+### P3 — Time-aware planner — Large
+
+- **Dependency:** P2.
+- **Acceptance:** bounded deterministic space-time A* with wait action, failure reasons and fair baseline comparison.
+
+### P4 — Formal supervisor state machine — Medium
+
+- **Acceptance:** explicit transitions, dwell time, hysteresis, cooldown and structured explanations are tested.
+
+### P5 — ROS 2/Nav2 — Large
+
+- **Dependency:** stable planner/supervisor interfaces.
+- **Acceptance:** selected ROS distribution builds; plugin is discovered and loaded; a path is produced.
+
+### P6/P7 — Gazebo, benchmark statistics and paper artifacts — Large
+
+- **Dependency:** P5.
+- **Acceptance:** deterministic scenarios, fair baselines, multi-seed manifests, confidence intervals, effect sizes and generated tables/figures.
+
+## Smallest coherent next implementation PR
+
+After review of this audit:
+
+1. Register pytest categories and simplify collection.
+2. Add repository-wide Ruff and Black checks, repairing source failures.
+3. Add configuration validation for existing default/benchmark configs.
+4. Audit existing risk aggregators and add terminology tests.
+5. Do **not** add a new planner, prediction model, ROS package or Gazebo scenario yet.
+
+## Explicit non-goals for the next milestone
+
+- Reinforcement learning or multi-robot coordination.
+- LLM/VLM integration.
+- New SLAM or VIO systems.
+- MPC, RRT*, Hybrid A* or unrelated planner expansion.
+- Hardware deployment or formal certification.
+- Website/dashboard expansion.
+- Performance or publication claims without experiments.
+
+## Audit status
+
+This document is grounded in the current README, package metadata, CI workflow, repaired realtime-replanning tests, website build evidence and the successful PR #64 CI run. The audit branch should next add exact source references for the risk, uncertainty, recoverability, supervisor, experiment and ROS scaffold modules. Findings must be corrected if deeper inspection contradicts them.
