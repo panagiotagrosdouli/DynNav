@@ -1,12 +1,26 @@
 #!/usr/bin/env python3
 """Classify documented commands and fail on obviously invalid executable paths."""
 
-from pathlib import Path
+from __future__ import annotations
+
 import argparse
 import shlex
-from markdown_audit_core import build_inventory
+from pathlib import Path
+
+import markdown_audit_core
 
 PATH_FLAGS = {"-f", "--file", "--config", "--root", "--output", "--inventory", "--out-dir"}
+_ORIGINAL_SHLEX_SPLIT = shlex.split
+
+
+def _safe_inventory_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
+    """Allow inventory construction to finish; strict validation happens below."""
+
+    try:
+        return _ORIGINAL_SHLEX_SPLIT(command, comments=comments, posix=posix)
+    except ValueError:
+        stripped = command.strip()
+        return [stripped] if stripped else []
 
 
 def main() -> int:
@@ -14,12 +28,17 @@ def main() -> int:
     parser.add_argument("--root", type=Path, default=Path("."))
     args = parser.parse_args()
     root = args.root.resolve()
-    _, _, _, commands = build_inventory(root)
+
+    # build_inventory classifies command prefixes and previously crashed before
+    # this validator could report which document contained malformed shell text.
+    markdown_audit_core.shlex.split = _safe_inventory_split
+    _, _, _, commands = markdown_audit_core.build_inventory(root)
+
     failures: list[str] = []
     for row in commands:
         command = str(row["command"])
         try:
-            parts = shlex.split(command, comments=True)
+            parts = _ORIGINAL_SHLEX_SPLIT(command, comments=True)
         except ValueError as exc:
             failures.append(f"{row['document']}: malformed command: {exc}: {command}")
             continue
