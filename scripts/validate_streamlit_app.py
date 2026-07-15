@@ -13,6 +13,8 @@ REQUIRED_PAGES = {
     "app/dashboard.py",
     "app/pages/01_Home.py",
     "app/pages/02_Robot_Lab.py",
+    "app/pages/03_Scenario_Builder.py",
+    "app/pages/04_Planner_Arena.py",
     "app/pages/09_Contribution_Explorer.py",
     "app/pages/13_System_Status.py",
 }
