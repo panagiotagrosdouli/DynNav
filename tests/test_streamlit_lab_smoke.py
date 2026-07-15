@@ -3,6 +3,15 @@ from __future__ import annotations
 import ast
 from pathlib import Path
 
+import pytest
+
+# The core CI intentionally installs only ``.[dev]``. Keep this dashboard-only
+# smoke module collectable there, while executing it fully in the dedicated
+# Streamlit workflow and in local ``.[dashboard,dev]`` environments.
+pytest.importorskip("streamlit", reason="dashboard optional dependencies are not installed")
+pytest.importorskip("plotly", reason="dashboard optional dependencies are not installed")
+pytest.importorskip("networkx", reason="dashboard optional dependencies are not installed")
+
 from dynnav_dashboard.contributions import RENDERERS
 from dynnav_dashboard.registry import load_contribution_registry
 
