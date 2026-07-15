@@ -20,6 +20,8 @@ REQUIRED_PAGES = {
     "app/pages/07_Dynamic_Obstacles.py",
     "app/pages/08_Multi_Robot_Lab.py",
     "app/pages/09_Contribution_Explorer.py",
+    "app/pages/10_Experiment_Studio.py",
+    "app/pages/11_Results_Reports.py",
     "app/pages/13_System_Status.py",
 }
 
