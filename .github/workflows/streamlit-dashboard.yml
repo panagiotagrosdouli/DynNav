@@ -1,0 +1,88 @@
+name: Streamlit Dashboard
+
+on:
+  pull_request:
+    paths:
+      - "app/**"
+      - "src/dynnav_dashboard/**"
+      - "scripts/validate_streamlit_app.py"
+      - "pyproject.toml"
+      - ".streamlit/**"
+      - ".github/workflows/streamlit-dashboard.yml"
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "src/dynnav_dashboard/**"
+      - "scripts/validate_streamlit_app.py"
+      - "pyproject.toml"
+      - ".streamlit/**"
+      - ".github/workflows/streamlit-dashboard.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  dashboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dashboard and development dependencies
+        run: python -m pip install -e ".[dashboard,dev]"
+
+      - name: Validate dashboard structure and renderers
+        run: python scripts/validate_streamlit_app.py
+
+      - name: Import application modules
+        run: |
+          python - <<'PY'
+          import importlib
+          from pathlib import Path
+
+          pages = sorted(Path("app/pages").glob("*.py"))
+          assert pages, "No Streamlit pages found"
+          importlib.import_module("dynnav_dashboard.simulation")
+          importlib.import_module("dynnav_dashboard.registry")
+          print(f"Validated {len(pages)} page files and core dashboard imports")
+          PY
+
+      - name: Dashboard-focused tests
+        run: pytest -q tests -k "dashboard or streamlit or contribution or simulation" --maxfail=1
+
+      - name: Headless startup smoke test
+        run: |
+          set -euo pipefail
+          streamlit run app/dashboard.py \
+            --server.headless true \
+            --server.address 127.0.0.1 \
+            --server.port 8501 \
+            > streamlit.log 2>&1 &
+          pid=$!
+          trap 'kill $pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8501/_stcore/health >/dev/null; then
+              echo "Streamlit health endpoint is ready"
+              exit 0
+            fi
+            sleep 1
+          done
+          cat streamlit.log
+          exit 1
+
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: streamlit-validation
+          path: |
+            results/manifests/streamlit_validation.json
+            streamlit.log
+          if-no-files-found: warn
