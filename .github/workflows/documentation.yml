@@ -1,0 +1,61 @@
+name: Documentation integrity
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  documentation:
+    name: Recursive documentation inventory and validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build exhaustive documentation inventory
+        run: |
+          python scripts/audit_markdown_tree.py \
+            --root . \
+            --output results/manifests/markdown_inventory.json
+
+      - name: Validate documentation links and anchors
+        run: python scripts/validate_markdown_links.py --root .
+
+      - name: Validate documentation assets
+        run: python scripts/validate_markdown_assets.py --root .
+
+      - name: Validate documented command paths
+        run: python scripts/validate_documented_commands.py --root .
+
+      - name: Verify generated inventory is deterministic and committed
+        run: |
+          git diff --exit-code -- \
+            docs/MARKDOWN_INVENTORY.md \
+            docs/DOCUMENTATION_MAP.md \
+            results/manifests/markdown_inventory.json \
+            results/manifests/markdown_inventory.csv \
+            results/manifests/markdown_link_graph.json \
+            results/manifests/documented_commands.json
+
+      - name: Upload documentation manifests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-manifests
+          if-no-files-found: error
+          path: |
+            docs/MARKDOWN_INVENTORY.md
+            docs/DOCUMENTATION_MAP.md
+            results/manifests/markdown_inventory.json
+            results/manifests/markdown_inventory.csv
+            results/manifests/markdown_link_graph.json
+            results/manifests/documented_commands.json
