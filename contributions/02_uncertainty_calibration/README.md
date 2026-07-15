@@ -2,6 +2,12 @@
 
 [![Module](https://img.shields.io/badge/Module-02-purple)](.) [![Type](https://img.shields.io/badge/Type-Probabilistic%20Sensing-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+<p align="center">
+  <img src="assets/uncertainty_calibration_pipeline.svg" alt="Conceptual uncertainty estimation and calibration pipeline" width="100%" />
+</p>
+
+<p align="center"><em>Conceptual overview of Contribution 02. The diagram explains the processing pipeline; it is not experimental evidence, a probabilistic guarantee, or a safety certification.</em></p>
+
 ## Plain-language summary
 
 A robot should not only estimate where it is. It should also know how uncertain that estimate is.
@@ -129,6 +135,8 @@ instead of raw uncertainty values.
 ```text
 02_uncertainty_calibration/
 ├── README.md
+├── assets/
+│   └── uncertainty_calibration_pipeline.svg
 ├── code/
 │   └── uncertainty_calibrator.py
 ├── docs/
