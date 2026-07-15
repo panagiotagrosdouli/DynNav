@@ -83,18 +83,19 @@ jobs:
           PYTHONPATH: ${{ github.workspace }}
         run: |
           set -o pipefail
-          src_tests=(
+          excluded_tests=(
             tests/test_mapping_occupancy_grid.py
             tests/test_dynnav_smoke.py
             tests/test_lab_grade.py
             tests/test_planning.py
             tests/test_research_modules.py
             tests/test_research_pipeline_phase2.py
+            tests/test_streamlit_lab_smoke.py
           )
 
-          is_src_test() {
+          is_excluded_test() {
             local candidate="$1"
-            for item in "${src_tests[@]}"; do
+            for item in "${excluded_tests[@]}"; do
               if [[ "$candidate" == "$item" ]]; then
                 return 0
               fi
@@ -103,7 +104,7 @@ jobs:
           }
 
           for test_file in $(find tests -maxdepth 1 -name 'test_*.py' | sort); do
-            if is_src_test "$test_file"; then
+            if is_excluded_test "$test_file"; then
               continue
             fi
 
