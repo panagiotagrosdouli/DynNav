@@ -1,31 +1,31 @@
-## 🔒 Irreversibility-Aware Navigation (New Contribution)
+## Irreversibility-Aware Navigation
 
-This repository includes a set of experiments studying **irreversibility constraints** in navigation under uncertainty, and their relation to risk-weighted planning.
+This repository includes experiments studying irreversibility constraints in navigation under uncertainty and their relationship to risk-weighted planning.
 
-### Key Components
-- **Irreversibility map construction** from uncertainty and local geometry
-- **Hard irreversibility-constrained planning** with feasibility thresholds
-- **Safe-mode planning** with automatic threshold relaxation
-- **Adaptive threshold selection** via minimax (global feasibility-aware) estimation
-- **Failure taxonomy** distinguishing local vs global infeasibility modes
+### Key components
 
-### Core Experiments
+- irreversibility-map construction from uncertainty and local geometry;
+- hard irreversibility-constrained planning with feasibility thresholds;
+- safe-mode planning with controlled threshold relaxation;
+- adaptive threshold selection through global feasibility-aware estimation;
+- failure analysis distinguishing local and global infeasibility modes.
 
-| Experiment | Script |
+### Core experiments
+
+| Experiment | Historical entry-point name |
 |---|---|
 | Bottleneck feasibility sweep | `run_irreversibility_bottleneck_sweep.py` |
-| Hard vs soft (risk-weighted) comparison | `plot_hard_vs_soft_comparison.py` |
+| Hard-versus-soft comparison | `plot_hard_vs_soft_comparison.py` |
 | Safe-mode activation analysis | `run_irreversibility_safe_mode_sweep.py` |
-| Minimax adaptive τ (multi-start) | `run_minimax_tau_multistart.py` |
+| Adaptive multi-start threshold analysis | `run_minimax_tau_multistart.py` |
 | Failure taxonomy analysis | `plot_failure_taxonomy.py` |
 
-### Formal Result
+The names above are retained for traceability. They are not repository links unless matching files are committed at documented paths.
 
-A formal proposition and counterexample showing that **irreversibility constraints are not reducible to risk weighting** is provided here:
+### Theoretical statement
 
-📄 **[`PROPOSITION_Irreversibility_vs_Risk.md`](PROPOSITION_Irreversibility_vs_Risk.md)**
+The current theory document discussing why hard irreversibility constraints are not generally reducible to scalar risk weighting is:
 
-This document includes:
-- a precise claim,
-- a bottleneck counterexample,
-- references to scripts and figures in this repository.
+- [Proposition: Irreversibility versus Risk Weighting](Proposition_Irreversibility_vs_Risk_Weighting.md)
+
+This material should be treated as a research proposition and counterexample analysis, not as a formal safety certificate or a universal guarantee. Experimental claims require traceable scripts, configurations, raw results, and regenerated figures.
