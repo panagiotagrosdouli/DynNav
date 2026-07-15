@@ -22,7 +22,15 @@ REQUIRED_PAGES = {
     "app/pages/09_Contribution_Explorer.py",
     "app/pages/10_Experiment_Studio.py",
     "app/pages/11_Results_Reports.py",
+    "app/pages/12_Documentation.py",
     "app/pages/13_System_Status.py",
+}
+
+REQUIRED_APP_ASSETS = {
+    "app/README.md",
+    ".streamlit/config.toml",
+    ".github/workflows/streamlit-dashboard.yml",
+    "src/dynnav_dashboard/contribution_registry.yaml",
 }
 
 
@@ -33,6 +41,10 @@ def main() -> int:
     for path in sorted(REQUIRED_PAGES):
         if not (root / path).is_file():
             failures.append(f"missing page: {path}")
+
+    for path in sorted(REQUIRED_APP_ASSETS):
+        if not (root / path).is_file():
+            failures.append(f"missing application asset: {path}")
 
     registry = load_contribution_registry()
     expected_ids = [f"C{i:02d}" for i in range(1, 27)]
@@ -49,6 +61,7 @@ def main() -> int:
 
     report = {
         "pages_checked": len(REQUIRED_PAGES),
+        "application_assets_checked": len(REQUIRED_APP_ASSETS),
         "contributions_checked": len(registry),
         "renderers_registered": len(RENDERERS),
         "failures": failures,
