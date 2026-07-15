@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import re
 import shlex
 from dataclasses import asdict
 from pathlib import Path
@@ -14,7 +13,6 @@ import markdown_audit_core
 from markdown_audit_runtime import install_document_discovery_filter
 
 _ORIGINAL_SHLEX_SPLIT = shlex.split
-_LINK_DESTINATION = re.compile(r"(\]\()([^\n)]+)(\))")
 
 
 def _safe_shlex_split(command: str, comments: bool = False, posix: bool = True) -> list[str]:
@@ -27,19 +25,35 @@ def _safe_shlex_split(command: str, comments: bool = False, posix: bool = True) 
         return [stripped] if stripped else []
 
 
-def _encode_generated_local_links(path: Path) -> None:
-    """Encode spaces, parentheses, and Unicode in generated local destinations."""
+def _write_encoded_documentation_map(
+    path: Path,
+    records: list[markdown_audit_core.DocumentRecord],
+    graph: dict[str, object],
+) -> None:
+    """Write deterministic repository links safe for spaces and parentheses."""
 
-    text = path.read_text(encoding="utf-8")
-
-    def replace(match: re.Match[str]) -> str:
-        target = match.group(2)
-        if "://" in target or target.startswith(("mailto:", "tel:", "data:")):
-            return match.group(0)
-        encoded = quote(target, safe="/#:.?=&%_-")
-        return f"{match.group(1)}{encoded}{match.group(3)}"
-
-    path.write_text(_LINK_DESTINATION.sub(replace, text), encoding="utf-8")
+    lines = [
+        "# Documentation Map",
+        "",
+        "> Generated from the repository-wide documentation inventory.",
+        "",
+        "## Canonical and index documents",
+        "",
+    ]
+    for record in records:
+        target = "../" + quote(record.path, safe="/#:.?=&%_-")
+        lines.append(
+            f"- [`{record.path}`]({target}) — {record.current_purpose}; "
+            f"maturity: **{record.apparent_maturity}**"
+        )
+    orphans = graph.get("orphans", [])
+    lines.extend(["", "## Documents without inbound links", ""])
+    if isinstance(orphans, list) and orphans:
+        lines.extend(f"- `{item}`" for item in orphans)
+    else:
+        lines.append("- None")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def main() -> int:
@@ -58,9 +72,7 @@ def main() -> int:
     markdown_audit_core.write_inventory_markdown(root / "docs/MARKDOWN_INVENTORY.md", records, findings)
     markdown_audit_core.write_json(root / "results/manifests/markdown_link_graph.json", graph)
     markdown_audit_core.write_json(root / "results/manifests/documented_commands.json", commands)
-    documentation_map = root / "docs/DOCUMENTATION_MAP.md"
-    markdown_audit_core.write_documentation_map(documentation_map, records, graph)
-    _encode_generated_local_links(documentation_map)
+    _write_encoded_documentation_map(root / "docs/DOCUMENTATION_MAP.md", records, graph)
 
     errors = [item for item in findings if item.severity == "error"]
     print(f"Discovered {len(records)} documentation-like files")
