@@ -4,6 +4,12 @@
 [![Topic](https://img.shields.io/badge/Topic-Learning--Augmented%20Planning-0366d6)](.)
 [![Status](https://img.shields.io/badge/Status-Research%20Prototype-2ea44f)](.)
 
+<p align="center">
+  <img src="assets/learned_astar_pipeline.svg" alt="Conceptual pipeline for learned A-star heuristic estimation, admissibility control, search, and evaluation" width="100%" />
+</p>
+
+<p align="center"><em>Conceptual overview of Contribution 01. The figure is explanatory and does not constitute experimental evidence, a proof of optimality, or a runtime guarantee.</em></p>
+
 This contribution investigates **learning-augmented heuristic search** for grid-based navigation. The central question is whether a neural estimate of cost-to-go can reduce the number of states expanded by A* without obscuring the conditions under which classical optimality guarantees hold.
 
 The implementation deliberately distinguishes between:
@@ -92,19 +98,22 @@ This establishes admissibility of the clipped heuristic under the stated assumpt
 ```text
 01_learned_astar/
 ├── README.md
+├── README_GR.md
+├── assets/
+│   └── learned_astar_pipeline.svg      # Conceptual overview figure
 ├── code/
-│   ├── learned_heuristic.py          # Neural-network definition
-│   └── heuristic_logger.py           # Optional heuristic diagnostics
+│   ├── learned_heuristic.py            # Neural-network definition
+│   └── heuristic_logger.py             # Optional heuristic diagnostics
 ├── docs/
-│   └── SCIENTIFIC_UPGRADE.md         # Scientific validation notes
+│   └── SCIENTIFIC_UPGRADE.md           # Scientific validation notes
 ├── experiments/
-│   ├── astar_learned_heuristic.py    # A* implementation and heuristic modes
-│   ├── eval_astar_learned.py         # Basic repeated evaluation
-│   ├── statistical_validation.py     # Obstacle-density benchmark
-│   └── admissibility_audit.py        # Admissibility and consistency audit
+│   ├── astar_learned_heuristic.py      # A* implementation and heuristic modes
+│   ├── eval_astar_learned.py           # Basic repeated evaluation
+│   ├── statistical_validation.py       # Obstacle-density benchmark
+│   └── admissibility_audit.py          # Admissibility and consistency audit
 └── results/
-    ├── c01_validation_trials.csv     # Per-trial measurements
-    └── c01_validation_summary.csv    # Aggregated results
+    ├── c01_validation_trials.csv       # Per-trial measurements
+    └── c01_validation_summary.csv      # Aggregated results
 ```
 
 ---
@@ -136,13 +145,7 @@ python contributions/01_learned_astar/experiments/statistical_validation.py \
 python contributions/01_learned_astar/experiments/admissibility_audit.py
 ```
 
-The audit computes exact shortest-path cost-to-go values using reverse breadth-first search and reports:
-
-- sampled-state count;
-- admissibility violations;
-- maximum and mean overestimation;
-- consistency violations; and
-- maximum consistency gap.
+The audit computes exact shortest-path cost-to-go values using reverse breadth-first search and reports sampled-state count, admissibility violations, overestimation magnitude, consistency violations, and the maximum consistency gap.
 
 > **Important:** if the trained checkpoint is unavailable, the implementation may fall back to Manhattan guidance with a warning. Verify that the intended model checkpoint is loaded before interpreting a run as a learned-heuristic experiment.
 
@@ -168,14 +171,7 @@ The following methods are evaluated on identical planning instances.
 | `learned_raw` | Raw neural estimate | Requires empirical path-cost validation |
 | `learned_manhattan_clipped` | Neural estimate clipped by Manhattan | Admissible under the stated grid model |
 
-Primary metrics are:
-
-- success rate;
-- path cost;
-- expanded nodes; and
-- wall-clock runtime.
-
-Path cost and node expansions are reported separately because fewer expansions do not necessarily imply lower runtime when each expansion invokes a neural network.
+Primary metrics are success rate, path cost, expanded nodes, and wall-clock runtime. Path cost and node expansions are reported separately because fewer expansions do not necessarily imply lower runtime when each expansion invokes a neural network.
 
 ---
 
@@ -192,12 +188,7 @@ All four methods achieved a **100% success rate** in the reported 400-task bench
 | Hard | 204.58 | **200.53** | 210.64 |
 | Very hard | **240.99** | 244.04 | 247.02 |
 
-Relative to Manhattan A*, the raw learned heuristic reduced mean expansions by approximately:
-
-- **26.0%** in easy environments;
-- **14.1%** in medium environments;
-- **2.0%** in hard environments; and
-- no measurable amount in very hard environments.
+Relative to Manhattan A*, the raw learned heuristic reduced mean expansions by approximately **26.0%** in easy environments, **14.1%** in medium environments, **2.0%** in hard environments, and provided no measurable reduction in very hard environments.
 
 A separate 100-trial evaluation reported:
 
@@ -214,72 +205,43 @@ In that experiment, the learned heuristic reduced expansions by **42.8%**, but n
 
 ## Interpretation
 
-The results support a deliberately limited conclusion:
-
 > A learned heuristic can reduce A* node expansions in relatively sparse grid environments, while its benefit decreases as obstacle density increases. Preserving admissibility through Manhattan clipping removes the formal risk of overestimation, but may also remove the learned heuristic's practical advantage.
 
-The experiments therefore demonstrate a trade-off among:
-
-- heuristic informativeness;
-- admissibility;
-- environmental complexity; and
-- inference cost.
-
-The contribution should be described as an improvement in **search guidance under selected conditions**, not as a general runtime acceleration of classical A*.
+The experiments demonstrate a trade-off among heuristic informativeness, admissibility, environmental complexity, and inference cost. The contribution should therefore be described as an improvement in **search guidance under selected conditions**, not as a general runtime acceleration of classical A*.
 
 ---
 
 ## Limitations
 
-1. **Restricted environment model.** The admissibility argument applies to four-neighbour, unit-cost grids. It does not automatically transfer to weighted graphs, diagonal actions, kinodynamic systems, or continuous spaces.
-2. **No guarantee for the raw model.** Equal path costs on a finite benchmark do not prove admissibility or global optimality.
-3. **Distribution dependence.** Performance depends on the similarity between training maps and evaluation maps.
-4. **Inference overhead.** Per-node neural inference can dominate the savings obtained from fewer expansions.
-5. **Limited spatial representation.** Hand-crafted local features may not capture long-range obstacle topology or bottleneck structure.
-6. **Conservative admissibility repair.** Manhattan clipping is safe but cannot produce a heuristic larger than Manhattan, limiting its ability to improve search ordering.
+1. The admissibility argument applies only to four-neighbour, unit-cost grids.
+2. Equal path costs on a finite benchmark do not prove admissibility or global optimality of the raw model.
+3. Performance depends on the similarity between training and evaluation maps.
+4. Per-node neural inference can dominate savings from fewer expansions.
+5. Local hand-crafted features may not capture long-range obstacle topology.
+6. Manhattan clipping is safe but cannot produce a heuristic larger than Manhattan.
 
 ---
 
 ## Research directions
 
-The most promising extension is an **admissibility-repair or calibration layer** rather than a larger network alone. Relevant directions include:
-
-- learning residual corrections with provable lower-bound structure;
-- quantile or conformal calibration of overestimation risk;
-- uncertainty-aware heuristic weighting;
-- batched or cached neural inference;
-- graph- or map-based encoders with larger receptive fields;
-- evaluation under distribution shift; and
-- explicit Pareto analysis of path optimality, expansions, and runtime.
-
-A stronger future formulation would learn an informative estimate, measure its violation profile against exact cost-to-go values, and repair or bound the estimate before deployment in A*.
+Promising extensions include admissibility repair, conformal or quantile calibration of overestimation risk, uncertainty-aware heuristic weighting, cached or batched inference, graph-based encoders, evaluation under distribution shift, and explicit Pareto analysis of optimality, expansions, and runtime.
 
 ---
 
 ## Scientific claims
 
-The current evidence supports the following claims:
+The evidence supports the claims that raw learned A* was empirically evaluated for expansion reduction and path-cost preservation, that it reduced expansions in easy and medium regimes, that Manhattan-clipped learned A* is admissible under the stated grid assumptions, and that fewer expansions did not translate into lower runtime in the reported CPU experiments.
 
-- Raw learned A* is empirically evaluated for expansion reduction and path-cost preservation.
-- The raw heuristic reduced node expansions in easy and medium obstacle-density regimes.
-- Manhattan-clipped learned A* is admissible under the four-neighbour, unit-cost grid assumptions.
-- Reduced node expansions did not translate into reduced runtime in the reported CPU experiments.
-
-The evidence does **not** support the following unrestricted claims:
-
-- that the raw neural heuristic is guaranteed admissible;
-- that learned A* is universally optimal;
-- that learned A* is universally faster than classical A*; or
-- that the reported behaviour generalizes beyond the evaluated map distribution.
+The evidence does **not** establish that the raw heuristic is guaranteed admissible, that learned A* is universally optimal or faster, or that the reported behaviour generalizes beyond the evaluated map distribution.
 
 ---
 
 ## Role within DynNav
 
-Contribution 01 establishes the learning-augmented planning baseline for DynNav. Subsequent contributions can build on this module by incorporating calibrated uncertainty, learned risk maps, dynamic obstacle predictions, or safety constraints into the planning objective.
+Contribution 01 establishes the learning-augmented planning baseline for DynNav. Subsequent contributions can incorporate calibrated uncertainty, learned risk maps, dynamic-obstacle predictions, or safety constraints into the planning objective.
 
 ---
 
 ## Citation
 
-When using this module in academic work, cite the DynNav repository and report the exact commit, heuristic mode, checkpoint, map-generation parameters, and random seed used for evaluation. This information is necessary to distinguish formal guarantees from empirical observations and to support reproducibility.
+When using this module in academic work, cite the DynNav repository and report the exact commit, heuristic mode, checkpoint, map-generation parameters, and random seed used for evaluation.
