@@ -75,14 +75,12 @@ Documentation must distinguish among:
 
 Passing unit tests does not establish a formal safety guarantee, real-world robustness, or state-of-the-art performance.
 
-## Numbering
+## Numbering and consolidation
 
-One contribution number should map to one canonical directory. See [`CONTRIBUTION_NUMBERING.md`](CONTRIBUTION_NUMBERING.md).
+One contribution number should eventually map to one canonical directory. A directory must not be removed until its code, tests, results, and inbound links have been migrated.
 
-Current consolidation notes:
-
-- Contribution 02 is canonical under [`02_uncertainty_calibration/`](02_uncertainty_calibration/).
-- Contribution 07 still spans a legacy implementation and an upgraded module; see [`07_next_best_view/MIGRATION.md`](07_next_best_view/MIGRATION.md) before moving or deleting files.
+- Contribution 02 is maintained under [`02_uncertainty_calibration/`](02_uncertainty_calibration/).
+- Contribution 07 currently spans `07_nbv_exploration/` and `07_next_best_view/` because both contain active material. They must remain until a controlled code-and-test migration is completed.
 
 ## Supporting research directories
 
