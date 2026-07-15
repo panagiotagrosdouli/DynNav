@@ -37,6 +37,11 @@ def test_contribution_registry_matches_renderers() -> None:
     assert all(callable(RENDERERS[item_id]) for item_id in expected)
 
 
+def test_streamlit_cloud_installs_local_src_package() -> None:
+    requirements = (ROOT / "requirements.txt").read_text(encoding="utf-8")
+    assert "-e .[dashboard]" in requirements
+
+
 def test_dashboard_docker_entrypoint() -> None:
     dockerfile = (ROOT / "Dockerfile").read_text(encoding="utf-8")
     assert '"streamlit", "run", "app/dashboard.py"' in dockerfile
