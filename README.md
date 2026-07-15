@@ -10,8 +10,9 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-4C1.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-research%20prototype-orange)](#verified-status-and-evidence-boundaries)
+[![Streamlit](https://img.shields.io/badge/Streamlit-interactive%20dashboard-FF4B4B?logo=streamlit&logoColor=white)](app/dashboard.py)
 
-[**English**](README.md) · [**Ελληνικά**](README_GREEK.md) · [Documentation](docs/README.md) · [Contribution index](contributions/CONTRIBUTIONS_README.md) · [Website](website/README.md)
+[**English**](README.md) · [**Ελληνικά**](README_GREEK.md) · [Documentation](docs/README.md) · [Contribution index](contributions/CONTRIBUTIONS_README.md) · [Streamlit dashboard](#interactive-streamlit-dashboard) · [Website](website/README.md)
 
 </div>
 
@@ -86,6 +87,7 @@ The repository contains:
 - energy- and connectivity-aware feasibility classification;
 - returnability-aware next-best-view scoring;
 - online replanning and route-monitoring experiments;
+- an interactive Streamlit visualization of the closed-loop navigation process;
 - security, multi-robot, semantic, learning, and formal-method extensions;
 - versioned configurations, tests, benchmark runners, and documentation audits.
 
@@ -221,6 +223,7 @@ This structure is intended to make negative results and trade-offs visible. For 
 | A* and Dijkstra baselines | Implemented | Deterministic tests |
 | Risk-aware grid planning | Implemented | Source and regression tests |
 | Risk and uncertainty fields | Implemented / Experimental | NumPy-based deterministic tests |
+| Interactive Streamlit dashboard | Implemented / Experimental | Synthetic closed-loop visualization |
 | Learned heuristic search | Research Prototype | Controlled grid benchmarks and audits |
 | Uncertainty calibration | Research Prototype | Synthetic and generated uncertainty-error benchmarks |
 | Recoverability estimation | Research Prototype | Grid reachability heuristics and tests |
@@ -240,19 +243,19 @@ Passing tests establishes consistency with implemented expectations; it does not
 ## Installation
 
 ```bash
- git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git
- cd DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments
- python -m venv .venv
- source .venv/bin/activate
- python -m pip install --upgrade pip
- python -m pip install -e ".[dev]"
+git clone https://github.com/panagiotagrosdouli/DynNav.git
+cd DynNav
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev,dashboard]"
 ```
 
 Windows PowerShell:
 
 ```powershell
 .venv\Scripts\Activate.ps1
-python -m pip install -e ".[dev]"
+python -m pip install -e ".[dev,dashboard]"
 ```
 
 ---
@@ -272,12 +275,41 @@ The smoke runners exercise the integrated Python workflow without implying full 
 
 ---
 
+## Interactive Streamlit dashboard
+
+The Streamlit application provides an interactive explanation of what happens inside DynNav during a synthetic navigation episode. It is implemented in [`app/dashboard.py`](app/dashboard.py) and uses the deterministic engine under [`src/dynnav_dashboard/`](src/dynnav_dashboard/).
+
+Run it from the repository root:
+
+```bash
+python -m pip install -e ".[dashboard]"
+streamlit run app/dashboard.py
+```
+
+The dashboard includes:
+
+- deterministic scenario generation controlled by a seed;
+- static and moving obstacles;
+- occupancy, uncertainty, and risk overlays;
+- classical A* and risk-aware A* comparison;
+- step-by-step robot motion;
+- online route invalidation and replanning;
+- explanatory supervisor states: `NORMAL`, `CAUTION`, `REPLAN`, `SAFE STOP`, and `GOAL REACHED`;
+- local risk and uncertainty signals;
+- planner expansions, runtime, path cost, and risk metrics;
+- a clear separation between demonstrated synthetic behavior and capabilities that still require ROS 2, Gazebo, or hardware validation.
+
+The app is an explanatory research interface. It does not claim that all 26 contribution modules execute together, and it is not evidence of physical-robot safety.
+
+---
+
 ## Main commands
 
 | Purpose | Command |
 |---|---|
 | Full Python tests | `pytest` |
 | Focused replanning test | `pytest tests/test_realtime_replanning.py` |
+| Launch Streamlit dashboard | `streamlit run app/dashboard.py` |
 | CI-style smoke run | `python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke` |
 | Benchmark smoke run | `python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks` |
 | Installed benchmark CLI | `dynnav-benchmark --config configs/benchmark.yaml --out-csv results/benchmarks/dynnav_benchmark.csv --summary results/benchmarks/summary.md` |
@@ -324,9 +356,11 @@ See [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) and [`docs/REPR
 
 | Directory | Research responsibility |
 |---|---|
+| [`app/`](app/) | Interactive Streamlit research dashboard |
 | [`contributions/`](contributions/) | Numbered research questions, implementations, experiments, and module-level documentation |
 | [`src/`](src/README.md) | Installable Python source tree |
 | [`src/dynnav/`](src/dynnav/README.md) | Core navigation research package |
+| [`src/dynnav_dashboard/`](src/dynnav_dashboard/) | Synthetic dashboard engine and contribution visualizations |
 | [`configs/`](configs/README.md) | Versioned experiment and benchmark inputs |
 | [`scripts/`](scripts/README.md) | Smoke, benchmark, validation, and media entry points |
 | [`tests/`](tests/README.md) | Deterministic and regression tests |
@@ -368,6 +402,7 @@ This dependency graph is conceptual rather than a claim that all modules current
 ## Limitations
 
 - Current evidence is dominated by deterministic or synthetic grid-world experiments.
+- The Streamlit dashboard is an explanatory synthetic interface, not ROS 2 or hardware execution.
 - Some modules are complete implementations; others are research prototypes or interface studies.
 - Calibration can degrade under distribution shift.
 - Recoverability metrics are interpretable heuristics rather than universal safety certificates.
@@ -407,7 +442,7 @@ Use [`CITATION.cff`](CITATION.cff) for repository citation until a peer-reviewed
 @software{dynnav,
   author  = {Grosdouli, Panagiota},
   title   = {DynNav: Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments},
-  url     = {https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments},
+  url     = {https://github.com/panagiotagrosdouli/DynNav},
   note    = {Research software; cite the exact repository commit used}
 }
 ```
