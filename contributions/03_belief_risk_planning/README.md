@@ -1,107 +1,75 @@
-# Contribution 03 — Belief-Space and Risk-Aware Planning
+# Belief-Space and Risk-Aware Planning
 
-[![Module](https://img.shields.io/badge/Module-03-purple)](.) [![Type](https://img.shields.io/badge/Type-Risk--Aware%20Planning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/DynNav-Contribution%2003-6f42c1)](.)
+[![Topic](https://img.shields.io/badge/Topic-Risk--Aware%20Planning-0366d6)](.)
+[![Status](https://img.shields.io/badge/Status-Research%20Prototype-2ea44f)](.)
 
-## Plain-language summary
+<p align="center">
+  <img src="assets/belief_risk_planning_pipeline.svg" alt="Conceptual belief-space and risk-aware planning pipeline" width="100%" />
+</p>
 
-A shortest path is not always the safest path.
+<p align="center"><em>Conceptual overview of Contribution 03. The figure is explanatory and does not constitute experimental evidence or a formal safety guarantee.</em></p>
 
-Contribution 03 extends navigation planning so the robot can reason about uncertainty and risk while choosing a route. Instead of optimizing only geometric path length, the planner evaluates whether a route passes through uncertain, dangerous, or high-risk regions.
+A geometrically shortest path is not necessarily the safest path. Contribution 03 studies navigation as an explicit **safety–efficiency trade-off**, combining path length with uncertainty-derived risk measures.
 
-The main idea is:
-
-> The robot should choose a path by trading off efficiency against risk exposure.
-
----
-
-## Research Question
-
-> **RQ3:** How should a robot plan when the shortest path and the safest path are not the same?
-
-This contribution studies how to combine:
-
-- geometric path length,
-- uncertainty from belief-state estimation,
-- expected risk,
-- tail risk / CVaR,
-- maximum risk,
-- safety-efficiency trade-offs.
+The module receives calibrated uncertainty from Contribution 02, constructs or consumes a spatial risk representation, evaluates candidate routes, and selects a route according to a declared risk preference.
 
 ---
 
-## Motivation
+## Research question
 
-Classical A* asks:
+> **How should a robot plan when the shortest route and the lowest-risk route are different?**
 
-```text
-Which path reaches the goal with minimum cost?
-```
+The contribution evaluates:
 
-Risk-aware planning asks a richer question:
-
-```text
-Which path reaches the goal while avoiding unacceptable uncertainty and risk?
-```
-
-This matters because two paths can have the same length but very different safety profiles. One may pass through a narrow high-risk area, while another may remain in better-observed and lower-risk regions.
+1. expected path risk;
+2. maximum path risk;
+3. conditional value at risk (CVaR);
+4. geometric path length;
+5. scalarized risk–length objectives; and
+6. Pareto dominance among candidate routes.
 
 ---
 
-## Conceptual Pipeline
+## Problem formulation
 
-```text
-calibrated uncertainty from C02
-      ↓
-belief/risk map
-      ↓
-expected risk + CVaR + max-risk metrics
-      ↓
-risk-weighted objective
-      ↓
-risk-aware A* / assignment / route selection
-      ↓
-path with measured safety-efficiency trade-off
-```
+For a candidate path \(\pi\), a basic scalar objective is
 
----
+\[
+J(\pi)=L(\pi)+\lambda R(\pi),
+\]
 
-## Core Objective
+where \(L(\pi)\) is geometric path cost, \(R(\pi)\) is a selected risk functional, and \(\lambda\geq0\) controls risk aversion.
 
-A simple risk-aware objective is:
+- \(\lambda=0\) yields risk-neutral geometric planning.
+- Larger \(\lambda\) allows the planner to accept a longer path in exchange for reduced risk exposure.
 
-```text
-J = L + λR
-```
-
-where:
-
-- `L` is geometric path length,
-- `R` is the selected risk metric,
-- `λ` controls how risk-averse the planner is.
-
-When `λ = 0`, the planner behaves like a risk-neutral planner.
-
-When `λ` increases, the planner becomes more willing to take a longer path to avoid risk.
+A scalar objective is useful but incomplete: different values of \(\lambda\) encode different preferences, and one scalarization may hide dominated solutions. The implementation therefore also reports Pareto relationships.
 
 ---
 
-## Risk Metrics
+## Risk metrics
 
-| Metric | Meaning | When it is useful |
-|---|---|---|
-| Expected risk | Average risk along the path | General risk-aware planning |
-| Maximum risk | Worst single risk value on the path | Hard safety awareness |
-| CVaR | Average of the worst tail of risk values | Conservative planning under rare dangerous events |
-| Path-length increase | Extra distance paid for safety | Measures efficiency cost |
-| Pareto dominance | Whether another path is better in both length and risk | Filters weak trade-off points |
+| Metric | Interpretation |
+|---|---|
+| Expected risk | Mean or accumulated risk along the route |
+| Maximum risk | Worst individual risk value encountered |
+| CVaR | Mean of the worst tail of route-risk values |
+| Path-length increase | Additional geometric cost paid for lower risk |
+| Pareto dominance | Whether another route is no worse in both length and risk and strictly better in at least one |
+
+CVaR is particularly relevant when a short route contains a small but severe high-risk segment that may be diluted by an average-risk metric.
 
 ---
 
-## Files
+## Repository structure
 
 ```text
 03_belief_risk_planning/
 ├── README.md
+├── README_GR.md
+├── assets/
+│   └── belief_risk_planning_pipeline.svg
 ├── code/
 │   └── risk_tradeoff_analyzer.py
 ├── docs/
@@ -110,135 +78,88 @@ When `λ` increases, the planner becomes more willing to take a longer path to a
 │   ├── lambda_sweep_risk_length_demo.py
 │   └── eval_risk_tradeoff.py
 └── results/
-    ├── lambda_sweep_risk_length_results.csv       # generated by existing demo
-    └── c03_risk_tradeoff_benchmark.csv            # generated by new benchmark
+    ├── lambda_sweep_risk_length_results.csv
+    └── c03_risk_tradeoff_benchmark.csv
 ```
 
 ---
 
-## Quick Start
+## Reproducibility
 
-Run the original lambda-sweep demo:
+Run from the repository root:
 
 ```bash
 python contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py
 ```
 
-Run the new risk trade-off benchmark:
-
 ```bash
 python contributions/03_belief_risk_planning/experiments/eval_risk_tradeoff.py
 ```
 
-This generates:
+The benchmark writes:
 
 ```text
 contributions/03_belief_risk_planning/results/c03_risk_tradeoff_benchmark.csv
 ```
 
+Reportable experiments should preserve the exact commit, risk-map source, uncertainty calibration method, candidate routes, risk metric, \(\lambda\), random seed, and map-generation parameters.
+
 ---
 
-## Original Result
+## Reported results
 
-A lambda-sweep experiment evaluated the trade-off between geometric path length and belief-aware risk cost.
-
-### Reported result
+The original lambda-sweep experiment reported:
 
 | Metric | Value |
 |---|---:|
 | Lambda values tested | 6 |
 | Success rate | 100% |
-| Baseline risk at λ = 0 | 0.400 |
-| Best risk at λ = 0.1 | 0.229 |
+| Baseline risk at \(\lambda=0\) | 0.400 |
+| Best risk at \(\lambda=0.1\) | 0.229 |
 | Relative risk reduction | 42.75% |
-| Path length increase | 0.00% |
+| Path-length increase | 0.00% |
 
-### Interpretation
+Under the evaluated scenario, risk-aware planning reduced the fused path-risk score while preserving geometric path length. This is an empirical result for that benchmark, not evidence that risk reduction is cost-free across arbitrary maps or risk models.
 
-The original result shows that risk-aware planning can reduce fused path risk while preserving the same geometric path length in the evaluated benchmark.
-
-This is a strong result because the planner improved safety without paying additional distance cost in that scenario.
+The upgraded benchmark additionally reports expected risk, maximum risk, CVaR, total scalar objective, relative risk reduction, path-length increase, and Pareto dominance.
 
 ---
 
-## New Upgrade Added
+## Interpretation
 
-C03 now includes a risk trade-off analyzer:
+> Contribution 03 demonstrates how route selection can be audited as a measurable trade-off among geometric efficiency, average risk, tail risk, and worst-case exposure.
 
-```text
-code/risk_tradeoff_analyzer.py
-```
+The scientific contribution is not merely “adding risk to A*.” It is the explicit separation of multiple risk notions and the evaluation of whether a selected route is genuinely competitive or only preferred because of a chosen scalar weight.
 
-and a benchmark:
-
-```text
-experiments/eval_risk_tradeoff.py
-```
-
-The benchmark evaluates candidate routes using:
-
-- expected risk,
-- maximum risk,
-- CVaR risk,
-- total scalar objective,
-- relative risk reduction,
-- path-length increase,
-- Pareto dominance.
-
-This makes the contribution more rigorous because it shows whether a selected path is genuinely a better trade-off or merely the result of a chosen scalar weight.
-
----
-
-## Scientific Contribution
-
-The upgraded C03 contribution is not simply:
-
-> We add risk to A*.
-
-It is stronger:
-
-> We evaluate navigation as a safety-efficiency trade-off problem and distinguish average risk, tail risk, maximum risk, path-length cost, and Pareto dominance.
-
-This framing is more appropriate for research because it makes the planner's behavior auditable.
-
----
-
-## Example intuition
-
-Consider two routes:
-
-```text
-Route A: short, but passes through one very dangerous region.
-Route B: longer, but avoids extreme risk.
-```
-
-Expected risk may not fully penalize Route A if the dangerous part is short.
-
-CVaR focuses on the worst tail of the risk distribution and can therefore prefer Route B.
-
-This is why Contribution 03 includes CVaR-style reasoning.
+Lower estimated risk does **not** imply formal safety. The result depends on the quality and calibration of the upstream uncertainty and risk model.
 
 ---
 
 ## Limitations
 
-- The lambda value is currently selected manually.
-- A scalar objective cannot represent every safety preference.
-- Risk-aware planning depends on the quality of uncertainty estimates from C02.
-- Low risk does not guarantee formal safety; C18 provides the hard safety-shield layer.
-- Synthetic benchmarks are useful for auditability, but real map-based experiments are needed for final claims.
+1. The value of \(\lambda\) is manually selected.
+2. A scalar objective cannot represent every safety preference.
+3. The planner inherits errors and distribution shift from Contribution 02.
+4. Synthetic benchmarks do not establish real-world safety.
+5. Risk scores are planning signals, not certified constraints.
+6. Formal safety enforcement remains outside this contribution.
 
 ---
 
-## Integration
+## Research directions
 
-- **Receives:** calibrated uncertainty from Contribution 02
-- **Supports:** safe-mode triggering in Contribution 05
-- **Connects with:** irreversibility and returnability in Contribution 04
-- **Extended by:** diffusion risk maps in Contribution 12
-- **Constrained by:** formal safety shields in Contribution 18
+The strongest next step is adaptive risk aversion. The planner should increase \(\lambda\) when calibrated uncertainty rises, recoverability decreases, safety margins shrink, or safe mode is activated. Other directions include distributionally robust risk, dynamic risk maps, multi-objective search, constrained optimization, and statistical validation across multiple seeds and map families.
 
-Recommended planner interface:
+---
+
+## Role within DynNav
+
+- **Receives:** calibrated uncertainty from Contribution 02.
+- **Complements:** returnability and recoverability reasoning in Contribution 04.
+- **Supports:** safe-mode policies in Contribution 05.
+- **Can be extended by:** dynamic risk maps and formal safety shields.
+
+Recommended interface:
 
 ```text
 planner_input = {
@@ -254,23 +175,12 @@ planner_input = {
 
 ---
 
-## Next Research Step
+## Scientific claims
 
-The most valuable next step is adaptive lambda selection.
-
-Instead of choosing `λ` manually, the robot should increase risk aversion when:
-
-- calibrated uncertainty rises,
-- returnability decreases,
-- safe mode is activated,
-- formal safety margins shrink.
-
-This would connect C03 directly to the broader DynNav idea of dynamic navigation under unreliable information.
+The current evidence supports the claim that the evaluated risk-aware objective reduced the reported route-risk score without increasing path length in the original benchmark. It does not establish that the method is universally safer, that the chosen risk score is perfectly calibrated, or that similar improvements generalize to unseen environments.
 
 ---
 
-## Conclusion
+## Citation
 
-Contribution 03 establishes the risk-aware planning layer of DynNav.
-
-The upgraded version makes the module more scientifically precise by treating risk-aware navigation as a measurable trade-off between path efficiency and multiple forms of risk exposure.
+Academic use should report the repository commit, experiment command, risk metric, \(\lambda\), calibration method, data provenance, map parameters, and random seed.
