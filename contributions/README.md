@@ -80,7 +80,7 @@ Passing unit tests does not establish a formal safety guarantee, real-world robu
 One contribution number should eventually map to one canonical directory. A directory must not be removed until its code, tests, results, and inbound links have been migrated.
 
 - Contribution 02 is maintained under [`02_uncertainty_calibration/`](02_uncertainty_calibration/).
-- Contribution 07 currently spans `07_nbv_exploration/` and `07_next_best_view/` because both contain active material. They must remain until a controlled code-and-test migration is completed.
+- Contribution 07 currently spans two active directories because the original implementation and the upgraded scoring module have not yet been safely merged. Both must remain until their code, tests, results, and links are migrated together.
 
 ## Supporting research directories
 
