@@ -8,6 +8,7 @@ import shlex
 from pathlib import Path
 
 import markdown_audit_core
+from markdown_audit_runtime import install_document_discovery_filter
 
 PATH_FLAGS = {"-f", "--file", "--config", "--root", "--output", "--inventory", "--out-dir"}
 _ORIGINAL_SHLEX_SPLIT = shlex.split
@@ -29,8 +30,7 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
 
-    # build_inventory classifies command prefixes and previously crashed before
-    # this validator could report which document contained malformed shell text.
+    install_document_discovery_filter()
     markdown_audit_core.shlex.split = _safe_inventory_split
     _, _, _, commands = markdown_audit_core.build_inventory(root)
 
