@@ -1,27 +1,9 @@
-"""
-dstar_lite.py
+"""Incremental D* Lite replanning on a four-connected occupancy grid.
 
-D* Lite — incremental replanning algorithm.
-
-Reference: Koenig & Likhachev, "D* Lite", AAAI 2002.
-
-Key idea
---------
-Maintain rhs (one-step lookahead) and g (distance estimate) for every node.
-A node is CONSISTENT when g == rhs, OVERCONSISTENT when g > rhs (better path
-found), UNDERCONSISTENT when g < rhs (path became worse).
-
-Only inconsistent nodes go into the priority queue.
-On an obstacle change, only the affected nodes (and their predecessors) need
-updating — not the whole graph.
-
-API
----
-    planner = DStarLite(grid, start, goal)
-    path = planner.plan()                      # initial plan
-
-    planner.update_edge(x, y, blocked=True)    # obstacle appeared/disappeared
-    path = planner.replan()                    # incremental replan
+The implementation follows Koenig and Likhachev (AAAI 2002).  Priority-queue
+entries use lazy deletion, but exactly one key is considered active for each
+node.  This is important after map changes: stale heap entries must never be
+processed as current work, otherwise repeated replans can cycle indefinitely.
 """
 
 from __future__ import annotations
@@ -32,139 +14,137 @@ from typing import Optional
 
 import numpy as np
 
-
-# ---------------------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------------------
-
 INF = float("inf")
-NEIGHBORS_4 = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+NEIGHBORS_4 = ((1, 0), (-1, 0), (0, 1), (0, -1))
+Node = tuple[int, int]
+Key = tuple[float, float]
 
 
-# ---------------------------------------------------------------------------
-# Priority key helpers
-# ---------------------------------------------------------------------------
+def _heuristic(a: Node, b: Node) -> float:
+    """Consistent Euclidean heuristic for unit-cost four-connected motion."""
 
-def _heuristic(a: tuple[int, int], b: tuple[int, int]) -> float:
-    return math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2)
+    return math.hypot(a[0] - b[0], a[1] - b[1])
 
-
-# ---------------------------------------------------------------------------
-# D* Lite
-# ---------------------------------------------------------------------------
 
 class DStarLite:
-    """
-    D* Lite on a 4-connected 2-D grid.
+    """D* Lite planner for a binary ``(height, width)`` occupancy grid.
 
-    Search runs backwards (goal → start) so that when the robot moves,
-    only km (key modifier) needs updating, not a full re-initialization.
-
-    Parameters
-    ----------
-    grid  : (H, W) int array, 0=free 1=obstacle
-    start : (x, y)
-    goal  : (x, y)
+    Grid values are ``0`` for traversable cells and ``1`` for obstacles.
+    Coordinates are represented as ``(x, y)`` tuples.
     """
 
-    def __init__(
-        self,
-        grid: np.ndarray,
-        start: tuple[int, int],
-        goal: tuple[int, int],
-    ):
+    def __init__(self, grid: np.ndarray, start: Node, goal: Node):
+        if grid.ndim != 2:
+            raise ValueError("grid must be a two-dimensional array")
+
         self.grid = grid.copy().astype(np.int32)
-        self.H, self.W = grid.shape
+        self.H, self.W = self.grid.shape
+        self._validate_node(start, "start")
+        self._validate_node(goal, "goal")
+
         self.start = start
         self.goal = goal
+        self.g: dict[Node, float] = {}
+        self.rhs: dict[Node, float] = {}
+        self.km = 0.0
 
-        self.g: dict[tuple[int, int], float] = {}
-        self.rhs: dict[tuple[int, int], float] = {}
-        self.km: float = 0.0                 # key modifier (accumulates as robot moves)
+        self._heap: list[tuple[float, float, Node]] = []
+        # Maps a node to its sole currently active queue key. Heap entries that
+        # do not match this mapping are stale and are discarded lazily.
+        self._active_keys: dict[Node, Key] = {}
 
-        self._heap: list = []                # (k1, k2, node)
-        self._in_heap: set[tuple[int, int]] = set()
-
-        self.expansions: int = 0
-        self.replan_count: int = 0
-
+        self.expansions = 0
+        self.replan_count = 0
         self._initialize()
 
-    # ------------------------------------------------------------------
-    # Internals
-    # ------------------------------------------------------------------
+    def _validate_node(self, node: Node, name: str) -> None:
+        x, y = node
+        if not (0 <= x < self.W and 0 <= y < self.H):
+            raise ValueError(f"{name} {node!r} is outside the grid")
 
-    def _g(self, n: tuple[int, int]) -> float:
-        return self.g.get(n, INF)
+    def _g(self, node: Node) -> float:
+        return self.g.get(node, INF)
 
-    def _rhs(self, n: tuple[int, int]) -> float:
-        return self.rhs.get(n, INF)
+    def _rhs(self, node: Node) -> float:
+        return self.rhs.get(node, INF)
 
-    def _key(self, n: tuple[int, int]) -> tuple[float, float]:
-        v = min(self._g(n), self._rhs(n))
-        return (v + _heuristic(self.start, n) + self.km, v)
+    def _key(self, node: Node) -> Key:
+        value = min(self._g(node), self._rhs(node))
+        return value + _heuristic(self.start, node) + self.km, value
 
     def _in_bounds(self, x: int, y: int) -> bool:
         return 0 <= x < self.W and 0 <= y < self.H
 
     def _free(self, x: int, y: int) -> bool:
-        return int(self.grid[y, x]) == 0
+        return self._in_bounds(x, y) and int(self.grid[y, x]) == 0
 
-    def _neighbors(self, node: tuple[int, int]) -> list[tuple[int, int]]:
+    def _neighbors(self, node: Node) -> list[Node]:
         x, y = node
         return [
             (x + dx, y + dy)
             for dx, dy in NEIGHBORS_4
-            if self._in_bounds(x + dx, y + dy) and self._free(x + dx, y + dy)
+            if self._free(x + dx, y + dy)
         ]
 
-    def _cost(self, a: tuple[int, int], b: tuple[int, int]) -> float:
-        """Edge cost: 1.0 if free, INF if blocked."""
-        bx, by = b
-        if not self._free(bx, by):
-            return INF
-        return 1.0
+    def _adjacent(self, node: Node) -> list[Node]:
+        """Return in-bounds adjacent cells, including blocked cells."""
 
-    def _push(self, node: tuple[int, int]) -> None:
-        k = self._key(node)
-        heapq.heappush(self._heap, (k[0], k[1], node))
-        self._in_heap.add(node)
+        x, y = node
+        return [
+            (x + dx, y + dy)
+            for dx, dy in NEIGHBORS_4
+            if self._in_bounds(x + dx, y + dy)
+        ]
 
-    def _top_key(self) -> tuple[float, float]:
+    def _cost(self, _source: Node, destination: Node) -> float:
+        x, y = destination
+        return 1.0 if self._free(x, y) else INF
+
+    def _remove(self, node: Node) -> None:
+        """Invalidate a node's active queue entry without scanning the heap."""
+
+        self._active_keys.pop(node, None)
+
+    def _push(self, node: Node) -> None:
+        key = self._key(node)
+        self._active_keys[node] = key
+        heapq.heappush(self._heap, (key[0], key[1], node))
+
+    def _discard_stale_head(self) -> None:
         while self._heap:
-            k1, k2, node = self._heap[0]
-            curr_k = self._key(node)
-            if (k1, k2) == curr_k:
-                return (k1, k2)
+            key1, key2, node = self._heap[0]
+            if self._active_keys.get(node) == (key1, key2):
+                return
             heapq.heappop(self._heap)
-            if node in self._in_heap:
-                heapq.heappush(self._heap, (curr_k[0], curr_k[1], node))
-        return (INF, INF)
 
-    def _pop(self) -> Optional[tuple[tuple[int, int], tuple[float, float]]]:
+    def _top_key(self) -> Key:
+        self._discard_stale_head()
+        if not self._heap:
+            return INF, INF
+        key1, key2, _ = self._heap[0]
+        return key1, key2
+
+    def _pop(self) -> Optional[tuple[Node, Key]]:
         while self._heap:
-            k1, k2, node = heapq.heappop(self._heap)
-            curr_k = self._key(node)
-            if (k1, k2) == curr_k:
-                self._in_heap.discard(node)
-                return node, (k1, k2)
-            heapq.heappush(self._heap, (curr_k[0], curr_k[1], node))
+            key1, key2, node = heapq.heappop(self._heap)
+            key = (key1, key2)
+            if self._active_keys.get(node) != key:
+                continue
+            del self._active_keys[node]
+            return node, key
         return None
 
-    def _update_vertex(self, u: tuple[int, int]) -> None:
-        if u != self.goal:
-            self.rhs[u] = min(
-                self._cost(u, s) + self._g(s)
-                for s in self._neighbors(u)
-            ) if self._neighbors(u) else INF
+    def _update_vertex(self, node: Node) -> None:
+        if node != self.goal:
+            successors = self._neighbors(node)
+            self.rhs[node] = min(
+                (self._cost(node, successor) + self._g(successor) for successor in successors),
+                default=INF,
+            )
 
-        self._in_heap.discard(u)
-        if self._g(u) != self._rhs(u):
-            self._push(u)
-
-    # ------------------------------------------------------------------
-    # Public API
-    # ------------------------------------------------------------------
+        self._remove(node)
+        if self._g(node) != self._rhs(node):
+            self._push(node)
 
     def _initialize(self) -> None:
         self.rhs[self.goal] = 0.0
@@ -172,84 +152,98 @@ class DStarLite:
         self._push(self.goal)
 
     def _compute_shortest_path(self) -> None:
-        while True:
-            top = self._top_key()
-            s_key = self._key(self.start)
-            if top >= s_key and self._rhs(self.start) == self._g(self.start):
-                break
+        # A finite grid has finitely many vertices. This guard is a defensive
+        # invariant check, not a substitute for correct queue termination.
+        max_expansions = max(1, self.H * self.W * 50)
+        expansions_this_call = 0
 
+        while self._top_key() < self._key(self.start) or self._rhs(self.start) != self._g(self.start):
             result = self._pop()
             if result is None:
                 break
 
-            u, old_key = result
-            self.expansions += 1
-            new_key = self._key(u)
-
+            node, old_key = result
+            new_key = self._key(node)
             if old_key < new_key:
-                self._push(u)
-            elif self._g(u) > self._rhs(u):
-                self.g[u] = self._rhs(u)
-                for pred in self._neighbors(u):
-                    self._update_vertex(pred)
+                self._push(node)
+            elif self._g(node) > self._rhs(node):
+                self.g[node] = self._rhs(node)
+                for predecessor in self._adjacent(node):
+                    self._update_vertex(predecessor)
             else:
-                self.g[u] = INF
-                self._update_vertex(u)
-                for pred in self._neighbors(u):
-                    self._update_vertex(pred)
+                self.g[node] = INF
+                self._update_vertex(node)
+                for predecessor in self._adjacent(node):
+                    self._update_vertex(predecessor)
 
-    def plan(self) -> Optional[list[tuple[int, int]]]:
-        """Initial plan. Returns path start→goal or None."""
+            self.expansions += 1
+            expansions_this_call += 1
+            if expansions_this_call > max_expansions:
+                raise RuntimeError(
+                    "D* Lite failed to converge within the finite-grid expansion bound"
+                )
+
+    def plan(self) -> Optional[list[Node]]:
+        """Compute and return an initial path from start to goal."""
+
+        if not self._free(*self.start) or not self._free(*self.goal):
+            return None
         self._compute_shortest_path()
         return self._extract_path()
 
     def update_edge(self, x: int, y: int, blocked: bool) -> None:
-        """
-        Mark cell (x, y) as blocked or free.
-        Does NOT trigger replanning — call replan() afterwards.
-        """
-        new_val = 1 if blocked else 0
-        if int(self.grid[y, x]) == new_val:
+        """Mark one cell blocked or free; call :meth:`replan` afterwards."""
+
+        self._validate_node((x, y), "updated cell")
+        new_value = 1 if blocked else 0
+        if int(self.grid[y, x]) == new_value:
             return
-        self.grid[y, x] = new_val
 
-        node = (x, y)
-        affected = [node] + self._neighbors(node)
-        for u in affected:
-            self._update_vertex(u)
+        self.grid[y, x] = new_value
+        changed = (x, y)
+        # Use geometric adjacency rather than free-neighbor adjacency. When a
+        # cell becomes blocked it disappears from _neighbors, but every
+        # predecessor that previously used it still needs its rhs recomputed.
+        for node in [changed, *self._adjacent(changed)]:
+            self._update_vertex(node)
 
-    def replan(self, new_start: Optional[tuple[int, int]] = None) -> Optional[list[tuple[int, int]]]:
-        """
-        Incremental replan. Optionally update start (robot moved).
-        Only re-expands inconsistent nodes.
-        """
-        if new_start is not None and new_start != self.start:
-            self.km += _heuristic(self.start, new_start)
-            self.start = new_start
+    def replan(self, new_start: Optional[Node] = None) -> Optional[list[Node]]:
+        """Incrementally repair the path, optionally from a moved start."""
+
+        if new_start is not None:
+            self._validate_node(new_start, "new start")
+            if new_start != self.start:
+                self.km += _heuristic(self.start, new_start)
+                self.start = new_start
 
         self.replan_count += 1
+        if not self._free(*self.start) or not self._free(*self.goal):
+            return None
         self._compute_shortest_path()
         return self._extract_path()
 
-    def _extract_path(self) -> Optional[list[tuple[int, int]]]:
-        """Follow greedy gradient from start to goal."""
+    def _extract_path(self) -> Optional[list[Node]]:
+        """Extract a loop-free greedy path from the current value function."""
+
         if self._g(self.start) == INF:
             return None
 
         path = [self.start]
         current = self.start
         visited = {current}
-        max_steps = self.H * self.W
 
-        for _ in range(max_steps):
+        for _ in range(self.H * self.W):
             if current == self.goal:
                 return path
 
-            nbrs = self._neighbors(current)
-            if not nbrs:
+            neighbors = self._neighbors(current)
+            if not neighbors:
                 return None
 
-            next_node = min(nbrs, key=lambda s: self._cost(current, s) + self._g(s))
+            next_node = min(
+                neighbors,
+                key=lambda node: (self._cost(current, node) + self._g(node), node),
+            )
             if self._cost(current, next_node) + self._g(next_node) == INF:
                 return None
             if next_node in visited:
