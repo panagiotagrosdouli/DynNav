@@ -1,0 +1,157 @@
+contributions:
+  - id: C01
+    title: Learned A* Search
+    category: Planning
+    summary: Compare classical A* with a learned heuristic bias.
+    renderer: c01_learned_astar
+    maturity: Research Prototype
+  - id: C02
+    title: Uncertainty Estimation
+    category: Uncertainty
+    summary: Explore state-estimation uncertainty and calibration behavior.
+    renderer: c02_ekf_ukf
+    maturity: Research Prototype
+  - id: C03
+    title: Risk-Aware A*
+    category: Risk and safety
+    summary: Compare shortest-path and risk-aware route selection.
+    renderer: c03_cvar_astar
+    maturity: Research Prototype
+  - id: C04
+    title: Returnability and Recoverability
+    category: Risk and safety
+    summary: Measure whether future states preserve recovery options.
+    renderer: c04_returnability
+    maturity: Research Prototype
+  - id: C05
+    title: Safe-Mode Supervisor
+    category: Risk and safety
+    summary: Inspect finite-state safety supervision and thresholds.
+    renderer: c05_safe_mode_fsm
+    maturity: Research Prototype
+  - id: C06
+    title: Energy and Connectivity
+    category: Planning
+    summary: Explore mission feasibility under resource constraints.
+    renderer: c06_energy_connectivity
+    maturity: Research Prototype
+  - id: C07
+    title: Safe Next-Best View
+    category: Mapping and perception
+    summary: Balance information gain, risk, connectivity, and returnability.
+    renderer: c07_next_best_view
+    maturity: Research Prototype
+  - id: C08
+    title: Security and Intrusion Detection
+    category: Security and robustness
+    summary: Explore anomaly detection for navigation observations.
+    renderer: c08_security_ids
+    maturity: Experimental
+  - id: C09
+    title: Multi-Robot Coordination
+    category: Multi-robot systems
+    summary: Study coordination, shared beliefs, and mission conflicts.
+    renderer: c09_multi_robot
+    maturity: Experimental
+  - id: C10
+    title: Human-Aware Navigation
+    category: Human interaction
+    summary: Explore socially aware navigation costs and behaviors.
+    renderer: c10_human_aware
+    maturity: Experimental
+  - id: C11
+    title: Twin-Critic Reinforcement Learning
+    category: Learning
+    summary: Visualize actor-critic value estimates and policy trade-offs.
+    renderer: c11_twin_critic_rl
+    maturity: Experimental
+  - id: C12
+    title: Diffusion Occupancy Prediction
+    category: Mapping and perception
+    summary: Explore generative occupancy prediction under uncertainty.
+    renderer: c12_diffusion_occupancy
+    maturity: Experimental
+  - id: C13
+    title: Latent World Model
+    category: Learning
+    summary: Inspect compact latent dynamics for future-state prediction.
+    renderer: c13_world_model
+    maturity: Experimental
+  - id: C14
+    title: Causal Risk Attribution
+    category: Risk and safety
+    summary: Study structured causes of navigation risk.
+    renderer: c14_causal_scm
+    maturity: Experimental
+  - id: C15
+    title: Neuromorphic Sensing
+    category: Mapping and perception
+    summary: Explore event-driven sensing representations.
+    renderer: c15_neuromorphic
+    maturity: Experimental
+  - id: C16
+    title: Federated Navigation Learning
+    category: Learning
+    summary: Examine decentralized model updates across robots.
+    renderer: c16_federated_learning
+    maturity: Experimental
+  - id: C17
+    title: Semantic Topological Maps
+    category: Mapping and perception
+    summary: Combine semantic regions with graph-based navigation.
+    renderer: c17_topological_maps
+    maturity: Experimental
+  - id: C18
+    title: Formal Safety Shields
+    category: Risk and safety
+    summary: Explore barrier-function and temporal-logic interventions.
+    renderer: c18_cbf_stl_shields
+    maturity: Experimental
+  - id: C19
+    title: Language Mission Planner
+    category: Mission reasoning
+    summary: Convert natural-language instructions into mission structure.
+    renderer: c19_llm_planner
+    maturity: Documentation Concept
+  - id: C20
+    title: Failure Explanation
+    category: Human interaction
+    summary: Generate structured explanations from failure evidence.
+    renderer: c20_failure_explainer
+    maturity: Experimental
+  - id: C21
+    title: PPO Navigation
+    category: Learning
+    summary: Explore policy optimization for navigation behavior.
+    renderer: c21_ppo
+    maturity: Experimental
+  - id: C22
+    title: Curriculum Reinforcement Learning
+    category: Learning
+    summary: Study staged training difficulty and policy progression.
+    renderer: c22_curriculum_rl
+    maturity: Experimental
+  - id: C23
+    title: Gaussian Splatting Maps
+    category: Scene representation
+    summary: Explore dense scene representations for navigation context.
+    renderer: c23_gaussian_splatting
+    maturity: Documentation Concept
+  - id: C24
+    title: NeRF Uncertainty
+    category: Scene representation
+    summary: Examine uncertainty-aware neural scene representations.
+    renderer: c24_nerf_uncertainty
+    maturity: Documentation Concept
+  - id: C25
+    title: Adversarial Navigation Testing
+    category: Security and robustness
+    summary: Inject disturbances and inspect navigation robustness.
+    renderer: c25_adversarial
+    maturity: Experimental
+  - id: C26
+    title: Byzantine-Fault-Tolerant Swarm
+    category: Multi-robot systems
+    summary: Explore consensus under faulty or untrusted robot reports.
+    renderer: c26_bft_swarm
+    maturity: Experimental
