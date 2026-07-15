@@ -26,6 +26,8 @@ jobs:
   dashboard:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
 
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +53,7 @@ jobs:
           assert pages, "No Streamlit pages found"
           importlib.import_module("dynnav_dashboard.simulation")
           importlib.import_module("dynnav_dashboard.registry")
+          importlib.import_module("benchmarks.dynamic_self_aware_astar.randomized_dynamic_benchmark")
           print(f"Validated {len(pages)} page files and core dashboard imports")
           PY
 
