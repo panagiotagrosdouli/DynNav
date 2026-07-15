@@ -31,6 +31,9 @@ REQUIRED_APP_ASSETS = {
     ".streamlit/config.toml",
     ".github/workflows/streamlit-dashboard.yml",
     "src/dynnav_dashboard/contribution_registry.yaml",
+    "Dockerfile",
+    ".dockerignore",
+    "tests/test_streamlit_lab_smoke.py",
 }
 
 
@@ -59,11 +62,18 @@ def main() -> int:
         except Exception as exc:
             failures.append(f"{item.id} renderer import failed: {exc}")
 
+    dockerfile = (root / "Dockerfile").read_text(encoding="utf-8")
+    if '"streamlit", "run", "app/dashboard.py"' not in dockerfile:
+        failures.append("Dockerfile does not launch the Streamlit dashboard")
+    if "_stcore/health" not in dockerfile:
+        failures.append("Dockerfile does not define the Streamlit health check")
+
     report = {
         "pages_checked": len(REQUIRED_PAGES),
         "application_assets_checked": len(REQUIRED_APP_ASSETS),
         "contributions_checked": len(registry),
         "renderers_registered": len(RENDERERS),
+        "docker_entrypoint_checked": True,
         "failures": failures,
     }
     report_path = root / "results/manifests/streamlit_validation.json"
