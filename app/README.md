@@ -25,6 +25,33 @@ streamlit run app/dashboard.py \
   --server.port 8501
 ```
 
+## Run with Docker
+
+Build the dedicated dashboard image from the repository root:
+
+```bash
+docker build -t dynnav-streamlit .
+```
+
+Run the application:
+
+```bash
+docker run --rm -p 8501:8501 dynnav-streamlit
+```
+
+Open `http://localhost:8501`. The image runs as a non-root user and exposes a Streamlit health check at `/_stcore/health`.
+
+To make generated result files visible on the host, mount the results directory:
+
+```bash
+mkdir -p results
+docker run --rm -p 8501:8501 \
+  -v "$(pwd)/results:/workspace/results" \
+  dynnav-streamlit
+```
+
+The Docker image contains the synthetic Streamlit laboratory only. It does not install or validate ROS2, Nav2, Gazebo, GPU drivers, or robot hardware interfaces.
+
 ## Page map
 
 | Page | Purpose |
@@ -85,7 +112,13 @@ Run the integrity validator:
 python scripts/validate_streamlit_app.py
 ```
 
-Run the test suite:
+Run the dashboard smoke tests:
+
+```bash
+pytest tests/test_streamlit_lab_smoke.py
+```
+
+Run the complete test suite:
 
 ```bash
 pytest
@@ -97,6 +130,8 @@ Run formatting and lint checks:
 ruff check .
 black --check .
 ```
+
+The smoke tests parse every Streamlit page, verify the C01–C26 registry/renderer contract, inspect the Docker entry point, and check that responsible evidence notices remain visible.
 
 ## Deployment notes
 
@@ -125,6 +160,16 @@ Verify its file exists under `app/pages/` and run:
 ```bash
 python scripts/validate_streamlit_app.py
 ```
+
+**Docker health check fails**
+
+Inspect the container logs:
+
+```bash
+docker logs <container-name-or-id>
+```
+
+Confirm port `8501` is free and that the application was built from the current repository root.
 
 **Slow contribution renderer**
 

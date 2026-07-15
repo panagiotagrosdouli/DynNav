@@ -6,6 +6,7 @@ on:
       - "app/**"
       - "src/dynnav_dashboard/**"
       - "scripts/validate_streamlit_app.py"
+      - "tests/test_streamlit_lab_smoke.py"
       - "pyproject.toml"
       - ".streamlit/**"
       - ".github/workflows/streamlit-dashboard.yml"
@@ -15,6 +16,7 @@ on:
       - "app/**"
       - "src/dynnav_dashboard/**"
       - "scripts/validate_streamlit_app.py"
+      - "tests/test_streamlit_lab_smoke.py"
       - "pyproject.toml"
       - ".streamlit/**"
       - ".github/workflows/streamlit-dashboard.yml"
@@ -26,6 +28,8 @@ jobs:
   dashboard:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      PYTHONPATH: ${{ github.workspace }}:${{ github.workspace }}/src
 
     steps:
       - uses: actions/checkout@v4
@@ -51,11 +55,12 @@ jobs:
           assert pages, "No Streamlit pages found"
           importlib.import_module("dynnav_dashboard.simulation")
           importlib.import_module("dynnav_dashboard.registry")
+          importlib.import_module("benchmarks.dynamic_self_aware_astar.randomized_dynamic_benchmark")
           print(f"Validated {len(pages)} page files and core dashboard imports")
           PY
 
-      - name: Dashboard-focused tests
-        run: pytest -q tests -k "dashboard or streamlit or contribution or simulation" --maxfail=1
+      - name: Dashboard smoke tests
+        run: pytest -q tests/test_streamlit_lab_smoke.py --maxfail=1
 
       - name: Headless startup smoke test
         run: |
