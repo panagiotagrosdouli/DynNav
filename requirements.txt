@@ -1,11 +1,7 @@
-# DynNav Streamlit dashboard — minimal runtime requirements.
-# Designed to run on any machine with Python 3.10+ (no GPU, no ROS 2).
-streamlit>=1.32
-numpy>=1.24
-pandas>=2.0
-plotly>=5.18
-matplotlib>=3.7
-networkx>=3.1
+# DynNav Streamlit dashboard runtime.
+# Streamlit Community Cloud installs this file from the repository root.
+# Installing the local project is required because dynnav_dashboard uses a src/ layout.
+-e .[dashboard]
 
-# Contribution 01 — learned A* heuristic checkpoint inference.
+# Contribution 01 uses PyTorch for learned-heuristic checkpoint inference.
 torch>=2.0
