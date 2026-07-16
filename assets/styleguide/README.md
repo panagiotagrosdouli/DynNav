@@ -23,4 +23,4 @@ DynNav diagrams use a shared dark research-software style so contribution figure
 - Contribution overview figures use four auditable stages: input, mechanism, decision output, and evidence/metrics.
 - Text remains selectable and the files contain no external fonts or embedded raster data.
 
-Generated contribution images live in [`assets/contributions/`](../contributions/).
+Browse the complete set in the [C01–C26 contribution visual gallery](../../docs/CONTRIBUTION_VISUAL_GALLERY.md), starting with the [C01 overview diagram](../contributions/C01_overview.svg).
