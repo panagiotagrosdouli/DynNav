@@ -4,15 +4,16 @@
 
 ## Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments
 
-**A modular research framework for autonomous navigation under uncertainty, risk, limited recoverability, dynamic change, and mission-level constraints.**
+**A modular research framework and interactive robotics laboratory for autonomous navigation under uncertainty, risk, limited recoverability, dynamic change, and mission-level constraints.**
 
-[![CI](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments/actions/workflows/ci.yml)
+[![CI](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml)
+[![Streamlit](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/streamlit-dashboard.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/streamlit-dashboard.yml)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white)](pyproject.toml)
 [![License](https://img.shields.io/badge/License-Apache--2.0-4C1.svg)](LICENSE)
 [![Status](https://img.shields.io/badge/status-research%20prototype-orange)](#verified-status-and-evidence-boundaries)
-[![Streamlit](https://img.shields.io/badge/Streamlit-interactive%20dashboard-FF4B4B?logo=streamlit&logoColor=white)](app/dashboard.py)
+[![Dashboard](https://img.shields.io/badge/Streamlit-interactive%20robotics%20lab-FF4B4B?logo=streamlit&logoColor=white)](app/dashboard.py)
 
-[**English**](README.md) · [**Ελληνικά**](README_GREEK.md) · [Documentation](docs/README.md) · [Contribution index](contributions/CONTRIBUTIONS_README.md) · [Streamlit dashboard](#interactive-streamlit-dashboard) · [Website](website/README.md)
+[**English**](README.md) · [**Ελληνικά**](README_GREEK.md) · [Documentation](docs/README.md) · [Contribution feature catalog](docs/CONTRIBUTION_FEATURE_CATALOG.md) · [Contribution source index](contributions/CONTRIBUTIONS_README.md) · [Dashboard guide](app/README.md) · [Website](website/README.md)
 
 </div>
 
@@ -20,198 +21,163 @@
   <img src="assets/readme/dynnav_living_map.svg" alt="Conceptual DynNav navigation, uncertainty, planning, rerouting, and supervision pipeline" width="100%" />
 </p>
 
-<p align="center"><em>Figure 1 — Conceptual DynNav system overview. The figure explains the intended information flow; it is not experimental evidence, a formal safety proof, or a hardware-validation claim.</em></p>
+<p align="center"><em>Conceptual DynNav system overview. The figure explains the intended information flow; it is not experimental evidence, a formal safety proof, or a hardware-validation claim.</em></p>
 
 ---
 
-## Abstract
+## What DynNav is
 
-Autonomous navigation in an unknown or changing environment is not only a shortest-path problem. A robot must make decisions while its map may be incomplete, its state estimate uncertain, its sensors noisy, its communication link degraded, and its future ability to recover from a decision unknown. A geometrically valid route may therefore still be operationally unsafe, difficult to reverse, energy-infeasible, or poorly supported by available evidence.
+Autonomous navigation in an unknown or changing environment is not only a shortest-path problem. A robot must make decisions while its map may be incomplete, its state estimate uncertain, its sensors noisy, its communication link degraded, moving obstacles invalidate routes, and its future ability to recover from a decision remains unknown.
 
-**DynNav** investigates this broader decision problem through a modular collection of planning, uncertainty, risk, recoverability, supervision, learning, security, and multi-robot contributions. The framework combines deterministic grid-based baselines with research prototypes for learning-augmented A*, uncertainty calibration, risk-aware planning, returnability analysis, safe-mode supervision, resource-aware routing, next-best-view exploration, online rerouting, and higher-level extensions.
+DynNav studies this broader decision problem through deterministic baselines, research prototypes, interactive contribution demonstrations, reproducible experiments, and evidence-oriented documentation. The core design principle is that every navigation decision should remain **auditable**: assumptions, parameters, paths, risks, uncertainty, supervisor actions, metrics, and limitations should be visible rather than hidden behind one final result.
 
-The central design principle is that every navigation decision should remain **auditable**. DynNav therefore separates implemented behavior from planned capability, empirical observations from theoretical guarantees, and conceptual architecture from validated evidence. The repository is intended as a reproducible research platform and thesis-scale engineering study—not as a certified safety controller or a claim of production-ready autonomous navigation.
+> DynNav is research software. Synthetic experiments, passing tests, and dashboard graphics do not establish certified safety, production readiness, physical-robot reliability, or universal guarantees.
 
 ---
 
-## Research problem
+## Research question
 
-The project studies the following overarching question:
+> **How can an autonomous mobile robot dynamically plan and replan in a partially observed environment while explicitly accounting for uncertainty, risk, recoverability, resources, dynamic changes, security, human constraints, and mission-level safety actions?**
 
-> **How can an autonomous mobile robot dynamically plan and replan in a partially observed environment while explicitly accounting for uncertainty, risk, recoverability, resource constraints, dynamic changes, and mission-level safety actions?**
-
-This question is decomposed into a set of narrower research questions:
-
-1. Can learned guidance reduce graph-search effort without obscuring A* optimality conditions?
-2. Can uncertainty estimates be audited and calibrated before they influence planning?
-3. How should path length be traded against expected, peak, or tail risk?
-4. Can a planner avoid decisions that reduce future returnability or recovery freedom?
-5. When should a runtime supervisor switch from nominal navigation to cautious operation or stop?
-6. How should energy and communication constraints affect mission feasibility?
-7. How should exploration balance information gain against risk, connectivity, and returnability?
-8. How should the system respond when the map, route, observations, or trust state changes online?
-
-The remaining contribution modules extend these questions toward security, multi-robot coordination, foundation models, learned world models, formal monitoring, advanced mapping, and swarm-level reasoning.
+The repository decomposes this question into 26 interactive research contributions.
 
 ---
 
 ## What was built
 
-DynNav is organized as a layered research system rather than a single monolithic planner.
-
 ```text
-scenario, map, or observation
+scenario, map, observation, or mission
         ↓
-occupancy and state representation
+occupancy and belief representation
         ↓
-uncertainty, risk, connectivity, and recoverability estimates
+uncertainty, risk, connectivity, resources, and recoverability
         ↓
-geometric, learned, risk-aware, or resource-aware planning
+geometric, learned, risk-aware, semantic, or resource-aware planning
         ↓
-runtime route monitoring and online replanning
+route monitoring, prediction, and online replanning
         ↓
-mission supervisor: continue / replan / safe mode / stop
+supervisor: continue / caution / replan / recover / stop
         ↓
-metrics, benchmark tables, diagnostic logs, and generated artifacts
+metrics, event logs, manifests, reports, and evidence audit
 ```
 
-The repository contains:
+The repository includes:
 
 - typed navigation and mission primitives;
 - deterministic A* and Dijkstra baselines;
-- learning-augmented heuristic search;
-- uncertainty auditing and calibration;
-- risk-aware and CVaR-style route analysis;
+- learning-guided and risk-aware planning;
+- uncertainty, belief, and calibration experiments;
 - returnability, recoverability, and irreversibility metrics;
 - finite-state safe-mode supervision;
-- energy- and connectivity-aware feasibility classification;
-- returnability-aware next-best-view scoring;
-- online replanning and route-monitoring experiments;
-- an interactive Streamlit visualization of the closed-loop navigation process;
-- security, multi-robot, semantic, learning, and formal-method extensions;
-- versioned configurations, tests, benchmark runners, and documentation audits.
-
-Each numbered contribution is designed to answer a specific research question and to expose its assumptions, metrics, limitations, and integration points.
-
----
-
-## Scientific contributions
-
-### 1. Learning-augmented search
-
-Contribution 01 studies whether a neural cost-to-go estimate can reduce A* node expansions. It explicitly separates a raw learned heuristic from a Manhattan-clipped mode, because lower search effort and admissibility are different scientific properties.
-
-### 2. Uncertainty estimation and calibration
-
-Contribution 02 distinguishes uncertainty estimation, informativeness, and probabilistic calibration. Raw uncertainty is audited against observed error before being passed to downstream planners.
-
-### 3. Risk-aware planning
-
-Contribution 03 treats navigation as a safety–efficiency trade-off. Candidate routes can be compared using path length, expected risk, maximum risk, tail risk, and Pareto dominance.
-
-### 4. Returnability and recoverability
-
-Contribution 04 asks whether a robot will retain recovery freedom after committing to a state or route. It introduces measurable signals for returnability, bottlenecks, escape options, recoverability, and irreversibility.
-
-### 5. Safe-mode navigation
-
-Contribution 05 implements a finite-state runtime supervisor with nominal, cautious, and emergency-stop states. Hysteresis, persistence, cooldown, transition logging, and threshold sensitivity reduce unstable mode switching.
-
-### 6. Energy and connectivity constraints
-
-Contribution 06 evaluates mission feasibility under battery reserve and communication constraints. Routes are classified as directly feasible, requiring recharge, requiring relay support, requiring both, or infeasible.
-
-### 7. Safe active exploration
-
-Contribution 07 extends next-best-view selection beyond information gain per travel cost. Candidate viewpoints are also evaluated using route risk, returnability, and connectivity.
-
-### 8–26. Extended research modules
-
-The remaining modules investigate security and anomaly detection, multi-robot coordination, human-language interfaces, vision-language navigation, diffusion occupancy prediction, latent world models, causal risk attribution, neuromorphic sensing, federated navigation learning, semantic-topological maps, formal safety shields, multimodal failure explanation, curriculum learning, advanced mapping, neural scene representations, swarm consensus, and recoverability theory.
-
-These later modules vary in maturity. Their presence in the repository does not imply equal experimental validation or production readiness.
+- energy and connectivity feasibility analysis;
+- next-best-view exploration;
+- dynamic-obstacle prediction and route invalidation;
+- multi-robot coordination and communication experiments;
+- security, causal, semantic, learning, formal-method, and swarm extensions;
+- an interactive multipage Streamlit robotics laboratory;
+- experiment manifests, replay, reports, exports, Docker, tests, and CI validation.
 
 ---
 
-## System architecture
+## Interactive Robotics Lab
 
-```mermaid
-flowchart LR
-    O[Scenario / observation] --> B[Occupancy and belief representation]
-    B --> U[Uncertainty estimate]
-    B --> R[Risk estimate]
-    B --> G[Recoverability estimate]
-    B --> C[Connectivity and resource estimate]
-    U --> P[Planning layer]
-    R --> P
-    G --> P
-    C --> P
-    P --> M[Runtime route monitor]
-    M --> S[Mission supervisor]
-    S --> A[Continue / replan / cautious mode / stop]
-    A --> E[Metrics, logs, and artifacts]
-    E --> V[Evaluation and scientific audit]
+Install and launch:
+
+```bash
+python -m pip install -e ".[dashboard]"
+streamlit run app/dashboard.py
 ```
 
-The architecture follows three principles:
+The Streamlit app contains:
 
-- **Modularity:** each estimate or decision layer can be evaluated independently.
-- **Traceability:** reportable outputs must preserve configuration, seed, command, and commit.
-- **Evidence separation:** a feature is not described as validated merely because a conceptual interface or prototype exists.
+| Page | What you can do |
+|---|---|
+| **Home** | Understand the complete DynNav pipeline and open each laboratory. |
+| **Robot Lab** | Play, pause, step, reset, inspect events, observe replanning, and export the rollout. |
+| **Scenario Builder** | Configure maps, start/goal cells, obstacles, seeds, and export scenarios. |
+| **Planner Arena** | Compare classical and risk-aware planners on the same world and metrics. |
+| **Belief & Mapping Lab** | Change sensor noise and inspect prior/posterior occupancy, entropy, and information gain. |
+| **Risk & Safety Lab** | Compose risk layers and test `NORMAL`, `CAUTION`, `REPLAN`, and `SAFE STOP` thresholds. |
+| **Dynamic Obstacles** | Change motion models, prediction horizons, uncertainty envelopes, and route conflicts. |
+| **Multi-Robot Lab** | Change robot count, communication range, packet loss, links, and fleet conflicts. |
+| **Contribution Explorer** | Open C01–C26 and interact with each contribution's own controls and graphics. |
+| **Experiment Studio** | Run single-seed, multi-seed, baseline-comparison, and sensitivity experiments. |
+| **Results & Reports** | Filter, replay, compare, and export manifests, CSV, JSON, Markdown, and ZIP bundles. |
+| **Documentation** | Browse curated repository Markdown inside the app. |
+| **System Status** | Inspect dependencies, runtime capabilities, pages, and contribution renderers. |
 
-Detailed architecture documents are available in [`docs/SYSTEM_ARCHITECTURE.md`](docs/SYSTEM_ARCHITECTURE.md) and [`docs/NAVIGATION_PIPELINE.md`](docs/NAVIGATION_PIPELINE.md).
+The dashboard is a synthetic explanatory and experimental interface. It does not claim that every module has equal maturity or that all 26 contributions currently form one validated physical-robot stack.
 
 ---
 
-## Mathematical formulation
+# What every contribution does
 
-Let a candidate route be denoted by
+Every contribution has a Streamlit renderer with its own controls, graphics, metrics, and interpretation. The detailed catalog is available in [`docs/CONTRIBUTION_FEATURE_CATALOG.md`](docs/CONTRIBUTION_FEATURE_CATALOG.md).
 
-```math
-\pi=(x_0,x_1,\ldots,x_T).
+## Planning, uncertainty, and runtime safety
+
+| ID | Contribution | What it does | Interactive features | Maturity |
+|---|---|---|---|---|
+| **C01** | Learned A* Search | Compares classical A* with a learned cost-to-go heuristic. | Grid/obstacle controls, heuristic influence, paths, expanded nodes, cost, runtime. | Research Prototype |
+| **C02** | Uncertainty Estimation | Explores state-estimation uncertainty and whether confidence is calibrated against error. | Noise, uncertainty scale, confidence bands, calibration plots, error metrics. | Research Prototype |
+| **C03** | Risk-Aware A* | Trades path length against expected, maximum, or tail-risk exposure. | Risk weight, risk field, competing routes, average/max risk, CVaR-style metrics. | Research Prototype |
+| **C04** | Returnability and Recoverability | Measures whether entering a state preserves future escape and recovery options. | Bottlenecks, return paths, reachable recovery cells, escape options, irreversibility. | Research Prototype |
+| **C05** | Safe-Mode Supervisor | Demonstrates a finite-state supervisor that continues, becomes cautious, replans, or stops. | Thresholds, hysteresis, persistence, cooldown, transition history, supervisor state. | Research Prototype |
+| **C06** | Energy and Connectivity | Classifies mission feasibility under battery and communication constraints. | Battery reserve, route energy, link quality, recharge/relay requirements, verdict. | Research Prototype |
+| **C07** | Safe Next-Best View | Selects exploration targets using information gain plus risk, connectivity, and returnability. | Candidate viewpoints, scoring weights, information gain, route risk, selected target. | Research Prototype |
+
+## Security, people, coordination, and learning
+
+| ID | Contribution | What it does | Interactive features | Maturity |
+|---|---|---|---|---|
+| **C08** | Security and Intrusion Detection | Detects anomalous or manipulated navigation observations. | Attack strength, detector threshold, anomaly history, alarms, delay, false positives. | Experimental |
+| **C09** | Multi-Robot Coordination | Studies shared beliefs, communication, task allocation, and robot conflicts. | Robot count, range, packet loss, assignments, communication links, fleet metrics. | Experimental |
+| **C10** | Human-Aware Navigation | Adds social costs and personal-space reasoning around people. | Human positions, comfort radius, social weight, alternative paths, proximity metrics. | Experimental |
+| **C11** | Twin-Critic Reinforcement Learning | Visualizes actor–critic decisions and disagreement between two value estimators. | State/action controls, critic values, policy action, critic gap, reward indicators. | Experimental |
+| **C12** | Diffusion Occupancy Prediction | Generates uncertain future occupancy predictions for dynamic scenes. | Forecast horizon, diffusion/noise controls, occupancy samples, uncertainty maps. | Experimental |
+| **C13** | Latent World Model | Compresses observations and imagines future state rollouts in latent space. | Latent dimensions, rollout horizon, reconstruction, imagined trajectories, error. | Experimental |
+| **C14** | Causal Risk Attribution | Decomposes aggregate navigation risk into structured causes and counterfactuals. | Causal factors, interventions, counterfactual settings, per-cause attribution. | Experimental |
+| **C15** | Neuromorphic Sensing | Explores event-driven sensing where scene changes produce sparse events. | Motion, event threshold, temporal window, event map, event rate, sparsity. | Experimental |
+| **C16** | Federated Navigation Learning | Simulates decentralized model updates without centralizing local robot data. | Client count, data shift, local rounds, aggregation, convergence, disagreement. | Experimental |
+| **C17** | Semantic Topological Maps | Combines semantic regions with graph-based high-level navigation. | Semantic nodes, edges, route preferences, topology, selected semantic path. | Experimental |
+| **C18** | Formal Safety Shields | Demonstrates runtime interventions inspired by barrier functions and temporal logic. | Nominal commands, safety boundaries, intervention threshold, constraint status. | Experimental |
+
+## Mission reasoning, explanation, scene representation, and robustness
+
+| ID | Contribution | What it does | Interactive features | Maturity |
+|---|---|---|---|---|
+| **C19** | Language Mission Planner | Converts natural-language instructions into explicit mission goals and constraints. | Mission text, extracted goals, priorities, forbidden areas, structured plan. | Documentation Concept |
+| **C20** | Failure Explanation | Produces structured explanations from navigation events and failure evidence. | Failure type, evidence channels, event sequence, attributed cause, confidence. | Experimental |
+| **C21** | PPO Navigation | Demonstrates policy-optimization behavior for navigation. | Reward weights, action probabilities, episode reward, learning curves. | Experimental |
+| **C22** | Curriculum Reinforcement Learning | Studies staged task difficulty and policy progression. | Curriculum stage, difficulty, promotion threshold, success history, progression. | Experimental |
+| **C23** | Gaussian Splatting Maps | Explores dense Gaussian scene representations for navigation context. | Gaussian count/scale, visibility, rendering, spatial density. | Documentation Concept |
+| **C24** | NeRF Uncertainty | Examines uncertainty-aware neural implicit scene representations. | Observation coverage, sampling, field slices, uncertainty and confidence views. | Documentation Concept |
+| **C25** | Adversarial Navigation Testing | Injects disturbances and measures navigation robustness degradation. | Attack type, perturbation strength, response, path deviation, failure rate. | Experimental |
+| **C26** | Byzantine-Fault-Tolerant Swarm | Explores swarm consensus with faulty or malicious robot reports. | Swarm size, faulty nodes, trust threshold, reports, consensus, consensus error. | Experimental |
+
+### How the contributions connect
+
+```text
+C01 learned guidance
+       ↓
+C02 uncertainty and calibration
+       ↓
+C03 risk-aware route selection ─────────┐
+       ↓                                │
+C04 returnability and recovery          │
+       ↓                                │
+C05 runtime supervision ◄───────────────┘
+       ↓
+C06 energy and connectivity
+       ↓
+C07 safe exploration
+       ↓
+C08–C26 security, people, multi-robot systems,
+        prediction, learning, semantics, formal shields,
+        explanation, robustness, and swarm consensus
 ```
 
-A general DynNav planning objective can be written as
-
-```math
-J(\pi)=w_L L(\pi)+w_R R(\pi)+w_U U(\pi)+w_G G(\pi)+w_E E(\pi)+w_C C(\pi),
-```
-
-where:
-
-- `L(π)` is geometric or traversal cost;
-- `R(π)` is expected, maximum, or tail-risk exposure;
-- `U(π)` is uncertainty exposure;
-- `G(π)` is recoverability loss or irreversibility cost;
-- `E(π)` is energy consumption or reserve violation;
-- `C(π)` is connectivity degradation.
-
-The route-selection problem is then
-
-```math
-\pi^*=\arg\min_{\pi\in\Pi_{\mathrm{feasible}}}J(\pi),
-```
-
-subject to module-specific constraints such as collision avoidance, resource feasibility, minimum connectivity, returnability thresholds, or supervisor-imposed operating modes.
-
-This expression is a unifying formulation. Not every experiment activates every term, and no universal proof is claimed for the complete combined objective. Individual contributions define and evaluate smaller, auditable subproblems.
-
-See [`docs/MATHEMATICAL_FORMULATION.md`](docs/MATHEMATICAL_FORMULATION.md), [`docs/RISK_ESTIMATION.md`](docs/RISK_ESTIMATION.md), and [`docs/UNCERTAINTY_MODEL.md`](docs/UNCERTAINTY_MODEL.md).
-
----
-
-## Research methodology
-
-DynNav follows an evidence-oriented workflow:
-
-1. **Define the navigation failure mode.** Examples include heuristic overestimation, uncertainty miscalibration, excessive path risk, low returnability, resource depletion, or unstable replanning.
-2. **Construct an interpretable baseline.** Classical A*, Dijkstra, threshold policies, or information-gain scoring provide reference behavior.
-3. **Introduce one explicit mechanism.** Each contribution adds a measurable estimator, objective term, controller, or audit layer.
-4. **Evaluate on matched scenarios.** Compared methods receive the same maps, starts, goals, seeds, obstacle changes, and stopping conditions.
-5. **Report multiple metrics.** Path quality, runtime, expansions, risk, uncertainty, recoverability, transitions, and feasibility are kept separate.
-6. **State evidence boundaries.** Finite benchmarks do not establish universal optimality, safety, calibration, or generalization.
-
-This structure is intended to make negative results and trade-offs visible. For example, fewer A* expansions may coexist with higher wall-clock runtime, and lower route risk may require greater path length.
+This diagram is conceptual. It does not claim that all modules currently execute together as one certified end-to-end system.
 
 ---
 
@@ -222,21 +188,22 @@ This structure is intended to make negative results and trade-offs visible. For 
 | Typed grid, pose, trajectory, and mission primitives | Implemented | Source tests and Python CI |
 | A* and Dijkstra baselines | Implemented | Deterministic tests |
 | Risk-aware grid planning | Implemented | Source and regression tests |
-| Risk and uncertainty fields | Implemented / Experimental | NumPy-based deterministic tests |
-| Interactive Streamlit dashboard | Implemented / Experimental | Synthetic closed-loop visualization |
+| Risk and uncertainty fields | Implemented / Experimental | Deterministic synthetic tests |
+| Multipage Streamlit robotics lab | Implemented / Experimental | Dashboard smoke tests and headless startup CI |
+| Scenario editing and planner comparison | Implemented / Experimental | Synthetic interactive workflows |
+| Experiment manifests, replay, and exports | Implemented / Experimental | Deterministic session workflows |
 | Learned heuristic search | Research Prototype | Controlled grid benchmarks and audits |
-| Uncertainty calibration | Research Prototype | Synthetic and generated uncertainty-error benchmarks |
+| Uncertainty calibration | Research Prototype | Synthetic uncertainty/error studies |
 | Recoverability estimation | Research Prototype | Grid reachability heuristics and tests |
-| Dynamic rerouting and cooldown | Research Prototype | Regression tests for bounded repeated replanning |
-| Mission supervisor and safe mode | Research Prototype | Rule-based transition and threshold tests |
-| Benchmark and smoke runners | Implemented / Experimental | GitHub Actions smoke execution |
-| Research website | Implemented | Install, type-check, and production-build workflow |
-| ROS 2 / Nav2 integration | Planned / Prototype documentation | No production-ready plugin claim |
+| Dynamic rerouting and cooldown | Research Prototype | Regression tests |
+| Mission supervisor and safe mode | Research Prototype | Transition and threshold tests |
+| Docker dashboard runtime | Implemented | Container entry point and health-check validation |
+| ROS 2 / Nav2 integration | Planned / Prototype documentation | No production-ready integration claim |
 | Gazebo validation | Planned | Not currently claimed |
 | Physical-robot validation | Hardware Validation Required | No hardware evidence claimed |
-| End-to-end formal safety | Not claimed | Outside the currently established evidence |
+| End-to-end formal safety | Not claimed | Outside current evidence |
 
-Passing tests establishes consistency with implemented expectations; it does not prove navigation safety, real-world robustness, or generalization beyond the tested scenarios.
+Passing tests establishes consistency with implemented expectations; it does not prove real-world navigation safety, robustness, or generalization.
 
 ---
 
@@ -258,48 +225,12 @@ Windows PowerShell:
 python -m pip install -e ".[dev,dashboard]"
 ```
 
----
-
-## Five-minute reproducibility check
-
-Run the following commands from the repository root:
+Docker:
 
 ```bash
-pytest
-python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/quickstart
-python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/quickstart_benchmarks
-python scripts/validate_documented_commands.py --root .
+docker build -t dynnav-streamlit .
+docker run --rm -p 8501:8501 dynnav-streamlit
 ```
-
-The smoke runners exercise the integrated Python workflow without implying full experimental reproduction of every contribution.
-
----
-
-## Interactive Streamlit dashboard
-
-The Streamlit application provides an interactive explanation of what happens inside DynNav during a synthetic navigation episode. It is implemented in [`app/dashboard.py`](app/dashboard.py) and uses the deterministic engine under [`src/dynnav_dashboard/`](src/dynnav_dashboard/).
-
-Run it from the repository root:
-
-```bash
-python -m pip install -e ".[dashboard]"
-streamlit run app/dashboard.py
-```
-
-The dashboard includes:
-
-- deterministic scenario generation controlled by a seed;
-- static and moving obstacles;
-- occupancy, uncertainty, and risk overlays;
-- classical A* and risk-aware A* comparison;
-- step-by-step robot motion;
-- online route invalidation and replanning;
-- explanatory supervisor states: `NORMAL`, `CAUTION`, `REPLAN`, `SAFE STOP`, and `GOAL REACHED`;
-- local risk and uncertainty signals;
-- planner expansions, runtime, path cost, and risk metrics;
-- a clear separation between demonstrated synthetic behavior and capabilities that still require ROS 2, Gazebo, or hardware validation.
-
-The app is an explanatory research interface. It does not claim that all 26 contribution modules execute together, and it is not evidence of physical-robot safety.
 
 ---
 
@@ -308,45 +239,32 @@ The app is an explanatory research interface. It does not claim that all 26 cont
 | Purpose | Command |
 |---|---|
 | Full Python tests | `pytest` |
-| Focused replanning test | `pytest tests/test_realtime_replanning.py` |
-| Launch Streamlit dashboard | `streamlit run app/dashboard.py` |
+| Dashboard smoke tests | `pytest tests/test_streamlit_lab_smoke.py` |
+| Validate dashboard structure | `python scripts/validate_streamlit_app.py` |
+| Launch Streamlit | `streamlit run app/dashboard.py` |
 | CI-style smoke run | `python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke` |
 | Benchmark smoke run | `python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks` |
-| Installed benchmark CLI | `dynnav-benchmark --config configs/benchmark.yaml --out-csv results/benchmarks/dynnav_benchmark.csv --summary results/benchmarks/summary.md` |
 | Validate documented commands | `python scripts/validate_documented_commands.py --root .` |
 | Generate research assets | `python scripts/generate_research_assets.py` |
-| Attempt demo GIF generation | `python scripts/make_demo_gif.py` |
-
-Contribution-specific commands are documented inside each numbered module.
 
 ---
 
 ## Evaluation protocol
 
-Methods should be evaluated using equivalent scenario information and identical random seeds, starts, goals, obstacle changes, and termination conditions. Reportable runs should preserve:
+Reportable runs should preserve:
 
 ```text
 repository commit
-configuration file
+configuration or manifest
 random seed
 exact command
 runtime environment
 raw output
 aggregated result
-figure or table generation step
+figure or report generation step
 ```
 
-Primary metric families include:
-
-| Family | Representative metrics |
-|---|---|
-| Task performance | success rate, path length, goal completion |
-| Search and planning | expanded nodes, runtime, replans, route switches |
-| Risk | cumulative exposure, maximum exposure, CVaR-style tail risk |
-| Uncertainty | error correlation, calibration error, empirical coverage |
-| Recoverability | returnability, minimum recoverability, escape options |
-| Resources | energy margin, connectivity margin, feasibility verdict |
-| Supervision | state transitions, safe-mode duration, stop requests |
+Representative metrics include success rate, path length, expanded nodes, runtime, replans, route switches, average and maximum risk, tail risk, calibration error, recoverability, energy margin, connectivity margin, supervisor transitions, and stop requests.
 
 See [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) and [`docs/REPRODUCIBILITY.md`](docs/REPRODUCIBILITY.md).
 
@@ -354,89 +272,58 @@ See [`docs/EVALUATION_PROTOCOL.md`](docs/EVALUATION_PROTOCOL.md) and [`docs/REPR
 
 ## Repository structure
 
-| Directory | Research responsibility |
+| Directory | Responsibility |
 |---|---|
-| [`app/`](app/) | Interactive Streamlit research dashboard |
-| [`contributions/`](contributions/) | Numbered research questions, implementations, experiments, and module-level documentation |
-| [`src/`](src/README.md) | Installable Python source tree |
-| [`src/dynnav/`](src/dynnav/README.md) | Core navigation research package |
-| [`src/dynnav_dashboard/`](src/dynnav_dashboard/) | Synthetic dashboard engine and contribution visualizations |
-| [`configs/`](configs/README.md) | Versioned experiment and benchmark inputs |
-| [`scripts/`](scripts/README.md) | Smoke, benchmark, validation, and media entry points |
-| [`tests/`](tests/README.md) | Deterministic and regression tests |
-| [`docs/`](docs/README.md) | Architecture, mathematical definitions, audits, and evidence boundaries |
-| [`assets/`](assets/README.md) | Diagrams, figures, media, and provenance |
-| [`results/`](results/README.md) | Generated metrics, tables, summaries, and manifests |
-| [`paper/`](paper/README.md) | Paper-facing material and publication evidence requirements |
-| [`website/`](website/README.md) | Research landing page |
-
-Each mature contribution should contain an English `README.md`, a Greek `README_GR.md`, an explanatory figure under `assets/`, implementation code, experiments, and traceable results where available.
-
----
-
-## How the contributions connect
-
-```text
-C01 learned search
-       ↓
-C02 uncertainty calibration
-       ↓
-C03 risk-aware planning ───────┐
-       ↓                       │
-C04 recoverability             │
-       ↓                       │
-C05 safe-mode supervision ◄────┘
-       ↓
-C06 resource feasibility
-       ↓
-C07 safe exploration
-       ↓
-C08–C26 security, multi-robot, semantic, learning,
-        prediction, mapping, formal, and swarm extensions
-```
-
-This dependency graph is conceptual rather than a claim that all modules currently execute as one validated end-to-end robot stack.
+| [`app/`](app/) | Multipage Streamlit robotics laboratory |
+| [`src/dynnav_dashboard/`](src/dynnav_dashboard/) | Dashboard simulation engine, registry, and C01–C26 renderers |
+| [`contributions/`](contributions/) | Numbered research implementations, experiments, and module documentation |
+| [`src/dynnav/`](src/dynnav/) | Installable core navigation package |
+| [`configs/`](configs/) | Versioned experiment and benchmark inputs |
+| [`scripts/`](scripts/) | Runners, validators, audits, and asset generation |
+| [`tests/`](tests/) | Deterministic, regression, and dashboard smoke tests |
+| [`docs/`](docs/) | Architecture, formulations, protocols, catalogs, and limitations |
+| [`results/`](results/) | Generated metrics, reports, tables, and manifests |
+| [`assets/`](assets/) | Figures, diagrams, screenshots, and media |
+| [`website/`](website/) | Research landing page |
 
 ---
 
 ## Limitations
 
-- Current evidence is dominated by deterministic or synthetic grid-world experiments.
-- The Streamlit dashboard is an explanatory synthetic interface, not ROS 2 or hardware execution.
-- Some modules are complete implementations; others are research prototypes or interface studies.
+- Current evidence is dominated by deterministic and synthetic experiments.
+- The Streamlit app is not ROS 2, Gazebo, or physical-robot execution.
+- Contribution maturity ranges from research prototype to documentation concept.
 - Calibration can degrade under distribution shift.
-- Recoverability metrics are interpretable heuristics rather than universal safety certificates.
-- Rule-based supervisors depend on threshold selection and scenario design.
-- Neural inference can increase runtime even when it reduces search effort.
-- Dynamic-agent handling is not yet a fully validated probabilistic space-time system.
-- ROS 2, Nav2, Gazebo, Docker, and hardware workflows require additional execution evidence.
-- No repository result should be interpreted as a formal end-to-end safety guarantee.
+- Recoverability metrics are interpretable heuristics rather than universal certificates.
+- Supervisor behavior depends on thresholds and scenario design.
+- Neural methods can increase runtime even when reducing search effort.
+- Dynamic-agent handling is not yet a fully validated probabilistic space-time stack.
+- No repository output should be interpreted as a formal end-to-end safety guarantee.
 
 ---
 
-## Research roadmap
+## Roadmap
 
-1. Complete bilingual, contribution-level scientific documentation and visual standardization.
-2. Strengthen statistical evaluation with controlled multi-seed studies and uncertainty intervals.
-3. Define calibrated interfaces among uncertainty, risk, recoverability, and supervision.
-4. Add transparent dynamic-agent prediction and time-aware planning baselines.
-5. Evaluate robustness under map shift, sensor degradation, communication loss, and adversarial conditions.
-6. Compile and validate a real ROS 2 / Nav2 integration.
-7. Run reproducible Gazebo experiments with traceable scenario manifests.
-8. Conduct physical-robot validation with hardware-specific fail-safe mechanisms.
-9. Generate publication figures and tables exclusively from raw, versioned outputs.
+1. Strengthen contribution-level multi-seed evaluation and uncertainty intervals.
+2. Expand time-aware dynamic-agent prediction and planning baselines.
+3. Improve cross-page scenario sharing and synchronized replay.
+4. Add reproducible screenshots, walkthrough GIFs, and public demo deployment.
+5. Compile and validate ROS 2 / Nav2 integration.
+6. Run traceable Gazebo experiments.
+7. Conduct hardware validation with independent fail-safe mechanisms.
+8. Generate publication tables and figures exclusively from versioned outputs.
 
 ---
 
 ## Responsible use
 
-DynNav is research software. It must not be used as a certified safety controller or as the sole navigation system for safety-critical deployment. Real-world users must provide independent validation, emergency handling, applicable standards compliance, hardware-specific safety mechanisms, and operational supervision.
+DynNav must not be used as a certified safety controller or as the sole navigation system for safety-critical deployment. Real-world users must provide independent validation, emergency handling, standards compliance, hardware-specific safety mechanisms, and operational supervision.
 
 ---
 
 ## Citation
 
-Use [`CITATION.cff`](CITATION.cff) for repository citation until a peer-reviewed publication is available. Academic use should report the exact commit, configuration, seed, contribution mode, model checkpoint where applicable, and experiment command.
+Use [`CITATION.cff`](CITATION.cff) and report the exact commit, configuration, seed, contribution mode, checkpoint where applicable, and experiment command.
 
 ```bibtex
 @software{dynnav,
