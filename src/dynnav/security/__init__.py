@@ -12,6 +12,13 @@ from .mitigation import (
     choose_mitigation,
     security_risk,
 )
+from .sensor_profiles import (
+    SensorKind,
+    SensorSecurityProfile,
+    available_sensor_profiles,
+    create_sensor_detector,
+    get_sensor_profile,
+)
 from .statistics import chi_square_quantile, chi_square_quantile_fallback, mahalanobis_squared, validate_covariance
 from .temporal import SecurityState, SecurityStateMachine, StateMachineConfig, StateTransition
 from .trust import SourceTrustEstimator, TrustConfig
@@ -36,17 +43,22 @@ __all__ = [
     "SecurityAlert",
     "SecurityState",
     "SecurityStateMachine",
+    "SensorKind",
+    "SensorSecurityProfile",
     "SourceTrustEstimator",
     "StateMachineConfig",
     "StateTransition",
     "TrustConfig",
     "TrustState",
     "attribute_anomaly",
+    "available_sensor_profiles",
     "chi_square_quantile",
     "chi_square_quantile_fallback",
     "choose_mitigation",
     "create_detector",
+    "create_sensor_detector",
     "fuse_trust",
+    "get_sensor_profile",
     "mahalanobis_squared",
     "security_risk",
     "validate_covariance",
