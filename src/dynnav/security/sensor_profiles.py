@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from enum import Enum
 
-from .detectors import DetectorConfig
+from .detectors import Detector, DetectorConfig, create_detector
 
 
 class SensorKind(str, Enum):
@@ -83,3 +83,21 @@ def get_sensor_profile(sensor: SensorKind | str) -> SensorSecurityProfile:
 def available_sensor_profiles() -> tuple[SensorKind, ...]:
     """List supported sensor kinds in deterministic order."""
     return tuple(SensorKind)
+
+
+def create_sensor_detector(
+    sensor: SensorKind | str,
+    *,
+    detector_name: str | None = None,
+    config_overrides: dict[str, float | int] | None = None,
+) -> Detector:
+    """Create a detector from a sensor profile with explicit, typed overrides.
+
+    Overrides are applied through :func:`dataclasses.replace`, so unknown
+    configuration fields fail fast instead of being silently ignored.
+    """
+    profile = get_sensor_profile(sensor)
+    config = profile.detector_config
+    if config_overrides:
+        config = replace(config, **config_overrides)
+    return create_detector(detector_name or profile.preferred_detector, config)
