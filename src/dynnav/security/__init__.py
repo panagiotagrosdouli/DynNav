@@ -13,6 +13,12 @@ from .mitigation import (
     security_risk,
 )
 from .pipeline import SensorSecurityMonitor, SensorSecurityObservation
+from .policy import (
+    SensorNavigationDecision,
+    decide_sensor_response,
+    default_sensor_attribution,
+    observation_severity,
+)
 from .sensor_profiles import (
     SensorKind,
     SensorSecurityProfile,
@@ -45,6 +51,7 @@ __all__ = [
     "SecurityState",
     "SecurityStateMachine",
     "SensorKind",
+    "SensorNavigationDecision",
     "SensorSecurityMonitor",
     "SensorSecurityObservation",
     "SensorSecurityProfile",
@@ -60,9 +67,12 @@ __all__ = [
     "choose_mitigation",
     "create_detector",
     "create_sensor_detector",
+    "decide_sensor_response",
+    "default_sensor_attribution",
     "fuse_trust",
     "get_sensor_profile",
     "mahalanobis_squared",
+    "observation_severity",
     "security_risk",
     "validate_covariance",
 ]
