@@ -12,6 +12,7 @@ from .mitigation import (
     choose_mitigation,
     security_risk,
 )
+from .pipeline import SensorSecurityMonitor, SensorSecurityObservation
 from .sensor_profiles import (
     SensorKind,
     SensorSecurityProfile,
@@ -44,6 +45,8 @@ __all__ = [
     "SecurityState",
     "SecurityStateMachine",
     "SensorKind",
+    "SensorSecurityMonitor",
+    "SensorSecurityObservation",
     "SensorSecurityProfile",
     "SourceTrustEstimator",
     "StateMachineConfig",
