@@ -5,21 +5,21 @@ evidence_policy: >-
   Dataset, ROS 2, hardware, formal-safety, and trained-neural claims require traceable artifacts.
 contributions:
   - {id: C01, slug: learned_astar, title: "Learned A* Search", category: planning, status: "Research Prototype", directory: contributions/01_learned_astar, integrates_with: [C03, C04, C05]}
-  - {id: C02, slug: uncertainty_estimation, title: "Uncertainty Calibration", category: uncertainty, status: "Research Prototype", directory: contributions/02_uncertainty_estimation, integrates_with: [C03, C12, C24]}
-  - {id: C03, slug: risk_aware_astar, title: "Belief and Risk Planning", category: planning, status: "Research Prototype", directory: contributions/03_risk_aware_astar, integrates_with: [C04, C05]}
-  - {id: C04, slug: returnability, title: "Irreversibility and Returnability", category: safety, status: "Research Prototype", directory: contributions/04_returnability, integrates_with: [C05]}
-  - {id: C05, slug: safe_mode_supervisor, title: "Safe-Mode Navigation", category: safety, status: "Research Prototype", directory: contributions/05_safe_mode_supervisor, integrates_with: []}
+  - {id: C02, slug: uncertainty_calibration, title: "Uncertainty Calibration", category: uncertainty, status: "Research Prototype", directory: contributions/02_uncertainty_calibration, integrates_with: [C03, C12, C24]}
+  - {id: C03, slug: belief_risk_planning, title: "Belief and Risk Planning", category: planning, status: "Research Prototype", directory: contributions/03_belief_risk_planning, integrates_with: [C04, C05]}
+  - {id: C04, slug: irreversibility_returnability, title: "Irreversibility and Returnability", category: safety, status: "Research Prototype", directory: contributions/04_irreversibility_returnability, integrates_with: [C05]}
+  - {id: C05, slug: safe_mode_navigation, title: "Safe-Mode Navigation", category: safety, status: "Research Prototype", directory: contributions/05_safe_mode_navigation, integrates_with: []}
   - {id: C06, slug: energy_connectivity, title: "Energy and Connectivity", category: resources, status: "Research Prototype", directory: contributions/06_energy_connectivity, integrates_with: [C05, C07]}
-  - {id: C07, slug: safe_next_best_view, title: "Next-Best View", category: active_perception, status: "Research Prototype", directory: contributions/07_safe_next_best_view, integrates_with: [C03, C06]}
+  - {id: C07, slug: next_best_view, title: "Next-Best View", category: active_perception, status: "Research Prototype", directory: contributions/07_next_best_view, integrates_with: [C03, C06]}
   - {id: C08, slug: security_ids, title: "Security IDS", category: security, status: Experimental, directory: contributions/08_security_ids, integrates_with: [C05, C14, C25]}
-  - {id: C09, slug: multi_robot_navigation, title: "Multi-Robot Navigation", category: multi_robot, status: Experimental, directory: contributions/09_multi_robot_navigation, integrates_with: [C16, C26]}
+  - {id: C09, slug: multi_robot, title: "Multi-Robot Navigation", category: multi_robot, status: Experimental, directory: contributions/09_multi_robot, integrates_with: [C16, C26]}
   - {id: C10, slug: human_language_ethics, title: "Human, Language, and Ethics", category: human_robot_interaction, status: Experimental, directory: contributions/10_human_language_ethics, integrates_with: [C19, C20]}
   - {id: C11, slug: vlm_navigation_agent, title: "VLM Navigation Agent", category: multimodal_learning, status: Experimental, directory: contributions/11_vlm_navigation_agent, integrates_with: [C19, C20]}
   - {id: C12, slug: diffusion_occupancy, title: "Diffusion Occupancy", category: prediction, status: Experimental, directory: contributions/12_diffusion_occupancy, integrates_with: [C02, C03]}
   - {id: C13, slug: latent_world_model, title: "Latent World Model", category: world_models, status: Experimental, directory: contributions/13_latent_world_model, integrates_with: [C03, C21]}
   - {id: C14, slug: causal_risk_attribution, title: "Causal Risk Attribution", category: explainability, status: Experimental, directory: contributions/14_causal_risk_attribution, integrates_with: [C05, C20]}
   - {id: C15, slug: neuromorphic_sensing, title: "Neuromorphic Sensing", category: perception, status: Experimental, directory: contributions/15_neuromorphic_sensing, integrates_with: [C02]}
-  - {id: C16, slug: federated_navigation_learning, title: "Federated Navigation Learning", category: distributed_learning, status: Experimental, directory: contributions/16_federated_navigation_learning, integrates_with: [C09, C26]}
+  - {id: C16, slug: federated_nav_learning, title: "Federated Navigation Learning", category: distributed_learning, status: Experimental, directory: contributions/16_federated_nav_learning, integrates_with: [C09, C26]}
   - {id: C17, slug: topological_semantic_maps, title: "Topological Semantic Maps", category: mapping, status: Experimental, directory: contributions/17_topological_semantic_maps, integrates_with: [C19]}
   - {id: C18, slug: formal_safety_shields, title: "Formal Safety Shields", category: formal_methods, status: Experimental, directory: contributions/18_formal_safety_shields, integrates_with: [C05]}
   - {id: C19, slug: llm_mission_planner, title: "LLM Mission Planner", category: language_planning, status: "Documentation Concept", directory: contributions/19_llm_mission_planner, integrates_with: [C05, C20]}
