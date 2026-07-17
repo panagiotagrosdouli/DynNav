@@ -16,6 +16,7 @@ from .sensor_profiles import (
     SensorKind,
     SensorSecurityProfile,
     available_sensor_profiles,
+    create_sensor_detector,
     get_sensor_profile,
 )
 from .statistics import chi_square_quantile, chi_square_quantile_fallback, mahalanobis_squared, validate_covariance
@@ -55,6 +56,7 @@ __all__ = [
     "chi_square_quantile_fallback",
     "choose_mitigation",
     "create_detector",
+    "create_sensor_detector",
     "fuse_trust",
     "get_sensor_profile",
     "mahalanobis_squared",
