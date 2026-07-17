@@ -1,5 +1,6 @@
 """Cyber-physical security research primitives for DynNav."""
 
+from .attack_graph import AttackCampaign, CampaignCorrelator, CampaignLink, SecurityAlert
 from .attribution import AttributionEvidence, attribute_anomaly
 from .detectors import CUSUMDetector, DetectorConfig, EWMADetector, NISDetector, create_detector
 from .events import AttributionResult, DetectorResult, ResidualEvent, TrustState
@@ -16,9 +17,12 @@ from .temporal import SecurityState, SecurityStateMachine, StateMachineConfig, S
 from .trust import SourceTrustEstimator, TrustConfig
 
 __all__ = [
+    "AttackCampaign",
     "AttributionEvidence",
     "AttributionResult",
     "CUSUMDetector",
+    "CampaignCorrelator",
+    "CampaignLink",
     "DetectorConfig",
     "DetectorResult",
     "EWMADetector",
@@ -29,6 +33,7 @@ __all__ = [
     "NISDetector",
     "NavigationContext",
     "ResidualEvent",
+    "SecurityAlert",
     "SecurityState",
     "SecurityStateMachine",
     "SourceTrustEstimator",
