@@ -1,0 +1,17 @@
+families:
+  - open
+  - bottleneck
+  - culdesac
+  - multiroute
+seeds: 100
+map:
+  width: 31
+  height: 19
+risk:
+  mean: 0.08
+  std: 0.004
+  fragile_bias: 0.020
+  resilient_bias: 0.004
+event:
+  type: corridor_closure
+  target: fragile_route
