@@ -64,9 +64,31 @@ Every `(family, seed)` pair is evaluated by the same four policies:
 - `safe_return`
 - `recoverability_aware`
 
-The raw CSV records topology family, seed, selected route, route length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success. Paired observations should be retained for paired hypothesis tests and effect-size estimation.
+The raw CSV records topology family, seed, selected route, route length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success.
 
 `configs/randomized_default.yaml` records the intended default experimental settings. The current runner exposes the active settings through command-line arguments; configuration-file loading will be added only when it can be done without introducing an unnecessary dependency.
+
+## Paired hypothesis tests
+
+Compare the recoverability-aware planner against the risk-only baseline while preserving the `(family, seed)` pairing:
+
+```bash
+python benchmarks/fragile_commitment/paired_tests.py \
+  random_topology_results.csv \
+  --baseline risk_only \
+  --candidate recoverability_aware \
+  --output-csv paired_tests.csv \
+  --markdown paired_tests.md
+```
+
+The analysis applies:
+
+- a two-sided Wilcoxon signed-rank test to continuous route metrics;
+- an exact two-sided McNemar test to mission success;
+- rank-biserial effect sizes for continuous metrics;
+- normalized discordant-pair differences for mission success.
+
+Tests are reported separately for every topology family. The generated p-values are uncorrected; a manuscript that treats several metrics as one inferential family should state and apply its selected multiplicity correction. Exact Wilcoxon enumeration is used for up to 20 non-zero pairs, followed by a normal approximation for larger samples.
 
 ## Scientific purpose
 
