@@ -1,0 +1,44 @@
+name: Contribution integrity
+
+on:
+  pull_request:
+    paths:
+      - "contributions/**"
+      - "assets/contributions/**"
+      - "scripts/audit_contributions.py"
+      - "docs/CONTRIBUTION_INDEX.md"
+      - "results/manifests/contribution_*.json"
+      - ".github/workflows/contributions.yml"
+  push:
+    branches: [main]
+
+jobs:
+  contributions:
+    name: Recursive contribution inventory and validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Audit every contribution directory
+        run: |
+          python scripts/audit_contributions.py --root . \
+            --inventory results/manifests/contribution_inventory.json \
+            --validation results/manifests/contribution_validation.json \
+            --index docs/CONTRIBUTION_INDEX.md
+      - name: Verify generated contribution reports are committed
+        run: git diff --exit-code -- docs/CONTRIBUTION_INDEX.md results/manifests/contribution_inventory.json results/manifests/contribution_validation.json
+      - name: Upload contribution inventory
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contribution-inventory
+          path: |
+            docs/CONTRIBUTION_INDEX.md
+            results/manifests/contribution_inventory.json
+            results/manifests/contribution_validation.json
+          if-no-files-found: error
