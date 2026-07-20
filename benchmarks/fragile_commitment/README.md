@@ -9,15 +9,13 @@ The first scenario contains two homotopy classes:
 
 The benchmark is deliberately lightweight and reproducible. It uses only the Python standard library and NumPy.
 
-## Run
+## Controlled benchmark
 
 First validate that the generated scenarios preserve the intended counterexample across the requested seeds:
 
 ```bash
 python benchmarks/fragile_commitment/validate_counterexample.py --seeds 100
 ```
-
-The validation gate checks that route risk remains close, the recoverability and fragility gaps remain large enough, and the injected event blocks only the fragile route. Thresholds are explicit command-line options rather than hidden tuning constants.
 
 Generate paired per-seed results:
 
@@ -33,14 +31,42 @@ python benchmarks/fragile_commitment/statistical_analysis.py results.csv \
   --markdown summary.md
 ```
 
-Each seed evaluates the same generated scenario with four route-selection policies:
+## Randomized topology families
+
+The randomized benchmark expands the controlled counterexample into four reproducible map families:
+
+- `open`: weak bottleneck contrast for a near-neutral baseline;
+- `bottleneck`: a long one-cell commitment corridor;
+- `culdesac`: deceptive side pockets attached to the fragile class;
+- `multiroute`: extra cross-links and local escape alternatives.
+
+Run all families:
+
+```bash
+python benchmarks/fragile_commitment/random_benchmark.py \
+  --seeds 100 \
+  --output random_topology_results.csv
+```
+
+Run a subset:
+
+```bash
+python benchmarks/fragile_commitment/random_benchmark.py \
+  --families bottleneck culdesac \
+  --seeds 250 \
+  --output focused_results.csv
+```
+
+Every `(family, seed)` pair is evaluated by the same four policies:
 
 - `shortest`
 - `risk_only`
 - `safe_return`
 - `recoverability_aware`
 
-The raw CSV records route length, route risk, recoverability-profile statistics, fragility penalty, whether the injected closure blocks the chosen route, and mission success. The summary CSV reports per-planner means and descriptive 95% confidence intervals. Raw paired observations should be retained for subsequent paired hypothesis tests when randomized topology families are added.
+The raw CSV records topology family, seed, selected route, route length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success. Paired observations should be retained for paired hypothesis tests and effect-size estimation.
+
+`configs/randomized_default.yaml` records the intended default experimental settings. The current runner exposes the active settings through command-line arguments; configuration-file loading will be added only when it can be done without introducing an unnecessary dependency.
 
 ## Scientific purpose
 
