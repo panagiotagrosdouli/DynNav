@@ -1,13 +1,13 @@
 # Fragile Commitment Benchmark
 
-This benchmark constructs controlled navigation counterexamples in which routes have similar immediate traversal risk but different retained recovery freedom.
+This benchmark constructs navigation counterexamples in which routes have similar immediate traversal risk but different retained recovery freedom.
 
-The first scenario contains two homotopy classes:
+The controlled scenario contains two homotopy classes:
 
-- a short, narrow corridor that is vulnerable to a dynamic closure;
-- a longer, open detour that preserves alternative motion options.
+- a short, narrow route vulnerable to a dynamic closure;
+- a longer route that preserves recovery and escape options.
 
-The benchmark is deliberately lightweight and reproducible. It uses only the Python standard library and NumPy.
+Randomized experiments extend this mechanism across `open`, `bottleneck`, `culdesac`, and `multiroute` topology families.
 
 ## Controlled benchmark
 
@@ -17,16 +17,19 @@ First validate that the generated scenarios preserve the intended counterexample
 python benchmarks/fragile_commitment/validate_counterexample.py --seeds 100
 ```
 
-Generate paired per-seed results:
+Generate paired per-seed benchmark results:
 
 ```bash
-python benchmarks/fragile_commitment/benchmark.py --seeds 100 --output results.csv
+python benchmarks/fragile_commitment/benchmark.py \
+  --seeds 100 \
+  --output results.csv
 ```
 
-Create a per-planner summary CSV and a paper-ready Markdown table:
+Generate summary statistics:
 
 ```bash
-python benchmarks/fragile_commitment/statistical_analysis.py results.csv \
+python benchmarks/fragile_commitment/statistical_analysis.py \
+  results.csv \
   --summary-csv summary.csv \
   --markdown summary.md
 ```
@@ -35,10 +38,10 @@ python benchmarks/fragile_commitment/statistical_analysis.py results.csv \
 
 The randomized benchmark expands the controlled counterexample into four reproducible map families:
 
-- `open`: weak bottleneck contrast for a near-neutral baseline;
-- `bottleneck`: a long one-cell commitment corridor;
-- `culdesac`: deceptive side pockets attached to the fragile class;
-- `multiroute`: extra cross-links and local escape alternatives.
+- `open`
+- `bottleneck`
+- `culdesac`
+- `multiroute`
 
 Run all families:
 
@@ -57,20 +60,18 @@ python benchmarks/fragile_commitment/random_benchmark.py \
   --output focused_results.csv
 ```
 
-Every `(family, seed)` pair is evaluated by the same four policies:
+## Compared policies
 
 - `shortest`
 - `risk_only`
 - `safe_return`
 - `recoverability_aware`
 
-The raw CSV records topology family, seed, selected route, route length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success.
-
-`configs/randomized_default.yaml` records the intended default experimental settings. The current runner exposes the active settings through command-line arguments; configuration-file loading will be added only when it can be done without introducing an unnecessary dependency.
+The raw CSV records topology family, seed, selected route, path length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success. Pairing is preserved by `(family, seed)`.
 
 ## Paired hypothesis tests
 
-Compare the recoverability-aware planner against the risk-only baseline while preserving the `(family, seed)` pairing:
+Compare the recoverability-aware planner against the risk-only baseline:
 
 ```bash
 python benchmarks/fragile_commitment/paired_tests.py \
@@ -81,17 +82,69 @@ python benchmarks/fragile_commitment/paired_tests.py \
   --markdown paired_tests.md
 ```
 
-The analysis applies:
+The analysis includes:
 
-- a two-sided Wilcoxon signed-rank test to continuous route metrics;
-- an exact two-sided McNemar test to mission success;
-- rank-biserial effect sizes for continuous metrics;
-- normalized discordant-pair differences for mission success.
+- Wilcoxon signed-rank tests for continuous metrics;
+- exact McNemar tests for mission success;
+- rank-biserial effect sizes;
+- normalized discordant-pair effect sizes.
 
-Tests are reported separately for every topology family. The generated p-values are uncorrected; a manuscript that treats several metrics as one inferential family should state and apply its selected multiplicity correction. Exact Wilcoxon enumeration is used for up to 20 non-zero pairs, followed by a normal approximation for larger samples.
+Results are reported separately for every topology family. Reported p-values are uncorrected unless otherwise specified in the manuscript.
+
+## Publication figures
+
+Generate publication-ready figures:
+
+```bash
+python benchmarks/fragile_commitment/paper_figures.py \
+  random_topology_results.csv \
+  --output-dir paper/figures/fragile_commitment \
+  --format pdf
+```
+
+Generated figures include:
+
+- mission success by topology family;
+- minimum recoverability by topology family;
+- cumulative recoverability loss;
+- fragility penalty;
+- route-risk versus recoverability scatter plot.
+
+Supported formats:
+
+- PDF
+- SVG
+- PNG
+
+## End-to-end workflow
+
+```text
+benchmark.py
+        │
+        ▼
+results.csv
+        │
+        ▼
+random_benchmark.py
+        │
+        ▼
+random_topology_results.csv
+        │
+        ▼
+paired_tests.py
+        │
+        ▼
+paired_tests.csv
+        │
+        ▼
+paper_figures.py
+        │
+        ▼
+paper/figures/
+```
 
 ## Scientific purpose
 
-The benchmark tests the falsifiable claim that collision risk and recoverability are not interchangeable. A useful counterexample has near-equal route risk but a large recoverability gap and different mission outcomes after the same dynamic event.
+The benchmark tests the falsifiable hypothesis that collision risk and recoverability are distinct route properties. Routes with similar collision risk may retain substantially different recovery freedom, leading to different outcomes after identical dynamic changes.
 
-This is an experimental instrument, not a formal safety certificate.
+This benchmark is a synthetic experimental research instrument and does not constitute a formal safety certificate or hardware-validation claim.
