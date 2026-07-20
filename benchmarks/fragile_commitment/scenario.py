@@ -44,8 +44,8 @@ def generate_scenario(seed: int = 0) -> FragileCommitmentScenario:
     """Generate a reproducible counterexample with two explicit route classes.
 
     Seed-dependent noise perturbs risk values without changing the topology. The
-    narrow upper route remains slightly shorter, while the lower route remains
-    more recoverable because it traverses a broad open region.
+    narrow upper route remains shorter and slightly lower risk, while the lower
+    route retains substantially more local recovery freedom.
     """
     rng = np.random.default_rng(seed)
     width, height = 25, 15
@@ -53,7 +53,7 @@ def generate_scenario(seed: int = 0) -> FragileCommitmentScenario:
 
     start = (1, 7)
     goal = (23, 7)
-    fragile_route = _polyline((start, (4, 7), (4, 3), (20, 3), (20, 7), goal))
+    fragile_route = _polyline((start, (4, 7), (4, 4), (20, 4), (20, 7), goal))
     resilient_route = _polyline((start, (4, 7), (4, 11), (20, 11), (20, 7), goal))
 
     # Carve a one-cell upper corridor and a five-cell-tall lower open region.
@@ -69,13 +69,13 @@ def generate_scenario(seed: int = 0) -> FragileCommitmentScenario:
     free = grid == 0
     risk[free] = np.clip(0.08 + rng.normal(0.0, 0.004, size=int(np.sum(free))), 0.0, 1.0)
 
-    # Balance integrated route risk despite the detour's additional cells.
+    # Keep risks close while making the fragile route attractive to risk-only search.
     for x, y in fragile_route:
-        risk[y, x] += 0.025
+        risk[y, x] += 0.004
     for x, y in resilient_route:
-        risk[y, x] += 0.006
+        risk[y, x] += 0.010
 
-    closure = (12, 3)
+    closure = (12, 4)
     return FragileCommitmentScenario(
         grid=grid,
         risk=risk,
