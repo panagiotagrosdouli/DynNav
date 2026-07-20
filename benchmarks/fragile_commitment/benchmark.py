@@ -6,6 +6,7 @@ import argparse
 import csv
 import importlib.util
 from pathlib import Path
+import sys
 from typing import Any
 
 from scenario import FragileCommitmentScenario, generate_scenario
@@ -15,10 +16,12 @@ METRICS_PATH = ROOT / "contributions/04_irreversibility_returnability/code/recov
 
 
 def _load_metrics_module() -> Any:
-    spec = importlib.util.spec_from_file_location("recoverability_metrics", METRICS_PATH)
+    module_name = "recoverability_metrics"
+    spec = importlib.util.spec_from_file_location(module_name, METRICS_PATH)
     if spec is None or spec.loader is None:
         raise RuntimeError(f"cannot load recoverability metrics from {METRICS_PATH}")
     module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
     spec.loader.exec_module(module)
     return module
 
