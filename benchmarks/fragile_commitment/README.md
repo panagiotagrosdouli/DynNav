@@ -11,6 +11,14 @@ The benchmark is deliberately lightweight and reproducible. It uses only the Pyt
 
 ## Run
 
+First validate that the generated scenarios preserve the intended counterexample across the requested seeds:
+
+```bash
+python benchmarks/fragile_commitment/validate_counterexample.py --seeds 100
+```
+
+The validation gate checks that route risk remains close, the recoverability and fragility gaps remain large enough, and the injected event blocks only the fragile route. Thresholds are explicit command-line options rather than hidden tuning constants.
+
 Generate paired per-seed results:
 
 ```bash
