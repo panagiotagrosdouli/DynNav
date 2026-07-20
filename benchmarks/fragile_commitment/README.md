@@ -9,9 +9,41 @@ The controlled scenario contains two homotopy classes:
 
 Randomized experiments extend this mechanism across `open`, `bottleneck`, `culdesac`, and `multiroute` topology families.
 
-## End-to-end workflow
+## Controlled benchmark
 
-Generate randomized paired observations:
+First validate that the generated scenarios preserve the intended counterexample across the requested seeds:
+
+```bash
+python benchmarks/fragile_commitment/validate_counterexample.py --seeds 100
+```
+
+Generate paired per-seed benchmark results:
+
+```bash
+python benchmarks/fragile_commitment/benchmark.py \
+  --seeds 100 \
+  --output results.csv
+```
+
+Generate summary statistics:
+
+```bash
+python benchmarks/fragile_commitment/statistical_analysis.py \
+  results.csv \
+  --summary-csv summary.csv \
+  --markdown summary.md
+```
+
+## Randomized topology families
+
+The randomized benchmark expands the controlled counterexample into four reproducible map families:
+
+- `open`
+- `bottleneck`
+- `culdesac`
+- `multiroute`
+
+Run all families:
 
 ```bash
 python benchmarks/fragile_commitment/random_benchmark.py \
@@ -19,7 +51,27 @@ python benchmarks/fragile_commitment/random_benchmark.py \
   --output random_topology_results.csv
 ```
 
-Run paired hypothesis tests:
+Run a subset:
+
+```bash
+python benchmarks/fragile_commitment/random_benchmark.py \
+  --families bottleneck culdesac \
+  --seeds 250 \
+  --output focused_results.csv
+```
+
+## Compared policies
+
+- `shortest`
+- `risk_only`
+- `safe_return`
+- `recoverability_aware`
+
+The raw CSV records topology family, seed, selected route, path length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success. Pairing is preserved by `(family, seed)`.
+
+## Paired hypothesis tests
+
+Compare the recoverability-aware planner against the risk-only baseline:
 
 ```bash
 python benchmarks/fragile_commitment/paired_tests.py \
@@ -30,7 +82,18 @@ python benchmarks/fragile_commitment/paired_tests.py \
   --markdown paired_tests.md
 ```
 
-Generate publication-oriented figures:
+The analysis includes:
+
+- Wilcoxon signed-rank tests for continuous metrics;
+- exact McNemar tests for mission success;
+- rank-biserial effect sizes;
+- normalized discordant-pair effect sizes.
+
+Results are reported separately for every topology family. Reported p-values are uncorrected unless otherwise specified in the manuscript.
+
+## Publication figures
+
+Generate publication-ready figures:
 
 ```bash
 python benchmarks/fragile_commitment/paper_figures.py \
@@ -39,31 +102,49 @@ python benchmarks/fragile_commitment/paper_figures.py \
   --format pdf
 ```
 
-The figure command writes:
+Generated figures include:
 
 - mission success by topology family;
 - minimum recoverability by topology family;
-- cumulative recoverability loss by topology family;
-- fragility penalty by topology family;
-- route-risk versus minimum-recoverability scatter.
+- cumulative recoverability loss;
+- fragility penalty;
+- route-risk versus recoverability scatter plot.
 
-PDF is the default manuscript format. SVG is useful for editable vector graphics and PNG for previews.
+Supported formats:
 
-## Compared policies
+- PDF
+- SVG
+- PNG
 
-- `shortest`
-- `risk_only`
-- `safe_return`
-- `recoverability_aware`
+## End-to-end workflow
 
-The raw CSV records topology family, seed, route selection, path length, route risk, recoverability-profile statistics, fragility penalty, event exposure, and mission success. Pairing is preserved by `(family, seed)`.
-
-## Statistical boundary
-
-Wilcoxon signed-rank tests are used for paired continuous metrics and exact McNemar tests for paired mission success. Reported p-values are uncorrected; multiplicity correction and confirmatory hypothesis selection must be declared in the manuscript analysis plan.
+```text
+benchmark.py
+        │
+        ▼
+results.csv
+        │
+        ▼
+random_benchmark.py
+        │
+        ▼
+random_topology_results.csv
+        │
+        ▼
+paired_tests.py
+        │
+        ▼
+paired_tests.csv
+        │
+        ▼
+paper_figures.py
+        │
+        ▼
+paper/figures/
+```
 
 ## Scientific purpose
 
-The benchmark tests the falsifiable claim that collision risk and recoverability are not interchangeable. A useful counterexample has near-equal route risk but a large recoverability gap and different mission outcomes after the same dynamic event.
+The benchmark tests the falsifiable hypothesis that collision risk and recoverability are distinct route properties. Routes with similar collision risk may retain substantially different recovery freedom, leading to different outcomes after identical dynamic changes.
 
-This is a synthetic experimental instrument, not a formal safety certificate or hardware-validation claim.
+This benchmark is a synthetic experimental research instrument and does not constitute a formal safety certificate or hardware-validation claim.
