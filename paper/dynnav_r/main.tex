@@ -1,0 +1,108 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{xcolor}
+
+\newcommand{\system}{DynNav-R}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+
+\title{DynNav-R: Recoverability-Aware Risk-Sensitive Navigation Under Fragile Commitment}
+
+\author{\IEEEauthorblockN{Anonymous Author(s)}
+\IEEEauthorblockA{Affiliation withheld for review}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Navigation objectives commonly minimize path length and collision risk, but these quantities do not capture how much future recovery freedom a route preserves. We introduce \system{}, a recoverability-aware navigation formulation that penalizes fragile commitments: route segments that sharply reduce the robot's ability to return, escape, or replan after environmental change. We define route-level recoverability degradation metrics and evaluate four planner objectives in the Fragile Commitment Benchmark, including randomized open, bottleneck, cul-de-sac, and multiroute topology families. The experimental pipeline uses paired trials, Wilcoxon signed-rank tests for continuous metrics, and exact McNemar tests for mission success. \todo{Insert validated quantitative findings only after the benchmark and statistical pipeline have been executed.}
+\end{abstract}
+
+\section{Introduction}
+A route can appear short and low-risk while committing a robot to a narrow corridor from which recovery becomes difficult after a blockage, sensing failure, or local risk increase. Existing risk-aware objectives may therefore prefer routes that are safe under the current prediction but brittle under future change.
+
+This paper studies the distinction between immediate traversal risk and retained recovery freedom. Our central hypothesis is that routes with similar collision risk can have substantially different recoverability profiles and produce different mission outcomes after the same dynamic event.
+
+The contributions are:
+\begin{itemize}
+  \item a route-level recoverability profile containing minimum recoverability, terminal recoverability, cumulative recoverability loss, maximum single-step loss, and bottleneck exposure;
+  \item a recoverability-aware objective that augments path length and risk with an interpretable fragility penalty;
+  \item the Fragile Commitment Benchmark, including controlled and randomized topology families with paired planner evaluation;
+  \item a reproducible statistical and visualization pipeline producing paired tests, effect sizes, paper figures, and manuscript-ready tables.
+\end{itemize}
+
+\section{Related Work}
+\todo{Complete and verify citations for risk-aware planning, belief-space planning, viability and reachability, safe return, contingency planning, and runtime safety supervision.}
+
+\section{Problem Formulation}
+Let a route be $\pi=(s_0,\ldots,s_T)$. We optimize
+\begin{equation}
+J(\pi)=L(\pi)+\lambda_r\operatorname{CVaR}_{\alpha}(r(\pi))+\lambda_i\Phi(\pi),
+\end{equation}
+where $L$ is route length, $r$ is traversal risk, and $\Phi$ is the recoverability fragility penalty.
+
+For recoverability values $R_t\in[0,1]$, define cumulative recoverability loss
+\begin{equation}
+D_{\mathrm{loss}}(\pi)=\sum_{t=1}^{T}\max(0,R_{t-1}-R_t),
+\end{equation}
+and minimum recoverability
+\begin{equation}
+R_{\min}(\pi)=\min_{0\leq t\leq T}R_t.
+\end{equation}
+The route fragility penalty is
+\begin{equation}
+\Phi(\pi)=w_{\min}(1-R_{\min})+w_DD_{\mathrm{loss}}+w_BB,
+\end{equation}
+where $B$ is bottleneck exposure.
+
+\section{Fragile Commitment Benchmark}
+The controlled benchmark contains a short narrow route vulnerable to a dynamic closure and a longer route that preserves alternative recovery and escape options. Randomized experiments extend the mechanism across open, bottleneck, cul-de-sac, and multiroute topology families.
+
+Every $(\text{family},\text{seed})$ pair is evaluated with four policies:
+\begin{itemize}
+  \item shortest path;
+  \item risk-only planning;
+  \item safe-return planning;
+  \item recoverability-aware planning.
+\end{itemize}
+
+The benchmark records path length, route risk, recoverability-profile metrics, fragility penalty, event exposure, and mission success.
+
+\section{Experimental Protocol}
+All planner comparisons preserve pairing by topology family and random seed. Continuous route metrics are compared using two-sided Wilcoxon signed-rank tests. Mission success is compared using an exact two-sided McNemar test. Rank-biserial and discordant-pair effect sizes accompany p-values.
+
+\todo{Declare confirmatory hypotheses, seed count, multiplicity correction, parameter-selection procedure, and hardware/software environment before final submission.}
+
+\section{Results}
+\todo{Generate and include validated figures from \texttt{paper/figures/fragile\_commitment}.}
+
+\todo{Generate and include validated LaTeX tables from \texttt{paper/tables/fragile\_commitment}.}
+
+% Example inclusions after artifacts exist:
+% \begin{figure}[t]
+%   \centering
+%   \includegraphics[width=\linewidth]{../figures/fragile_commitment/mission_success.pdf}
+%   \caption{Mission success by topology family and planner.}
+%   \label{fig:mission-success}
+% \end{figure}
+%
+% \input{../tables/fragile_commitment/planner_summary.tex}
+% \input{../tables/fragile_commitment/statistical_tests.tex}
+
+\section{Discussion}
+The intended interpretation is not that recoverability replaces collision risk. Instead, recoverability captures a complementary route property: the preservation of future safe options. A planner may rationally accept modest additional distance to avoid an irreversible commitment whose failure mode is not represented by current collision-risk estimates.
+
+\section{Limitations}
+The current benchmark is synthetic. Its topology families isolate the fragile-commitment mechanism but do not establish transfer to continuous dynamics, perception errors, ROS~2/Nav2 deployments, or physical robots. Recoverability values depend on the chosen state representation and recovery model. Statistical conclusions must remain limited to executed configurations and predeclared hypotheses.
+
+\section{Conclusion}
+We presented \system{}, a recoverability-aware navigation formulation and benchmark for studying fragile route commitment. The framework separates immediate traversal risk from retained recovery freedom and provides a reproducible path from paired benchmark runs to statistical tests, figures, and manuscript tables.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
