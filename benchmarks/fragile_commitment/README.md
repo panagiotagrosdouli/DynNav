@@ -11,8 +11,18 @@ The benchmark is deliberately lightweight and reproducible. It uses only the Pyt
 
 ## Run
 
+Generate paired per-seed results:
+
 ```bash
 python benchmarks/fragile_commitment/benchmark.py --seeds 100 --output results.csv
+```
+
+Create a per-planner summary CSV and a paper-ready Markdown table:
+
+```bash
+python benchmarks/fragile_commitment/statistical_analysis.py results.csv \
+  --summary-csv summary.csv \
+  --markdown summary.md
 ```
 
 Each seed evaluates the same generated scenario with four route-selection policies:
@@ -22,7 +32,7 @@ Each seed evaluates the same generated scenario with four route-selection polici
 - `safe_return`
 - `recoverability_aware`
 
-The exported CSV records route length, route risk, recoverability-profile statistics, fragility penalty, whether the injected closure blocks the chosen route, and mission success.
+The raw CSV records route length, route risk, recoverability-profile statistics, fragility penalty, whether the injected closure blocks the chosen route, and mission success. The summary CSV reports per-planner means and descriptive 95% confidence intervals. Raw paired observations should be retained for subsequent paired hypothesis tests when randomized topology families are added.
 
 ## Scientific purpose
 
