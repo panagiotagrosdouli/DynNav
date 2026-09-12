@@ -35,19 +35,25 @@ def commitment_phase_world(
     detour_depth: int,
     closure_probability: float,
 ) -> tuple[GridMap, GridCell, GridCell, set[GridCell], CommitmentHazardModel]:
-    """Create one risky direct edge and a uniquely sized safe detour.
+    """Create one risky terminal commitment and a uniquely sized safe detour.
 
     The start reaches the right-hand region through a sole return bridge and
-    then a junction. The direct junction-to-goal edge activates a possible
-    future closure of that bridge.
+    then a junction. The geometrically direct route crosses a midpoint and its
+    final midpoint-to-goal transition activates a possible future closure of
+    that bridge.
 
     The safe alternative is a U-shaped corridor: from the junction it moves
     ``detour_depth`` cells upward, crosses once, then moves the same distance
-    downward to the goal. Its overhead over the direct edge is exactly
-    ``2 * detour_depth``. The right-hand leg is deliberately present at every
-    row so the detour actually reaches the goal; because there are no cross
-    edges between the two legs except at the top, no shorter safe crossover
-    exists.
+    downward to the goal. Its overhead over the direct route is exactly
+    ``2 * detour_depth``. The middle column is blocked away from its two
+    intended crossings, so no intermediate-row shortcut exists.
+
+    Placing the trigger on the terminal direct transition is deliberate: the
+    planner's objective charges ``lambda * (1 - P(return))`` after every
+    transition. A terminal trigger therefore contributes exactly one
+    ``lambda * p`` term, making the controlled switch boundary
+    ``lambda * p > 2 * detour_depth`` identifiable rather than accidentally
+    multiplying the penalty by the number of post-trigger steps.
     """
     if detour_depth < 1:
         raise ValueError("detour_depth must be at least 1")
@@ -55,8 +61,6 @@ def commitment_phase_world(
         raise ValueError("closure_probability must be in [0, 1]")
 
     d = detour_depth
-    # Columns 2 and 4 are the two detour legs. Column 3 is blocked except at
-    # the top crossover, preventing intermediate-row shortcuts.
     width, height = 5, d + 1
     start = (0, d)
     bridge = (1, d)
@@ -78,7 +82,7 @@ def commitment_phase_world(
     model = CommitmentHazardModel(
         (
             CommitmentClosure(
-                trigger=(junction, trigger_midpoint),
+                trigger=(trigger_midpoint, goal),
                 closure_cell=bridge,
                 closure_probability=closure_probability,
             ),
