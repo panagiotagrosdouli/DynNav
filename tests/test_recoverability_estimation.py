@@ -4,7 +4,10 @@ import pytest
 
 from dynnav.planners.grid_map import GridMap
 from dynnav.recoverability_belief import TopologyBelief, exact_safe_return_probability
-from dynnav.recoverability_estimation import most_reliable_return_path
+from dynnav.recoverability_estimation import (
+    most_reliable_return_path,
+    two_uncertain_disjoint_return_paths,
+)
 
 
 def test_most_reliable_path_is_exact_for_single_bridge_topology() -> None:
@@ -30,6 +33,30 @@ def test_most_reliable_path_is_conservative_when_redundancy_matters() -> None:
     assert estimate.probability == pytest.approx(0.8)
     assert exact == pytest.approx(0.94)
     assert estimate.probability < exact
+
+
+def test_two_path_estimator_recovers_parallel_bridge_reliability() -> None:
+    grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
+    belief = TopologyBelief({(1, 0): 0.2, (1, 2): 0.3})
+
+    estimate = two_uncertain_disjoint_return_paths(grid, (2, 1), {(0, 1)}, belief)
+    exact = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, belief)
+
+    assert len(estimate.paths) == 2
+    assert estimate.probability == pytest.approx(0.94)
+    assert estimate.probability == pytest.approx(exact)
+
+
+def test_two_path_estimator_does_not_double_count_shared_uncertain_bridge() -> None:
+    grid = GridMap.from_obstacles(5, 3, obstacles={(2, 0), (2, 2)})
+    belief = TopologyBelief({(2, 1): 0.4})
+
+    estimate = two_uncertain_disjoint_return_paths(grid, (4, 1), {(0, 1)}, belief)
+    exact = exact_safe_return_probability(grid, (4, 1), {(0, 1)}, belief)
+
+    assert len(estimate.paths) == 1
+    assert estimate.probability == pytest.approx(0.6)
+    assert estimate.probability == pytest.approx(exact)
 
 
 def test_estimator_prefers_more_reliable_of_two_return_routes() -> None:
