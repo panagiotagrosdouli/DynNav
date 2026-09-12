@@ -5,13 +5,10 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{microtype}
-\usepackage{xcolor}
 
-\newcommand{\method}{DynNav-H}
 \newcommand{\Rret}{R_{\mathrm{return}}}
 \newcommand{\Aset}{\mathcal{A}}
 \newcommand{\Ssafe}{\mathcal{S}_{\mathrm{safe}}}
-\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
 
 \title{When the Same Place Is Not the Same State:\\History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards}
 
@@ -22,11 +19,13 @@
 \maketitle
 
 \begin{abstract}
-A mobile robot can reach the same geometric location through two paths while retaining different future return options if its earlier actions alter the probability of later environmental closures. A state-only navigation model cannot represent this distinction. We study action-triggered topology hazards: traversing selected directed transitions activates stochastic future closures of cells that may be critical for returning to a designated safe set. We formulate safe-return reliability on an augmented state consisting of robot position and activated hazards, give an exact small-world oracle under independent Bernoulli closures, and plan with A* using a soft recoverability cost. A counterfactual benchmark shows that histories ending at the same cell can differ in return reliability by as much as 0.9 while a state-only marginal-risk model necessarily assigns them the same value. In an analytic route-switch family, the exact planner matches all 75 predicted switch decisions. In paired stochastic execution over 1000 seeds per condition, the shortest and state-only marginal-risk planners exhibit identical irreversible-failure rates of 0.512, 0.881, and 0.992 at closure probabilities 0.2, 0.5, and 0.8, whereas the history-aware and hard safe-return planners avoid all trigger activations in this controlled family. A critical-cut approximation accelerates exact return evaluation by about 177$\times$ at 12 series hazards, but we also construct a joint-cut counterexample in which this approximation is intentionally optimistic. The results isolate a specific information advantage of history conditioning while making explicit the limits of the current discrete, known-model evaluation.
+A mobile robot can reach the same geometric location through two paths while retaining different future return options if its earlier actions alter the probability of later environmental closures. A state-only navigation model cannot represent this distinction. We study action-triggered topology hazards: traversing selected directed transitions activates stochastic future closures of cells that may be critical for returning to a designated safe set. We formulate safe-return reliability on an augmented state consisting of robot position and activated hazards, give an exact small-world oracle under independent Bernoulli closures, and plan with A* using a soft recoverability cost. A counterfactual benchmark shows that histories ending at the same cell can differ in return reliability by as much as 0.9 while a state-only marginal-risk model necessarily assigns them the same value. In an analytic route-switch family, the exact planner matches all 75 predicted switch decisions. In paired stochastic execution over 1000 seeds per condition, shortest-path and state-only marginal-risk planning exhibit identical irreversible-failure rates of 0.512, 0.881, and 0.992 at closure probabilities 0.2, 0.5, and 0.8, whereas exact history-aware planning avoids all trigger activations in this controlled family. A frozen heterogeneous-probability evaluation over 1500 additional paired trials preserves the state-only null result and separates the soft history-aware planner from a fixed hard-return threshold in one scenario. A critical-cut approximation accelerates exact return evaluation by about 177$\times$ at 12 series hazards, but a joint-cut counterexample exposes its optimism. The results isolate a specific information advantage of history conditioning while making explicit the limits of the current discrete, known-model evaluation.
 \end{abstract}
 
 \section{Introduction}
 Planning for collision avoidance or low expected traversal risk is not equivalent to preserving the ability to recover. A robot may enter a corridor safely under the current map and still make a commitment that leaves no return route after a later closure. Recent work has formalized safe-return policies, contingency feasibility, returnability, backup-plan safety, and predictive commitment in uncertain environments \cite{guo2023safereturn,stephens2024safeexploration,jung2025contingency,srirangam2026scramppi,tao2024backup,han2026rcsp}. These results rule out any broad novelty claim for ``planning while keeping a way back.''
+
+History-dependent robot risk is also established prior art. Xiao, Dufek, and Murphy formalize locale-, action-, and traverse-dependent motion risk and develop a directional planner that retains history needed to evaluate non-Markovian risk \cite{xiao2020risk}. Therefore, neither history-dependent planning nor probabilistic history-dependent risk is new in itself.
 
 This paper asks a narrower question: \emph{what if the robot's own path history changes which future environmental topology hazards are active?} Consider two trajectories that end at the same geometric cell. One traversed a transition that causes a door, gate, or passage behind the robot to become likely to close; the other avoided that transition. If the closure process is action-triggered, the two trajectories have different future return-connectivity despite sharing the same current position and static map. The relevant planning state is therefore not position alone.
 
@@ -37,13 +36,16 @@ The contributions are:
   \item a compact model of action-triggered topology hazards and an augmented planning state $(x,\Aset)$ that retains which future closures have been activated;
   \item an exact safe-return reliability oracle for independent future closures and an A* objective that trades path length against history-conditioned return fragility;
   \item a counterfactual same-state/different-history test showing an information gap that a state-only marginal model cannot represent;
-  \item analytic, procedural, stochastic, scaling, held-out, and adversarial benchmarks against shortest-path, state-only probability-aware, critical-cut, and hard safe-return baselines;
+  \item analytic, procedural, stochastic, scaling, frozen heterogeneous-probability, and adversarial benchmarks against shortest-path, state-only probability-aware, critical-cut, and hard safe-return baselines;
   \item an explicit failure analysis showing when the scalable critical-cut approximation becomes optimistic under joint multi-cell cutsets.
 \end{itemize}
 
 \section{Related Work}
 \subsection{Safe return and contingency feasibility}
 Guo \emph{et al.} require the existence of a policy that returns an MDP to safe states with high probability and jointly synthesize outbound and return behavior \cite{guo2023safereturn}. Safe exploration methods likewise evaluate reachability and returnability probabilities before visiting uncertain regions \cite{stephens2024safeexploration}. Backup Plan Constrained MPC optimizes primary and alternative mission feasibility \cite{tao2024backup}. Contingency-MPPI embeds contingency generation inside nominal planning, and SCRAMPPI uses Hamilton--Jacobi reachability to certify that a safe-set trajectory exists from every state on the nominal plan \cite{jung2025contingency,srirangam2026scramppi}. These methods are stronger than our grid abstraction as general safety or control frameworks. Our distinction is representational: the environment hazard set itself depends on the executed transition history.
+
+\subsection{History-dependent motion risk}
+Xiao \emph{et al.} explicitly reject a purely state-dependent risk model, classify action- and traverse-dependent risks, and plan with directional history information \cite{xiao2020risk}. Their framework is close to ours in the reason memory is required: two arrivals at a geometric location need not have the same path risk. Our problem variable differs. We condition on a set of action-triggered \emph{future environmental closures} and evaluate the induced probability that the current state remains connected to a safe set. Thus the object being propagated is future return-connectivity under a changed environmental hazard state, rather than accumulated locomotion risk alone. We treat the 2020 result as a direct novelty constraint, not as a weak baseline.
 
 \subsection{Predictive commitment and dynamic topology}
 RCSP studies commands that are locally safe but commit a robot to a bottleneck that moving obstacles may soon close \cite{han2026rcsp}. Dynamic door-closing work has used POMDP belief-tree reasoning for self-protective manipulation behavior \cite{liu2021door}, while nondeterministic planning has long represented exogenous events and robust plans \cite{perret1996events}. These works motivate proactive reasoning about future changes; they do not by themselves establish that our action-triggered return-topology abstraction is novel.
@@ -118,8 +120,10 @@ We evaluate six complementary questions.
   \item \emph{Stochastic execution:} does history conditioning change irreversible-failure outcomes under sampled future closures?
   \item \emph{State-only falsification:} does a probability-aware planner with the same marginals reproduce the history-aware behavior?
   \item \emph{Scaling:} what computation is introduced by exact history-conditioned evaluation, and what does the cut approximation save?
-  \item \emph{Approximation boundary:} can a joint cutset produce a route-choice failure for the cut approximation?
+  \item \emph{Approximation boundary:} can a joint cutset produce a route-history failure for the cut approximation?
 \end{enumerate}
+
+The development sweeps use homogeneous closure probabilities. Before inspecting outcomes, a separate evaluation family was frozen with heterogeneous per-trigger probabilities and unseen module counts: six modules with probabilities $(.15,.25,.35,.55,.75,.85)$, seven modules with $(.80,.20,.70,.30,.60,.40,.90)$, and eight modules with $(.10,.90,.20,.80,.35,.65,.45,.75)$. Each scenario uses 500 paired execution seeds. This protocol tests probability-pattern and horizon generalization within the same procedural topology family; it is not claimed as geometric-domain generalization.
 
 \section{Results}
 \subsection{Same state, different history}
@@ -154,6 +158,28 @@ Hard return $\tau=.9$ & 0 & 0 & 0\\
 
 For the history-exact comparison against shortest, paired risk differences are $-0.512$, $-0.881$, and $-0.992$. Exact McNemar tests are extremely small because all discordant outcomes favor history-aware planning in this controlled family. In contrast, the state-only marginal baseline has zero discordant pairs and McNemar $p=1$ at every probability. This null comparison is central: marginal probability awareness alone does not explain the history-aware route choice.
 
+\subsection{Frozen heterogeneous-probability evaluation}
+Table~\ref{tab:heldout} reports the frozen heterogeneous scenarios. The state-only marginal planner remains identical to shortest in every scenario: the two planners activate every trigger and share every binary failure outcome. Exact-history and history-cut planning activate no hazards in all three scenarios. Their paired risk differences versus shortest are $-0.992$, $-0.998$, and $-1.000$ for the 6-, 7-, and 8-module scenarios, respectively; the corresponding 95\% paired-bootstrap intervals are $[-0.998,-0.984]$, $[-1.000,-0.994]$, and $[-1.000,-1.000]$. There are no proposed-only failures.
+
+\begin{table}[t]
+\centering
+\caption{Frozen heterogeneous-probability evaluation, 500 paired seeds per scenario. Entries are irreversible-failure rates.}
+\label{tab:heldout}
+\begin{tabular}{lccc}
+\toprule
+Planner & 6 modules & 7 modules & 8 modules\\
+\midrule
+Shortest & 0.992 & 0.998 & 1.000\\
+State-only marginal & 0.992 & 0.998 & 1.000\\
+History exact & 0 & 0 & 0\\
+History cut & 0 & 0 & 0\\
+Hard return $\tau=.9$ & 0 & 0 & 0.116\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The eight-module case distinguishes the soft history-aware objective from the fixed hard threshold. The hard-return planner accepts one low-probability commitment, uses a path of length 46 rather than 48, and fails on 58 of 500 trials (0.116); exact-history planning activates no closure and has no failure. This is not a dominance claim over safe-return constraints: changing $\tau$ changes the hard baseline's policy. It demonstrates that a fixed feasibility threshold and a soft cumulative history-conditioned objective encode different tradeoffs.
+
 \subsection{Approximation and scaling}
 On a series-critical family, the critical-cut estimate is exact by construction. At 12 hazards, exact enumeration takes 61.8~ms in the retained artifact while the cut estimate takes 0.348~ms, a speedup of approximately 177$\times$. This result must not be generalized beyond the family on which the cut structure is exact.
 
@@ -174,28 +200,39 @@ History exact & 72 & 36 & 8.99\\
 \end{tabular}
 \end{table}
 
-\subsection{Held-out heterogeneous probabilities}
-\todo{Replace this paragraph with CI-verified PR \#144 held-out artifact values. The protocol is frozen before inspection: 6--8 modules with per-trigger probability vectors not used in the development sweeps, 500 paired seeds per scenario, and the same five planners.}
-
 \subsection{Joint-cut adversarial case}
-\todo{Replace this paragraph with CI-verified PR \#144 results. The adversarial topology contains two parallel return corridors; no single hazard is critical, but simultaneous closure of both disconnects the safe set. The expected result is that exact history-aware planning detours for sufficiently large $\lambda p^2$, whereas the individually-critical cut approximation can remain maximally optimistic.}
+The critical-cut approximation is exact on the series family because each relevant closure cell is individually critical. We therefore construct a different topology with two parallel return corridors. Neither closure cell alone disconnects the safe set, but closing both does. The lattice has two equal-length goal routes (length 6), so route choice isolates the recoverability estimate rather than a distance tradeoff.
+
+Across all nine combinations $p\in\{0.2,0.5,0.8\}$ and $\lambda\in\{2,4,8\}$, exact history-aware planning selects the route that activates no hazards and retains exact return reliability 1. The cut planner selects an equal-length route that activates both hazards in all nine cases. Because neither cell is individually critical, it reports $R_{\mathrm{cut}}=1$. Exact post-hoc evaluation of that same route is instead $1-p^2$: 0.96, 0.75, and 0.36 for the three probabilities. Thus the artifact contains nine of nine optimistic cut estimates and a route-history disagreement rate of 1.0. This is an explicit counterexample to using individually-critical cuts as a general return-reliability surrogate.
 
 \section{Discussion}
 The experiments support a narrow claim. When actions activate future topology hazards, path history can contain information about safe-return connectivity that is absent from a state-only marginal hazard map. This is not equivalent to claiming that history-aware planning is universally safer, that soft recoverability costs dominate hard contingency constraints, or that the proposed model subsumes general dynamic navigation.
 
-The state-only null result is more informative than comparison only against shortest path. Both planners know the same closure locations and marginal probabilities. Their divergence arises because one conditions on the executed trigger set and the other does not. Conversely, the hard safe-return baseline matches the exact-history planner in the high-penalty series experiment, showing that our current evidence establishes an information mechanism rather than superiority over all safe-return formulations.
+The state-only null result is more informative than comparison only against shortest path. Both planners know the same closure locations and marginal probabilities. Their divergence arises because one conditions on the executed trigger set and the other does not. This distinction survives the frozen heterogeneous probability patterns and longer horizons tested here. However, those scenarios preserve the same repeated-module topology, so they test parameter/horizon generalization rather than transfer to arbitrary maps.
 
-The exact oracle is useful for small controlled worlds and for validating approximations, but its exponential closure enumeration is not a scalable navigation solution. The critical-cut approximation removes most of this cost in series-articulation families. Its joint-cut failure is therefore an important design boundary: fast structural approximations require either multi-cell cut reasoning, scenario sampling, or another estimator when redundant return paths share correlated failure modes.
+The hard safe-return baseline matches exact-history planning in the homogeneous high-penalty series experiment but differs in the eight-module heterogeneous case. That difference should not be read as a universal advantage of a soft objective: a different threshold can change the hard-constrained policy. The result instead shows that ``feasible above a threshold'' and cumulative return-fragility optimization answer different decision questions.
+
+The exact oracle is useful for small controlled worlds and for validating approximations, but its exponential closure enumeration is not a scalable navigation solution. The critical-cut approximation removes most of this cost in series-articulation families. Its joint-cut failure is therefore an important design boundary: fast structural approximations require multi-cell cut reasoning, scenario sampling, or another estimator when redundant return paths can fail jointly.
+
+The closest history-dependent risk work also narrows the interpretation. Xiao \emph{et al.} already establish that robot risk can depend on action and traversal history and that planning may need a history-sensitive state representation \cite{xiao2020risk}. Our evidence does not supersede that result. It isolates a different state variable: which future environmental topology changes have been activated and what that implies for safe-set connectivity.
+
+\section{Threats to Validity}
+The strongest stochastic results come from procedural worlds designed to expose a mechanism. The homogeneous and heterogeneous series families contain critical return bridges, so a policy that avoids every trigger has a structural advantage once closure probabilities become appreciable. The state-only baseline is intentionally given the same marginal closure probabilities but an incorrect conditional model; its failure demonstrates the information loss under that modeling choice, not the weakness of every possible Markov representation. A sufficiently rich Markov state could include the activated-hazard set, which is exactly our augmented state.
+
+Parameter selection is another threat. The principal soft-planner execution results use recoverability weight $\lambda=8$, while the hard baseline uses $\tau=0.9$. Analytic phase-boundary sweeps and threshold-sensitivity experiments expose how route choice changes with these parameters, but no claim of universal parameter optimality is made. Finally, Monte Carlo uncertainty remains in empirical failure rates; paired binary effects and exact McNemar tests are used because seeds are shared across planners.
 
 \section{Limitations}
 The current study uses discrete grid connectivity, known trigger locations, known closure probabilities, and mostly independent Bernoulli future closures. A scenario-based oracle demonstrates that equal marginals can be optimistic under correlated closures, but correlated uncertainty is not yet integrated into the online planner. The stochastic execution experiments sample topology events after commitment; they do not model continuous robot dynamics, perception delay, collision, or contact.
 
 The repository contains a ROS~2 Jazzy/Nav2/Gazebo dynamic route-invalidation protocol, but the history-conditioned planner evaluated in this paper has not yet been integrated into that execution stack. We therefore make no hardware, collision-avoidance, kinodynamic-safety, or formal runtime-guarantee claim. The result should be interpreted as algorithmic and mechanism evidence for a specific representational gap.
 
-Finally, literature search cannot prove novelty. Safe return, contingency planning, predictive commitment, action reversibility, endogenous uncertainty, dynamic doors, and utilization-driven degradation all have substantial prior art \cite{guo2023safereturn,jung2025contingency,srirangam2026scramppi,han2026rcsp,baldes2024fallible,liu2021door,doan2022endogenous}. The defensible contribution is the explicit action-triggered environmental return-topology formulation and its state-only information-gap evaluation, subject to further prior-art review.
+Finally, literature search cannot prove novelty. Safe return, contingency planning, predictive commitment, history-dependent risk, action reversibility, endogenous uncertainty, dynamic doors, and utilization-driven degradation all have substantial prior art \cite{guo2023safereturn,xiao2020risk,jung2025contingency,srirangam2026scramppi,han2026rcsp,baldes2024fallible,liu2021door,doan2022endogenous}. The defensible contribution is the explicit action-triggered environmental return-topology formulation and its state-only information-gap evaluation, subject to continued prior-art review.
+
+\section{Reproducibility}
+The implementation records raw per-trial CSV files and machine-readable JSON summaries for every benchmark family. Focused continuous integration runs regression tests before executing the benchmark suite, then uploads all raw artifacts under the exact commit SHA. Planning-time instrumentation excludes post-hoc diagnostic profiling while retaining oracle work used online for route selection. Stochastic comparisons use fixed paired seeds and event-index common random numbers. These controls were introduced before the frozen heterogeneous evaluation was inspected.
 
 \section{Conclusion}
-We studied navigation in which the robot's own transition history activates stochastic future closures that can destroy return connectivity. In this setting, the same geometric cell can correspond to different recoverability because the environment's future topology depends on how the robot arrived. Augmenting search with the activated hazard set captures this distinction; a state-only marginal-risk baseline cannot. Exact planning follows an analytic route-switch boundary and eliminates failures in a controlled stochastic series family, while a scalable critical-cut approximation offers substantial speedup but fails on joint cutsets. These results establish a reproducible mechanism-level case for history-conditioned safe-return reasoning and clearly delimit the additional evidence required for broader robotics claims.
+We studied navigation in which the robot's own transition history activates stochastic future closures that can destroy return connectivity. In this setting, the same geometric cell can correspond to different recoverability because the environment's future topology depends on how the robot arrived. Augmenting search with the activated hazard set captures this distinction; a state-only marginal-risk baseline cannot. Exact planning follows an analytic route-switch boundary and eliminates failures in the controlled series families evaluated here, while a scalable critical-cut approximation offers substantial speedup but fails on joint cutsets. These results establish a reproducible mechanism-level case for history-conditioned safe-return reasoning and clearly delimit the additional evidence required for broader robotics claims.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}
