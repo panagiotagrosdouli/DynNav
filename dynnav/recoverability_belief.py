@@ -70,19 +70,17 @@ def exact_safe_return_probability(
     """Return exact post-closure safe-return probability by enumeration.
 
     Hazard cells are currently traversable but may independently close before a
-    future recovery is attempted. The current robot cell is conditioned usable
-    at the decision instant and therefore cannot itself be a pending closure in
-    this state-level oracle.
+    future recovery is attempted. If the current robot cell is itself a hazard
+    location, that one cell is conditioned usable at the decision instant while
+    all other future closure events remain unresolved.
     """
 
     grid.validate()
     hazard.validate(grid)
-    if start in hazard.closure_probability:
-        raise ValueError("current robot cell must be conditioned usable in the hazard oracle")
     if max_hazard_cells < 0:
         raise ValueError("max_hazard_cells must be non-negative")
 
-    hazard_cells = sorted(hazard.closure_probability)
+    hazard_cells = sorted(cell for cell in hazard.closure_probability if cell != start)
     if len(hazard_cells) > max_hazard_cells:
         raise ValueError(
             f"exact enumeration limited to {max_hazard_cells} hazard cells; "
