@@ -89,15 +89,17 @@
   },
   "series_cut_scaling": {
     "hazard_count": 12,
-    "exact_ms": 61.786,
-    "cut_ms": 0.348,
-    "reported_speedup_approx": 177.0,
-    "scope": "controlled series-critical family only"
+    "exact_ms": 49.53930700003184,
+    "cut_ms": 0.26243299998895964,
+    "speedup_exact_over_cut": 188.76935066137233,
+    "timing_scope": "single representative retained CI run; controlled series-critical family only",
+    "max_cut_absolute_error": 0.0
   },
   "augmented_search_scaling_at_6_modules": {
-    "shortest_augmented": {"nodes": 25, "path_length": 24, "planning_ms": 0.119},
-    "history_cut": {"nodes": 72, "path_length": 36, "planning_ms": 3.93},
-    "history_exact": {"nodes": 72, "path_length": 36, "planning_ms": 8.99}
+    "shortest_augmented": {"nodes": 25, "path_length": 24, "planning_ms": 0.17824399998289664},
+    "history_cut": {"nodes": 72, "path_length": 36, "planning_ms": 5.53709399997615},
+    "history_exact": {"nodes": 72, "path_length": 36, "planning_ms": 12.496012999974937},
+    "timing_scope": "single representative retained CI run after excluding post-hoc diagnostics"
   },
   "joint_cut_counterexample": {
     "probabilities": [0.2, 0.5, 0.8],
