@@ -25,6 +25,18 @@ class PairedEffect:
     interval: IntervalEstimate
 
 
+@dataclass(frozen=True)
+class PairedBinaryEffect:
+    baseline_rate: float
+    proposed_rate: float
+    risk_difference: float
+    interval: IntervalEstimate
+    baseline_only_events: int
+    proposed_only_events: int
+    discordant_pairs: int
+    mcnemar_exact_pvalue: float
+
+
 def _values(values: Iterable[float]) -> list[float]:
     result = [float(value) for value in values]
     if not result:
@@ -73,6 +85,67 @@ def paired_effect(
         interval=bootstrap_mean_interval(
             differences, confidence=confidence, resamples=resamples, seed=seed
         ),
+    )
+
+
+def _binary(values: Sequence[bool | int]) -> list[int]:
+    if not values:
+        raise ValueError("at least one binary observation is required")
+    result: list[int] = []
+    for value in values:
+        integer = int(value)
+        if integer not in (0, 1) or integer != value:
+            raise ValueError("binary observations must be bool/0/1")
+        result.append(integer)
+    return result
+
+
+def exact_mcnemar_pvalue(baseline_only: int, proposed_only: int) -> float:
+    """Two-sided exact McNemar p-value using the conditional binomial test."""
+    if baseline_only < 0 or proposed_only < 0:
+        raise ValueError("discordant counts must be non-negative")
+    n = baseline_only + proposed_only
+    if n == 0:
+        return 1.0
+    k = min(baseline_only, proposed_only)
+    tail = sum(math.comb(n, i) for i in range(k + 1)) / (2.0 ** n)
+    return min(1.0, 2.0 * tail)
+
+
+def paired_binary_effect(
+    baseline: Sequence[bool | int],
+    proposed: Sequence[bool | int],
+    *,
+    confidence: float = 0.95,
+    resamples: int = 5000,
+    seed: int = 0,
+) -> PairedBinaryEffect:
+    """Paired binary effect for event indicators (e.g. irreversible failure).
+
+    ``risk_difference`` is proposed minus baseline, so negative values indicate
+    fewer events under the proposed method when the event is undesirable.
+    """
+    if len(baseline) != len(proposed) or not baseline:
+        raise ValueError("paired samples must have equal non-zero length")
+    left = _binary(baseline)
+    right = _binary(proposed)
+    differences = [candidate - reference for reference, candidate in zip(left, right, strict=True)]
+    baseline_only = sum(reference == 1 and candidate == 0 for reference, candidate in zip(left, right, strict=True))
+    proposed_only = sum(reference == 0 and candidate == 1 for reference, candidate in zip(left, right, strict=True))
+    return PairedBinaryEffect(
+        baseline_rate=mean(left),
+        proposed_rate=mean(right),
+        risk_difference=mean(differences),
+        interval=bootstrap_mean_interval(
+            differences,
+            confidence=confidence,
+            resamples=resamples,
+            seed=seed,
+        ),
+        baseline_only_events=baseline_only,
+        proposed_only_events=proposed_only,
+        discordant_pairs=baseline_only + proposed_only,
+        mcnemar_exact_pvalue=exact_mcnemar_pvalue(baseline_only, proposed_only),
     )
 
 

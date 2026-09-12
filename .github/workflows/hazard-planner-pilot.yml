@@ -1,0 +1,132 @@
+name: Hazard-aware planner pilot
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/planners/hazard_reliability_astar.py"
+      - "dynnav/planners/commitment_aware_astar.py"
+      - "dynnav/planners/commitment_cut_astar.py"
+      - "dynnav/planners/commitment_safe_return_astar.py"
+      - "dynnav/experiments/hazard_planner_pilot.py"
+      - "dynnav/experiments/commitment_trap_benchmark.py"
+      - "dynnav/experiments/history_commitment_benchmark.py"
+      - "dynnav/experiments/commitment_phase_benchmark.py"
+      - "dynnav/experiments/cut_scaling_benchmark.py"
+      - "dynnav/experiments/multi_commitment_benchmark.py"
+      - "dynnav/experiments/commitment_execution_benchmark.py"
+      - "dynnav/experiments/history_state_scaling_benchmark.py"
+      - "dynnav/experiments/safe_return_threshold_benchmark.py"
+      - "dynnav/experiments/history_information_gap_benchmark.py"
+      - "dynnav/experiments/statistics.py"
+      - "dynnav/commitment_hazard.py"
+      - "dynnav/recoverability_cut.py"
+      - "dynnav/recoverability_scenarios.py"
+      - "scripts/run_hazard_planner_pilot.py"
+      - "scripts/run_commitment_trap_benchmark.py"
+      - "scripts/run_history_commitment_benchmark.py"
+      - "scripts/run_commitment_phase_benchmark.py"
+      - "scripts/run_cut_scaling_benchmark.py"
+      - "scripts/run_multi_commitment_benchmark.py"
+      - "scripts/run_commitment_execution_benchmark.py"
+      - "scripts/run_history_state_scaling_benchmark.py"
+      - "scripts/run_safe_return_threshold_benchmark.py"
+      - "scripts/run_history_information_gap_benchmark.py"
+      - "tests/test_hazard_reliability_astar.py"
+      - "tests/test_hazard_planner_pilot.py"
+      - "tests/test_commitment_hazard.py"
+      - "tests/test_commitment_aware_astar.py"
+      - "tests/test_commitment_cut_astar.py"
+      - "tests/test_commitment_safe_return_astar.py"
+      - "tests/test_commitment_trap_benchmark.py"
+      - "tests/test_history_commitment_benchmark.py"
+      - "tests/test_commitment_phase_benchmark.py"
+      - "tests/test_recoverability_cut.py"
+      - "tests/test_recoverability_scenarios.py"
+      - "tests/test_cut_scaling_benchmark.py"
+      - "tests/test_multi_commitment_benchmark.py"
+      - "tests/test_commitment_execution_benchmark.py"
+      - "tests/test_history_state_scaling_benchmark.py"
+      - "tests/test_safe_return_threshold_benchmark.py"
+      - "tests/test_history_information_gap_benchmark.py"
+      - "tests/test_statistical_evaluation.py"
+      - ".github/workflows/hazard-planner-pilot.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: hazard-planner-pilot-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pilot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: python -m pip install -e ".[dev]"
+      - name: Run planner regression tests
+        run: >-
+          python -m pytest -q
+          tests/test_hazard_reliability_astar.py
+          tests/test_hazard_planner_pilot.py
+          tests/test_commitment_hazard.py
+          tests/test_commitment_aware_astar.py
+          tests/test_commitment_cut_astar.py
+          tests/test_commitment_safe_return_astar.py
+          tests/test_commitment_trap_benchmark.py
+          tests/test_history_commitment_benchmark.py
+          tests/test_commitment_phase_benchmark.py
+          tests/test_recoverability_cut.py
+          tests/test_recoverability_scenarios.py
+          tests/test_cut_scaling_benchmark.py
+          tests/test_multi_commitment_benchmark.py
+          tests/test_commitment_execution_benchmark.py
+          tests/test_history_state_scaling_benchmark.py
+          tests/test_safe_return_threshold_benchmark.py
+          tests/test_history_information_gap_benchmark.py
+          tests/test_statistical_evaluation.py
+      - name: Execute development planner pilot
+        run: >-
+          python scripts/run_hazard_planner_pilot.py
+          --seeds 50
+          --hazard-count 6
+          --reliability-weight 4.0
+          --out-dir results/hazard_planner_pilot
+      - name: Execute state-only commitment-trap benchmark
+        run: python scripts/run_commitment_trap_benchmark.py --out-dir results/commitment_trap
+      - name: Execute history-conditioned phase benchmark
+        run: python scripts/run_history_commitment_benchmark.py --out-dir results/history_commitment
+      - name: Execute analytic commitment phase benchmark
+        run: python scripts/run_commitment_phase_benchmark.py --out-dir results/commitment_phase
+      - name: Execute exact-versus-cut scaling benchmark
+        run: python scripts/run_cut_scaling_benchmark.py --out-dir results/cut_scaling
+      - name: Execute procedural multi-commitment benchmark
+        run: python scripts/run_multi_commitment_benchmark.py --out-dir results/multi_commitment
+      - name: Execute stochastic commitment benchmark
+        run: python scripts/run_commitment_execution_benchmark.py --out-dir results/commitment_execution
+      - name: Execute augmented history-state scaling benchmark
+        run: python scripts/run_history_state_scaling_benchmark.py --out-dir results/history_state_scaling
+      - name: Execute hard safe-return threshold sensitivity
+        run: python scripts/run_safe_return_threshold_benchmark.py --out-dir results/safe_return_threshold
+      - name: Execute counterfactual history information-gap benchmark
+        run: python scripts/run_history_information_gap_benchmark.py --out-dir results/history_information_gap
+      - name: Upload raw planner pilot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hazard-planner-pilot-${{ github.sha }}
+          path: |
+            results/hazard_planner_pilot
+            results/commitment_trap
+            results/history_commitment
+            results/commitment_phase
+            results/cut_scaling
+            results/multi_commitment
+            results/commitment_execution
+            results/history_state_scaling
+            results/safe_return_threshold
+            results/history_information_gap
+          if-no-files-found: error
