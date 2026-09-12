@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import random
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import asdict, dataclass
@@ -72,6 +73,14 @@ def run_multiseed(
 def aggregate(
     records: Iterable[TrialRecord], *, config: EvaluationConfig | None = None
 ) -> dict[str, dict]:
+    """Aggregate trials without silently replacing undefined failure metrics.
+
+    Planner failures can legitimately produce non-finite path-dependent metrics
+    such as cumulative risk. Those trials remain in the binary outcome rates,
+    while each continuous metric reports exactly how many finite observations
+    contributed to its descriptive statistics and interval.
+    """
+
     cfg = config or EvaluationConfig()
     cfg.validate()
     grouped: dict[str, list[TrialRecord]] = {}
@@ -95,14 +104,30 @@ def aggregate(
             "irreversible_failure_rate": sum(row.irreversible_failure for row in rows) / len(rows),
         }
         for metric in metrics:
-            values = [float(getattr(row, metric)) for row in rows]
-            interval = bootstrap_mean_interval(
-                values,
-                confidence=cfg.confidence,
-                resamples=cfg.bootstrap_resamples,
-                seed=sum(row.seed for row in rows) + len(metric),
-            )
-            summary[metric] = {"summary": summarize(values), "mean_interval": asdict(interval)}
+            raw_values = [float(getattr(row, metric)) for row in rows]
+            values = [value for value in raw_values if math.isfinite(value)]
+            excluded = len(raw_values) - len(values)
+            if values:
+                interval = bootstrap_mean_interval(
+                    values,
+                    confidence=cfg.confidence,
+                    resamples=cfg.bootstrap_resamples,
+                    seed=sum(row.seed for row in rows) + len(metric),
+                )
+                metric_summary: dict[str, object] = {
+                    "summary": summarize(values),
+                    "mean_interval": asdict(interval),
+                    "finite_trials": len(values),
+                    "excluded_non_finite": excluded,
+                }
+            else:
+                metric_summary = {
+                    "summary": None,
+                    "mean_interval": None,
+                    "finite_trials": 0,
+                    "excluded_non_finite": excluded,
+                }
+            summary[metric] = metric_summary
         output[method] = summary
     return output
 
@@ -115,6 +140,12 @@ def paired_comparisons(
     metric: str = "planning_time_ms",
     config: EvaluationConfig | None = None,
 ) -> dict:
+    """Compute a paired effect using only pairs where the metric is defined.
+
+    Pair exclusion is reported explicitly so failed/undefined observations can
+    never disappear from an analysis without an auditable count.
+    """
+
     cfg = config or EvaluationConfig()
     cfg.validate()
     by_key = {(row.seed, row.method): row for row in records}
@@ -125,17 +156,31 @@ def paired_comparisons(
     )
     if not common:
         raise ValueError("no paired seeds available")
-    left = [float(getattr(by_key[(seed, baseline)], metric)) for seed in common]
-    right = [float(getattr(by_key[(seed, proposed)], metric)) for seed in common]
-    return asdict(
+
+    finite_common: list[int] = []
+    for seed in common:
+        left_value = float(getattr(by_key[(seed, baseline)], metric))
+        right_value = float(getattr(by_key[(seed, proposed)], metric))
+        if math.isfinite(left_value) and math.isfinite(right_value):
+            finite_common.append(seed)
+
+    if not finite_common:
+        raise ValueError(f"no finite paired observations available for metric {metric!r}")
+
+    left = [float(getattr(by_key[(seed, baseline)], metric)) for seed in finite_common]
+    right = [float(getattr(by_key[(seed, proposed)], metric)) for seed in finite_common]
+    result = asdict(
         paired_effect(
             left,
             right,
             confidence=cfg.confidence,
             resamples=cfg.bootstrap_resamples,
-            seed=sum(common) + len(metric),
+            seed=sum(finite_common) + len(metric),
         )
     )
+    result["paired_trials"] = len(finite_common)
+    result["excluded_non_finite_pairs"] = len(common) - len(finite_common)
+    return result
 
 
 def sensitivity_grid(
