@@ -19,6 +19,10 @@ from dynnav.planners.commitment_cut_astar import (
     CommitmentCutAStarConfig,
     commitment_cut_astar,
 )
+from dynnav.planners.commitment_safe_return_astar import (
+    SafeReturnConstraintConfig,
+    commitment_safe_return_astar,
+)
 from dynnav.planners.grid_map import GridCell, GridMap
 from dynnav.recoverability import return_failure_probability
 
@@ -79,6 +83,7 @@ def run_commitment_execution_benchmark(
     module_count: int = 3,
     closure_probabilities: tuple[float, ...] = (0.2, 0.5, 0.8),
     recoverability_weight: float = 8.0,
+    safe_return_threshold: float = 0.9,
 ) -> list[CommitmentExecutionRecord]:
     if not seeds:
         raise ValueError("seeds cannot be empty")
@@ -114,11 +119,23 @@ def run_commitment_execution_benchmark(
             hazard_model=model,
             config=CommitmentCutAStarConfig(recoverability_weight=recoverability_weight),
         )
+        hard = commitment_safe_return_astar(
+            grid,
+            start,
+            goal,
+            safe_cells=safe,
+            hazard_model=model,
+            config=SafeReturnConstraintConfig(
+                minimum_return_probability=safe_return_threshold,
+                max_hazard_cells=max(16, module_count),
+            ),
+        )
 
         plans = {
             "shortest": shortest,
             "history_exact": exact,
             "history_cut": cut,
+            f"hard_return_{safe_return_threshold:g}": hard,
         }
         for planner, result in plans.items():
             if not result.success:
@@ -135,7 +152,9 @@ def run_commitment_execution_benchmark(
                         seed=seed,
                         module_count=module_count,
                         closure_probability=probability,
-                        recoverability_weight=recoverability_weight,
+                        recoverability_weight=(
+                            0.0 if planner.startswith("hard_return_") else recoverability_weight
+                        ),
                         planner=planner,
                         path_length=result.geometric_length,
                         activated_closure_count=len(active),
@@ -193,10 +212,15 @@ def summarize_commitment_execution(records: list[CommitmentExecutionRecord]) -> 
         }
 
     probabilities = sorted({row.closure_probability for row in records})
+    proposed_planners = sorted(
+        planner
+        for planner in {row.planner for row in records}
+        if planner != "shortest"
+    )
     result["paired_binary_effects"] = {
         f"p={probability}": {
             proposed: _paired_failure_effect(records, probability, proposed)
-            for proposed in ("history_exact", "history_cut")
+            for proposed in proposed_planners
         }
         for probability in probabilities
     }
