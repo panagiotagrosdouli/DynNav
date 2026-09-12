@@ -9,6 +9,7 @@ from pathlib import Path
 
 from dynnav.commitment_hazard import CommitmentHazardModel
 from dynnav.experiments.multi_commitment_benchmark import multi_commitment_world
+from dynnav.experiments.statistics import paired_binary_effect
 from dynnav.planners.commitment_aware_astar import (
     CommitmentAwareAStarConfig,
     CommitmentPlannerMode,
@@ -146,6 +147,33 @@ def run_commitment_execution_benchmark(
     return records
 
 
+def _paired_failure_effect(
+    records: list[CommitmentExecutionRecord],
+    probability: float,
+    proposed: str,
+) -> dict[str, object]:
+    baseline_rows = {
+        row.seed: row
+        for row in records
+        if row.closure_probability == probability and row.planner == "shortest"
+    }
+    proposed_rows = {
+        row.seed: row
+        for row in records
+        if row.closure_probability == probability and row.planner == proposed
+    }
+    common = sorted(set(baseline_rows) & set(proposed_rows))
+    if not common:
+        raise ValueError("no paired seeds for binary comparison")
+    effect = paired_binary_effect(
+        [baseline_rows[seed].irreversible_failure for seed in common],
+        [proposed_rows[seed].irreversible_failure for seed in common],
+        resamples=5000,
+        seed=int(round(probability * 10000)) + len(proposed),
+    )
+    return asdict(effect)
+
+
 def summarize_commitment_execution(records: list[CommitmentExecutionRecord]) -> dict[str, object]:
     if not records:
         raise ValueError("records cannot be empty")
@@ -163,6 +191,15 @@ def summarize_commitment_execution(records: list[CommitmentExecutionRecord]) -> 
             "path_length": rows[0].path_length,
             "activated_closure_count": rows[0].activated_closure_count,
         }
+
+    probabilities = sorted({row.closure_probability for row in records})
+    result["paired_binary_effects"] = {
+        f"p={probability}": {
+            proposed: _paired_failure_effect(records, probability, proposed)
+            for proposed in ("history_exact", "history_cut")
+        }
+        for probability in probabilities
+    }
     return result
 
 
