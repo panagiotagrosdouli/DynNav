@@ -4,12 +4,14 @@ on:
   pull_request:
     paths:
       - "dynnav/planners/hazard_reliability_astar.py"
+      - "dynnav/planners/commitment_aware_astar.py"
       - "dynnav/experiments/hazard_planner_pilot.py"
       - "dynnav/commitment_hazard.py"
       - "scripts/run_hazard_planner_pilot.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
+      - "tests/test_commitment_aware_astar.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -31,6 +33,7 @@ jobs:
           tests/test_hazard_reliability_astar.py
           tests/test_hazard_planner_pilot.py
           tests/test_commitment_hazard.py
+          tests/test_commitment_aware_astar.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
