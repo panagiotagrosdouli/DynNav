@@ -12,9 +12,6 @@ from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return
 
 
 def test_same_geometric_state_can_have_different_recoverability_after_commitment() -> None:
-    # A single bridge at (1,1) connects the safe region on the left to a loop on
-    # the right. Both histories cross the bridge and end at the same state, but
-    # only the lower loop activates a future closure of the bridge behind the robot.
     grid = GridMap.from_obstacles(4, 3, obstacles={(1, 0), (1, 2)})
     safe = {(0, 1)}
     current = (3, 1)
@@ -87,3 +84,11 @@ def test_commitment_model_rejects_non_adjacent_trigger() -> None:
 
     with pytest.raises(ValueError, match="not a traversable grid edge"):
         model.validate(grid)
+
+
+def test_history_evaluator_rejects_non_traversable_path() -> None:
+    grid = GridMap.from_obstacles(4, 1)
+    model = CommitmentHazardModel(())
+
+    with pytest.raises(ValueError, match="non-traversable transition"):
+        model.activated_hazard_for_path(grid, ((0, 0), (2, 0)))
