@@ -87,12 +87,22 @@ def test_hazard_model_rejects_cells_already_known_blocked():
         exact_safe_return_probability(grid, (2, 0), {(0, 0)}, hazard)
 
 
-def test_current_robot_cell_must_be_conditioned_usable():
+def test_current_hazard_cell_is_conditioned_usable():
     grid = GridMap.from_obstacles(3, 1)
     hazard = TopologyHazardBelief({(2, 0): 0.5})
 
-    with pytest.raises(ValueError, match="conditioned usable"):
-        exact_safe_return_probability(grid, (2, 0), {(0, 0)}, hazard)
+    probability = exact_safe_return_probability(grid, (2, 0), {(0, 0)}, hazard)
+
+    assert probability == pytest.approx(1.0)
+
+
+def test_conditioning_current_cell_does_not_drop_other_hazards():
+    grid = GridMap.from_obstacles(4, 1)
+    hazard = TopologyHazardBelief({(3, 0): 0.5, (1, 0): 0.25})
+
+    probability = exact_safe_return_probability(grid, (3, 0), {(0, 0)}, hazard)
+
+    assert probability == pytest.approx(0.75)
 
 
 def test_exact_enumeration_guard_prevents_accidental_exponential_benchmark():
