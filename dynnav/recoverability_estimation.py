@@ -67,7 +67,12 @@ def _most_reliable_path(
         for neighbor in grid.neighbors4(current):
             if neighbor in forbidden:
                 continue
-            p_closed = float(hazard.closure_probability.get(neighbor, 0.0))
+            # The starting cell is already known usable at this decision instant.
+            # Any hazard assigned to it is therefore conditioned away for this
+            # state-level estimate; all cells entered afterwards retain hazards.
+            p_closed = 0.0 if neighbor == start else float(
+                hazard.closure_probability.get(neighbor, 0.0)
+            )
             if p_closed >= 1.0:
                 continue
             survival = 1.0 - p_closed
@@ -91,8 +96,6 @@ def _validated_problem(
     hazard.validate(grid)
     if not grid.in_bounds(start) or not grid.passable(start):
         return ReturnReliabilityEstimate(0.0, ())
-    if start in hazard.closure_probability:
-        raise ValueError("current robot cell must be conditioned usable in the hazard model")
     valid_safe = {
         cell for cell in safe_cells if grid.in_bounds(cell) and grid.passable(cell)
     }
@@ -132,11 +135,10 @@ def two_hazard_disjoint_return_paths(
     """Lower-bound return reliability using up to two hazard-disjoint paths.
 
     The first path is the most reliable return route. A second route is searched
-    while forbidding every future-closure hazard cell used by the first route.
-    Since the two path-success events then depend on disjoint independent
-    closure events, their union probability is ``1 - (1-r1)(1-r2)``.
-    Deterministic cells may be shared. Other possible routes are ignored, so the
-    result remains a conservative lower bound on full network reliability.
+    while forbidding every future-closure hazard cell used by the first route,
+    except the current robot cell which is conditioned usable. Since the two
+    path-success events then depend on disjoint independent closure events, their
+    union probability is ``1 - (1-r1)(1-r2)``. Deterministic cells may be shared.
     """
 
     validated = _validated_problem(grid, start, safe_cells, hazard)
@@ -151,7 +153,9 @@ def two_hazard_disjoint_return_paths(
         return RedundantReturnReliabilityEstimate(1.0, (first.path,))
 
     first_hazards = {
-        cell for cell in first.path if cell in hazard.closure_probability
+        cell
+        for cell in first.path
+        if cell != start and cell in hazard.closure_probability
     }
     second = _most_reliable_path(
         grid,
