@@ -1,8 +1,9 @@
-"""Online estimators for belief-conditioned safe-return reliability.
+"""Online estimators for safe-return reliability under future topology hazards.
 
-These estimators use only the robot's current topology belief. They are distinct
-from the exact enumeration oracle in ``dynnav.recoverability_belief`` and are
-intended to provide computational baselines for online planning.
+These estimators use only the robot's current belief over future route-closure
+events. They are distinct from the exact enumeration oracle in
+``dynnav.recoverability_belief`` and provide computational baselines for online
+planning.
 """
 
 from __future__ import annotations
@@ -12,7 +13,7 @@ import math
 from dataclasses import dataclass
 
 from dynnav.planners.grid_map import GridCell, GridMap
-from dynnav.recoverability_belief import TopologyBelief
+from dynnav.recoverability_belief import TopologyHazardBelief
 
 
 @dataclass(frozen=True)
@@ -43,11 +44,11 @@ def _most_reliable_path(
     grid: GridMap,
     start: GridCell,
     valid_safe: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
     *,
-    forbidden_uncertain_cells: set[GridCell] | None = None,
+    forbidden_hazard_cells: set[GridCell] | None = None,
 ) -> ReturnReliabilityEstimate:
-    forbidden = set(forbidden_uncertain_cells or ())
+    forbidden = set(forbidden_hazard_cells or ())
     distances: dict[GridCell, float] = {start: 0.0}
     parents: dict[GridCell, GridCell] = {}
     frontier: list[tuple[float, GridCell]] = [(0.0, start)]
@@ -66,10 +67,10 @@ def _most_reliable_path(
         for neighbor in grid.neighbors4(current):
             if neighbor in forbidden:
                 continue
-            p_blocked = float(belief.blocked_probability.get(neighbor, 0.0))
-            if p_blocked >= 1.0:
+            p_closed = float(hazard.closure_probability.get(neighbor, 0.0))
+            if p_closed >= 1.0:
                 continue
-            survival = 1.0 - p_blocked
+            survival = 1.0 - p_closed
             transition_cost = -math.log(survival)
             new_cost = cost + transition_cost
             if new_cost < distances.get(neighbor, float("inf")):
@@ -84,14 +85,14 @@ def _validated_problem(
     grid: GridMap,
     start: GridCell,
     safe_cells: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
 ) -> set[GridCell] | ReturnReliabilityEstimate:
     grid.validate()
-    belief.validate(grid)
+    hazard.validate(grid)
     if not grid.in_bounds(start) or not grid.passable(start):
         return ReturnReliabilityEstimate(0.0, ())
-    if start in belief.blocked_probability:
-        raise ValueError("start cell is physically occupied by the robot and must be conditioned free")
+    if start in hazard.closure_probability:
+        raise ValueError("current robot cell must be conditioned usable in the hazard model")
     valid_safe = {
         cell for cell in safe_cells if grid.in_bounds(cell) and grid.passable(cell)
     }
@@ -106,59 +107,58 @@ def most_reliable_return_path(
     grid: GridMap,
     start: GridCell,
     safe_cells: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
 ) -> ReturnReliabilityEstimate:
-    """Estimate safe-return probability using the single most reliable path.
+    """Estimate post-closure safe-return probability using one return path.
 
-    Independent cell survival probabilities are converted to additive
-    ``-log(1-p_blocked)`` costs. Dijkstra search therefore maximizes the product
+    Independent route-survival probabilities are converted to additive
+    ``-log(1-p_close)`` costs. Dijkstra search therefore maximizes the product
     of survival probabilities along one return path. This estimate is a lower
-    bound on full network reliability because it deliberately ignores the value
-    of redundant alternative paths.
+    bound on full network reliability because it ignores redundant alternatives.
     """
 
-    validated = _validated_problem(grid, start, safe_cells, belief)
+    validated = _validated_problem(grid, start, safe_cells, hazard)
     if isinstance(validated, ReturnReliabilityEstimate):
         return validated
-    return _most_reliable_path(grid, start, validated, belief)
+    return _most_reliable_path(grid, start, validated, hazard)
 
 
-def two_uncertain_disjoint_return_paths(
+def two_hazard_disjoint_return_paths(
     grid: GridMap,
     start: GridCell,
     safe_cells: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
 ) -> RedundantReturnReliabilityEstimate:
-    """Lower-bound return reliability using up to two uncertainty-disjoint paths.
+    """Lower-bound return reliability using up to two hazard-disjoint paths.
 
     The first path is the most reliable return route. A second route is searched
-    while forbidding every unresolved cell used by the first route. Because the
-    two path-success events then depend on disjoint independent Bernoulli cells,
-    their union probability is ``1 - (1-r1)(1-r2)``. Deterministic cells may be
-    shared safely. Other possible routes are ignored, so the result remains a
-    conservative lower bound on full network reliability.
+    while forbidding every future-closure hazard cell used by the first route.
+    Since the two path-success events then depend on disjoint independent
+    closure events, their union probability is ``1 - (1-r1)(1-r2)``.
+    Deterministic cells may be shared. Other possible routes are ignored, so the
+    result remains a conservative lower bound on full network reliability.
     """
 
-    validated = _validated_problem(grid, start, safe_cells, belief)
+    validated = _validated_problem(grid, start, safe_cells, hazard)
     if isinstance(validated, ReturnReliabilityEstimate):
         paths = (validated.path,) if validated.path else ()
         return RedundantReturnReliabilityEstimate(validated.probability, paths)
 
-    first = _most_reliable_path(grid, start, validated, belief)
+    first = _most_reliable_path(grid, start, validated, hazard)
     if not first.path or first.probability <= 0.0:
         return RedundantReturnReliabilityEstimate(0.0, ())
     if first.probability >= 1.0:
         return RedundantReturnReliabilityEstimate(1.0, (first.path,))
 
-    first_uncertain = {
-        cell for cell in first.path if cell in belief.blocked_probability
+    first_hazards = {
+        cell for cell in first.path if cell in hazard.closure_probability
     }
     second = _most_reliable_path(
         grid,
         start,
         validated,
-        belief,
-        forbidden_uncertain_cells=first_uncertain,
+        hazard,
+        forbidden_hazard_cells=first_hazards,
     )
     if not second.path or second.probability <= 0.0:
         return RedundantReturnReliabilityEstimate(first.probability, (first.path,))
