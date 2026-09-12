@@ -13,6 +13,7 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 IGNORED_PARTS = {".git", ".next", "node_modules", ".venv", "venv", "__pycache__"}
+GENERATED_MARKDOWN = {"DOCUMENTATION_MAP.md", "MARKDOWN_INVENTORY.md"}
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 HTML_REFERENCE = re.compile(r"(?:href|src)=[\"']([^\"']+)[\"']", re.IGNORECASE)
 HEADING = re.compile(r"^(#{1,6})\s+(.+?)\s*$")
@@ -36,10 +37,19 @@ class Finding:
 
 
 def markdown_files(root: Path) -> list[Path]:
+    """Discover source Markdown, excluding generated documentation indexes.
+
+    DOCUMENTATION_MAP.md and MARKDOWN_INVENTORY.md are regenerated and validated
+    by the recursive documentation-integrity workflow. Auditing those generated
+    indexes as source documents can report stale links after source files are
+    removed, even though the authoritative generator will remove those entries.
+    """
     return sorted(
         path
         for path in root.rglob("*.md")
-        if path.is_file() and not any(part in IGNORED_PARTS for part in path.parts)
+        if path.is_file()
+        and path.name not in GENERATED_MARKDOWN
+        and not any(part in IGNORED_PARTS for part in path.parts)
     )
 
 
