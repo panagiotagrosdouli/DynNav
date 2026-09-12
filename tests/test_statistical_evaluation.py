@@ -13,7 +13,12 @@ from dynnav.experiments.multiseed_evaluation import (
     sensitivity_grid,
     write_artifacts,
 )
-from dynnav.experiments.statistics import bootstrap_mean_interval, paired_effect
+from dynnav.experiments.statistics import (
+    bootstrap_mean_interval,
+    exact_mcnemar_pvalue,
+    paired_binary_effect,
+    paired_effect,
+)
 
 
 def _runner(seed: int, method: str, parameters: dict[str, float]) -> TrialRecord:
@@ -44,6 +49,26 @@ def test_paired_effect_reports_proposed_improvement() -> None:
     effect = paired_effect([10, 11, 12], [8, 9, 10], resamples=500)
     assert effect.mean_difference == pytest.approx(-2.0)
     assert effect.probability_of_superiority == 1.0
+
+
+def test_exact_mcnemar_known_discordant_case() -> None:
+    # 8 baseline-only versus 0 proposed-only events: two-sided exact p = 2/256.
+    assert exact_mcnemar_pvalue(8, 0) == pytest.approx(2.0 / 256.0)
+    assert exact_mcnemar_pvalue(0, 0) == pytest.approx(1.0)
+
+
+def test_paired_binary_effect_reports_event_reduction() -> None:
+    baseline = [1, 1, 1, 1, 0, 0, 1, 1]
+    proposed = [0, 0, 0, 1, 0, 0, 0, 1]
+    effect = paired_binary_effect(baseline, proposed, resamples=500, seed=9)
+
+    assert effect.baseline_rate == pytest.approx(0.75)
+    assert effect.proposed_rate == pytest.approx(0.25)
+    assert effect.risk_difference == pytest.approx(-0.5)
+    assert effect.baseline_only_events == 4
+    assert effect.proposed_only_events == 0
+    assert effect.discordant_pairs == 4
+    assert effect.mcnemar_exact_pvalue == pytest.approx(0.125)
 
 
 def test_multiseed_aggregation_and_pairing() -> None:
