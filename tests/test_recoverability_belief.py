@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from dynnav.planners.grid_map import GridMap
+from dynnav.recoverability import analyze_recoverability
 from dynnav.recoverability_belief import (
     TopologyBelief,
     exact_recoverability_degradation,
@@ -54,6 +55,33 @@ def test_degradation_is_positive_after_committing_beyond_uncertain_bridge():
     )
 
     assert degradation == pytest.approx(0.4)
+
+
+def test_structural_score_cannot_distinguish_different_topology_probabilities():
+    grid = GridMap.from_obstacles(5, 1)
+    candidate = (3, 0)
+    safe_cells = {(0, 0)}
+
+    structural = analyze_recoverability(grid, candidate, safe_cells)
+    low_blockage = exact_safe_return_probability(
+        grid,
+        candidate,
+        safe_cells,
+        TopologyBelief({(2, 0): 0.1}),
+    )
+    high_blockage = exact_safe_return_probability(
+        grid,
+        candidate,
+        safe_cells,
+        TopologyBelief({(2, 0): 0.9}),
+    )
+
+    # Structural recoverability sees identical geometry in both cases, whereas
+    # the exact belief-conditioned quantity changes from 0.9 to 0.1.
+    assert structural.irreversibility == analyze_recoverability(grid, candidate, safe_cells).irreversibility
+    assert low_blockage == pytest.approx(0.9)
+    assert high_blockage == pytest.approx(0.1)
+    assert low_blockage > high_blockage
 
 
 def test_oracle_rejects_hidden_information_encoded_as_known_obstacle():
