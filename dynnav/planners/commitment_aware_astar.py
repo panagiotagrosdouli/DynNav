@@ -135,7 +135,9 @@ def commitment_aware_astar(
 
     Exact enumeration is intentionally used only for small controlled worlds;
     this implementation is a scientific oracle/baseline, not a claimed scalable
-    deployment planner.
+    deployment planner. ``max_hazard_cells`` constrains the active hazard set
+    passed to the exact oracle, not the number of possible triggers declared in
+    the model.
     """
 
     grid.validate()
@@ -144,8 +146,6 @@ def commitment_aware_astar(
     safe = set(safe_cells or {start})
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
-    if len(model.closures) > cfg.max_hazard_cells:
-        raise ValueError("commitment model exceeds max_hazard_cells")
     if not grid.in_bounds(start) or not grid.in_bounds(goal):
         raise ValueError("start and goal must be inside the grid")
     if not grid.passable(start) or not grid.passable(goal):
