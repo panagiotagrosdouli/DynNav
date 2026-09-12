@@ -1,0 +1,130 @@
+{
+  "paper_title": "When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards",
+  "research_question": "Does path/action history contain safe-return-connectivity information that a state-only marginal environmental-risk model discards when robot actions activate future topology hazards?",
+  "focused_workflow": {
+    "name": "Hazard-aware planner pilot",
+    "run_id": 34714856493,
+    "source_branch_head_sha": "e9f0a7572539d9ed9130031c48bcadf6214eac7c",
+    "pull_request_merge_checkout_sha": "7917c0d963d2a8eb6a809dcba6b9d51e7f2bc1eb",
+    "artifact_id": 10303733811,
+    "artifact_name": "hazard-planner-pilot-7917c0d963d2a8eb6a809dcba6b9d51e7f2bc1eb",
+    "artifact_digest": "sha256:2d45ba9666be630b27c31138e954fdfcf9fc3d0a6db741a1e783ffe9f94ca135",
+    "conclusion": "success"
+  },
+  "counterfactual_information_gap": {
+    "closure_probabilities": [0.1, 0.3, 0.5, 0.7, 0.9],
+    "safe_history_return_probability": 1.0,
+    "risky_history_rule": "1-p",
+    "state_only_rule_for_both_histories": "1-p",
+    "mean_history_separation": 0.5,
+    "maximum_history_separation": 0.9,
+    "risky_history_invariant_max_abs_error": 0.0
+  },
+  "analytic_phase_boundary": {
+    "rule": "lambda*p > 2*d",
+    "trials": 75,
+    "route_choice_matches": 75,
+    "match_rate": 1.0
+  },
+  "homogeneous_stochastic_execution": {
+    "paired_seeds_per_probability": 1000,
+    "module_count": 3,
+    "recoverability_weight": 8.0,
+    "closure_probabilities": [0.2, 0.5, 0.8],
+    "irreversible_failure_rate": {
+      "shortest": [0.512, 0.881, 0.992],
+      "state_only_single": [0.512, 0.881, 0.992],
+      "history_exact": [0.0, 0.0, 0.0],
+      "history_cut": [0.0, 0.0, 0.0],
+      "hard_return_0.9": [0.0, 0.0, 0.0]
+    },
+    "state_only_vs_shortest": {
+      "risk_difference": [0.0, 0.0, 0.0],
+      "discordant_pairs": [0, 0, 0],
+      "mcnemar_exact_pvalue": [1.0, 1.0, 1.0]
+    }
+  },
+  "frozen_heterogeneous_evaluation": {
+    "paired_seeds_per_scenario": 500,
+    "scenarios": {
+      "low_to_high_6": {
+        "probabilities": [0.15, 0.25, 0.35, 0.55, 0.75, 0.85],
+        "failure_rate": {
+          "shortest": 0.992,
+          "state_only_single": 0.992,
+          "history_exact": 0.0,
+          "history_cut": 0.0,
+          "hard_return_0.9": 0.0
+        },
+        "history_exact_vs_shortest_risk_difference": -0.992,
+        "history_exact_vs_shortest_bootstrap_95": [-0.998, -0.984]
+      },
+      "alternating_7": {
+        "probabilities": [0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.9],
+        "failure_rate": {
+          "shortest": 0.998,
+          "state_only_single": 0.998,
+          "history_exact": 0.0,
+          "history_cut": 0.0,
+          "hard_return_0.9": 0.0
+        },
+        "history_exact_vs_shortest_risk_difference": -0.998,
+        "history_exact_vs_shortest_bootstrap_95": [-1.0, -0.994]
+      },
+      "mixed_8": {
+        "probabilities": [0.1, 0.9, 0.2, 0.8, 0.35, 0.65, 0.45, 0.75],
+        "failure_rate": {
+          "shortest": 1.0,
+          "state_only_single": 1.0,
+          "history_exact": 0.0,
+          "history_cut": 0.0,
+          "hard_return_0.9": 0.116
+        },
+        "history_exact_vs_shortest_risk_difference": -1.0,
+        "history_exact_vs_shortest_bootstrap_95": [-1.0, -1.0],
+        "hard_return_0.9_failures": 58,
+        "hard_return_0.9_trials": 500
+      }
+    }
+  },
+  "series_cut_scaling": {
+    "hazard_count": 12,
+    "exact_ms": 61.786,
+    "cut_ms": 0.348,
+    "reported_speedup_approx": 177.0,
+    "scope": "controlled series-critical family only"
+  },
+  "augmented_search_scaling_at_6_modules": {
+    "shortest_augmented": {"nodes": 25, "path_length": 24, "planning_ms": 0.119},
+    "history_cut": {"nodes": 72, "path_length": 36, "planning_ms": 3.93},
+    "history_exact": {"nodes": 72, "path_length": 36, "planning_ms": 8.99}
+  },
+  "joint_cut_counterexample": {
+    "probabilities": [0.2, 0.5, 0.8],
+    "recoverability_weights": [2.0, 4.0, 8.0],
+    "pairs": 9,
+    "cut_optimism_cases": 9,
+    "route_history_disagreement_rate": 1.0,
+    "equal_path_length": 6,
+    "exact_active_hazards": 0,
+    "cut_active_hazards": 2,
+    "cut_estimate": 1.0,
+    "cut_route_exact_return_probability_by_p": {
+      "0.2": 0.96,
+      "0.5": 0.75,
+      "0.8": 0.36
+    }
+  },
+  "claim_scope": {
+    "supported": "mechanism-level evidence that action-triggered environmental topology history can carry safe-return-connectivity information absent from a state-only marginal hazard model",
+    "not_claimed": [
+      "first history-dependent risk planner",
+      "first safe-return planner",
+      "universal safety improvement",
+      "formal kinodynamic safety guarantee",
+      "hardware validation of the history-conditioned planner",
+      "geometric-domain generalization",
+      "novelty of articulation or cut-set graph theory"
+    ]
+  }
+}
