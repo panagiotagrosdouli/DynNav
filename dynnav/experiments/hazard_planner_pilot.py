@@ -13,7 +13,7 @@ from dynnav.planners.hazard_reliability_astar import (
     HazardReliabilityMode,
     hazard_reliability_astar,
 )
-from dynnav.recoverability_belief import exact_safe_return_probability
+from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return_probability
 
 
 @dataclass(frozen=True)
@@ -28,6 +28,19 @@ class HazardPlannerPilotRecord:
     mean_exact_return_probability: float
     estimated_minimum_return_probability: float
     cumulative_return_fragility: float
+
+
+def _condition_current_usable(
+    hazard: TopologyHazardBelief,
+    current: tuple[int, int],
+) -> TopologyHazardBelief:
+    return TopologyHazardBelief(
+        {
+            cell: probability
+            for cell, probability in hazard.closure_probability.items()
+            if cell != current
+        }
+    )
 
 
 def run_hazard_planner_pilot(
@@ -65,7 +78,7 @@ def run_hazard_planner_pilot(
                         grid,
                         cell,
                         mission_safe,
-                        hazard,
+                        _condition_current_usable(hazard, cell),
                         max_hazard_cells=hazard_count,
                     )
                     for cell in result.path
