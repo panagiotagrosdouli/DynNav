@@ -5,102 +5,105 @@ import pytest
 from dynnav.planners.grid_map import GridMap
 from dynnav.recoverability import analyze_recoverability
 from dynnav.recoverability_belief import (
-    TopologyBelief,
+    TopologyHazardBelief,
     exact_recoverability_degradation,
     exact_safe_return_probability,
 )
 
 
-def test_exact_oracle_matches_deterministic_connectivity_without_uncertainty():
+def test_exact_oracle_matches_deterministic_connectivity_without_hazards():
     grid = GridMap.from_obstacles(4, 1)
-    belief = TopologyBelief({})
+    hazard = TopologyHazardBelief({})
 
-    assert exact_safe_return_probability(grid, (3, 0), {(0, 0)}, belief) == 1.0
+    assert exact_safe_return_probability(grid, (3, 0), {(0, 0)}, hazard) == 1.0
 
     blocked = GridMap.from_obstacles(4, 1, obstacles={(1, 0)})
-    assert exact_safe_return_probability(blocked, (3, 0), {(0, 0)}, belief) == 0.0
+    assert exact_safe_return_probability(blocked, (3, 0), {(0, 0)}, hazard) == 0.0
 
 
-def test_single_uncertain_bridge_has_analytic_safe_return_probability():
+def test_single_future_closure_has_analytic_safe_return_probability():
     grid = GridMap.from_obstacles(5, 1)
-    belief = TopologyBelief({(2, 0): 0.35})
+    hazard = TopologyHazardBelief({(2, 0): 0.35})
 
-    probability = exact_safe_return_probability(grid, (4, 0), {(0, 0)}, belief)
+    probability = exact_safe_return_probability(grid, (4, 0), {(0, 0)}, hazard)
 
     assert probability == pytest.approx(0.65)
 
 
-def test_parallel_uncertain_bridges_preserve_return_if_either_survives():
-    # The center is blocked, forcing return through either the upper or lower
-    # crossing. Each crossing contains one independent uncertain bridge cell.
+def test_parallel_future_closures_preserve_return_if_either_route_survives():
     grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
-    belief = TopologyBelief({(1, 0): 0.2, (1, 2): 0.3})
+    hazard = TopologyHazardBelief({(1, 0): 0.2, (1, 2): 0.3})
 
-    probability = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, belief)
+    probability = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, hazard)
 
-    # Return fails only if both independent crossings are blocked.
     assert probability == pytest.approx(1.0 - 0.2 * 0.3)
 
 
-def test_degradation_is_positive_after_committing_beyond_uncertain_bridge():
+def test_degradation_is_positive_after_committing_beyond_future_closure():
     grid = GridMap.from_obstacles(5, 1)
-    belief = TopologyBelief({(2, 0): 0.4})
+    hazard = TopologyHazardBelief({(2, 0): 0.4})
 
     degradation = exact_recoverability_degradation(
         grid,
         current=(1, 0),
         candidate=(3, 0),
         safe_cells={(0, 0)},
-        belief=belief,
+        hazard=hazard,
     )
 
     assert degradation == pytest.approx(0.4)
 
 
-def test_structural_score_cannot_distinguish_different_topology_probabilities():
+def test_structural_score_cannot_distinguish_different_closure_probabilities():
     grid = GridMap.from_obstacles(5, 1)
     candidate = (3, 0)
     safe_cells = {(0, 0)}
 
     structural = analyze_recoverability(grid, candidate, safe_cells)
-    low_blockage = exact_safe_return_probability(
+    low_hazard = exact_safe_return_probability(
         grid,
         candidate,
         safe_cells,
-        TopologyBelief({(2, 0): 0.1}),
+        TopologyHazardBelief({(2, 0): 0.1}),
     )
-    high_blockage = exact_safe_return_probability(
+    high_hazard = exact_safe_return_probability(
         grid,
         candidate,
         safe_cells,
-        TopologyBelief({(2, 0): 0.9}),
+        TopologyHazardBelief({(2, 0): 0.9}),
     )
 
-    # Structural recoverability sees identical geometry in both cases, whereas
-    # the exact belief-conditioned quantity changes from 0.9 to 0.1.
     assert structural.irreversibility == analyze_recoverability(grid, candidate, safe_cells).irreversibility
-    assert low_blockage == pytest.approx(0.9)
-    assert high_blockage == pytest.approx(0.1)
-    assert low_blockage > high_blockage
+    assert low_hazard == pytest.approx(0.9)
+    assert high_hazard == pytest.approx(0.1)
+    assert low_hazard > high_hazard
 
 
-def test_oracle_rejects_hidden_information_encoded_as_known_obstacle():
+def test_hazard_model_rejects_cells_already_known_blocked():
     grid = GridMap.from_obstacles(3, 1, obstacles={(1, 0)})
-    belief = TopologyBelief({(1, 0): 0.5})
+    hazard = TopologyHazardBelief({(1, 0): 0.5})
 
     with pytest.raises(ValueError, match="already a known obstacle"):
-        exact_safe_return_probability(grid, (2, 0), {(0, 0)}, belief)
+        exact_safe_return_probability(grid, (2, 0), {(0, 0)}, hazard)
+
+
+def test_current_robot_cell_must_be_conditioned_usable():
+    grid = GridMap.from_obstacles(3, 1)
+    hazard = TopologyHazardBelief({(2, 0): 0.5})
+
+    with pytest.raises(ValueError, match="conditioned usable"):
+        exact_safe_return_probability(grid, (2, 0), {(0, 0)}, hazard)
 
 
 def test_exact_enumeration_guard_prevents_accidental_exponential_benchmark():
     grid = GridMap.from_obstacles(5, 1)
-    belief = TopologyBelief({(1, 0): 0.1, (2, 0): 0.2, (3, 0): 0.3})
+    hazard = TopologyHazardBelief({(1, 0): 0.1, (2, 0): 0.2, (3, 0): 0.3})
 
     with pytest.raises(ValueError, match="exact enumeration limited"):
         exact_safe_return_probability(
             grid,
             (4, 0),
             {(0, 0)},
-            belief,
-            max_uncertain_cells=2,
+            hazard,
+            max_hazard_cells=2,
         )
