@@ -70,12 +70,22 @@ def test_estimator_prefers_more_reliable_of_two_return_routes() -> None:
     assert (1, 0) not in estimate.path
 
 
-def test_estimator_conditions_current_robot_cell_usable() -> None:
+def test_estimator_conditions_current_hazard_cell_usable() -> None:
     grid = GridMap.from_obstacles(3, 1)
     hazard = TopologyHazardBelief({(2, 0): 0.5})
 
-    with pytest.raises(ValueError, match="conditioned usable"):
-        most_reliable_return_path(grid, (2, 0), {(0, 0)}, hazard)
+    estimate = most_reliable_return_path(grid, (2, 0), {(0, 0)}, hazard)
+
+    assert estimate.probability == pytest.approx(1.0)
+
+
+def test_estimator_keeps_other_hazards_after_conditioning_current_cell() -> None:
+    grid = GridMap.from_obstacles(4, 1)
+    hazard = TopologyHazardBelief({(3, 0): 0.5, (1, 0): 0.25})
+
+    estimate = most_reliable_return_path(grid, (3, 0), {(0, 0)}, hazard)
+
+    assert estimate.probability == pytest.approx(0.75)
 
 
 def test_estimator_reports_zero_if_all_return_routes_certainly_close() -> None:
