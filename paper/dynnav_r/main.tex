@@ -5,6 +5,8 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{microtype}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning}
 
 \newcommand{\Rret}{R_{\mathrm{return}}}
 \newcommand{\Aset}{\mathcal{A}}
@@ -40,6 +42,33 @@ The contributions are:
   \item an explicit failure analysis showing when the scalable critical-cut approximation becomes optimistic under joint multi-cell cutsets.
 \end{itemize}
 
+\begin{figure}[t]
+\centering
+\begin{tikzpicture}[
+  >=Latex,
+  node distance=5mm,
+  state/.style={draw,circle,minimum size=5.2mm,inner sep=0pt,font=\scriptsize},
+  labelnode/.style={font=\scriptsize,align=center},
+  route/.style={->,line width=0.55pt},
+  hazard/.style={->,dashed,line width=0.55pt}
+]
+  \node[state] (s1) at (0,1.45) {$S$};
+  \node[state] (a1) at (1.15,1.45) {};
+  \node[state] (x1) at (2.30,1.45) {$x$};
+  \draw[route] (s1) -- (a1) -- (x1);
+  \node[labelnode,anchor=west] at (2.72,1.45) {trigger-free history\\$\Aset=\varnothing,\;\Rret=1$};
+
+  \node[state] (s2) at (0,0) {$S$};
+  \node[state] (b2) at (1.15,0) {};
+  \node[state] (x2) at (2.30,0) {$x$};
+  \draw[route] (s2) -- node[below,font=\scriptsize] {$e_i$} (b2) -- (x2);
+  \draw[hazard,bend left=28] (b2) to node[above,font=\scriptsize] {activates $c_i$ with $p$} (s2);
+  \node[labelnode,anchor=west] at (2.72,0) {trigger-taking history\\$\Aset=\{i\},\;\Rret=1-p$};
+\end{tikzpicture}
+\caption{The same geometric endpoint $x$ is not necessarily the same planning state. In the lower history, traversing trigger $e_i$ activates a future closure of the critical return connection $c_i$. A state-only marginal model assigns one value to $x$ and cannot represent this distinction.}
+\label{fig:history-gap}
+\end{figure}
+
 \section{Related Work}
 \subsection{Safe return and contingency feasibility}
 Guo \emph{et al.} require the existence of a policy that returns an MDP to safe states with high probability and jointly synthesize outbound and return behavior \cite{guo2023safereturn}. Safe exploration methods likewise evaluate reachability and returnability probabilities before visiting uncertain regions \cite{stephens2024safeexploration}. Backup Plan Constrained MPC optimizes primary and alternative mission feasibility \cite{tao2024backup}. Contingency-MPPI embeds contingency generation inside nominal planning, and SCRAMPPI uses Hamilton--Jacobi reachability to certify that a safe-set trajectory exists from every state on the nominal plan \cite{jung2025contingency,srirangam2026scramppi}. These methods are stronger than our grid abstraction as general safety or control frameworks. Our distinction is representational: the environment hazard set itself depends on the executed transition history.
@@ -62,7 +91,7 @@ contains a directed trigger transition $e_i\in E$, a currently traversable closu
 \begin{equation}
 \Aset(H_t)=\{i\mid e_i\text{ occurs in }H_t\}.
 \end{equation}
-The augmented planning state is $z_t=(x_t,\Aset(H_t))$.
+The augmented planning state is $z_t=(x_t,\Aset(H_t))$. Figure~\ref{fig:history-gap} illustrates the minimal same-endpoint distinction.
 
 For a fixed augmented state, each active closure cell is sampled independently as a Bernoulli event. The current robot cell is conditioned traversable at the evaluation instant. Let $C$ denote the random set of realized closures. We define exact safe-return reliability
 \begin{equation}
