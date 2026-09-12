@@ -57,14 +57,21 @@ def _realize_after_commitment(
     active: set[int],
     seed: int,
 ) -> tuple[GridMap, int]:
+    """Realize one latent closure world, then apply only activated events.
+
+    A seed generates one random draw for every declared closure index regardless
+    of which events a planner activates. Therefore different planners evaluated
+    with the same seed see the same latent outcome for each shared event. This
+    preserves common-random-numbers pairing when active event subsets differ.
+    """
     rng = random.Random(seed)
+    draws = [rng.random() for _ in model.closures]
     obstacles = set(grid.obstacles)
     realized = 0
-    for index in sorted(active):
-        closure = model.closures[index]
-        if closure.closure_cell == current:
+    for index, closure in enumerate(model.closures):
+        if index not in active or closure.closure_cell == current:
             continue
-        if rng.random() < closure.closure_probability:
+        if draws[index] < closure.closure_probability:
             obstacles.add(closure.closure_cell)
             realized += 1
     updated = GridMap.from_obstacles(
