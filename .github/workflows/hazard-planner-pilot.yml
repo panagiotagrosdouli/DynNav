@@ -5,6 +5,7 @@ on:
     paths:
       - "dynnav/planners/hazard_reliability_astar.py"
       - "dynnav/planners/commitment_aware_astar.py"
+      - "dynnav/planners/commitment_cut_astar.py"
       - "dynnav/experiments/hazard_planner_pilot.py"
       - "dynnav/experiments/commitment_trap_benchmark.py"
       - "dynnav/experiments/history_commitment_benchmark.py"
@@ -19,6 +20,7 @@ on:
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
       - "tests/test_commitment_aware_astar.py"
+      - "tests/test_commitment_cut_astar.py"
       - "tests/test_commitment_trap_benchmark.py"
       - "tests/test_history_commitment_benchmark.py"
       - "tests/test_commitment_phase_benchmark.py"
@@ -49,6 +51,7 @@ jobs:
           tests/test_hazard_planner_pilot.py
           tests/test_commitment_hazard.py
           tests/test_commitment_aware_astar.py
+          tests/test_commitment_cut_astar.py
           tests/test_commitment_trap_benchmark.py
           tests/test_history_commitment_benchmark.py
           tests/test_commitment_phase_benchmark.py
