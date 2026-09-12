@@ -66,10 +66,15 @@ def exact_safe_return_probability(
 
     The uncertain cells are assumed independent Bernoulli variables. This is an
     exact oracle for small synthetic problems, not a scalable online planner.
+    The robot's current cell is conditioned free because the robot physically
+    occupies it; unresolved occupancy on ``start`` would be information leakage
+    in the wrong direction rather than a meaningful uncertainty model.
     """
 
     grid.validate()
     belief.validate(grid)
+    if start in belief.blocked_probability:
+        raise ValueError("start cell is physically occupied by the robot and must be conditioned free")
     if max_uncertain_cells < 0:
         raise ValueError("max_uncertain_cells must be non-negative")
 
@@ -117,11 +122,13 @@ def exact_recoverability_degradation(
     *,
     max_uncertain_cells: int = 16,
 ) -> float:
-    """Return the exact loss in safe-return probability after committing to a state.
+    """Return loss in safe-return probability between two conditioned-free states.
 
     Positive values mean the candidate state preserves less safe-return
     probability than the current state under the same unresolved topology
-    belief. Negative values indicate improved recoverability.
+    belief. This quantity is useful diagnostically, but by itself it is not a
+    novel one-step objective: with fixed current state it induces the same action
+    ordering as maximizing candidate safe-return probability.
     """
 
     current_probability = exact_safe_return_probability(
