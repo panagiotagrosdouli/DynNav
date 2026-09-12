@@ -15,7 +15,17 @@ from dynnav.planners.hazard_reliability_astar import (
     hazard_reliability_astar,
 )
 from dynnav.planners.recoverability_astar import PlannerMode, recoverability_astar
-from dynnav.recoverability_belief import exact_safe_return_probability
+from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return_probability
+
+
+def _condition_current_usable(hazard: TopologyHazardBelief, current):
+    return TopologyHazardBelief(
+        {
+            cell: probability
+            for cell, probability in hazard.closure_probability.items()
+            if cell != current
+        }
+    )
 
 
 def test_shortest_route_enters_fragile_commitment_region() -> None:
@@ -26,7 +36,13 @@ def test_shortest_route_enters_fragile_commitment_region() -> None:
     assert shortest.geometric_length == 8
     assert (4, 1) in shortest.path
     exact = [
-        exact_safe_return_probability(grid, cell, safe, hazard, max_hazard_cells=2)
+        exact_safe_return_probability(
+            grid,
+            cell,
+            safe,
+            _condition_current_usable(hazard, cell),
+            max_hazard_cells=2,
+        )
         for cell in shortest.path
     ]
     assert min(exact) == pytest.approx(0.75)
@@ -49,7 +65,13 @@ def test_high_hazard_penalty_selects_long_hazard_free_corridor() -> None:
         assert result.geometric_length == 16
         assert (4, 1) not in result.path
         exact = [
-            exact_safe_return_probability(grid, cell, safe, hazard, max_hazard_cells=2)
+            exact_safe_return_probability(
+                grid,
+                cell,
+                safe,
+                _condition_current_usable(hazard, cell),
+                max_hazard_cells=2,
+            )
             for cell in result.path
         ]
         assert min(exact) == pytest.approx(1.0)
