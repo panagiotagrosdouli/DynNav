@@ -26,6 +26,24 @@ def test_shortest_empirical_failure_matches_series_closure_probability() -> None
     assert observed == pytest.approx(expected, abs=0.03)
 
 
+def test_state_only_marginal_risk_cannot_value_trigger_avoiding_detours() -> None:
+    records = run_commitment_execution_benchmark(
+        seeds=tuple(range(500)),
+        module_count=2,
+        closure_probabilities=(0.8,),
+        recoverability_weight=8.0,
+    )
+    summary = summarize_commitment_execution(records)
+
+    shortest = summary["shortest:p=0.8"]
+    state_only = summary["state_only_single:p=0.8"]
+    assert state_only["activated_closure_count"] == shortest["activated_closure_count"] == 2
+    assert state_only["path_length"] == shortest["path_length"]
+    assert state_only["irreversible_failure_rate"] == pytest.approx(
+        shortest["irreversible_failure_rate"]
+    )
+
+
 def test_high_penalty_history_and_hard_planners_avoid_high_probability_irreversibility() -> None:
     records = run_commitment_execution_benchmark(
         seeds=tuple(range(500)),
@@ -54,7 +72,13 @@ def test_execution_records_are_paired_by_seed_across_planners() -> None:
         recoverability_weight=8.0,
         safe_return_threshold=0.9,
     )
-    for planner in ("shortest", "history_exact", "history_cut", "hard_return_0.9"):
+    for planner in (
+        "shortest",
+        "state_only_single",
+        "history_exact",
+        "history_cut",
+        "hard_return_0.9",
+    ):
         assert {row.seed for row in records if row.planner == planner} == {3, 7, 11}
 
 
