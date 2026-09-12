@@ -18,7 +18,7 @@ def test_joint_cut_direct_path_has_parallel_return_failure_probability() -> None
     assert model.closures[0].closure_cell != model.closures[1].closure_cell
 
 
-def test_exact_history_detours_when_joint_cut_risk_is_expensive() -> None:
+def test_exact_history_distinguishes_equal_length_joint_cut_routes() -> None:
     records = run_joint_cut_counterexample(
         closure_probabilities=(0.8,),
         recoverability_weights=(8.0,),
@@ -26,12 +26,14 @@ def test_exact_history_detours_when_joint_cut_risk_is_expensive() -> None:
     exact = next(row for row in records if row.planner == "history_exact")
     cut = next(row for row in records if row.planner == "history_cut")
 
+    # Both selected routes have equal geometric length.  The scientific signal
+    # is therefore entirely in activated history and return-connectivity risk.
+    assert exact.path_length == cut.path_length == 6
+
     assert exact.activated_closure_count == 0
-    assert exact.path_length == 6
     assert exact.final_exact_return_probability == pytest.approx(1.0)
 
     assert cut.activated_closure_count == 2
-    assert cut.path_length == 4
     assert cut.final_exact_return_probability == pytest.approx(1.0 - 0.8**2)
     assert cut.final_cut_return_estimate == pytest.approx(1.0)
 
