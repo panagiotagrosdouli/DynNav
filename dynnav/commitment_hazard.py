@@ -62,6 +62,9 @@ class CommitmentHazardModel:
         for cell in path:
             if not grid.in_bounds(cell) or not grid.passable(cell):
                 raise ValueError(f"path contains invalid cell: {cell}")
+        for source, target in zip(path, path[1:], strict=False):
+            if target not in grid.neighbors4(source):
+                raise ValueError(f"path contains non-traversable transition: {(source, target)}")
 
         traversed = set(zip(path, path[1:], strict=False))
         probabilities: dict[GridCell, float] = {}
