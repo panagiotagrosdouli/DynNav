@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 
 from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
+from dynnav.planners import commitment_aware_astar as commitment_module
 from dynnav.planners.commitment_aware_astar import (
     CommitmentAwareAStarConfig,
     CommitmentPlannerMode,
@@ -112,3 +113,34 @@ def test_low_closure_probability_does_not_force_unnecessary_detour() -> None:
     assert result.success
     assert result.geometric_length == 3
     assert result.final_return_probability == pytest.approx(0.95)
+
+
+def test_shortest_latency_excludes_posthoc_return_profile(monkeypatch: pytest.MonkeyPatch) -> None:
+    grid, start, goal, model = _trap_problem()
+    diagnostic_calls = 0
+
+    def fake_return_probability(*args, **kwargs):
+        nonlocal diagnostic_calls
+        diagnostic_calls += 1
+        return 1.0
+
+    def fake_perf_counter() -> float:
+        # Diagnostic calls happen only after the shortest-path search has
+        # already reached the goal. If profiling leaked into planning latency,
+        # the second timer read would include this synthetic offset.
+        return 10.0 + diagnostic_calls
+
+    monkeypatch.setattr(commitment_module, "_return_probability", fake_return_probability)
+    monkeypatch.setattr(commitment_module.time, "perf_counter", fake_perf_counter)
+
+    result = commitment_module.commitment_aware_astar(
+        grid,
+        start,
+        goal,
+        safe_cells={start},
+        hazard_model=model,
+        mode=CommitmentPlannerMode.SHORTEST,
+    )
+
+    assert diagnostic_calls == len(result.path)
+    assert result.planning_time_ms == pytest.approx(0.0)
