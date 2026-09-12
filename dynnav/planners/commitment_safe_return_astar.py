@@ -96,10 +96,11 @@ def commitment_safe_return_astar(
 ) -> SafeReturnConstraintResult:
     """Shortest path subject to a per-state history-conditioned return constraint.
 
-    This is a strong controlled baseline for contingency/safe-return planning:
-    every accepted successor must retain at least ``minimum_return_probability``
+    Every accepted successor must retain at least ``minimum_return_probability``
     of reaching the designated safe set under the active future-closure model.
-    It is not presented as a new method.
+    ``planning_time_ms`` includes the initial safe-return feasibility check and
+    all online oracle calls used to accept or reject successors, but excludes
+    post-goal diagnostic profile construction.
     """
     grid.validate()
     cfg = config or SafeReturnConstraintConfig()
@@ -128,10 +129,13 @@ def commitment_safe_return_astar(
             )
         return cache[state]
 
-    if return_probability(start_state) < cfg.minimum_return_probability:
-        return SafeReturnConstraintResult((), False, 0, 0, 0.0, 0.0, 0.0, 0, 0)
-
     t0 = time.perf_counter()
+    if return_probability(start_state) < cfg.minimum_return_probability:
+        return SafeReturnConstraintResult(
+            (), False, 0, 0, (time.perf_counter() - t0) * 1000.0,
+            0.0, 0.0, 0, 0
+        )
+
     frontier: list[tuple[float, int, AugmentedState]] = [(0.0, 0, start_state)]
     costs: dict[AugmentedState, float] = {start_state: 0.0}
     parents: dict[AugmentedState, AugmentedState] = {}
@@ -144,6 +148,7 @@ def commitment_safe_return_astar(
         cell, active = state
         expanded += 1
         if cell == goal:
+            planning_time_ms = (time.perf_counter() - t0) * 1000.0
             states = _reconstruct(parents, state)
             profile = [return_probability(item) for item in states]
             path = tuple(item[0] for item in states)
@@ -152,7 +157,7 @@ def commitment_safe_return_astar(
                 success=True,
                 geometric_length=max(0, len(path) - 1),
                 nodes_expanded=expanded,
-                planning_time_ms=(time.perf_counter() - t0) * 1000.0,
+                planning_time_ms=planning_time_ms,
                 final_return_probability=profile[-1],
                 minimum_return_probability=min(profile),
                 activated_closure_count=len(active),
