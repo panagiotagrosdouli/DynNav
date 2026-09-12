@@ -1,0 +1,43 @@
+name: Hazard-aware planner pilot
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/planners/hazard_reliability_astar.py"
+      - "dynnav/experiments/hazard_planner_pilot.py"
+      - "scripts/run_hazard_planner_pilot.py"
+      - "tests/test_hazard_reliability_astar.py"
+      - "tests/test_hazard_planner_pilot.py"
+      - ".github/workflows/hazard-planner-pilot.yml"
+  workflow_dispatch:
+
+jobs:
+  pilot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: python -m pip install -e ".[dev]"
+      - name: Run planner regression tests
+        run: >-
+          python -m pytest -q
+          tests/test_hazard_reliability_astar.py
+          tests/test_hazard_planner_pilot.py
+      - name: Execute development planner pilot
+        run: >-
+          python scripts/run_hazard_planner_pilot.py
+          --seeds 50
+          --hazard-count 6
+          --reliability-weight 4.0
+          --out-dir results/hazard_planner_pilot
+      - name: Upload raw planner pilot artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: hazard-planner-pilot-${{ github.sha }}
+          path: results/hazard_planner_pilot
+          if-no-files-found: error
