@@ -103,11 +103,11 @@ def test_low_probability_trigger_keeps_direct_route() -> None:
     assert result.final_estimated_return_probability == pytest.approx(0.95)
 
 
-def test_approximate_planner_does_not_require_exact_enumeration_limit() -> None:
-    # Construct 17 independent triggers on an open strip. None is taken on the
-    # direct start-goal path, but their presence exceeds the exact oracle's
-    # default enumeration guard. The approximate planner should still solve the
-    # problem because it never enumerates 2^k closure realizations.
+def test_non_enumerative_planner_operates_beyond_exact_oracle_guard() -> None:
+    # Construct 17 independent trigger definitions. Their presence exceeds the
+    # exact planner's configured outcome-enumeration guard. They lie off the
+    # direct mission route, so this test isolates the algorithmic guard rather
+    # than claiming that augmented-history search itself is polynomial.
     grid = GridMap.from_obstacles(20, 2)
     closures = tuple(
         CommitmentClosure(
@@ -118,6 +118,16 @@ def test_approximate_planner_does_not_require_exact_enumeration_limit() -> None:
         for index in range(17)
     )
     model = CommitmentHazardModel(closures)
+
+    with pytest.raises(ValueError, match="exceeds max_hazard_cells"):
+        commitment_aware_astar(
+            grid,
+            (0, 0),
+            (19, 0),
+            safe_cells={(0, 0)},
+            hazard_model=model,
+            mode=CommitmentPlannerMode.HISTORY_AWARE,
+        )
 
     result = approx_commitment_aware_astar(
         grid,
