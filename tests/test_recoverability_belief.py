@@ -30,13 +30,14 @@ def test_single_uncertain_bridge_has_analytic_safe_return_probability():
 
 
 def test_parallel_uncertain_bridges_preserve_return_if_either_survives():
-    obstacles = {(0, 1), (2, 1)}
-    grid = GridMap.from_obstacles(3, 3, obstacles=obstacles)
+    # The center is blocked, forcing return through either the upper or lower
+    # crossing. Each crossing contains one independent uncertain bridge cell.
+    grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
     belief = TopologyBelief({(1, 0): 0.2, (1, 2): 0.3})
 
-    probability = exact_safe_return_probability(grid, (2, 0), {(0, 0)}, belief)
+    probability = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, belief)
 
-    # The two crossings are independent; return fails only if both are blocked.
+    # Return fails only if both independent crossings are blocked.
     assert probability == pytest.approx(1.0 - 0.2 * 0.3)
 
 
