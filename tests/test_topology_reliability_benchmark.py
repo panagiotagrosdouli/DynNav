@@ -11,13 +11,15 @@ from dynnav.experiments.topology_reliability_benchmark import (
 )
 
 
-def test_series_bridge_estimator_matches_exact_probability() -> None:
+def test_series_bridge_estimators_match_exact_probability() -> None:
     records = run_topology_reliability_benchmark((0.2, 0.6))
     series = [record for record in records if record.topology == "series_bridge"]
 
     assert [row.exact_return_probability for row in series] == pytest.approx([0.8, 0.4])
     assert [row.most_reliable_path_probability for row in series] == pytest.approx([0.8, 0.4])
-    assert [row.estimator_absolute_error for row in series] == pytest.approx([0.0, 0.0])
+    assert [row.two_path_probability for row in series] == pytest.approx([0.8, 0.4])
+    assert [row.most_reliable_path_absolute_error for row in series] == pytest.approx([0.0, 0.0])
+    assert [row.two_path_absolute_error for row in series] == pytest.approx([0.0, 0.0])
 
 
 def test_parallel_topology_exposes_single_path_redundancy_gap() -> None:
@@ -26,7 +28,9 @@ def test_parallel_topology_exposes_single_path_redundancy_gap() -> None:
 
     assert [row.exact_return_probability for row in parallel] == pytest.approx([0.96, 0.64])
     assert [row.most_reliable_path_probability for row in parallel] == pytest.approx([0.8, 0.4])
-    assert all(row.estimator_absolute_error > 0.0 for row in parallel)
+    assert [row.two_path_probability for row in parallel] == pytest.approx([0.96, 0.64])
+    assert all(row.most_reliable_path_absolute_error > 0.0 for row in parallel)
+    assert [row.two_path_absolute_error for row in parallel] == pytest.approx([0.0, 0.0])
 
 
 def test_structural_score_is_constant_when_only_topology_belief_changes() -> None:
@@ -37,6 +41,14 @@ def test_structural_score_is_constant_when_only_topology_belief_changes() -> Non
     assert summary["parallel_bridges"]["structural_score_range"] == pytest.approx(0.0)
     assert summary["series_bridge"]["exact_probability_range"] > 0.0
     assert summary["parallel_bridges"]["exact_probability_range"] > 0.0
+
+
+def test_redundancy_aware_estimator_reduces_error_on_parallel_topology() -> None:
+    records = run_topology_reliability_benchmark((0.1, 0.3, 0.5, 0.7, 0.9))
+    summary = summarize_topology_reliability(records)
+
+    parallel = summary["parallel_bridges"]
+    assert parallel["two_path_mae"] < parallel["most_reliable_path_mae"]
 
 
 def test_benchmark_writes_traceable_raw_and_summary_artifacts(tmp_path) -> None:
