@@ -15,6 +15,7 @@ on:
       - "dynnav/experiments/multi_commitment_benchmark.py"
       - "dynnav/experiments/commitment_execution_benchmark.py"
       - "dynnav/experiments/history_state_scaling_benchmark.py"
+      - "dynnav/experiments/safe_return_threshold_benchmark.py"
       - "dynnav/experiments/statistics.py"
       - "dynnav/commitment_hazard.py"
       - "dynnav/recoverability_cut.py"
@@ -27,6 +28,7 @@ on:
       - "scripts/run_multi_commitment_benchmark.py"
       - "scripts/run_commitment_execution_benchmark.py"
       - "scripts/run_history_state_scaling_benchmark.py"
+      - "scripts/run_safe_return_threshold_benchmark.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
@@ -42,6 +44,7 @@ on:
       - "tests/test_multi_commitment_benchmark.py"
       - "tests/test_commitment_execution_benchmark.py"
       - "tests/test_history_state_scaling_benchmark.py"
+      - "tests/test_safe_return_threshold_benchmark.py"
       - "tests/test_statistical_evaluation.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
@@ -80,6 +83,7 @@ jobs:
           tests/test_multi_commitment_benchmark.py
           tests/test_commitment_execution_benchmark.py
           tests/test_history_state_scaling_benchmark.py
+          tests/test_safe_return_threshold_benchmark.py
           tests/test_statistical_evaluation.py
       - name: Execute development planner pilot
         run: >-
@@ -89,33 +93,21 @@ jobs:
           --reliability-weight 4.0
           --out-dir results/hazard_planner_pilot
       - name: Execute state-only commitment-trap benchmark
-        run: >-
-          python scripts/run_commitment_trap_benchmark.py
-          --out-dir results/commitment_trap
+        run: python scripts/run_commitment_trap_benchmark.py --out-dir results/commitment_trap
       - name: Execute history-conditioned phase benchmark
-        run: >-
-          python scripts/run_history_commitment_benchmark.py
-          --out-dir results/history_commitment
+        run: python scripts/run_history_commitment_benchmark.py --out-dir results/history_commitment
       - name: Execute analytic commitment phase benchmark
-        run: >-
-          python scripts/run_commitment_phase_benchmark.py
-          --out-dir results/commitment_phase
+        run: python scripts/run_commitment_phase_benchmark.py --out-dir results/commitment_phase
       - name: Execute exact-versus-cut scaling benchmark
-        run: >-
-          python scripts/run_cut_scaling_benchmark.py
-          --out-dir results/cut_scaling
+        run: python scripts/run_cut_scaling_benchmark.py --out-dir results/cut_scaling
       - name: Execute procedural multi-commitment benchmark
-        run: >-
-          python scripts/run_multi_commitment_benchmark.py
-          --out-dir results/multi_commitment
+        run: python scripts/run_multi_commitment_benchmark.py --out-dir results/multi_commitment
       - name: Execute stochastic commitment benchmark
-        run: >-
-          python scripts/run_commitment_execution_benchmark.py
-          --out-dir results/commitment_execution
+        run: python scripts/run_commitment_execution_benchmark.py --out-dir results/commitment_execution
       - name: Execute augmented history-state scaling benchmark
-        run: >-
-          python scripts/run_history_state_scaling_benchmark.py
-          --out-dir results/history_state_scaling
+        run: python scripts/run_history_state_scaling_benchmark.py --out-dir results/history_state_scaling
+      - name: Execute hard safe-return threshold sensitivity
+        run: python scripts/run_safe_return_threshold_benchmark.py --out-dir results/safe_return_threshold
       - name: Upload raw planner pilot artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -129,4 +121,5 @@ jobs:
             results/multi_commitment
             results/commitment_execution
             results/history_state_scaling
+            results/safe_return_threshold
           if-no-files-found: error
