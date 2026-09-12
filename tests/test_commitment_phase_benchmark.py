@@ -26,8 +26,9 @@ def test_detour_overhead_is_exactly_twice_depth() -> None:
             mode=CommitmentPlannerMode.HISTORY_AWARE,
             config=CommitmentAwareAStarConfig(recoverability_weight=100.0),
         )
-        assert direct.geometric_length == 3
-        assert robust.geometric_length == 3 + 2 * depth
+        # start -> bridge -> junction -> midpoint -> goal
+        assert direct.geometric_length == 4
+        assert robust.geometric_length == direct.geometric_length + 2 * depth
         assert direct.activated_closure_count == 1
         assert robust.activated_closure_count == 0
 
