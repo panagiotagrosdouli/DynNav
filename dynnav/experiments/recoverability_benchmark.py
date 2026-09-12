@@ -9,6 +9,7 @@ from pathlib import Path
 
 from dynnav.planners.grid_map import GridCell, GridMap
 from dynnav.planners.recoverability_astar import PlannerMode, RecoverabilityAStarConfig, recoverability_astar
+from dynnav.recoverability import return_failure_probability
 
 
 @dataclass(frozen=True)
@@ -53,7 +54,7 @@ def evaluate_dynamic_invalidation(
     mode: PlannerMode,
     config: RecoverabilityAStarConfig,
 ) -> tuple[bool, bool, object]:
-    """Plan, invalidate a route cell, and test whether a safe continuation exists."""
+    """Plan, invalidate a route cell, and evaluate mission and recovery feasibility."""
 
     initial = recoverability_astar(grid, start, goal, safe_cells={start}, mode=mode, config=config)
     if not initial.success:
@@ -80,8 +81,10 @@ def evaluate_dynamic_invalidation(
         mode=mode,
         config=config,
     )
-    irreversible_failure = not continuation.success
-    return continuation.success, irreversible_failure, initial
+    mission_success = continuation.success
+    recovery_infeasible = return_failure_probability(updated, current, {start}) >= 1.0
+    irreversible_failure = (not mission_success) and recovery_infeasible
+    return mission_success, irreversible_failure, initial
 
 
 def run_benchmark(
