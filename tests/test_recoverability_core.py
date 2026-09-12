@@ -1,3 +1,5 @@
+import pytest
+
 import dynnav.planners.recoverability_astar as recoverability_astar_module
 from dynnav.planners.grid_map import GridMap
 from dynnav.planners.recoverability_astar import (
@@ -141,4 +143,4 @@ def test_planning_latency_includes_recoverability_field_construction(monkeypatch
     )
 
     assert result.success
-    assert result.planning_time_ms == 25.0
+    assert result.planning_time_ms == pytest.approx(25.0)
