@@ -25,6 +25,8 @@ class HistoryCommitmentRecord:
     geometric_length: int
     activated_closure_count: int
     final_return_probability: float
+    minimum_return_probability: float
+    cumulative_return_fragility: float
     planning_time_ms: float
     nodes_expanded: int
 
@@ -55,6 +57,22 @@ def history_commitment_world(probability: float):
     return grid, start, goal, model
 
 
+def _record(probability: float, weight: float, result) -> HistoryCommitmentRecord:
+    return HistoryCommitmentRecord(
+        closure_probability=float(probability),
+        recoverability_weight=float(weight),
+        mode=result.mode.value,
+        success=result.success,
+        geometric_length=result.geometric_length,
+        activated_closure_count=result.activated_closure_count,
+        final_return_probability=result.final_return_probability,
+        minimum_return_probability=result.minimum_return_probability,
+        cumulative_return_fragility=result.cumulative_return_fragility,
+        planning_time_ms=result.planning_time_ms,
+        nodes_expanded=result.nodes_expanded,
+    )
+
+
 def run_history_commitment_benchmark(
     closure_probabilities: tuple[float, ...] = (0.05, 0.2, 0.4, 0.6, 0.8, 0.95),
     recoverability_weights: tuple[float, ...] = (0.5, 1.0, 2.0, 4.0, 8.0),
@@ -74,19 +92,7 @@ def run_history_commitment_benchmark(
             hazard_model=model,
             mode=CommitmentPlannerMode.SHORTEST,
         )
-        records.append(
-            HistoryCommitmentRecord(
-                closure_probability=float(probability),
-                recoverability_weight=0.0,
-                mode=CommitmentPlannerMode.SHORTEST.value,
-                success=shortest.success,
-                geometric_length=shortest.geometric_length,
-                activated_closure_count=shortest.activated_closure_count,
-                final_return_probability=shortest.final_return_probability,
-                planning_time_ms=shortest.planning_time_ms,
-                nodes_expanded=shortest.nodes_expanded,
-            )
-        )
+        records.append(_record(probability, 0.0, shortest))
 
         for weight in recoverability_weights:
             result = commitment_aware_astar(
@@ -98,19 +104,7 @@ def run_history_commitment_benchmark(
                 mode=CommitmentPlannerMode.HISTORY_AWARE,
                 config=CommitmentAwareAStarConfig(recoverability_weight=float(weight)),
             )
-            records.append(
-                HistoryCommitmentRecord(
-                    closure_probability=float(probability),
-                    recoverability_weight=float(weight),
-                    mode=CommitmentPlannerMode.HISTORY_AWARE.value,
-                    success=result.success,
-                    geometric_length=result.geometric_length,
-                    activated_closure_count=result.activated_closure_count,
-                    final_return_probability=result.final_return_probability,
-                    planning_time_ms=result.planning_time_ms,
-                    nodes_expanded=result.nodes_expanded,
-                )
-            )
+            records.append(_record(probability, weight, result))
     return records
 
 
@@ -122,6 +116,14 @@ def summarize_history_commitment(
     history = [row for row in records if row.mode == CommitmentPlannerMode.HISTORY_AWARE.value]
     shortest = [row for row in records if row.mode == CommitmentPlannerMode.SHORTEST.value]
     detours = [row for row in history if row.geometric_length > 3]
+    thresholds: dict[str, float | None] = {}
+    for weight in sorted({row.recoverability_weight for row in history}):
+        rows = sorted(
+            (row for row in history if row.recoverability_weight == weight),
+            key=lambda row: row.closure_probability,
+        )
+        first_detour = next((row.closure_probability for row in rows if row.geometric_length > 3), None)
+        thresholds[str(weight)] = first_detour
     return {
         "trials": len(records),
         "probability_levels": len({row.closure_probability for row in records}),
@@ -129,10 +131,19 @@ def summarize_history_commitment(
         "history_aware_detour_rate": len(detours) / len(history),
         "history_aware_mean_path_length": sum(row.geometric_length for row in history) / len(history),
         "shortest_mean_path_length": sum(row.geometric_length for row in shortest) / len(shortest),
+        "history_aware_mean_minimum_return_probability": sum(
+            row.minimum_return_probability for row in history
+        )
+        / len(history),
+        "shortest_mean_minimum_return_probability": sum(
+            row.minimum_return_probability for row in shortest
+        )
+        / len(shortest),
         "history_aware_mean_return_probability": sum(row.final_return_probability for row in history)
         / len(history),
         "shortest_mean_return_probability": sum(row.final_return_probability for row in shortest)
         / len(shortest),
+        "detour_threshold_by_weight": thresholds,
     }
 
 
