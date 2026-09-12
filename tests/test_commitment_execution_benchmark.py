@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import pytest
 
+from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
 from dynnav.experiments.commitment_execution_benchmark import (
+    _realize_after_commitment,
     run_commitment_execution_benchmark,
     summarize_commitment_execution,
 )
+from dynnav.planners.grid_map import GridMap
 
 
 def test_shortest_empirical_failure_matches_series_closure_probability() -> None:
@@ -53,3 +56,24 @@ def test_execution_records_are_paired_by_seed_across_planners() -> None:
     )
     for planner in ("shortest", "history_exact", "history_cut", "hard_return_0.9"):
         assert {row.seed for row in records if row.planner == planner} == {3, 7, 11}
+
+
+def test_same_seed_assigns_same_latent_draw_to_shared_event_index() -> None:
+    # random.Random(1) gives draw0 ~= 0.134 and draw1 ~= 0.847. Event 1
+    # therefore must remain open at p=0.5 whether event 0 is active or not.
+    grid = GridMap.from_obstacles(5, 1)
+    model = CommitmentHazardModel(
+        (
+            CommitmentClosure(((0, 0), (1, 0)), (1, 0), 0.5),
+            CommitmentClosure(((3, 0), (4, 0)), (3, 0), 0.5),
+        )
+    )
+    only_second, _ = _realize_after_commitment(
+        grid, (4, 0), model, {1}, seed=1
+    )
+    both, _ = _realize_after_commitment(
+        grid, (4, 0), model, {0, 1}, seed=1
+    )
+
+    assert (3, 0) not in only_second.obstacles
+    assert (3, 0) not in both.obstacles
