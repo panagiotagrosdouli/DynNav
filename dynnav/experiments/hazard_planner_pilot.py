@@ -42,20 +42,13 @@ def run_hazard_planner_pilot(
         raise ValueError("development seeds must be unique")
 
     records: list[HazardPlannerPilotRecord] = []
-    start = (5, 5)
-    goal = (0, 0)
-    safe = {start}
+    mission_start = (0, 0)
+    mission_goal = (5, 5)
+    mission_safe = {mission_start}
     config = HazardReliabilityAStarConfig(reliability_weight=reliability_weight)
 
     for seed in seeds:
         grid, hazard, _ = _scenario(seed, hazard_count=hazard_count)
-        # The estimator-pilot generator uses (5,5) as its robot state and
-        # (0,0) as its return-safe location. For the nominal planning pilot we
-        # reverse mission direction so the safe set remains the launch point.
-        mission_start = goal
-        mission_goal = start
-        mission_safe = {mission_start}
-
         for mode in HazardReliabilityMode:
             result = hazard_reliability_astar(
                 grid,
@@ -114,9 +107,11 @@ def summarize_hazard_planner_pilot(
         summary[mode] = {
             "trials": len(rows),
             "success_rate": sum(row.success for row in rows) / len(rows),
-            "mean_geometric_length": sum(row.geometric_length for row in successful) / len(successful)
-            if successful
-            else 0.0,
+            "mean_geometric_length": (
+                sum(row.geometric_length for row in successful) / len(successful)
+                if successful
+                else 0.0
+            ),
             "mean_planning_time_ms": sum(row.planning_time_ms for row in rows) / len(rows),
             "mean_nodes_expanded": sum(row.nodes_expanded for row in rows) / len(rows),
             "mean_minimum_exact_return_probability": sum(
