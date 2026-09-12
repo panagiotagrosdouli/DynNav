@@ -3,19 +3,19 @@ from __future__ import annotations
 import pytest
 
 from dynnav.planners.grid_map import GridMap
-from dynnav.recoverability_belief import TopologyBelief, exact_safe_return_probability
+from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return_probability
 from dynnav.recoverability_estimation import (
     most_reliable_return_path,
-    two_uncertain_disjoint_return_paths,
+    two_hazard_disjoint_return_paths,
 )
 
 
-def test_most_reliable_path_is_exact_for_single_bridge_topology() -> None:
+def test_most_reliable_path_is_exact_for_single_future_closure() -> None:
     grid = GridMap.from_obstacles(5, 1)
-    belief = TopologyBelief({(2, 0): 0.35})
+    hazard = TopologyHazardBelief({(2, 0): 0.35})
 
-    estimate = most_reliable_return_path(grid, (4, 0), {(0, 0)}, belief)
-    exact = exact_safe_return_probability(grid, (4, 0), {(0, 0)}, belief)
+    estimate = most_reliable_return_path(grid, (4, 0), {(0, 0)}, hazard)
+    exact = exact_safe_return_probability(grid, (4, 0), {(0, 0)}, hazard)
 
     assert estimate.probability == pytest.approx(0.65)
     assert estimate.probability == pytest.approx(exact)
@@ -25,34 +25,34 @@ def test_most_reliable_path_is_exact_for_single_bridge_topology() -> None:
 
 def test_most_reliable_path_is_conservative_when_redundancy_matters() -> None:
     grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
-    belief = TopologyBelief({(1, 0): 0.2, (1, 2): 0.3})
+    hazard = TopologyHazardBelief({(1, 0): 0.2, (1, 2): 0.3})
 
-    estimate = most_reliable_return_path(grid, (2, 1), {(0, 1)}, belief)
-    exact = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, belief)
+    estimate = most_reliable_return_path(grid, (2, 1), {(0, 1)}, hazard)
+    exact = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, hazard)
 
     assert estimate.probability == pytest.approx(0.8)
     assert exact == pytest.approx(0.94)
     assert estimate.probability < exact
 
 
-def test_two_path_estimator_recovers_parallel_bridge_reliability() -> None:
+def test_two_path_estimator_recovers_parallel_closure_reliability() -> None:
     grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
-    belief = TopologyBelief({(1, 0): 0.2, (1, 2): 0.3})
+    hazard = TopologyHazardBelief({(1, 0): 0.2, (1, 2): 0.3})
 
-    estimate = two_uncertain_disjoint_return_paths(grid, (2, 1), {(0, 1)}, belief)
-    exact = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, belief)
+    estimate = two_hazard_disjoint_return_paths(grid, (2, 1), {(0, 1)}, hazard)
+    exact = exact_safe_return_probability(grid, (2, 1), {(0, 1)}, hazard)
 
     assert len(estimate.paths) == 2
     assert estimate.probability == pytest.approx(0.94)
     assert estimate.probability == pytest.approx(exact)
 
 
-def test_two_path_estimator_does_not_double_count_shared_uncertain_bridge() -> None:
+def test_two_path_estimator_does_not_double_count_shared_closure_hazard() -> None:
     grid = GridMap.from_obstacles(5, 3, obstacles={(2, 0), (2, 2)})
-    belief = TopologyBelief({(2, 1): 0.4})
+    hazard = TopologyHazardBelief({(2, 1): 0.4})
 
-    estimate = two_uncertain_disjoint_return_paths(grid, (4, 1), {(0, 1)}, belief)
-    exact = exact_safe_return_probability(grid, (4, 1), {(0, 1)}, belief)
+    estimate = two_hazard_disjoint_return_paths(grid, (4, 1), {(0, 1)}, hazard)
+    exact = exact_safe_return_probability(grid, (4, 1), {(0, 1)}, hazard)
 
     assert len(estimate.paths) == 1
     assert estimate.probability == pytest.approx(0.6)
@@ -61,28 +61,28 @@ def test_two_path_estimator_does_not_double_count_shared_uncertain_bridge() -> N
 
 def test_estimator_prefers_more_reliable_of_two_return_routes() -> None:
     grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
-    belief = TopologyBelief({(1, 0): 0.6, (1, 2): 0.1})
+    hazard = TopologyHazardBelief({(1, 0): 0.6, (1, 2): 0.1})
 
-    estimate = most_reliable_return_path(grid, (2, 1), {(0, 1)}, belief)
+    estimate = most_reliable_return_path(grid, (2, 1), {(0, 1)}, hazard)
 
     assert estimate.probability == pytest.approx(0.9)
     assert (1, 2) in estimate.path
     assert (1, 0) not in estimate.path
 
 
-def test_estimator_conditions_current_robot_cell_free() -> None:
+def test_estimator_conditions_current_robot_cell_usable() -> None:
     grid = GridMap.from_obstacles(3, 1)
-    belief = TopologyBelief({(2, 0): 0.5})
+    hazard = TopologyHazardBelief({(2, 0): 0.5})
 
-    with pytest.raises(ValueError, match="conditioned free"):
-        most_reliable_return_path(grid, (2, 0), {(0, 0)}, belief)
+    with pytest.raises(ValueError, match="conditioned usable"):
+        most_reliable_return_path(grid, (2, 0), {(0, 0)}, hazard)
 
 
-def test_estimator_reports_zero_if_all_return_routes_are_certainly_blocked() -> None:
+def test_estimator_reports_zero_if_all_return_routes_certainly_close() -> None:
     grid = GridMap.from_obstacles(3, 1)
-    belief = TopologyBelief({(1, 0): 1.0})
+    hazard = TopologyHazardBelief({(1, 0): 1.0})
 
-    estimate = most_reliable_return_path(grid, (2, 0), {(0, 0)}, belief)
+    estimate = most_reliable_return_path(grid, (2, 0), {(0, 0)}, hazard)
 
     assert estimate.probability == 0.0
     assert estimate.path == ()
