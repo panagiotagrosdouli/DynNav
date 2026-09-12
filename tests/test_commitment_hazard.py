@@ -12,24 +12,24 @@ from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return
 
 
 def test_same_geometric_state_can_have_different_recoverability_after_commitment() -> None:
-    # Open 3x3 grid. Both paths end at the same current state (2, 1).
-    # Traversing the lower route activates a future closure at the central
-    # return bridge (1, 1); the upper route does not.
-    grid = GridMap.from_obstacles(3, 3)
+    # A single bridge at (1,1) connects the safe region on the left to a loop on
+    # the right. Both histories cross the bridge and end at the same state, but
+    # only the lower loop activates a future closure of the bridge behind the robot.
+    grid = GridMap.from_obstacles(4, 3, obstacles={(1, 0), (1, 2)})
     safe = {(0, 1)}
-    current = (2, 1)
+    current = (3, 1)
     model = CommitmentHazardModel(
         (
             CommitmentClosure(
-                trigger=((1, 2), (2, 2)),
+                trigger=((2, 2), (3, 2)),
                 closure_cell=(1, 1),
                 closure_probability=0.8,
             ),
         )
     )
 
-    uncommitted_path = ((0, 1), (0, 0), (1, 0), (2, 0), current)
-    committed_path = ((0, 1), (0, 2), (1, 2), (2, 2), current)
+    uncommitted_path = ((0, 1), (1, 1), (2, 1), (2, 0), (3, 0), current)
+    committed_path = ((0, 1), (1, 1), (2, 1), (2, 2), (3, 2), current)
 
     uncommitted = exact_history_conditioned_return_probability(
         grid, uncommitted_path, safe, model
@@ -38,15 +38,13 @@ def test_same_geometric_state_can_have_different_recoverability_after_commitment
         grid, committed_path, safe, model
     )
 
-    # State-only geometry is identical at the endpoint; history is the only
-    # difference. The activated central closure lowers return reliability.
     assert uncommitted == pytest.approx(1.0)
-    assert committed < uncommitted
+    assert committed == pytest.approx(0.2)
 
 
 def test_state_only_oracle_cannot_represent_trigger_history_without_augmented_state() -> None:
-    grid = GridMap.from_obstacles(3, 3)
-    current = (2, 1)
+    grid = GridMap.from_obstacles(4, 3, obstacles={(1, 0), (1, 2)})
+    current = (3, 1)
     safe = {(0, 1)}
 
     state_only = exact_safe_return_probability(
