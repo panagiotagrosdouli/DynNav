@@ -8,16 +8,19 @@ on:
       - "dynnav/experiments/hazard_planner_pilot.py"
       - "dynnav/experiments/commitment_trap_benchmark.py"
       - "dynnav/experiments/history_commitment_benchmark.py"
+      - "dynnav/experiments/commitment_phase_benchmark.py"
       - "dynnav/commitment_hazard.py"
       - "scripts/run_hazard_planner_pilot.py"
       - "scripts/run_commitment_trap_benchmark.py"
       - "scripts/run_history_commitment_benchmark.py"
+      - "scripts/run_commitment_phase_benchmark.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
       - "tests/test_commitment_aware_astar.py"
       - "tests/test_commitment_trap_benchmark.py"
       - "tests/test_history_commitment_benchmark.py"
+      - "tests/test_commitment_phase_benchmark.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -46,6 +49,7 @@ jobs:
           tests/test_commitment_aware_astar.py
           tests/test_commitment_trap_benchmark.py
           tests/test_history_commitment_benchmark.py
+          tests/test_commitment_phase_benchmark.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
@@ -61,6 +65,10 @@ jobs:
         run: >-
           python scripts/run_history_commitment_benchmark.py
           --out-dir results/history_commitment
+      - name: Execute analytic commitment phase benchmark
+        run: >-
+          python scripts/run_commitment_phase_benchmark.py
+          --out-dir results/commitment_phase
       - name: Upload raw planner pilot artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -69,4 +77,5 @@ jobs:
             results/hazard_planner_pilot
             results/commitment_trap
             results/history_commitment
+            results/commitment_phase
           if-no-files-found: error
