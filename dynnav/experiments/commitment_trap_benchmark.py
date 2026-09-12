@@ -72,6 +72,21 @@ def commitment_trap_world(
     return grid, start, goal, safe, hazard
 
 
+def _condition_current_usable(
+    hazard: TopologyHazardBelief,
+    current: GridCell,
+) -> TopologyHazardBelief:
+    """Condition the occupied robot cell usable while retaining other future hazards."""
+
+    return TopologyHazardBelief(
+        {
+            cell: probability
+            for cell, probability in hazard.closure_probability.items()
+            if cell != current
+        }
+    )
+
+
 def _exact_path_metrics(
     grid: GridMap,
     path: list[GridCell],
@@ -79,7 +94,13 @@ def _exact_path_metrics(
     hazard: TopologyHazardBelief,
 ) -> tuple[float, float]:
     values = [
-        exact_safe_return_probability(grid, cell, safe, hazard, max_hazard_cells=2)
+        exact_safe_return_probability(
+            grid,
+            cell,
+            safe,
+            _condition_current_usable(hazard, cell),
+            max_hazard_cells=2,
+        )
         for cell in path
     ]
     return min(values), sum(values) / len(values)
