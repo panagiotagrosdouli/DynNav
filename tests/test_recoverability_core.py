@@ -1,3 +1,4 @@
+import dynnav.planners.recoverability_astar as recoverability_astar_module
 from dynnav.planners.grid_map import GridMap
 from dynnav.planners.recoverability_astar import (
     PlannerMode,
@@ -112,3 +113,32 @@ def test_all_four_ablation_modes_return_auditable_metrics():
         assert result.geometric_length > 0
         assert result.minimum_escape_options >= 1
         assert result.planning_time_ms >= 0.0
+
+
+def test_planning_latency_includes_recoverability_field_construction(monkeypatch):
+    grid = GridMap.from_obstacles(5, 5)
+    original_recoverability_map = recoverability_astar_module.recoverability_map
+    timer_started = False
+    clock = iter((100.0, 100.025))
+
+    def fake_perf_counter() -> float:
+        nonlocal timer_started
+        timer_started = True
+        return next(clock)
+
+    def instrumented_recoverability_map(*args, **kwargs):
+        assert timer_started, "planner timer must start before recoverability-map construction"
+        return original_recoverability_map(*args, **kwargs)
+
+    monkeypatch.setattr(recoverability_astar_module.time, "perf_counter", fake_perf_counter)
+    monkeypatch.setattr(recoverability_astar_module, "recoverability_map", instrumented_recoverability_map)
+
+    result = recoverability_astar_module.recoverability_astar(
+        grid,
+        (0, 0),
+        (4, 4),
+        mode=PlannerMode.RECOVERABILITY_AWARE,
+    )
+
+    assert result.success
+    assert result.planning_time_ms == 25.0

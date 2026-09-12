@@ -114,10 +114,13 @@ def recoverability_astar(
     if not grid.passable(start) or not grid.passable(goal):
         return _result([], False, float("inf"), 0, 0.0, mode, grid, {})
 
+    # The reported planner latency must include construction of the
+    # recoverability field; otherwise J2/J3 overhead is systematically
+    # under-reported relative to the actual work performed by the planner.
+    t0 = time.perf_counter()
     states = recoverability_map(grid, safe_cells, config.recoverability_weights)
     risk_weight, irreversibility_weight = _mode_weights(mode, config)
 
-    t0 = time.perf_counter()
     frontier: list[tuple[float, int, GridCell]] = []
     heapq.heappush(frontier, (0.0, 0, start))
     came_from: dict[GridCell, GridCell] = {}
