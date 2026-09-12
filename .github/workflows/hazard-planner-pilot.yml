@@ -11,6 +11,7 @@ on:
       - "dynnav/experiments/history_commitment_benchmark.py"
       - "dynnav/experiments/commitment_phase_benchmark.py"
       - "dynnav/experiments/cut_scaling_benchmark.py"
+      - "dynnav/experiments/multi_commitment_benchmark.py"
       - "dynnav/commitment_hazard.py"
       - "dynnav/recoverability_cut.py"
       - "scripts/run_hazard_planner_pilot.py"
@@ -18,6 +19,7 @@ on:
       - "scripts/run_history_commitment_benchmark.py"
       - "scripts/run_commitment_phase_benchmark.py"
       - "scripts/run_cut_scaling_benchmark.py"
+      - "scripts/run_multi_commitment_benchmark.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
@@ -28,6 +30,7 @@ on:
       - "tests/test_commitment_phase_benchmark.py"
       - "tests/test_recoverability_cut.py"
       - "tests/test_cut_scaling_benchmark.py"
+      - "tests/test_multi_commitment_benchmark.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -60,6 +63,7 @@ jobs:
           tests/test_commitment_phase_benchmark.py
           tests/test_recoverability_cut.py
           tests/test_cut_scaling_benchmark.py
+          tests/test_multi_commitment_benchmark.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
@@ -83,6 +87,10 @@ jobs:
         run: >-
           python scripts/run_cut_scaling_benchmark.py
           --out-dir results/cut_scaling
+      - name: Execute procedural multi-commitment benchmark
+        run: >-
+          python scripts/run_multi_commitment_benchmark.py
+          --out-dir results/multi_commitment
       - name: Upload raw planner pilot artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -93,4 +101,5 @@ jobs:
             results/history_commitment
             results/commitment_phase
             results/cut_scaling
+            results/multi_commitment
           if-no-files-found: error
