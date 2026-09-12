@@ -1,4 +1,4 @@
-"""Controlled benchmark for belief-conditioned safe-return reliability estimators."""
+"""Controlled benchmark for safe-return reliability under future topology closures."""
 
 from __future__ import annotations
 
@@ -9,17 +9,17 @@ from pathlib import Path
 
 from dynnav.planners.grid_map import GridMap
 from dynnav.recoverability import analyze_recoverability
-from dynnav.recoverability_belief import TopologyBelief, exact_safe_return_probability
+from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return_probability
 from dynnav.recoverability_estimation import (
     most_reliable_return_path,
-    two_uncertain_disjoint_return_paths,
+    two_hazard_disjoint_return_paths,
 )
 
 
 @dataclass(frozen=True)
 class TopologyReliabilityRecord:
     topology: str
-    blocked_probability: float
+    closure_probability: float
     exact_return_probability: float
     most_reliable_path_probability: float
     most_reliable_path_absolute_error: float
@@ -34,15 +34,15 @@ def _record(
     grid: GridMap,
     start: tuple[int, int],
     safe: set[tuple[int, int]],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
 ) -> TopologyReliabilityRecord:
-    exact = exact_safe_return_probability(grid, start, safe, belief)
-    single = most_reliable_return_path(grid, start, safe, belief).probability
-    redundant = two_uncertain_disjoint_return_paths(grid, start, safe, belief).probability
+    exact = exact_safe_return_probability(grid, start, safe, hazard)
+    single = most_reliable_return_path(grid, start, safe, hazard).probability
+    redundant = two_hazard_disjoint_return_paths(grid, start, safe, hazard).probability
     structural = analyze_recoverability(grid, start, safe).irreversibility
     return TopologyReliabilityRecord(
         topology=topology,
-        blocked_probability=probability,
+        closure_probability=probability,
         exact_return_probability=exact,
         most_reliable_path_probability=single,
         most_reliable_path_absolute_error=abs(exact - single),
@@ -56,26 +56,26 @@ def _series_bridge(probability: float) -> TopologyReliabilityRecord:
     grid = GridMap.from_obstacles(5, 1)
     start = (4, 0)
     safe = {(0, 0)}
-    belief = TopologyBelief({(2, 0): probability})
-    return _record("series_bridge", probability, grid, start, safe, belief)
+    hazard = TopologyHazardBelief({(2, 0): probability})
+    return _record("series_bridge", probability, grid, start, safe, hazard)
 
 
 def _parallel_bridges(probability: float) -> TopologyReliabilityRecord:
     grid = GridMap.from_obstacles(3, 3, obstacles={(1, 1)})
     start = (2, 1)
     safe = {(0, 1)}
-    belief = TopologyBelief({(1, 0): probability, (1, 2): probability})
-    return _record("parallel_bridges", probability, grid, start, safe, belief)
+    hazard = TopologyHazardBelief({(1, 0): probability, (1, 2): probability})
+    return _record("parallel_bridges", probability, grid, start, safe, hazard)
 
 
 def run_topology_reliability_benchmark(
     probabilities: tuple[float, ...] = (0.1, 0.3, 0.5, 0.7, 0.9),
 ) -> list[TopologyReliabilityRecord]:
     if not probabilities:
-        raise ValueError("at least one blockage probability is required")
+        raise ValueError("at least one closure probability is required")
     for probability in probabilities:
         if not 0.0 <= probability <= 1.0:
-            raise ValueError("blockage probabilities must be in [0, 1]")
+            raise ValueError("closure probabilities must be in [0, 1]")
 
     records: list[TopologyReliabilityRecord] = []
     for probability in probabilities:
