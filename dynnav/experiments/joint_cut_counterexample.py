@@ -6,7 +6,11 @@ import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
-from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
+from dynnav.commitment_hazard import (
+    CommitmentClosure,
+    CommitmentHazardModel,
+    exact_history_conditioned_return_probability,
+)
 from dynnav.planners.commitment_aware_astar import (
     CommitmentAwareAStarConfig,
     CommitmentPlannerMode,
@@ -36,8 +40,8 @@ def joint_cut_world(
     """Two parallel return corridors whose hazards disconnect only jointly.
 
     The direct two-edge outbound route activates one hazard in each parallel
-    return corridor.  A two-step-longer upper detour reaches the same goal while
-    activating neither event.  Removing either hazard cell alone leaves one
+    return corridor. A two-step-longer upper detour reaches the same goal while
+    activating neither event. Removing either hazard cell alone leaves one
     return corridor, so the individually-critical cut approximation reports
     full reliability even after both hazards are active.
     """
@@ -78,6 +82,21 @@ def joint_cut_world(
     return grid, start, goal, {start}, model
 
 
+def _exact_final_probability(
+    grid: GridMap,
+    path: tuple[GridCell, ...],
+    safe: set[GridCell],
+    model: CommitmentHazardModel,
+) -> float:
+    return exact_history_conditioned_return_probability(
+        grid,
+        path,
+        safe,
+        model,
+        max_hazard_cells=16,
+    )
+
+
 def run_joint_cut_counterexample(
     *,
     closure_probabilities: tuple[float, ...] = (0.2, 0.5, 0.8),
@@ -107,22 +126,34 @@ def run_joint_cut_counterexample(
                 hazard_model=model,
                 config=CommitmentCutAStarConfig(recoverability_weight=weight),
             )
-            for planner, result in (("history_exact", exact), ("history_cut", cut)):
-                records.append(
-                    JointCutRecord(
-                        closure_probability=probability,
-                        recoverability_weight=weight,
-                        planner=planner,
-                        path_length=result.geometric_length,
-                        activated_closure_count=result.activated_closure_count,
-                        final_exact_return_probability=result.final_return_probability,
-                        final_cut_return_estimate=(
-                            result.final_cut_return_estimate
-                            if planner == "history_cut"
-                            else result.final_return_probability
-                        ),
-                    )
+            exact_probability = _exact_final_probability(
+                grid, tuple(exact.path), safe, model
+            )
+            cut_exact_probability = _exact_final_probability(
+                grid, tuple(cut.path), safe, model
+            )
+            records.append(
+                JointCutRecord(
+                    closure_probability=probability,
+                    recoverability_weight=weight,
+                    planner="history_exact",
+                    path_length=exact.geometric_length,
+                    activated_closure_count=exact.activated_closure_count,
+                    final_exact_return_probability=exact_probability,
+                    final_cut_return_estimate=exact_probability,
                 )
+            )
+            records.append(
+                JointCutRecord(
+                    closure_probability=probability,
+                    recoverability_weight=weight,
+                    planner="history_cut",
+                    path_length=cut.geometric_length,
+                    activated_closure_count=cut.activated_closure_count,
+                    final_exact_return_probability=cut_exact_probability,
+                    final_cut_return_estimate=cut.final_return_upper_bound,
+                )
+            )
     return records
 
 
