@@ -6,12 +6,15 @@ on:
       - "dynnav/planners/hazard_reliability_astar.py"
       - "dynnav/planners/commitment_aware_astar.py"
       - "dynnav/experiments/hazard_planner_pilot.py"
+      - "dynnav/experiments/commitment_trap_benchmark.py"
       - "dynnav/commitment_hazard.py"
       - "scripts/run_hazard_planner_pilot.py"
+      - "scripts/run_commitment_trap_benchmark.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
       - "tests/test_commitment_aware_astar.py"
+      - "tests/test_commitment_trap_benchmark.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -34,6 +37,7 @@ jobs:
           tests/test_hazard_planner_pilot.py
           tests/test_commitment_hazard.py
           tests/test_commitment_aware_astar.py
+          tests/test_commitment_trap_benchmark.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
@@ -41,9 +45,15 @@ jobs:
           --hazard-count 6
           --reliability-weight 4.0
           --out-dir results/hazard_planner_pilot
+      - name: Execute commitment-trap benchmark
+        run: >-
+          python scripts/run_commitment_trap_benchmark.py
+          --out-dir results/commitment_trap
       - name: Upload raw planner pilot artifacts
         uses: actions/upload-artifact@v4
         with:
           name: hazard-planner-pilot-${{ github.sha }}
-          path: results/hazard_planner_pilot
+          path: |
+            results/hazard_planner_pilot
+            results/commitment_trap
           if-no-files-found: error
