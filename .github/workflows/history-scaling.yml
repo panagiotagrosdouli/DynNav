@@ -1,0 +1,44 @@
+name: History recoverability scaling
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/planners/approx_commitment_aware_astar.py"
+      - "dynnav/experiments/history_scaling_benchmark.py"
+      - "scripts/run_history_scaling_benchmark.py"
+      - "tests/test_approx_commitment_aware_astar.py"
+      - "tests/test_history_scaling_benchmark.py"
+      - ".github/workflows/history-scaling.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: history-scaling-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: python -m pip install -e ".[dev]"
+      - name: Run focused regression tests
+        run: >-
+          python -m pytest -q
+          tests/test_approx_commitment_aware_astar.py
+          tests/test_history_scaling_benchmark.py
+      - name: Execute exact-vs-approximate scaling benchmark
+        run: >-
+          python scripts/run_history_scaling_benchmark.py
+          --out-dir results/history_scaling
+      - name: Upload raw scaling artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: history-scaling-${{ github.sha }}
+          path: results/history_scaling
+          if-no-files-found: error
