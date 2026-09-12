@@ -37,16 +37,17 @@ def commitment_phase_world(
 ) -> tuple[GridMap, GridCell, GridCell, set[GridCell], CommitmentHazardModel]:
     """Create one risky direct edge and a uniquely sized safe detour.
 
-    The safe start reaches the right-hand region through a sole bridge at
-    ``(1, d)`` and then the junction ``(2, d)``. The direct edge from the
-    junction to the goal activates a possible future closure of that bridge.
+    The start reaches the right-hand region through a sole return bridge and
+    then a junction. The direct junction-to-goal edge activates a possible
+    future closure of that bridge.
 
-    The safe alternative is a *corridor*, not an open rectangle: from the
-    junction it must move ``detour_depth`` cells upward on x=2, cross once to
-    x=3, and move ``detour_depth`` cells downward to the goal. This makes its
-    geometric overhead exactly ``2 * detour_depth`` and prevents the planner
-    from cutting across at an intermediate row, which would invalidate the
-    analytic phase boundary.
+    The safe alternative is a U-shaped corridor: from the junction it moves
+    ``detour_depth`` cells upward, crosses once, then moves the same distance
+    downward to the goal. Its overhead over the direct edge is exactly
+    ``2 * detour_depth``. The right-hand leg is deliberately present at every
+    row so the detour actually reaches the goal; because there are no cross
+    edges between the two legs except at the top, no shorter safe crossover
+    exists.
     """
     if detour_depth < 1:
         raise ValueError("detour_depth must be at least 1")
@@ -54,14 +55,18 @@ def commitment_phase_world(
         raise ValueError("closure_probability must be in [0, 1]")
 
     d = detour_depth
-    width, height = 4, d + 1
+    # Columns 2 and 4 are the two detour legs. Column 3 is blocked except at
+    # the top crossover, preventing intermediate-row shortcuts.
+    width, height = 5, d + 1
     start = (0, d)
     bridge = (1, d)
     junction = (2, d)
-    goal = (3, d)
+    goal = (4, d)
+    trigger_midpoint = (3, d)
 
-    free: set[GridCell] = {start, bridge, junction, goal}
+    free: set[GridCell] = {start, bridge, junction, trigger_midpoint, goal}
     free.update((2, y) for y in range(0, d + 1))
+    free.update((4, y) for y in range(0, d + 1))
     free.add((3, 0))
     obstacles = {
         (x, y)
@@ -73,7 +78,7 @@ def commitment_phase_world(
     model = CommitmentHazardModel(
         (
             CommitmentClosure(
-                trigger=(junction, goal),
+                trigger=(junction, trigger_midpoint),
                 closure_cell=bridge,
                 closure_probability=closure_probability,
             ),
