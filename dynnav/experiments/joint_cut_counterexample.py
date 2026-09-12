@@ -39,11 +39,14 @@ def joint_cut_world(
 ) -> tuple[GridMap, GridCell, GridCell, set[GridCell], CommitmentHazardModel]:
     """Two parallel return corridors whose hazards disconnect only jointly.
 
-    The direct two-edge outbound route activates one hazard in each parallel
-    return corridor. A two-step-longer upper detour reaches the same goal while
-    activating neither event. Removing either hazard cell alone leaves one
-    return corridor, so the individually-critical cut approximation reports
-    full reliability even after both hazards are active.
+    This lattice deliberately contains two equal-length routes to the goal. One
+    route traverses two trigger transitions and activates one hazard in each
+    parallel return corridor; the other reaches the goal without activating
+    either event. Removing either hazard cell alone leaves one return corridor,
+    so the individually-critical cut approximation reports full reliability
+    even after both hazards are active. Because geometric lengths are tied, the
+    example isolates the approximation's inability to distinguish the routes
+    rather than confounding it with a length tradeoff.
     """
     if not 0.0 <= closure_probability <= 1.0:
         raise ValueError("closure_probability must be in [0, 1]")
