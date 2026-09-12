@@ -10,7 +10,10 @@ from pathlib import Path
 from dynnav.planners.grid_map import GridMap
 from dynnav.recoverability import analyze_recoverability
 from dynnav.recoverability_belief import TopologyBelief, exact_safe_return_probability
-from dynnav.recoverability_estimation import most_reliable_return_path
+from dynnav.recoverability_estimation import (
+    most_reliable_return_path,
+    two_uncertain_disjoint_return_paths,
+)
 
 
 @dataclass(frozen=True)
@@ -19,8 +22,34 @@ class TopologyReliabilityRecord:
     blocked_probability: float
     exact_return_probability: float
     most_reliable_path_probability: float
-    estimator_absolute_error: float
+    most_reliable_path_absolute_error: float
+    two_path_probability: float
+    two_path_absolute_error: float
     structural_irreversibility: float
+
+
+def _record(
+    topology: str,
+    probability: float,
+    grid: GridMap,
+    start: tuple[int, int],
+    safe: set[tuple[int, int]],
+    belief: TopologyBelief,
+) -> TopologyReliabilityRecord:
+    exact = exact_safe_return_probability(grid, start, safe, belief)
+    single = most_reliable_return_path(grid, start, safe, belief).probability
+    redundant = two_uncertain_disjoint_return_paths(grid, start, safe, belief).probability
+    structural = analyze_recoverability(grid, start, safe).irreversibility
+    return TopologyReliabilityRecord(
+        topology=topology,
+        blocked_probability=probability,
+        exact_return_probability=exact,
+        most_reliable_path_probability=single,
+        most_reliable_path_absolute_error=abs(exact - single),
+        two_path_probability=redundant,
+        two_path_absolute_error=abs(exact - redundant),
+        structural_irreversibility=structural,
+    )
 
 
 def _series_bridge(probability: float) -> TopologyReliabilityRecord:
@@ -28,17 +57,7 @@ def _series_bridge(probability: float) -> TopologyReliabilityRecord:
     start = (4, 0)
     safe = {(0, 0)}
     belief = TopologyBelief({(2, 0): probability})
-    exact = exact_safe_return_probability(grid, start, safe, belief)
-    estimate = most_reliable_return_path(grid, start, safe, belief).probability
-    structural = analyze_recoverability(grid, start, safe).irreversibility
-    return TopologyReliabilityRecord(
-        topology="series_bridge",
-        blocked_probability=probability,
-        exact_return_probability=exact,
-        most_reliable_path_probability=estimate,
-        estimator_absolute_error=abs(exact - estimate),
-        structural_irreversibility=structural,
-    )
+    return _record("series_bridge", probability, grid, start, safe, belief)
 
 
 def _parallel_bridges(probability: float) -> TopologyReliabilityRecord:
@@ -46,17 +65,7 @@ def _parallel_bridges(probability: float) -> TopologyReliabilityRecord:
     start = (2, 1)
     safe = {(0, 1)}
     belief = TopologyBelief({(1, 0): probability, (1, 2): probability})
-    exact = exact_safe_return_probability(grid, start, safe, belief)
-    estimate = most_reliable_return_path(grid, start, safe, belief).probability
-    structural = analyze_recoverability(grid, start, safe).irreversibility
-    return TopologyReliabilityRecord(
-        topology="parallel_bridges",
-        blocked_probability=probability,
-        exact_return_probability=exact,
-        most_reliable_path_probability=estimate,
-        estimator_absolute_error=abs(exact - estimate),
-        structural_irreversibility=structural,
-    )
+    return _record("parallel_bridges", probability, grid, start, safe, belief)
 
 
 def run_topology_reliability_benchmark(
@@ -86,11 +95,13 @@ def summarize_topology_reliability(
 
     summary: dict[str, dict[str, float | int]] = {}
     for topology, rows in sorted(grouped.items()):
-        errors = [row.estimator_absolute_error for row in rows]
+        single_errors = [row.most_reliable_path_absolute_error for row in rows]
+        redundant_errors = [row.two_path_absolute_error for row in rows]
         structural_values = [row.structural_irreversibility for row in rows]
         summary[topology] = {
             "trials": len(rows),
-            "estimator_mae": sum(errors) / len(errors),
+            "most_reliable_path_mae": sum(single_errors) / len(single_errors),
+            "two_path_mae": sum(redundant_errors) / len(redundant_errors),
             "structural_score_range": max(structural_values) - min(structural_values),
             "exact_probability_range": max(row.exact_return_probability for row in rows)
             - min(row.exact_return_probability for row in rows),
