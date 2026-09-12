@@ -24,7 +24,13 @@ from dynnav.planners.commitment_safe_return_astar import (
     commitment_safe_return_astar,
 )
 from dynnav.planners.grid_map import GridCell, GridMap
+from dynnav.planners.hazard_reliability_astar import (
+    HazardReliabilityAStarConfig,
+    HazardReliabilityMode,
+    hazard_reliability_astar,
+)
 from dynnav.recoverability import return_failure_probability
+from dynnav.recoverability_belief import TopologyHazardBelief
 
 
 @dataclass(frozen=True)
@@ -84,6 +90,16 @@ def _realize_after_commitment(
     return updated, realized
 
 
+def _state_only_marginal_hazard(model: CommitmentHazardModel) -> TopologyHazardBelief:
+    """Drop trigger history while preserving each closure cell's marginal p."""
+    return TopologyHazardBelief(
+        {
+            closure.closure_cell: closure.closure_probability
+            for closure in model.closures
+        }
+    )
+
+
 def run_commitment_execution_benchmark(
     *,
     seeds: tuple[int, ...] = tuple(range(1000)),
@@ -105,6 +121,17 @@ def run_commitment_execution_benchmark(
             safe_cells=safe,
             hazard_model=model,
             mode=CommitmentPlannerMode.SHORTEST,
+        )
+        state_only = hazard_reliability_astar(
+            grid,
+            start,
+            goal,
+            safe_cells=safe,
+            hazard=_state_only_marginal_hazard(model),
+            mode=HazardReliabilityMode.SINGLE_RETURN,
+            config=HazardReliabilityAStarConfig(
+                reliability_weight=recoverability_weight
+            ),
         )
         exact = commitment_aware_astar(
             grid,
@@ -140,6 +167,7 @@ def run_commitment_execution_benchmark(
 
         plans = {
             "shortest": shortest,
+            "state_only_single": state_only,
             "history_exact": exact,
             "history_cut": cut,
             f"hard_return_{safe_return_threshold:g}": hard,
