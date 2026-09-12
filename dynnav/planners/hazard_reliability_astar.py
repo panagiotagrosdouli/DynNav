@@ -45,6 +45,19 @@ class HazardReliabilityAStarResult(AStarResult):
     cumulative_return_fragility: float
 
 
+def _condition_current_usable(
+    hazard: TopologyHazardBelief,
+    current: GridCell,
+) -> TopologyHazardBelief:
+    return TopologyHazardBelief(
+        {
+            cell: probability
+            for cell, probability in hazard.closure_probability.items()
+            if cell != current
+        }
+    )
+
+
 def _return_probability(
     mode: HazardReliabilityMode,
     grid: GridMap,
@@ -54,9 +67,14 @@ def _return_probability(
 ) -> float:
     if mode is HazardReliabilityMode.SHORTEST:
         return 1.0
+    conditioned_hazard = _condition_current_usable(hazard, cell)
     if mode is HazardReliabilityMode.SINGLE_RETURN:
-        return most_reliable_return_path(grid, cell, safe_cells, hazard).probability
-    return two_hazard_disjoint_return_paths(grid, cell, safe_cells, hazard).probability
+        return most_reliable_return_path(
+            grid, cell, safe_cells, conditioned_hazard
+        ).probability
+    return two_hazard_disjoint_return_paths(
+        grid, cell, safe_cells, conditioned_hazard
+    ).probability
 
 
 def hazard_reliability_astar(
@@ -73,7 +91,9 @@ def hazard_reliability_astar(
 
     For each candidate state, the planner estimates the probability that at least
     one return route to the safe set survives the future closure model. The
-    transition penalty is ``reliability_weight * (1 - return_probability)``.
+    candidate cell is conditioned usable at the decision instant while all other
+    future closure hazards remain pending. The transition penalty is
+    ``reliability_weight * (1 - return_probability)``.
 
     This is deliberately a transparent baseline objective. It is not presented
     as a novel formulation; its purpose is to test whether belief-conditioned
