@@ -17,6 +17,17 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate paper provenance
+        working-directory: paper/dynnav_r
+        run: |
+          python -m json.tool evidence_manifest.json >/dev/null
+          if grep -En "TODO|TBD|FIXME" main.tex references.bib evidence_manifest.json; then
+            echo "Unresolved manuscript placeholder detected"
+            exit 1
+          fi
       - name: Install LaTeX toolchain
         run: |
           sudo apt-get update
