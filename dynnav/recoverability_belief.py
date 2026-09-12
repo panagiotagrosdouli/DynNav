@@ -1,10 +1,15 @@
-"""Exact safe-return oracle under independent topology uncertainty.
+"""Exact safe-return oracle under uncertain future topology closures.
 
 This module is intentionally evaluation-only. It enumerates all realizations of
-a small set of uncertain cells and computes the exact probability that a robot
-state remains connected to at least one designated safe cell. The oracle is
-useful for generating ground-truth labels and validating cheaper online
-estimators; it must not be fed hidden realized occupancy into a planner.
+a small set of future route-closure events and computes the exact probability
+that a robot state will remain connected to at least one designated safe cell
+if recovery becomes necessary after those events. The oracle is useful for
+ground-truth labels and validation of cheaper online estimators.
+
+The probabilities here are *not* current occupancy probabilities. Cells in the
+hazard model are currently known free and may become blocked later due to a
+dynamic route-invalidation event. This distinction prevents a robot from
+pretending that a cell it already traversed is still statically unobserved.
 """
 
 from __future__ import annotations
@@ -18,20 +23,20 @@ from dynnav.planners.grid_map import GridCell, GridMap
 
 
 @dataclass(frozen=True)
-class TopologyBelief:
-    """Independent Bernoulli occupancy belief for currently unresolved cells."""
+class TopologyHazardBelief:
+    """Independent Bernoulli belief over future cell-closure events."""
 
-    blocked_probability: Mapping[GridCell, float]
+    closure_probability: Mapping[GridCell, float]
 
     def validate(self, grid: GridMap) -> None:
-        for cell, probability in self.blocked_probability.items():
+        for cell, probability in self.closure_probability.items():
             if not grid.in_bounds(cell):
-                raise ValueError(f"uncertain cell outside grid: {cell}")
+                raise ValueError(f"hazard cell outside grid: {cell}")
             if cell in grid.obstacles:
-                raise ValueError(f"uncertain cell is already a known obstacle: {cell}")
+                raise ValueError(f"hazard cell is already a known obstacle: {cell}")
             if not 0.0 <= probability <= 1.0:
                 raise ValueError(
-                    f"blocked probability must be in [0, 1], got {probability!r} for {cell}"
+                    f"closure probability must be in [0, 1], got {probability!r} for {cell}"
                 )
 
 
@@ -58,44 +63,43 @@ def exact_safe_return_probability(
     grid: GridMap,
     start: GridCell,
     safe_cells: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
     *,
-    max_uncertain_cells: int = 16,
+    max_hazard_cells: int = 16,
 ) -> float:
-    """Return exact safe-return probability by enumerating topology realizations.
+    """Return exact post-closure safe-return probability by enumeration.
 
-    The uncertain cells are assumed independent Bernoulli variables. This is an
-    exact oracle for small synthetic problems, not a scalable online planner.
-    The robot's current cell is conditioned free because the robot physically
-    occupies it; unresolved occupancy on ``start`` would be information leakage
-    in the wrong direction rather than a meaningful uncertainty model.
+    Hazard cells are currently traversable but may independently close before a
+    future recovery is attempted. The current robot cell is conditioned usable
+    at the decision instant and therefore cannot itself be a pending closure in
+    this state-level oracle.
     """
 
     grid.validate()
-    belief.validate(grid)
-    if start in belief.blocked_probability:
-        raise ValueError("start cell is physically occupied by the robot and must be conditioned free")
-    if max_uncertain_cells < 0:
-        raise ValueError("max_uncertain_cells must be non-negative")
+    hazard.validate(grid)
+    if start in hazard.closure_probability:
+        raise ValueError("current robot cell must be conditioned usable in the hazard oracle")
+    if max_hazard_cells < 0:
+        raise ValueError("max_hazard_cells must be non-negative")
 
-    uncertain = sorted(belief.blocked_probability)
-    if len(uncertain) > max_uncertain_cells:
+    hazard_cells = sorted(hazard.closure_probability)
+    if len(hazard_cells) > max_hazard_cells:
         raise ValueError(
-            f"exact enumeration limited to {max_uncertain_cells} uncertain cells; "
-            f"got {len(uncertain)}"
+            f"exact enumeration limited to {max_hazard_cells} hazard cells; "
+            f"got {len(hazard_cells)}"
         )
 
-    if not uncertain:
+    if not hazard_cells:
         return float(_can_reach_safe_region(grid, start, safe_cells))
 
     probability_of_return = 0.0
-    for blocked_flags in product((False, True), repeat=len(uncertain)):
+    for closed_flags in product((False, True), repeat=len(hazard_cells)):
         realization_probability = 1.0
         realized_obstacles = set(grid.obstacles)
-        for cell, blocked in zip(uncertain, blocked_flags, strict=True):
-            p_blocked = float(belief.blocked_probability[cell])
-            realization_probability *= p_blocked if blocked else 1.0 - p_blocked
-            if blocked:
+        for cell, closed in zip(hazard_cells, closed_flags, strict=True):
+            p_closed = float(hazard.closure_probability[cell])
+            realization_probability *= p_closed if closed else 1.0 - p_closed
+            if closed:
                 realized_obstacles.add(cell)
 
         if realization_probability == 0.0:
@@ -118,31 +122,31 @@ def exact_recoverability_degradation(
     current: GridCell,
     candidate: GridCell,
     safe_cells: set[GridCell],
-    belief: TopologyBelief,
+    hazard: TopologyHazardBelief,
     *,
-    max_uncertain_cells: int = 16,
+    max_hazard_cells: int = 16,
 ) -> float:
-    """Return loss in safe-return probability between two conditioned-free states.
+    """Return loss in post-closure safe-return probability after commitment.
 
     Positive values mean the candidate state preserves less safe-return
-    probability than the current state under the same unresolved topology
-    belief. This quantity is useful diagnostically, but by itself it is not a
-    novel one-step objective: with fixed current state it induces the same action
-    ordering as maximizing candidate safe-return probability.
+    probability than the current state under the same future closure model.
+    This quantity is diagnostic: with a fixed current state it induces the same
+    one-step ordering as maximizing candidate safe-return probability, so it is
+    not treated as a novel objective by itself.
     """
 
     current_probability = exact_safe_return_probability(
         grid,
         current,
         safe_cells,
-        belief,
-        max_uncertain_cells=max_uncertain_cells,
+        hazard,
+        max_hazard_cells=max_hazard_cells,
     )
     candidate_probability = exact_safe_return_probability(
         grid,
         candidate,
         safe_cells,
-        belief,
-        max_uncertain_cells=max_uncertain_cells,
+        hazard,
+        max_hazard_cells=max_hazard_cells,
     )
     return current_probability - candidate_probability
