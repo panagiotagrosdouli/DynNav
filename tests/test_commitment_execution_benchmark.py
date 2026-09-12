@@ -38,6 +38,15 @@ def test_high_penalty_history_planners_avoid_high_probability_irreversibility() 
     assert summary["history_exact:p=0.8"]["irreversible_failure_rate"] == pytest.approx(0.0)
     assert summary["history_cut:p=0.8"]["irreversible_failure_rate"] == pytest.approx(0.0)
 
+    exact_effect = summary["paired_binary_effects"]["p=0.8"]["history_exact"]
+    cut_effect = summary["paired_binary_effects"]["p=0.8"]["history_cut"]
+    assert exact_effect["risk_difference"] < -0.9
+    assert cut_effect["risk_difference"] < -0.9
+    assert exact_effect["proposed_only_events"] == 0
+    assert cut_effect["proposed_only_events"] == 0
+    assert exact_effect["mcnemar_exact_pvalue"] < 0.05
+    assert cut_effect["mcnemar_exact_pvalue"] < 0.05
+
 
 def test_execution_records_are_paired_by_seed_across_planners() -> None:
     records = run_commitment_execution_benchmark(
