@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from dynnav.commitment_hazard import exact_history_conditioned_return_probability
 from dynnav.experiments.multi_commitment_benchmark import (
     multi_commitment_world,
     run_multi_commitment_benchmark,
@@ -23,6 +24,26 @@ def test_shortest_activates_every_module_trigger() -> None:
     assert result.success
     assert result.activated_closure_count == 3
     assert result.geometric_length == 12
+
+
+def test_direct_path_reliability_is_product_of_independent_bridge_survival() -> None:
+    grid, start, goal, safe, model = multi_commitment_world(3, 0.25)
+    result = commitment_aware_astar(
+        grid,
+        start,
+        goal,
+        safe_cells=safe,
+        hazard_model=model,
+        mode=CommitmentPlannerMode.SHORTEST,
+    )
+    probability = exact_history_conditioned_return_probability(
+        grid,
+        result.path,
+        safe,
+        model,
+        max_hazard_cells=3,
+    )
+    assert probability == pytest.approx(0.75 ** 3)
 
 
 def test_exact_and_cut_agree_on_series_critical_family() -> None:
