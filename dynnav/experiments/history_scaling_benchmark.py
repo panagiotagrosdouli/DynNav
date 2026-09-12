@@ -6,6 +6,7 @@ import csv
 import json
 from dataclasses import asdict, dataclass
 from pathlib import Path
+from statistics import mean, median
 
 from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
 from dynnav.planners.approx_commitment_aware_astar import (
@@ -24,6 +25,7 @@ from dynnav.planners.grid_map import GridMap
 @dataclass(frozen=True)
 class HistoryScalingRecord:
     hazard_count: int
+    repetition: int
     planner: str
     success: bool
     geometric_length: int
@@ -70,61 +72,68 @@ def run_history_scaling_benchmark(
     hazard_counts: tuple[int, ...] = (1, 2, 4, 6, 8, 10),
     *,
     closure_probability: float = 0.1,
+    repetitions: int = 7,
 ) -> list[HistoryScalingRecord]:
     if not hazard_counts:
         raise ValueError("hazard_counts cannot be empty")
+    if repetitions < 1:
+        raise ValueError("repetitions must be positive")
 
     records: list[HistoryScalingRecord] = []
+    max_hazards = max(hazard_counts)
     for count in hazard_counts:
         grid, start, goal, model = forced_history_corridor(
             int(count), closure_probability=closure_probability
         )
-        exact = commitment_aware_astar(
-            grid,
-            start,
-            goal,
-            safe_cells={start},
-            hazard_model=model,
-            mode=CommitmentPlannerMode.HISTORY_AWARE,
-            config=CommitmentAwareAStarConfig(
-                recoverability_weight=0.0,
-                max_hazard_cells=max(hazard_counts),
-            ),
-        )
-        records.append(
-            HistoryScalingRecord(
-                hazard_count=count,
-                planner="exact",
-                success=exact.success,
-                geometric_length=exact.geometric_length,
-                planning_time_ms=exact.planning_time_ms,
-                nodes_expanded=exact.nodes_expanded,
-                final_return_probability=exact.final_return_probability,
-                minimum_return_probability=exact.minimum_return_probability,
+        for repetition in range(repetitions):
+            exact = commitment_aware_astar(
+                grid,
+                start,
+                goal,
+                safe_cells={start},
+                hazard_model=model,
+                mode=CommitmentPlannerMode.HISTORY_AWARE,
+                config=CommitmentAwareAStarConfig(
+                    recoverability_weight=0.0,
+                    max_hazard_cells=max_hazards,
+                ),
             )
-        )
+            records.append(
+                HistoryScalingRecord(
+                    hazard_count=count,
+                    repetition=repetition,
+                    planner="exact",
+                    success=exact.success,
+                    geometric_length=exact.geometric_length,
+                    planning_time_ms=exact.planning_time_ms,
+                    nodes_expanded=exact.nodes_expanded,
+                    final_return_probability=exact.final_return_probability,
+                    minimum_return_probability=exact.minimum_return_probability,
+                )
+            )
 
-        approximate = approx_commitment_aware_astar(
-            grid,
-            start,
-            goal,
-            safe_cells={start},
-            hazard_model=model,
-            mode=ApproxCommitmentMode.REDUNDANT_RETURN,
-            config=ApproxCommitmentAStarConfig(recoverability_weight=0.0),
-        )
-        records.append(
-            HistoryScalingRecord(
-                hazard_count=count,
-                planner="approx_redundant",
-                success=approximate.success,
-                geometric_length=approximate.geometric_length,
-                planning_time_ms=approximate.planning_time_ms,
-                nodes_expanded=approximate.nodes_expanded,
-                final_return_probability=approximate.final_estimated_return_probability,
-                minimum_return_probability=approximate.minimum_estimated_return_probability,
+            approximate = approx_commitment_aware_astar(
+                grid,
+                start,
+                goal,
+                safe_cells={start},
+                hazard_model=model,
+                mode=ApproxCommitmentMode.REDUNDANT_RETURN,
+                config=ApproxCommitmentAStarConfig(recoverability_weight=0.0),
             )
-        )
+            records.append(
+                HistoryScalingRecord(
+                    hazard_count=count,
+                    repetition=repetition,
+                    planner="approx_redundant",
+                    success=approximate.success,
+                    geometric_length=approximate.geometric_length,
+                    planning_time_ms=approximate.planning_time_ms,
+                    nodes_expanded=approximate.nodes_expanded,
+                    final_return_probability=approximate.final_estimated_return_probability,
+                    minimum_return_probability=approximate.minimum_estimated_return_probability,
+                )
+            )
     return records
 
 
@@ -133,33 +142,53 @@ def summarize_history_scaling(
 ) -> dict[str, object]:
     if not records:
         raise ValueError("records cannot be empty")
-    exact = {row.hazard_count: row for row in records if row.planner == "exact"}
-    approx = {row.hazard_count: row for row in records if row.planner == "approx_redundant"}
-    counts = sorted(set(exact) & set(approx))
+
+    counts = sorted({row.hazard_count for row in records})
+    per_count: dict[str, object] = {}
+    max_probability_error = 0.0
+    for count in counts:
+        exact_rows = [
+            row for row in records if row.hazard_count == count and row.planner == "exact"
+        ]
+        approx_rows = [
+            row
+            for row in records
+            if row.hazard_count == count and row.planner == "approx_redundant"
+        ]
+        exact_by_rep = {row.repetition: row for row in exact_rows}
+        approx_by_rep = {row.repetition: row for row in approx_rows}
+        common = sorted(set(exact_by_rep) & set(approx_by_rep))
+        if not common:
+            raise ValueError(f"no paired repetitions for hazard_count={count}")
+
+        errors = [
+            abs(
+                exact_by_rep[rep].final_return_probability
+                - approx_by_rep[rep].final_return_probability
+            )
+            for rep in common
+        ]
+        max_probability_error = max(max_probability_error, max(errors))
+        exact_times = [exact_by_rep[rep].planning_time_ms for rep in common]
+        approx_times = [approx_by_rep[rep].planning_time_ms for rep in common]
+        exact_median = median(exact_times)
+        approx_median = median(approx_times)
+        per_count[str(count)] = {
+            "repetitions": len(common),
+            "exact_mean_planning_time_ms": mean(exact_times),
+            "exact_median_planning_time_ms": exact_median,
+            "approx_mean_planning_time_ms": mean(approx_times),
+            "approx_median_planning_time_ms": approx_median,
+            "median_planning_time_ratio_exact_over_approx": (
+                exact_median / approx_median if approx_median > 0.0 else None
+            ),
+            "probability_absolute_error": max(errors),
+        }
+
     return {
         "hazard_counts": counts,
-        "exact_max_planning_time_ms": max(exact[count].planning_time_ms for count in counts),
-        "approx_max_planning_time_ms": max(approx[count].planning_time_ms for count in counts),
-        "max_probability_absolute_error": max(
-            abs(exact[count].final_return_probability - approx[count].final_return_probability)
-            for count in counts
-        ),
-        "per_count": {
-            str(count): {
-                "exact_planning_time_ms": exact[count].planning_time_ms,
-                "approx_planning_time_ms": approx[count].planning_time_ms,
-                "planning_time_ratio_exact_over_approx": (
-                    exact[count].planning_time_ms / approx[count].planning_time_ms
-                    if approx[count].planning_time_ms > 0.0
-                    else None
-                ),
-                "probability_absolute_error": abs(
-                    exact[count].final_return_probability
-                    - approx[count].final_return_probability
-                ),
-            }
-            for count in counts
-        },
+        "max_probability_absolute_error": max_probability_error,
+        "per_count": per_count,
     }
 
 
