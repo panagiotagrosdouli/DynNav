@@ -17,6 +17,7 @@ on:
       - "dynnav/experiments/statistics.py"
       - "dynnav/commitment_hazard.py"
       - "dynnav/recoverability_cut.py"
+      - "dynnav/recoverability_scenarios.py"
       - "scripts/run_hazard_planner_pilot.py"
       - "scripts/run_commitment_trap_benchmark.py"
       - "scripts/run_history_commitment_benchmark.py"
@@ -34,6 +35,7 @@ on:
       - "tests/test_history_commitment_benchmark.py"
       - "tests/test_commitment_phase_benchmark.py"
       - "tests/test_recoverability_cut.py"
+      - "tests/test_recoverability_scenarios.py"
       - "tests/test_cut_scaling_benchmark.py"
       - "tests/test_multi_commitment_benchmark.py"
       - "tests/test_commitment_execution_benchmark.py"
@@ -70,6 +72,7 @@ jobs:
           tests/test_history_commitment_benchmark.py
           tests/test_commitment_phase_benchmark.py
           tests/test_recoverability_cut.py
+          tests/test_recoverability_scenarios.py
           tests/test_cut_scaling_benchmark.py
           tests/test_multi_commitment_benchmark.py
           tests/test_commitment_execution_benchmark.py
