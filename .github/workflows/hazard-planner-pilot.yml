@@ -5,9 +5,11 @@ on:
     paths:
       - "dynnav/planners/hazard_reliability_astar.py"
       - "dynnav/experiments/hazard_planner_pilot.py"
+      - "dynnav/commitment_hazard.py"
       - "scripts/run_hazard_planner_pilot.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
+      - "tests/test_commitment_hazard.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -28,6 +30,7 @@ jobs:
           python -m pytest -q
           tests/test_hazard_reliability_astar.py
           tests/test_hazard_planner_pilot.py
+          tests/test_commitment_hazard.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
