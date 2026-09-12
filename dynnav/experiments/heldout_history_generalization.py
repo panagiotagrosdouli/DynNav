@@ -41,7 +41,6 @@ from dynnav.planners.hazard_reliability_astar import (
 )
 from dynnav.recoverability import return_failure_probability
 
-
 HELDOUT_SCENARIOS: dict[str, tuple[float, ...]] = {
     "low_to_high_6": (0.15, 0.25, 0.35, 0.55, 0.75, 0.85),
     "alternating_7": (0.80, 0.20, 0.70, 0.30, 0.60, 0.40, 0.90),
