@@ -35,14 +35,18 @@ def commitment_phase_world(
     detour_depth: int,
     closure_probability: float,
 ) -> tuple[GridMap, GridCell, GridCell, set[GridCell], CommitmentHazardModel]:
-    """Create one risky direct edge and a controllably longer safe detour.
+    """Create one risky direct edge and a uniquely sized safe detour.
 
-    The safe start reaches the right-hand region through a sole bridge at (1,d).
-    From (2,d) the goal (3,d) is one direct step away; taking that directed edge
-    activates a possible future closure of the sole return bridge. Alternatively
-    the robot can move ``detour_depth`` cells upward, cross to x=3, and return
-    downward to the same goal without activating the closure. The safe detour is
-    therefore exactly ``2 * detour_depth`` steps longer than the direct route.
+    The safe start reaches the right-hand region through a sole bridge at
+    ``(1, d)`` and then the junction ``(2, d)``. The direct edge from the
+    junction to the goal activates a possible future closure of that bridge.
+
+    The safe alternative is a *corridor*, not an open rectangle: from the
+    junction it must move ``detour_depth`` cells upward on x=2, cross once to
+    x=3, and move ``detour_depth`` cells downward to the goal. This makes its
+    geometric overhead exactly ``2 * detour_depth`` and prevents the planner
+    from cutting across at an intermediate row, which would invalidate the
+    analytic phase boundary.
     """
     if detour_depth < 1:
         raise ValueError("detour_depth must be at least 1")
@@ -58,7 +62,7 @@ def commitment_phase_world(
 
     free: set[GridCell] = {start, bridge, junction, goal}
     free.update((2, y) for y in range(0, d + 1))
-    free.update((3, y) for y in range(0, d + 1))
+    free.add((3, 0))
     obstacles = {
         (x, y)
         for x in range(width)
