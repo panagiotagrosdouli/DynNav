@@ -18,6 +18,7 @@ on:
       - "dynnav/experiments/safe_return_threshold_benchmark.py"
       - "dynnav/experiments/history_information_gap_benchmark.py"
       - "dynnav/experiments/heldout_history_generalization.py"
+      - "dynnav/experiments/joint_cut_counterexample.py"
       - "dynnav/experiments/statistics.py"
       - "dynnav/commitment_hazard.py"
       - "dynnav/recoverability_cut.py"
@@ -33,6 +34,7 @@ on:
       - "scripts/run_safe_return_threshold_benchmark.py"
       - "scripts/run_history_information_gap_benchmark.py"
       - "scripts/run_heldout_history_generalization.py"
+      - "scripts/run_joint_cut_counterexample.py"
       - "tests/test_hazard_reliability_astar.py"
       - "tests/test_hazard_planner_pilot.py"
       - "tests/test_commitment_hazard.py"
@@ -51,6 +53,7 @@ on:
       - "tests/test_safe_return_threshold_benchmark.py"
       - "tests/test_history_information_gap_benchmark.py"
       - "tests/test_heldout_history_generalization.py"
+      - "tests/test_joint_cut_counterexample.py"
       - "tests/test_statistical_evaluation.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
@@ -92,6 +95,7 @@ jobs:
           tests/test_safe_return_threshold_benchmark.py
           tests/test_history_information_gap_benchmark.py
           tests/test_heldout_history_generalization.py
+          tests/test_joint_cut_counterexample.py
           tests/test_statistical_evaluation.py
       - name: Execute development planner pilot
         run: >-
@@ -120,6 +124,8 @@ jobs:
         run: python scripts/run_history_information_gap_benchmark.py --out-dir results/history_information_gap
       - name: Execute held-out heterogeneous generalization benchmark
         run: python scripts/run_heldout_history_generalization.py --out-dir results/heldout_history_generalization
+      - name: Execute joint-cut approximation counterexample
+        run: python scripts/run_joint_cut_counterexample.py --out-dir results/joint_cut_counterexample
       - name: Upload raw planner pilot artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -136,4 +142,5 @@ jobs:
             results/safe_return_threshold
             results/history_information_gap
             results/heldout_history_generalization
+            results/joint_cut_counterexample
           if-no-files-found: error
