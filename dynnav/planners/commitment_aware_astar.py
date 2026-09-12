@@ -128,16 +128,10 @@ def commitment_aware_astar(
 ) -> CommitmentAwareAStarResult:
     """Plan over position plus activated closure history.
 
-    The history-aware objective penalizes ``1 - P(return to safe set)`` after
-    each transition, where the probability is evaluated from the closure events
-    activated by the path prefix. The shortest baseline searches the same
-    augmented transition system but ignores the recoverability penalty.
-
-    Exact enumeration is intentionally used only for small controlled worlds;
-    this implementation is a scientific oracle/baseline, not a claimed scalable
-    deployment planner. ``max_hazard_cells`` constrains the active hazard set
-    passed to the exact oracle, not the number of possible triggers declared in
-    the model.
+    ``planning_time_ms`` measures search latency through popping the goal state.
+    Diagnostic return-probability profiling used only to populate result metrics
+    is intentionally excluded. For history-aware search, all online exact-oracle
+    calls that affect route selection remain included in planning latency.
     """
 
     grid.validate()
@@ -166,6 +160,7 @@ def commitment_aware_astar(
         cell, active = state
         nodes_expanded += 1
         if cell == goal:
+            planning_time_ms = (time.perf_counter() - t0) * 1000.0
             states = _reconstruct_states(parents, state)
             path = tuple(item[0] for item in states)
             return_probabilities = [
@@ -185,7 +180,7 @@ def commitment_aware_astar(
                 cost=costs[state],
                 geometric_length=max(0, len(path) - 1),
                 nodes_expanded=nodes_expanded,
-                planning_time_ms=(time.perf_counter() - t0) * 1000.0,
+                planning_time_ms=planning_time_ms,
                 final_return_probability=return_probabilities[-1],
                 minimum_return_probability=min(return_probabilities),
                 cumulative_return_fragility=sum(
