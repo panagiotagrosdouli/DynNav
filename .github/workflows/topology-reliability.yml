@@ -6,10 +6,13 @@ on:
       - "dynnav/recoverability_belief.py"
       - "dynnav/recoverability_estimation.py"
       - "dynnav/experiments/topology_reliability_benchmark.py"
+      - "dynnav/experiments/recoverability_estimator_pilot.py"
       - "scripts/run_topology_reliability_benchmark.py"
+      - "scripts/run_recoverability_estimator_pilot.py"
       - "tests/test_recoverability_belief.py"
       - "tests/test_recoverability_estimation.py"
       - "tests/test_topology_reliability_benchmark.py"
+      - "tests/test_recoverability_estimator_pilot.py"
       - ".github/workflows/topology-reliability.yml"
   workflow_dispatch:
 
@@ -31,13 +34,22 @@ jobs:
           tests/test_recoverability_belief.py
           tests/test_recoverability_estimation.py
           tests/test_topology_reliability_benchmark.py
-      - name: Execute controlled benchmark
+          tests/test_recoverability_estimator_pilot.py
+      - name: Execute controlled mechanism benchmark
         run: >-
           python scripts/run_topology_reliability_benchmark.py
           --out-dir results/topology_reliability
+      - name: Execute development estimator pilot
+        run: >-
+          python scripts/run_recoverability_estimator_pilot.py
+          --seeds 50
+          --hazard-count 6
+          --out-dir results/recoverability_estimator_pilot
       - name: Upload raw benchmark artifacts
         uses: actions/upload-artifact@v4
         with:
           name: topology-reliability-${{ github.sha }}
-          path: results/topology_reliability
+          path: |
+            results/topology_reliability
+            results/recoverability_estimator_pilot
           if-no-files-found: error
