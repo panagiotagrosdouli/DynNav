@@ -10,6 +10,7 @@ on:
       - "dynnav/experiments/history_commitment_benchmark.py"
       - "dynnav/experiments/commitment_phase_benchmark.py"
       - "dynnav/commitment_hazard.py"
+      - "dynnav/recoverability_cut.py"
       - "scripts/run_hazard_planner_pilot.py"
       - "scripts/run_commitment_trap_benchmark.py"
       - "scripts/run_history_commitment_benchmark.py"
@@ -21,6 +22,7 @@ on:
       - "tests/test_commitment_trap_benchmark.py"
       - "tests/test_history_commitment_benchmark.py"
       - "tests/test_commitment_phase_benchmark.py"
+      - "tests/test_recoverability_cut.py"
       - ".github/workflows/hazard-planner-pilot.yml"
   workflow_dispatch:
 
@@ -50,6 +52,7 @@ jobs:
           tests/test_commitment_trap_benchmark.py
           tests/test_history_commitment_benchmark.py
           tests/test_commitment_phase_benchmark.py
+          tests/test_recoverability_cut.py
       - name: Execute development planner pilot
         run: >-
           python scripts/run_hazard_planner_pilot.py
