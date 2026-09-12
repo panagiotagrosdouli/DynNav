@@ -1,0 +1,43 @@
+name: Topology reliability benchmark
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/recoverability_belief.py"
+      - "dynnav/recoverability_estimation.py"
+      - "dynnav/experiments/topology_reliability_benchmark.py"
+      - "scripts/run_topology_reliability_benchmark.py"
+      - "tests/test_recoverability_belief.py"
+      - "tests/test_recoverability_estimation.py"
+      - "tests/test_topology_reliability_benchmark.py"
+      - ".github/workflows/topology-reliability.yml"
+  workflow_dispatch:
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install package
+        run: python -m pip install -e ".[dev]"
+      - name: Run focused regression tests
+        run: >-
+          python -m pytest -q
+          tests/test_recoverability_belief.py
+          tests/test_recoverability_estimation.py
+          tests/test_topology_reliability_benchmark.py
+      - name: Execute controlled benchmark
+        run: >-
+          python scripts/run_topology_reliability_benchmark.py
+          --out-dir results/topology_reliability
+      - name: Upload raw benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: topology-reliability-${{ github.sha }}
+          path: results/topology_reliability
+          if-no-files-found: error
