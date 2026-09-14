@@ -1,0 +1,55 @@
+name: Paper build
+
+on:
+  pull_request:
+    paths:
+      - "paper/dynnav_r/**"
+      - ".github/workflows/paper-build.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: paper-build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  latex:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate paper provenance
+        working-directory: paper/dynnav_r
+        run: |
+          python -m json.tool evidence_manifest.json >/dev/null
+          if grep -En "TODO|TBD|FIXME" main.tex references.bib evidence_manifest.json; then
+            echo "Unresolved manuscript placeholder detected"
+            exit 1
+          fi
+      - name: Install LaTeX toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            latexmk \
+            texlive-latex-base \
+            texlive-latex-extra \
+            texlive-fonts-recommended \
+            texlive-publishers
+      - name: Compile IEEE manuscript
+        working-directory: paper/dynnav_r
+        run: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+      - name: Reject unresolved references
+        working-directory: paper/dynnav_r
+        run: |
+          if grep -E "(Citation .* undefined|There were undefined references|Reference .* undefined)" main.log; then
+            echo "Unresolved citation/reference detected"
+            exit 1
+          fi
+      - name: Upload paper PDF
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-history-conditioned-paper-${{ github.sha }}
+          path: paper/dynnav_r/main.pdf
+          if-no-files-found: error
