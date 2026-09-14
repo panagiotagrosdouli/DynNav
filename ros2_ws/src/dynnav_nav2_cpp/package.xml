@@ -2,7 +2,7 @@
 <package format="3">
   <name>dynnav_nav2_cpp</name>
   <version>0.2.0</version>
-  <description>Risk- and recoverability-aware Nav2 global planner plugin for DynNav.</description>
+  <description>Risk-, recoverability-, and history-conditioned Nav2 global planner plugin for DynNav.</description>
   <maintainer email="75089541+panagiotagrosdouli@users.noreply.github.com">Panagiota Grosdouli</maintainer>
   <license>Apache-2.0</license>
 
@@ -13,6 +13,7 @@
   <depend>nav2_costmap_2d</depend>
   <depend>nav_msgs</depend>
   <depend>geometry_msgs</depend>
+  <depend>std_msgs</depend>
   <depend>nav2_util</depend>
   <depend>pluginlib</depend>
   <depend>tf2_ros</depend>
