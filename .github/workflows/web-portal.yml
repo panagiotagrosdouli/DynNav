@@ -58,6 +58,8 @@ jobs:
           npm --prefix website audit --audit-level=high
           npm --prefix apps/web audit --audit-level=high
           npm --prefix vercel_app audit --audit-level=high
+      - name: Type-check standalone Vercel app
+        run: npm --prefix vercel_app run typecheck
       - name: Build combined portal
         env:
           DYNNAV_SITE_BASE_PATH: /DynNav
