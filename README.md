@@ -68,10 +68,11 @@ Generic recoverability, safe-return constraints, history-dependent costs, and de
 2. [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json) — run/artifact provenance.
 3. [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md) — canonical code and evidence map.
 4. [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md) — supported/partial/unsupported claims.
-5. [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py) — trigger-history model.
-6. [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py) — exact reference planner.
-7. [`ros2_ws/src/dynnav_nav2_cpp`](ros2_ws/src/dynnav_nav2_cpp) — C++ Nav2 planner.
-8. [`ros2_ws/src/dynnav_nav2_benchmark`](ros2_ws/src/dynnav_nav2_benchmark) — ROS/Gazebo validation.
+5. [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md) — current validation semantics and artifact contract.
+6. [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py) — trigger-history model.
+7. [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py) — exact reference planner.
+8. [`ros2_ws/src/dynnav_nav2_cpp`](ros2_ws/src/dynnav_nav2_cpp) — C++ Nav2 planner.
+9. [`ros2_ws/src/dynnav_nav2_benchmark`](ros2_ws/src/dynnav_nav2_benchmark) — ROS/Gazebo validation.
 
 ## Canonical repository map
 
@@ -125,4 +126,4 @@ Strongest current evidence is simulation/grid based. The next hardening step is 
 
 ## Policies
 
-[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Protocol](EXPERIMENT_PROTOCOL_V2.md) · [Failure cases](FAILURE_CASES.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [Security](SECURITY.md) · [License](LICENSE)
+[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Current protocol](EXPERIMENT_PROTOCOL_V3.md) · [Failure cases](FAILURE_CASES.md) · [Research archive](docs/archive/README.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [Security](SECURITY.md) · [License](LICENSE)
