@@ -114,7 +114,7 @@ def _launch_setup(context):
     )
     runner = Node(
         package="dynnav_nav2_benchmark",
-        executable="history_execution_benchmark",
+        executable="history_dynamic_execution_benchmark",
         name="dynnav_history_execution_benchmark",
         output="screen",
         arguments=[
