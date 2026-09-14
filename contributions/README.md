@@ -21,6 +21,20 @@ NN_module_name/
 └── docs/              # protocols, theory, extended notes
 ```
 
+## Canonical programme status
+
+For **C01–C26**, the authoritative programme metadata is [`configs/contributions/registry.yaml`](../configs/contributions/registry.yaml). The generated views are:
+
+- [`docs/CONTRIBUTION_INDEX.md`](../docs/CONTRIBUTION_INDEX.md) — category, maturity, documentation and dashboard coverage;
+- [`docs/CONTRIBUTION_MATURITY_MATRIX.md`](../docs/CONTRIBUTION_MATURITY_MATRIX.md) — evidence-level summary;
+- [`docs/CONTRIBUTION_DEPENDENCY_GRAPH.md`](../docs/CONTRIBUTION_DEPENDENCY_GRAPH.md) — intended integration relationships, not proof of validation;
+- [`docs/CONTRIBUTIONS_26_EXPERIMENTS.md`](../docs/CONTRIBUTIONS_26_EXPERIMENTS.md) — controlled smoke experiment catalogue;
+- [`configs/contributions/experiments.yaml`](../configs/contributions/experiments.yaml) — executable experiment registry.
+
+Some historical module READMEs use badges such as **“Core Upgraded”**. That phrase describes an engineering/documentation upgrade and **must not be interpreted as scientific maturity**. When a local badge and the canonical registry differ, the registry's `status` is the project-level maturity label. In particular, `Experimental`, `Research Prototype`, and `Documentation Concept` are evidence-boundary labels; the mere presence of source code, a deterministic fixture, or a passing smoke benchmark does not automatically elevate a module.
+
+**C27 is intentionally outside the C01–C26 executable registry.** It is currently a recoverability-theory research proposal and future-implementation track. Its expanded README documents candidate formulations, evidence requirements, and falsification criteria, but C27 should not be counted as an independently validated experimental contribution until it is deliberately promoted into the registry with an implementation and evidence contract.
+
 ## Numbered research modules
 
 | # | Module | Research role / scope |
