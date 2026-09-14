@@ -1,0 +1,43 @@
+schema_version: 1
+seed: 20260914
+
+gazebo:
+  world_name: default
+  robot_entity: turtlebot3_waffle
+  blocker:
+    entity_name: dynnav_route_blocker
+    parking_pose: {x: 100.0, y: 100.0, z: 0.5, yaw: 0.0}
+    size: {x: 0.55, y: 0.55, z: 1.0}
+
+# Frozen before comparative history-conditioned Gazebo outcomes.
+# The action trigger is a real directed transition observed in the retained
+# route-invalidation trace under map resolution 0.05 m and origin [-10,-10].
+# It quantizes to costmap/map cells (174,189) -> (175,189).
+planners:
+  - NavFn
+  - DynNavShortest
+  - DynNavHistory
+
+scenario:
+  name: return_gate_history_closure
+  frame_id: map
+  start: {x: -2.0, y: -0.5, yaw: 0.0}
+  goal: {x: 1.75, y: 1.0, yaw: 0.0}
+  safe_region:
+    center: {x: -2.0, y: -0.5, yaw: 0.0}
+    radius_m: 0.35
+  action_trigger:
+    hazard_id: return_gate_0
+    source: {x: -1.275908864792708, y: -0.5020487716358613, yaw: 0.0}
+    target: {x: -1.2125743198484678, y: -0.507765630658632, yaw: 0.0}
+    closure_probability: 0.8
+  blocker_pose: {x: -0.95, y: -0.425, z: 0.5, yaw: 0.0}
+  observation_settle_s: 2.0
+  minimum_injection_clearance_m: 0.9
+  observation_margin_m: 0.1
+  minimum_lethal_cell_increase: 3
+  recovery_budget_m: 5.0
+  reset_pose_tolerance_m: 0.4
+  execution_timeout_s: 75.0
+  wall_timeout_s: 150.0
+  recoverability_weight: 4.0
