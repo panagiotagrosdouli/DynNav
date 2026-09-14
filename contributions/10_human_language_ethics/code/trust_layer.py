@@ -5,7 +5,7 @@ from typing import Dict, List, Optional
 @dataclass
 class TrustState:
     """
-    Trust value T \in [0, 1].
+    Trust value T in [0, 1].
 
     Εδώ το T το ερμηνεύουμε ως:
       - "πόσο θεωρούμε ότι ο άνθρωπος εμπιστεύεται την αυτονομία"
