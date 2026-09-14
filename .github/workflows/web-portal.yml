@@ -17,6 +17,12 @@ on:
       - "vercel.json"
       - ".github/workflows/web-portal.yml"
   workflow_dispatch:
+    inputs:
+      deploy_pages:
+        description: "Deploy the validated portal to GitHub Pages (requires Pages enabled for Actions)"
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: github-pages
@@ -66,14 +72,14 @@ jobs:
           include-hidden-files: true
           if-no-files-found: error
       - name: Upload GitHub Pages artifact
-        if: github.event_name != 'pull_request'
+        if: github.event_name == 'workflow_dispatch' && inputs.deploy_pages
         uses: actions/upload-pages-artifact@v3
         with:
           path: .web-dist
 
   deploy:
     name: Deploy GitHub Pages
-    if: github.event_name != 'pull_request'
+    if: github.event_name == 'workflow_dispatch' && inputs.deploy_pages
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 10
