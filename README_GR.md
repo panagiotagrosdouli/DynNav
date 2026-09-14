@@ -1,97 +1,92 @@
 # DynNav
 
-**Online επανασχεδιασμός διαδρομής με επίγνωση κινδύνου και δυνατότητας
-ανάκαμψης για αυτόνομα ρομπότ σε δυναμικά, μερικώς παρατηρήσιμα περιβάλλοντα.**
+**History-conditioned safe-return planning για αυτόνομα ρομπότ με action-triggered topology hazards.**
 
-[English](README.md) · [Ελληνικά](README_GR.md)
+Το DynNav μελετά ένα συγκεκριμένο failure mode στη δυναμική πλοήγηση: δύο εκτελέσεις μπορούν να φτάσουν στο **ίδιο γεωμετρικό state**, αλλά να έχουν διαφορετική μελλοντική recoverability επειδή προηγούμενες ενέργειες του ρομπότ ενεργοποίησαν διαφορετικά environmental hazards.
 
-[![CI](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB)](pyproject.toml)
-[![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-22314E)](ros2_ws/src/dynnav_nav2_cpp/README.md)
-[![Άδεια](https://img.shields.io/badge/license-Apache--2.0-4C1.svg)](LICENSE)
+[English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE paper](paper/dynnav_r/main.tex)
 
-Το DynNav είναι πειραματική πλατφόρμα ρομποτικής για τη μελέτη ενός
-συγκεκριμένου ερωτήματος: μπορεί ένα σύστημα πλοήγησης να αντιδρά σε ακύρωση
-της διαδρομής χωρίς να έχει δεσμεύσει το ρομπότ σε κατάσταση από την οποία η
-ανάκαμψη δεν είναι πλέον εφικτή;
+> **Κατάσταση:** ενεργό research prototype με retained synthetic/geometric evidence, C++ Nav2 planner και frozen action-triggered Gazebo protocol. Δεν γίνεται claim για safety certification, universal superiority ή physical-robot efficacy.
 
-Το repository συνδυάζει αλγοριθμικά πρωτότυπα, ελεγχόμενα πειράματα, C++
-plugin για Nav2, Gazebo benchmark harnesses και ερευνητικά interfaces που
-δίνουν προτεραιότητα στα τεκμήρια. Κάθε σημαντικός ισχυρισμός πρέπει να μπορεί
-να συνδεθεί με κώδικα, configuration, tests και διατηρημένα artifacts.
+## Ερευνητικό ερώτημα
 
-> **Κατάσταση:** ερευνητικό πρωτότυπο. Το DynNav δεν είναι πιστοποιημένο σύστημα
-> ασφάλειας και η σημερινή ποσότητα recoverability είναι δομικό heuristic, όχι
-> βαθμονομημένη πιθανότητα επιτυχούς ανάκαμψης.
+> **Μεταφέρει το path history πληροφορία σχετική με τη recoverability που χάνεται σε state-only future-risk models όταν οι ενέργειες του ρομπότ ενεργοποιούν μελλοντικά topology hazards;**
 
-## Ερευνητική συνεισφορά
-
-Ο συμβατικός global planning βελτιστοποιεί συνήθως το γεωμετρικό μήκος ή το
-κόστος του costmap. Το DynNav προσθέτει ένα δεύτερο κριτήριο: αν μια υποψήφια
-απόφαση διατηρεί χρήσιμες επιλογές διαφυγής και επιστροφής μετά από αλλαγή του
-περιβάλλοντος.
-
-Για μετάβαση στο κελί `x`, η ελεγχόμενη οικογένεια planners χρησιμοποιεί
+Ο publication-facing planner δουλεύει σε augmented state:
 
 ```text
-cost(x) = 1 + λr · normalized_risk(x) + λi · irreversibility(x)
+(grid cell, activated hazard history)
 ```
 
-Η ίδια υλοποίηση εκθέτει τέσσερα ablations ώστε οι επιδράσεις του κινδύνου και
-της recoverability να αξιολογούνται ανεξάρτητα.
-
-| Objective | Βάρος κινδύνου | Βάρος irreversibility | Ρόλος |
-|---|---:|---:|---|
-| J0 — shortest | 0 | 0 | Γεωμετρικό baseline |
-| J1 — risk-aware | > 0 | 0 | Ablation κινδύνου costmap |
-| J2 — recoverability-aware | 0 | > 0 | Ablation δομικής δυνατότητας ανάκαμψης |
-| J3 — joint | > 0 | > 0 | Προτεινόμενο κοινό objective |
-
-Η κεντρική υπόθεση δεν παρουσιάζεται ως αποτέλεσμα: απαιτείται ακόμη δυναμική,
-paired μελέτη επαρκούς στατιστικής ισχύος για να εξεταστεί αν τα J2 ή J3
-μειώνουν τις recovery-infeasible failures χωρίς μη αποδεκτό πρόσθετο μήκος ή
-υπολογιστικό κόστος.
+Το persistent history ενημερώνεται μόνο από **executed transitions**, όχι από planned/imagined transitions.
 
 ## Τι έχει υλοποιηθεί
 
-| Επίπεδο | Σημερινή υλοποίηση |
+| Layer | Υλοποίηση |
 |---|---|
-| Planning core | Ντετερμινιστικά A*, Dijkstra, J0–J3 recoverability-aware A* και πειράματα D* Lite |
-| Μοντέλο περιβάλλοντος | Occupancy, κανονικοποιημένος κίνδυνος, αβεβαιότητα, δυναμικές ενημερώσεις εμποδίων και safe regions |
-| Αξιολόγηση | Metrics για διαδρομή, κίνδυνο, irreversibility, failures, overhead, paired effects και confidence intervals |
-| ROS integration | C++17 `nav2_core::GlobalPlanner` plugin για ROS 2 Jazzy/Nav2 |
-| Simulation | Static planner-server και dynamic Gazebo route-invalidation protocols |
-| Ερευνητικά εργαλεία | Reproducible runners, manifests, Markdown reports, FastAPI/Next.js Researcher και Streamlit lab |
-| Επεκτάσεις | Καταχωρισμένα C01–C26 prototypes για learning, mapping, multi-robot, security και human/AI interaction |
+| Planning | shortest, risk-aware, exact history-aware, critical-cut και hard safe-return planners |
+| Hazard model | directed action-triggered stochastic topology closures |
+| Recoverability | exact future-closure oracle και online approximations |
+| Evaluation | paired CRN trials, bootstrap intervals, McNemar/TOST utilities |
+| ROS 2 / Nav2 | C++17 `nav2_core::GlobalPlanner` με persistent executed-history state |
+| Gazebo | static, time-triggered dynamic και frozen action-triggered protocols |
+| Paper | IEEE manuscript με machine-readable evidence manifest και provenance checks |
+| Interfaces | Streamlit lab και FastAPI / Next.js research workspace |
 
-Η κανονική ροή εκτέλεσης είναι:
+Το παλιότερο J0–J3 risk/recoverability layer παραμένει ως controlled research history. Το σημερινό paper core είναι το στενότερο **history-conditioned safe-return** problem.
 
-1. παρατήρηση της κατάστασης occupancy και costmap,
-2. εκτίμηση κινδύνου και τοπικής δομής ανάκαμψης,
-3. υπολογισμός διαδρομής J0–J3,
-4. εκτέλεση μέσω Nav2 ή του Python reference environment,
-5. εφαρμογή ή αντίληψη γεγονότος που αλλάζει τη διαδρομή,
-6. επανασχεδιασμός και διατήρηση του πλήρους evidence bundle.
+## Retained evidence snapshot
 
-## Σύνοψη τεκμηρίων
+| Study | State-only / shortest | History-conditioned | Scope |
+|---|---:|---:|---|
+| 3-module execution, `p=0.8` | 0.992 failure | 0 failure | controlled mechanism |
+| Held-out 6/7/8 modules | 0.992 / 0.998 / 1.000 | 0 / 0 / 0 | probability/horizon generalization |
+| Fork / L-room / chamber | 0.810 / 0.756 / 0.890 | 0 / 0 / 0 | τρεις frozen hand-authored topologies |
+| Joint-cut counterexample | — | cut approximation διαφωνεί με exact σε 9/9 settings | explicit failure boundary |
 
-| Επίπεδο τεκμηρίων | Διατηρημένο αποτέλεσμα | Ερμηνεία |
-|---|---|---|
-| Software contracts | Tests σε Python 3.10–3.12, Ruff και strict typing του mapping core | Ελέγχει τα συμβόλαια υλοποίησης, όχι την αποτελεσματικότητα πλοήγησης |
-| Ελεγχόμενες Python μελέτες | Paired, multi-seed J0–J3 protocol και raw artifacts | Κατάλληλα για algorithm debugging και διαμόρφωση υποθέσεων |
-| Nav2 planner-server | 36/36 επιτυχημένα static requests με έξι planners | Τεκμηριώνει παραγωγή διαδρομής σε δύο συγκεκριμένα queries |
-| Dynamic Gazebo commissioning | 8 έγκυρα trials, 7 επιτυχείς εκτελέσεις | Επιβεβαιώνει την πειραματική ροή· το δείγμα δεν επαρκεί για treatment claims |
-| Φυσικό ρομπότ | Μόνο launch και safety checklist | Δεν υποστηρίζεται ακόμη ισχυρισμός hardware execution |
+Το geometric Pareto experiment έδειξε επίσης ότι hard safe-return constraints μπορούν να βρουν το ίδιο safe route σε αυτά τα worlds. Άρα το supported result αφορά κυρίως το **history representation** και όχι claim ότι ένα soft objective κερδίζει πάντα τα hard constraints.
 
-Για την ακριβή κατάσταση κάθε ισχυρισμού, χρησιμοποίησε τον
-[πίνακα ισχυρισμών–τεκμηρίων](CLAIM_EVIDENCE_MATRIX.md). Ο
-[ερευνητικός φάκελος](docs/PHD_APPLICATION_READINESS.md) δίνει σύντομη διαδρομή
-αξιολόγησης για εργαστήρια, επιτροπές και ομάδες research engineering.
+Η authoritative provenance είναι στα [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json) και [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md).
 
-## Αναπαραγωγή του software evidence
+## Paper
 
-Απαιτείται Python 3.10 ή νεότερη. Το ROS 2 Jazzy χρειάζεται μόνο για τις ροές
-Nav2 και Gazebo.
+**When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards**
+
+Το contribution είναι σκόπιμα στενό: action-triggered degradation του return-connectivity, same-state/different-history aliasing, exact augmented-state planning, critical-cut approximation με καταγεγραμμένο adversarial boundary, held-out evaluation και ROS 2/Nav2 integration.
+
+Δεν παρουσιάζονται ως novel τα generic recoverability, safe-return constraints, history-dependent costs ή decision-dependent uncertainty.
+
+## Reviewer path
+
+1. [`paper/dynnav_r/main.tex`](paper/dynnav_r/main.tex) — το επιστημονικό argument και τα αποτελέσματα.
+2. [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json) — provenance των runs/artifacts.
+3. [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md) — canonical code/evidence map.
+4. [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md) — τι υποστηρίζεται και τι όχι.
+5. [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py) — history-trigger model.
+6. [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py) — exact reference planner.
+7. [`ros2_ws/src/dynnav_nav2_cpp`](ros2_ws/src/dynnav_nav2_cpp) — C++ Nav2 planner.
+8. [`ros2_ws/src/dynnav_nav2_benchmark`](ros2_ws/src/dynnav_nav2_benchmark) — ROS/Gazebo validation.
+
+## Canonical repository map
+
+```text
+dynnav/                         Python research core
+ros2_ws/src/dynnav_nav2_cpp/    C++ Nav2 planner
+ros2_ws/src/dynnav_nav2_benchmark/ ROS/Gazebo benchmark
+paper/dynnav_r/                  IEEE paper + evidence manifest
+results/                         retained experiment outputs
+scripts/                         reproducible runners και audits
+tests/                           regression/research-contract tests
+configs/                         experiment configuration
+docs/                            scientific + engineering documentation
+app/                             Streamlit research lab
+apps/api/ + apps/web/            research API/workspace
+contributions/                   exploratory programme, όχι paper evidence
+```
+
+Παλαιότερα top-level modules παραμένουν για compatibility και historical experiments. Δεν θεωρούνται όλα validated contributions. Η διάκριση υπάρχει στο [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md).
+
+## Reproduce το Python core
 
 ```bash
 git clone https://github.com/panagiotagrosdouli/DynNav.git
@@ -100,147 +95,26 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -e ".[dev,researcher,dashboard]"
-```
-
-Γρήγορη διαδρομή reproducibility:
-
-```bash
-python scripts/run_all.py \
-  --config configs/default.yaml \
-  --smoke \
-  --out-dir results/ci_smoke
-
-python scripts/run_benchmarks.py \
-  --config configs/default.yaml \
-  --smoke \
-  --out-dir results/ci_benchmarks
-```
-
-Έλεγχος του checkout:
-
-```bash
 ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
-mypy dynnav/mapping --strict --no-warn-unused-ignores --show-error-codes
 python -m pytest -q
-python scripts/audit_markdown.py --root . --json-out results/markdown_audit.json
 ```
-
-Κάθε runner αποθηκεύει το resolved configuration, τα seeds, τα raw rows, τις
-συνόψεις και τα reports στον επιλεγμένο output directory. Τα failed και partial
-trials παραμένουν ορατά.
 
 ## ROS 2 Jazzy / Nav2
 
-Build και tests του κανονικού plugin:
-
 ```bash
 source /opt/ros/jazzy/setup.bash
-rosdep install \
-  --from-paths ros2_ws/src/dynnav_nav2_cpp \
-  --ignore-src --rosdistro jazzy -r -y
-
-colcon build \
-  --base-paths ros2_ws/src/dynnav_nav2_cpp \
-  --packages-select dynnav_nav2_cpp
+rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
+colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
 source install/setup.bash
-colcon test --packages-select dynnav_nav2_cpp
-colcon test-result --verbose
+colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
 ```
 
-Το plugin παίρνει snapshot του global costmap κάτω από το mutex του, ελέγχει
-frames και bounds, υποστηρίζει cancellation, απορρίπτει lethal goals και
-επιστρέφει stamped `nav_msgs/msg/Path`.
+Το πρώτο action-triggered Gazebo scenario παγώθηκε πριν από comparative outcomes: trigger `(174,189) -> (175,189)`, closure cell `(181,191)`, probability `0.8`. Νέα Gazebo efficacy claims μπαίνουν μόνο αν υπάρχουν valid retained execution artifacts.
 
-Οι ορισμοί των πειραμάτων και οι κανόνες ερμηνείας βρίσκονται στο
-[Gazebo benchmark protocol](docs/GAZEBO_BENCHMARK_PROTOCOL.md) και στο
-[dynamic execution protocol](docs/DYNAMIC_EXECUTION_PROTOCOL.md).
+## Evidence discipline
 
-## Ερευνητικά interfaces
+Publication-facing claim σημαίνει implementation, deterministic regression coverage, frozen config/seed policy, retained machine-readable output, provenance, σωστή paired/statistical analysis και explicit limitation/failure boundary.
 
-Τα interfaces είναι προαιρετικές όψεις των ίδιων research contracts· δεν
-αντικαθιστούν τα raw artifacts.
+Η ισχυρότερη evidence βάση παραμένει simulation/grid based. Το επόμενο hardening βήμα είναι paired retained action-triggered Gazebo execution και μετά partial-observability / probability-miscalibration stress tests, εφόσον το execution evidence είναι valid.
 
-### DynNav Researcher
-
-```bash
-python -m uvicorn apps.api.main:app --reload --port 8000
-npm --prefix apps/web ci --no-audit --no-fund
-npm --prefix apps/web run dev
-```
-
-Άνοιξε το `http://localhost:3000`. Ένα ερευνητικό αίτημα μετατρέπεται σε
-επεξεργάσιμο typed protocol και απαιτεί ρητή επιβεβαίωση πριν από την εκτέλεση.
-
-### Εργαστήριο Streamlit
-
-```bash
-streamlit run app/dashboard.py
-```
-
-Άνοιξε το `http://localhost:8501` για κατασκευή scenarios, σύγκριση planners,
-επιθεώρηση mapping, έλεγχο πειραμάτων και replay αποτελεσμάτων.
-
-## Οδηγός repository
-
-```text
-dynnav/                     κανονικό Python package
-  planners/                 J0–J3 search και incremental replanning
-  experiments/              scenarios και ελεγχόμενες μελέτες
-  evaluation/               metrics και statistical summaries
-  researcher/               typed protocols και reporting
-
-ros2_ws/src/
-  dynnav_nav2_cpp/          C++17 Nav2 global-planner plugin
-  dynnav_nav2_benchmark/    static και dynamic Gazebo experiments
-  dynnav_turtlebot3/        simulation και hardware bringup
-
-apps/api/                   FastAPI research API
-apps/web/                   Next.js Researcher workspace
-app/                        Streamlit laboratory
-contributions/              C01–C26 exploratory modules
-configs/                    experiment configurations
-scripts/                    runners, validators και audits
-tests/                      regression και research-contract tests
-results/                    retained evidence και generated artifacts
-docs/                       scientific και engineering documentation
-paper/                      manuscript planning material
-```
-
-## Συμβόλαιο αναπαραγωγιμότητας
-
-Ένα δημοσιεύσιμο πείραμα πρέπει να διατηρεί:
-
-- source commit και dirty-tree state,
-- ακριβή εντολή, configuration και deterministic seeds,
-- map, scenario, start/goal και event definitions,
-- raw per-trial data, μαζί με failures και invalid trials,
-- planner paths, costmaps, timestamps και ROS logs όπου εφαρμόζεται,
-- environment και package versions,
-- artifact hashes και την εντολή ανάλυσης.
-
-Το [V2 protocol](EXPERIMENT_PROTOCOL_V2.md) είναι κανονιστικό για νέα efficacy
-experiments.
-
-## Σημερινοί περιορισμοί
-
-- Το local escape-option score δεν έχει βαθμονομηθεί σε held-out, executed
-  recovery outcomes.
-- Η διατηρημένη dynamic μελέτη αποτελεί commissioning evidence και όχι powered
-  efficacy comparison.
-- Δεν έχει τεκμηριωθεί γενίκευση πέρα από τους συγκεκριμένους χάρτες, events,
-  seeds και configurations.
-- Δεν υπάρχει ακόμη αποτέλεσμα αξιοπιστίας σε φυσικό ρομπότ ή artifact formal
-  verification.
-
-Οι περιορισμοί αυτοί ορίζουν την επόμενη ερευνητική εργασία: estimator
-validation, powered preregistered dynamic study, πλήρη ROS reruns με immutable
-manifests και μόνο μετά σταδιακό TurtleBot3 experiment.
-
-## Συνεισφορά και citation
-
-- [Οδηγός συνεισφοράς](CONTRIBUTING.md)
-- [Πολιτική ασφάλειας](SECURITY.md)
-- [Citation metadata](CITATION.cff)
-- [Publication plan](PUBLICATION_PLAN.md)
-
-Το DynNav διατίθεται με την [Apache License 2.0](LICENSE).
+[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Protocol](EXPERIMENT_PROTOCOL_V2.md) · [Failure cases](FAILURE_CASES.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [License](LICENSE)
