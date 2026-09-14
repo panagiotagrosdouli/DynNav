@@ -5,8 +5,7 @@ on:
   push:
     branches: [main]
     paths:
-      - ".github/workflows/full-main-audit.yml"
-      - ".github/workflows/streamlit-dashboard.yml"
+      - ".github/workflows/**"
 
 permissions:
   actions: write
