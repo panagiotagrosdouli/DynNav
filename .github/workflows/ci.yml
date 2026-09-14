@@ -135,6 +135,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Resolve patched website dependency graph
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install website dependencies
         run: npm ci --no-audit --no-fund
       - name: Audit website dependencies
@@ -155,8 +157,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: apps/web/package-lock.json
+      - name: Resolve patched researcher dependency graph
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install researcher web dependencies
         run: npm ci --no-audit --no-fund
       - name: Audit researcher dependencies
