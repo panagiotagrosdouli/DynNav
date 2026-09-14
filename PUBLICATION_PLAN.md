@@ -1,35 +1,56 @@
 # Publication Plan
 
-## Paper-shaped scope
+## Current paper
 
-Target a workshop paper only after completing estimator validation and the powered V2 simulation study. The narrative is: brittle commitments under dynamic route invalidation; an operational recovery-feasibility quantity; J0–J3 causal ablation in one Nav2 stack; conditions where the treatment helps, is neutral, and harms.
+**When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards**
 
-## Milestones
+The manuscript, code, retained synthetic/geometric evidence and ROS 2/Nav2 integration are already in `main`. The project is therefore past the earlier J0–J3 workshop-planning stage.
 
-1. **Measurement freeze:** rename the current term “local escape-option heuristic,” implement direct replan logging, executable recovery assessment, immutable manifests, and tests for every metric.
-2. **Estimator study (Level 1):** generate held-out recovery rollouts; report discrimination, calibration only if probabilistic, resolution/footprint sensitivity, and pathological cases.
-3. **ROS integration rerun (Level 2):** retain build/test/lifecycle/plugin-server logs at a non-null Git SHA.
-4. **Static closed-stack check (Level 3 boundary):** six planners, frozen queries, path/latency only.
-5. **Dynamic commissioning (Level 4):** all six planners, event observation, direct replans, bags, and executed recovery labels; tune only on development seeds.
-6. **Powered evaluation (Level 4):** preregister, run paired final seeds, preserve all raw artifacts, and publish analysis scripts/figure manifests.
-7. **Hardware readiness:** prepare conservative TurtleBot3 parameters, e-stop operator, speed limits, geofence, localization checks, and bag topics. Call this Level 5 only after named hardware runs exist.
+## Current scientific story
 
-## Physical TurtleBot3 checklist
+The paper tests whether **path history contains recoverability-relevant information that state-only future-risk models discard when robot actions activate future topology hazards**.
 
-Use a static known map and AMCL first; verify `/tf`, `/tf_static`, `/odom`, `/scan`, `/cmd_vel`, costmaps, footprint, timestamps, and emergency-stop path. Cap translational/angular speed and acceleration; establish a physical test perimeter and human e-stop operator; test stop command and Nav2 cancel before motion; disable automated obstacle injection; begin with J0 then zero/nonzero-weight equivalence; record parameters, robot serial/model, sensor firmware, battery, map, calibration, rosbag, ROS logs, and incident sheet. Ground truth, if externally measured, is evaluation-only.
+Current evidence covers:
+
+- same-state/different-history information separation;
+- exact augmented-state planning;
+- a critical-cut approximation and adversarial failure boundary;
+- analytic mechanism checks;
+- paired stochastic execution in controlled families;
+- held-out probability/horizon generalization;
+- three frozen hand-authored geometric topologies;
+- soft-history vs hard-safe-return Pareto behavior;
+- ROS 2 Jazzy / Nav2 integration.
+
+## Remaining publication-hardening milestones
+
+1. **Action-triggered Gazebo execution:** run the frozen `(174,189) -> (175,189)` trigger scenario with paired planner conditions and common event realizations. Retain raw trial data and validity diagnostics.
+2. **Execution integrity:** require observed adjacent executed transitions, valid blocker injection, global-costmap observation and explicit recovery assessment. Invalid trials are reported separately, not converted into failures.
+3. **Probability miscalibration stress:** freeze nominal-vs-true trigger-probability offsets and test decision sensitivity without retuning after outcomes.
+4. **Partial-observability stress:** evaluate delayed or noisy hazard revelation while preserving the distinction between latent hazard activation and robot-observed information.
+5. **Correlated closure stress:** add a model/baseline that does not assume independent future closures when the scenario deliberately violates independence.
+6. **Submission audit:** regenerate all manuscript tables/claims from retained artifacts, verify bibliography/provenance and inspect the compiled PDF.
+
+## Optional stronger validation
+
+A physical TurtleBot3 study would materially strengthen the robotics story but is not required to describe the current simulation paper accurately. If performed, use a static known map and AMCL first; verify TF/odometry/scan/costmaps, cap speed and acceleration, establish a physical perimeter and human e-stop, record exact robot/sensor/configuration metadata, and separate commissioning trials from the frozen evaluation set.
 
 ## Release artifacts
 
-Archive container digest/lockfile, source SHA, protocol, raw CSV/JSON, rosbag metadata and bags where feasible, analysis environment, scripts, generated figures with sidecars, exclusion log, and negative cases. Quantitative manuscript sentences must cite an artifact ID and table/figure generator.
+A submission snapshot should archive:
+
+- source commit SHA;
+- paper PDF and source;
+- `paper/dynnav_r/evidence_manifest.json`;
+- frozen protocols/configurations/seeds;
+- raw CSV/JSON artifacts and summary files;
+- ROS/Gazebo logs or bags for execution-level claims;
+- analysis scripts and figure/table generators;
+- exclusion/invalid-trial log;
+- known negative cases and approximation failures.
 
 ## Submission gate
 
-Do not submit an efficacy paper if the primary comparison is underpowered, the estimator does not predict recovery feasibility on held-out scenarios, invalid trials exceed the frozen tolerance, or figure regeneration fails. A negative-method paper remains viable if these quality gates pass.
+Do not add or strengthen an efficacy claim if its underlying run is missing retained provenance, if trial validity is ambiguous, or if the wording exceeds the evaluated domain. Negative or null results remain scientifically useful when the protocol, baseline and measurement contracts are strong.
 
-## Three likely rejection reasons and minimum remedies
-
-| Rejection reason | Minimum work to eliminate it |
-|---|---|
-| The proposed “recoverability” signal is a local heuristic without construct validity | define recovery feasibility; validate a robot-information-only estimator against held-out executed recoveries; keep local degree as an ablation |
-| No powered causal evidence for H1–H4 | run all J0–J3 plus references over preregistered, balanced, multi-seed dynamic families with primary-event incidence, CIs, paired effects, and correction |
-| Benchmark bias and incomplete provenance | orthogonalize event/risk/geometry factors, freeze tuning/evaluation split, retain SHA/commands/logs/bags/raw paths/costmaps and figure manifests |
+The central novelty claim must remain narrow: **action-triggered degradation of safe-return connectivity with history-conditioned state aliasing**, not generic recoverability, generic safe-return planning, generic history dependence or generic endogenous uncertainty.
