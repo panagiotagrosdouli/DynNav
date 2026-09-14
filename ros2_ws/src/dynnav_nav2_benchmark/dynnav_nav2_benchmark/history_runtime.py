@@ -2,7 +2,11 @@
 
 from dataclasses import dataclass, field
 
-from dynnav_nav2_benchmark.history_execution import classify_observed_cells, trigger_decision, transition_text
+from dynnav_nav2_benchmark.history_execution import (
+    classify_observed_cells,
+    transition_text,
+    trigger_decision,
+)
 
 
 @dataclass(slots=True)
@@ -12,7 +16,9 @@ class HistoryRuntimeState:
     closure_probability: float
     previous_cell: tuple[int, int] | None = None
     accepted_transitions: list[str] = field(default_factory=list)
-    sampling_gaps: list[tuple[tuple[int, int], tuple[int, int]]] = field(default_factory=list)
+    sampling_gaps: list[tuple[tuple[int, int], tuple[int, int]]] = field(
+        default_factory=list
+    )
     trigger_observed: bool = False
     closure_requested: bool = False
 
