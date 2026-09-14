@@ -15,6 +15,7 @@ find_package(nav2_core REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(nav2_util REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -45,6 +46,7 @@ ament_target_dependencies(dynnav_global_planner
   nav2_costmap_2d
   nav_msgs
   geometry_msgs
+  std_msgs
   nav2_util
   pluginlib
   tf2_ros
@@ -96,6 +98,7 @@ ament_export_dependencies(
   nav2_costmap_2d
   nav_msgs
   geometry_msgs
+  std_msgs
   nav2_util
   pluginlib
   tf2_ros
