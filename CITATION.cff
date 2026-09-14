@@ -1,20 +1,23 @@
 cff-version: 1.2.0
-title: "DynNav: Risk-Aware Dynamic Navigation and Rerouting in Unknown Environments"
+title: "DynNav: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards"
 message: "If you use DynNav in academic work, please cite this software repository."
 type: software
 authors:
   - family-names: Grosdouli
     given-names: Panagiota
-repository-code: "https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments"
+repository-code: "https://github.com/panagiotagrosdouli/DynNav"
 license: Apache-2.0
-version: 0.1.0
-date-released: "2026-07-08"
-abstract: "A deterministic research software prototype for uncertainty-aware, risk-aware dynamic navigation, recoverability analysis, online rerouting, runtime monitoring, and reproducible synthetic benchmarking."
+version: 0.2.0
+date-released: "2026-09-14"
+abstract: "Research software for history-conditioned safe-return planning under action-triggered topology hazards, including exact and approximate recoverability models, retained paired benchmarks, ROS 2 Jazzy / Nav2 integration, and reproducible evidence provenance."
 keywords:
   - robotics
   - autonomous navigation
-  - risk-aware planning
-  - dynamic rerouting
-  - uncertainty propagation
+  - safe-return planning
+  - dynamic navigation
   - recoverability
-  - runtime monitoring
+  - history-conditioned planning
+  - topology hazards
+  - ROS 2
+  - Nav2
+  - reproducible research

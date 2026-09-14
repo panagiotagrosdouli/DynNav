@@ -2,39 +2,64 @@
 
 ## One-sentence contribution
 
-DynNav tests whether an explicitly measured, robot-information-conditioned estimate of post-invalidation recovery feasibility improves online replanning outcomes over geometric and costmap-risk objectives in controlled Nav2/Gazebo navigation.
+DynNav studies **history-conditioned safe-return planning under action-triggered topology hazards**: robot actions can activate future closure hazards, so two trajectories that end at the same geometric state can have different future return-connectivity.
 
-Until such an estimator replaces or complements the current local heuristic, the narrower honest wording is: **a controlled evaluation of local escape-option regularization in Nav2 global planning**.
+## Publication-facing claim
 
-## Frozen comparison
+The supported contribution is not generic recoverability or generic history-dependent planning. It is the narrower combination of:
 
-| ID | Objective | Purpose |
-|---|---|---|
-| J0 | \(L\) | shortest-only control |
-| J1 | \(L+\lambda_R R\) | costmap-risk control |
-| J2 | \(L+\lambda_Q(1-Q)\) | recoverability treatment |
-| J3 | \(L+\lambda_R R+\lambda_Q(1-Q)\) | joint treatment |
+1. action-triggered stochastic degradation of environmental return-connectivity;
+2. a same-state/different-history information gap for state-only marginal models;
+3. exact augmented-state planning over `(grid cell, activated hazard history)`;
+4. a critical-cut approximation with both a scaling regime and an explicit joint-cut failure boundary;
+5. retained paired evaluations across controlled, held-out probability/horizon and frozen geometric scenarios;
+6. ROS 2 Jazzy / Nav2 integration with persistent history updated from executed transitions.
 
-NavFn and SmacPlanner2D are external engineering references. The causal scientific ablation is J0–J3 implemented in the same plugin and ROS stack.
+## Primary baselines
+
+| Baseline | Scientific purpose |
+|---|---|
+| shortest / NavFn reference | geometric shortest-path control |
+| state-only marginal return-risk planner | tests whether geometry plus marginal future risk is sufficient |
+| hard safe-return threshold planner | strong feasibility-style safe-return baseline |
+| exact history-aware planner | reference history-conditioned method |
+| critical-cut history planner | scalable approximation with known limits |
+
+The older J0–J3 risk/recoverability ablation remains useful historical and engineering context, but it is no longer the central publication claim.
 
 ## Operational quantities
 
-* `mission_success`: goal reached within `T_mission`, without collision or emergency stop.
-* `valid_invalidation`: event service succeeds, obstacle is visible in the relevant costmap by `T_observe`, and the pre-event path intersects the newly lethal footprint.
-* `replan`: a new planner-server result, after observation, whose path identifier/timestamp differs from the pre-event plan.
-* `recovery_feasible`: from the first valid post-event state, an allowed recovery execution reaches the preregistered safe region within `T_recovery` and `D_recovery`, collision-free.
-* `irreversible_failure`: valid invalidation, mission failure, and `recovery_feasible=false`. Report the less metaphysical label “post-invalidation recovery-infeasible failure” in tables.
-* `recovery_success`: mission is abandoned or blocked, but the executed recovery policy reaches the safe region within budget.
-* `executed_path_length`: integral of ground-truth planar displacement after removing teleport/reset discontinuities; odometry length is a secondary deployable estimate.
-* `planning_latency`: planner-server request acceptance to result, measured per initial plan and replan; report warm-up separately.
-* `number_of_replans`: count of completed post-initial planner-server requests for the active goal.
-* `cumulative_risk`: line integral of the frozen robot-visible risk field sampled along executed trajectory; it is a score unless calibrated.
-* `escape_option_preservation`: minimum and area-under-time of `Q_t` along the pre-event executed trajectory. State whether `Q` is the local heuristic or validated estimator.
+- `mission_success`: goal reached under the frozen mission contract.
+- `recovery_feasible`: safe region remains reachable under the experiment's recovery semantics.
+- `irreversible_failure`: mission failure together with `recovery_feasible=false`; tables should prefer the precise wording **post-invalidation recovery-infeasible failure**.
+- `activated_hazards`: closure hazards whose directed trigger transitions were actually executed.
+- `exact_return_probability`: model-based safe-return probability under the declared closure model.
+- `planning_latency`: full planner computation for the compared method, including recoverability/history work.
+- `path_length`: geometric or executed path length as specified by the experiment protocol.
 
-## Scope exclusions
+## Evidence boundary
 
-No learned heuristics, multi-robot, security, VLA/LLM, NeRF, federated learning, or dashboard feature is needed for the paper. No formal safety, probability, hardware, or universal superiority claim is in scope. The current 26-contribution catalogue should be presented as exploratory work, not evidence for this paper.
+Current retained evidence supports:
 
-## Go/no-go criterion
+- the same-state/different-history representation mechanism;
+- route-switch behavior in controlled constructions;
+- paired stochastic execution effects in the repeated-module family;
+- held-out probability/horizon replication;
+- replication across three frozen hand-authored geometric topologies;
+- exact-vs-cut scaling in a series-critical family;
+- a joint-cut counterexample where the cut approximation is optimistic;
+- C++ Nav2 integration of persistent history semantics.
 
-Proceed to a paper only if held-out dynamic trials contain enough discordant irreversible outcomes to estimate a nontrivial paired effect and the upper 95% CI for overhead stays below frozen margins. A null or harmful result is publishable only if the benchmark and estimator validation are strong and failure mechanisms are analyzed.
+Current evidence does **not** support:
+
+- universal superiority of the soft history objective over hard safe-return constraints;
+- universal exactness of the critical-cut approximation;
+- calibrated real-world closure probabilities;
+- completed history-conditioned Gazebo efficacy results;
+- physical-robot efficacy or safety certification.
+
+## Publication gate
+
+The IEEE manuscript and retained synthetic/geometric evidence are already integrated. The next hardening gate is valid paired action-triggered Gazebo execution. New execution-level claims should enter the manuscript only after trigger observation, event realization/injection, costmap observation and recovery-label contracts all pass and the resulting artifact is retained with provenance.
+
+See `paper/dynnav_r/evidence_manifest.json` and `CLAIM_EVIDENCE_MATRIX.md` for authoritative claim/evidence mapping.

@@ -1,88 +1,94 @@
 # DynNav Reproducibility Report
 
-**Status:** In progress — completion is not claimed.
+**Status:** core CI/research stack verified; execution-level history-conditioned Gazebo validation remains pending.
 
-## Verification environment
+## Verified repository state
 
 | Item | Value |
 |---|---|
-| Date | 2026-07-13 |
-| Repository | `panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments` |
-| Branch | `feature/dynnav-complete-redesign-repair` |
-| Base branch | `main` |
-| Base head inspected | `f8741220129493ba674131787b3df989f785076d` |
-| Operating system | Linux command sandbox; exact distribution not recorded because checkout did not begin |
-| Python | Not yet verified against a clean checkout |
-| Node | Not yet verified against a clean checkout |
-| npm | Not yet verified against a clean checkout |
-| Docker | Not yet verified against a clean checkout |
+| Date | 2026-09-14 |
+| Repository | `panagiotagrosdouli/DynNav` |
+| Default branch | `main` |
+| Organized research-core merge | `7e655b7d6e282fef0274e1ee88106ecc2022e499` |
+| Last pre-organization fully green main CI | run `34831325240` |
+| Python matrix | 3.10 / 3.11 / 3.12 |
+| ROS 2 | Jazzy |
+| Nav2 plugin build/discovery | verified in CI |
+| Website/researcher web builds | verified in CI |
+| Documentation inventory/link audit | verified in CI |
 
-## Clean-clone attempt
+The repository uses GitHub-hosted clean runners as the authoritative clean-checkout environment. This supersedes the older local DNS-blocked clone attempt that was previously recorded here.
 
-Command:
+## Core Python verification
 
-```bash
-git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git dynnav_repo
-```
+CI installs the canonical package from the repository and verifies that imports resolve to `dynnav/`. It then runs Ruff, mapping-core type checks, the unified regression suite, reproducibility smoke checks and benchmark smoke checks according to the Python-version matrix.
 
-Result: **Blocked before checkout**.
-
-```text
-fatal: unable to access 'https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git/':
-Could not resolve host: github.com
-```
-
-The failure is an environmental DNS/network limitation, not evidence that the repository itself passes or fails installation.
-
-## Required clean-checkout protocol
-
-The following commands remain mandatory and must be recorded with exact exit codes and generated artifact paths:
+Local equivalent:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
-python -m compileall src scripts tests
-ruff check .
-black --check .
-pytest -q
-python scripts/run_all.py --mode smoke
-python scripts/run_all.py --mode validate
-
-docker build -t dynnav .
-docker run --rm dynnav
-docker run --rm -v "$(pwd)/results:/app/results" dynnav
-
-cd website
-npm ci
-npm run lint
-npm run typecheck
-npm run test
-npm run build
+python -m pip install -e ".[dev,researcher,dashboard]"
+ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
+python -m pytest -q
 ```
 
-## Current verified interface gaps
+## ROS 2 / Nav2 verification
 
-The complete protocol cannot pass in the repository state inspected at the start of this branch because:
+The CI container builds the Jazzy Nav2 plugin and checks planner discovery/configuration. The history-conditioned C++ planner is integrated into `main`; persistent activated-hazard history is updated from executed-transition input rather than from the nominal planned path.
 
-- `scripts/run_all.py` does not support `--mode smoke` or `--mode validate`.
-- `website/package.json` has no `lint` script.
-- `website/package.json` has no `test` script.
-- the current CI workflow does not run `ruff check .`.
-- the current CI workflow does not run `black --check .`.
-- the current website workflow uses `npm install` rather than `npm ci`.
+Representative local workflow:
 
-These are tracked as required failures in `AUDIT.md` and `STATUS.yaml`.
+```bash
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
+colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+source install/setup.bash
+colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+```
 
-## Generated outputs
+Build/discovery success is an integration claim, not an execution-efficacy claim.
 
-No output is listed as regenerated or validated in this report yet. Existing tracked media and results must be treated as unverified until their generation commands, decoding, deterministic inputs, and repository references have been audited from a complete checkout.
+## Publication evidence reproducibility
 
-## Optional integrations
+The publication-facing provenance source is:
 
-ROS 2, Nav2, Gazebo, physical hardware, and optional MP4 encoders have not been validated. They must be reported as optional environmental stages, not as core software failures and not as completed integrations.
+`paper/dynnav_r/evidence_manifest.json`
 
-## Clean-clone status
+Retained experiment families include the history information gap, analytic phase boundary, stochastic commitment execution, cut scaling, held-out probability/horizon study, joint-cut counterexample, geometric held-out benchmark and geometric Pareto sweep.
 
-**NOT PASSED.**
+Numerical manuscript claims should be sourced from retained artifacts referenced by that manifest rather than copied from ad-hoc console output.
+
+## Paper verification
+
+The paper workflow validates evidence provenance, compiles the IEEE manuscript, rejects unresolved references/citations and uploads the compiled PDF artifact. The manuscript is located at:
+
+`paper/dynnav_r/main.tex`
+
+## Web and dashboard verification
+
+The main CI validates the website and researcher workspace dependency graphs, audits dependencies, type-checks and builds both web surfaces. The Streamlit workflow validates dashboard structure/imports, runs smoke tests and checks a headless health endpoint.
+
+## Full-repository workflow audit
+
+`.github/workflows/full-main-audit.yml` provides a repository-level mechanism for dispatching manually runnable research/evidence workflows on `main`. Path-triggered and push-triggered workflows retain their normal contracts.
+
+A workflow success demonstrates that its declared checks passed for that run; it does not automatically promote exploratory modules to publication evidence.
+
+## Remaining reproducibility boundary
+
+The action-triggered Gazebo validation protocol is frozen but comparative history-conditioned execution outcomes are not yet part of the manuscript evidence. The first frozen event uses directed trigger `(174,189) -> (175,189)`, closure cell `(181,191)` and declared closure probability `0.8`.
+
+Before reporting Gazebo efficacy, retained trials must verify:
+
+- an adjacent executed trigger transition was actually observed;
+- the paired stochastic event realization was applied consistently across planners;
+- the physical blocker injection succeeded when required;
+- the blocker became visible in the relevant costmap;
+- recovery feasibility and irreversible-failure labels were computed under the frozen contract;
+- invalid trials were reported separately.
+
+## Claim boundary
+
+Passing reproducibility and CI checks does not establish safety certification, physical-robot efficacy, calibrated real-world closure probabilities, universal planner superiority or broad real-world generalization. See `CLAIM_EVIDENCE_MATRIX.md` for the current supported/unsupported claim boundary.
