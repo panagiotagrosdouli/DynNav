@@ -193,7 +193,7 @@ def transition_from_world_trigger(
 
 def deterministic_event_draw(seed: int, scenario: str, repetition: int, hazard_id: str) -> float:
     """Stable event-index draw shared across planner conditions."""
-    payload = f"{seed}|{scenario}|{repetition}|{hazard_id}".encode("utf-8")
+    payload = f"{seed}|{scenario}|{repetition}|{hazard_id}".encode()
     integer = int.from_bytes(hashlib.sha256(payload).digest()[:8], "big")
     return integer / float(1 << 64)
 
