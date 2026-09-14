@@ -1,0 +1,42 @@
+name: Full main audit
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/full-main-audit.yml"
+      - ".github/workflows/streamlit-dashboard.yml"
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    name: Dispatch all manual validation workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Dispatch full main validation set
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          workflows=(
+            contribution-experiments.yml
+            geometric-heldout-evidence.yml
+            geometric-pareto-evidence.yml
+            hazard-planner-pilot.yml
+            paper-build.yml
+            ros2-dynamic.yml
+            ros2-simulation.yml
+            streamlit-dashboard.yml
+            topology-reliability.yml
+            trust-aware-cvar.yml
+            web-portal.yml
+          )
+          for workflow in "${workflows[@]}"; do
+            echo "Dispatching ${workflow} on main"
+            gh workflow run "${workflow}" --repo "${GITHUB_REPOSITORY}" --ref main
+          done
