@@ -358,22 +358,49 @@ The manuscript and evidence pipeline are CI-checked so publication-facing numeri
 
 ---
 
-## Failure cases and limitations
+## Falsification, Scope, and Limitations
 
-DynNav intentionally retains tests that weaken or delimit the preferred method. The falsification suite includes same-state/same-history controls, reverse-direction trigger controls, sampling gaps, unrealized events, false conservatism, hard-constraint equivalence, critical-cut joint failures, probability miscalibration, correlated closures, delayed revelation, kinodynamic mismatch, and geometric-generalization limits.
+DynNav follows a **falsification-oriented evaluation strategy**. The repository intentionally retains experiments that expose failure modes, identify approximation errors, or show conditions under which the proposed history-conditioned formulation provides no advantage over simpler alternatives.
 
-DynNav does **not** currently establish:
+The falsification suite examines several important boundary conditions, including:
+
+- same-state/same-history controls;
+- reverse-direction trigger controls;
+- trigger-observation and sampling gaps;
+- unrealized stochastic hazard events;
+- false-conservatism cases;
+- equivalence with hard safe-return constraints;
+- joint-failure cases for the critical-cut approximation;
+- probability miscalibration;
+- correlated topology closures;
+- delayed hazard revelation;
+- kinodynamic-model mismatch;
+- limits of geometric generalization.
+
+These experiments are retained as part of the scientific evidence rather than excluded when they weaken the preferred method. Their purpose is to distinguish **where history conditioning is representationally necessary** from cases where simpler state representations, constraints, or approximations may be sufficient.
+
+### Current scope of the evidence
+
+The current evidence supports the study of **history-dependent recoverability under action-triggered topology hazards** in controlled synthetic and geometric environments, together with implementation-level validation in ROS 2/Nav2.
+
+It does **not** currently establish:
 
 - formal safety guarantees or safety certification;
-- universal planner superiority;
-- calibrated real-world closure probabilities;
+- universal superiority over alternative planners;
+- calibrated probabilities for real-world topology changes;
 - arbitrary-map or broad real-world generalization;
-- collision-avoidance or kinodynamic completeness of the grid model;
-- physical-robot efficacy or hardware reliability;
+- complete collision-avoidance or kinodynamic guarantees beyond the adopted grid-level model;
+- demonstrated physical-robot efficacy or hardware reliability;
 - exactness of the critical-cut approximation;
-- dominance of the soft objective over hard safe-return constraints.
+- universal dominance of the soft history-aware objective over hard safe-return constraints.
 
-The strongest current empirical evidence is controlled synthetic/geometric simulation, complemented by software and ROS integration evidence.
+Accordingly, the strongest current empirical evidence consists of **controlled stochastic and geometric simulation experiments with retained, reproducible artifacts**. This evidence is complemented by software-level and ROS 2/Nav2 integration validation.
+
+The resulting claims should therefore be interpreted as evidence for a specific planning mechanism and representation:
+
+> **When executed actions can alter future topology, path history may contain recoverability-relevant information that cannot, in general, be represented by geometric state alone.**
+
+Extending this conclusion to partially observed environments, correlated or miscalibrated hazards, kinodynamic systems, physical robots, or broader classes of real-world navigation environments requires additional empirical validation.
 
 ---
 
