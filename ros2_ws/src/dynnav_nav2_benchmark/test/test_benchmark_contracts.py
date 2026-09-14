@@ -15,6 +15,11 @@ from dynnav_nav2_benchmark.dynamic_analysis import (
     load_dynamic_suite,
     planner_behavior_tree,
 )
+from dynnav_nav2_benchmark.history_execution import (
+    classify_observed_cells,
+    deterministic_event_draw,
+    trigger_decision,
+)
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 
@@ -130,6 +135,60 @@ def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:
     assert "(174,189) -> (175,189)" in text
     assert "closure_probability: 0.8" in text
     assert "DynNavHistory" in text
+
+
+def test_execution_observations_never_interpolate_sampling_gaps() -> None:
+    same = classify_observed_cells((174, 189), (174, 189))
+    adjacent = classify_observed_cells((174, 189), (175, 189))
+    diagonal = classify_observed_cells((174, 189), (175, 190))
+    gap = classify_observed_cells((174, 189), (176, 189))
+    assert same.kind == "same_cell" and same.transition is None
+    assert adjacent.kind == "adjacent_transition"
+    assert adjacent.transition == ((174, 189), (175, 189))
+    assert diagonal.kind == "adjacent_transition"
+    assert gap.kind == "sampling_gap" and gap.transition is None
+
+
+def test_trigger_requires_observed_directed_transition() -> None:
+    trigger = ((174, 189), (175, 189))
+    hit = trigger_decision(
+        observed=trigger,
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
+    reverse = trigger_decision(
+        observed=((175, 189), (174, 189)),
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
+    no_closure = trigger_decision(
+        observed=trigger,
+        trigger=trigger,
+        latent_draw=0.9,
+        closure_probability=0.8,
+    )
+    assert hit.event_should_apply
+    assert hit.outcome == "closure_should_apply"
+    assert not reverse.trigger_observed
+    assert reverse.outcome == "trigger_avoided"
+    assert no_closure.trigger_observed
+    assert not no_closure.event_should_apply
+    assert no_closure.outcome == "trigger_observed_no_closure"
+
+
+def test_common_random_draw_is_planner_independent() -> None:
+    first = deterministic_event_draw(20260914, "return_gate", 3, "return_gate_0")
+    second = deterministic_event_draw(20260914, "return_gate", 3, "return_gate_0")
+    other_repetition = deterministic_event_draw(
+        20260914,
+        "return_gate",
+        4,
+        "return_gate_0",
+    )
+    assert first == second
+    assert first != other_repetition
 
 
 def test_recovery_oracle_rejects_sealed_safe_region() -> None:
