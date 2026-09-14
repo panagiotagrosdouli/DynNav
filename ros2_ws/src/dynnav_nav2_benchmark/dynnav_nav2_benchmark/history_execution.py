@@ -6,7 +6,7 @@ import hashlib
 import math
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Literal
 
 import yaml
 
@@ -15,6 +15,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import Pose3D, SafeRegion
 
 GridCell = tuple[int, int]
 DirectedTransition = tuple[GridCell, GridCell]
+ObservationKind = Literal["same_cell", "adjacent_transition", "sampling_gap"]
 
 
 @dataclass(frozen=True, slots=True)
@@ -105,6 +106,31 @@ class HistoryExecutionSuite:
         self.scenario.validate()
 
 
+@dataclass(frozen=True, slots=True)
+class ObservedTransition:
+    source: GridCell
+    target: GridCell
+    kind: ObservationKind
+
+    @property
+    def accepted(self) -> bool:
+        return self.kind == "adjacent_transition"
+
+    @property
+    def transition(self) -> DirectedTransition | None:
+        if not self.accepted:
+            return None
+        return self.source, self.target
+
+
+@dataclass(frozen=True, slots=True)
+class TriggerDecision:
+    trigger_observed: bool
+    closure_realized: bool
+    event_should_apply: bool
+    outcome: str
+
+
 def _pose2(payload: dict[str, Any]) -> Pose2D:
     return Pose2D(float(payload["x"]), float(payload["y"]), float(payload.get("yaw", 0.0)))
 
@@ -189,6 +215,46 @@ def transition_from_world_trigger(
     if abs(source[0] - target[0]) + abs(source[1] - target[1]) != 1:
         raise ValueError(f"quantized action trigger is not 4-connected: {source}>{target}")
     return source, target
+
+
+def classify_observed_cells(source: GridCell, target: GridCell) -> ObservedTransition:
+    """Classify two consecutive quantized robot observations without interpolation."""
+    if source == target:
+        return ObservedTransition(source, target, "same_cell")
+    dx = abs(target[0] - source[0])
+    dy = abs(target[1] - source[1])
+    if max(dx, dy) == 1:
+        return ObservedTransition(source, target, "adjacent_transition")
+    return ObservedTransition(source, target, "sampling_gap")
+
+
+def trigger_decision(
+    *,
+    observed: DirectedTransition | None,
+    trigger: DirectedTransition,
+    latent_draw: float,
+    closure_probability: float,
+) -> TriggerDecision:
+    """Resolve a frozen latent draw after observing an executed transition."""
+    if not 0.0 <= latent_draw < 1.0:
+        raise ValueError("latent_draw must be in [0, 1)")
+    if not 0.0 <= closure_probability <= 1.0:
+        raise ValueError("closure_probability must be in [0, 1]")
+    trigger_observed = observed == trigger
+    closure_realized = latent_draw < closure_probability
+    event_should_apply = trigger_observed and closure_realized
+    if not trigger_observed:
+        outcome = "trigger_avoided"
+    elif closure_realized:
+        outcome = "closure_should_apply"
+    else:
+        outcome = "trigger_observed_no_closure"
+    return TriggerDecision(
+        trigger_observed=trigger_observed,
+        closure_realized=closure_realized,
+        event_should_apply=event_should_apply,
+        outcome=outcome,
+    )
 
 
 def deterministic_event_draw(seed: int, scenario: str, repetition: int, hazard_id: str) -> float:
