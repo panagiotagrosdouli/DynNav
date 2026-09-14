@@ -6,6 +6,7 @@ on:
     paths:
       - "website/**"
       - "apps/web/**"
+      - "vercel_app/**"
       - "scripts/build_web_portal.sh"
       - "vercel.json"
       - ".github/workflows/web-portal.yml"
@@ -13,6 +14,7 @@ on:
     paths:
       - "website/**"
       - "apps/web/**"
+      - "vercel_app/**"
       - "scripts/build_web_portal.sh"
       - "vercel.json"
       - ".github/workflows/web-portal.yml"
@@ -33,7 +35,7 @@ permissions:
 
 jobs:
   build:
-    name: Build both web interfaces
+    name: Build web interfaces
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
@@ -45,19 +47,24 @@ jobs:
         run: |
           npm --prefix website install --package-lock-only --ignore-scripts --no-audit --no-fund
           npm --prefix apps/web install --package-lock-only --ignore-scripts --no-audit --no-fund
+          npm --prefix vercel_app install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install locked dependencies
         run: |
           npm --prefix website ci --no-audit --no-fund
           npm --prefix apps/web ci --no-audit --no-fund
+          npm --prefix vercel_app ci --no-audit --no-fund
       - name: Audit dependency trees
         run: |
           npm --prefix website audit --audit-level=high
           npm --prefix apps/web audit --audit-level=high
+          npm --prefix vercel_app audit --audit-level=high
       - name: Build combined portal
         env:
           DYNNAV_SITE_BASE_PATH: /DynNav
         run: bash scripts/build_web_portal.sh
-      - name: Verify both entry points
+      - name: Build standalone Vercel app
+        run: npm --prefix vercel_app run build
+      - name: Verify both portal entry points
         run: |
           test -s .web-dist/index.html
           test -s .web-dist/researcher/index.html
