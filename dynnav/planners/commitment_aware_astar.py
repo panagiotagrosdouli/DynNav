@@ -116,6 +116,15 @@ def _reconstruct_states(
     return tuple(states)
 
 
+def _validate_initial_active(
+    model: CommitmentHazardModel,
+    active: frozenset[int],
+) -> None:
+    invalid = sorted(index for index in active if index < 0 or index >= len(model.closures))
+    if invalid:
+        raise ValueError(f"initial activated hazard indices are out of range: {invalid}")
+
+
 def commitment_aware_astar(
     grid: GridMap,
     start: GridCell,
@@ -125,8 +134,14 @@ def commitment_aware_astar(
     hazard_model: CommitmentHazardModel | None = None,
     mode: CommitmentPlannerMode = CommitmentPlannerMode.HISTORY_AWARE,
     config: CommitmentAwareAStarConfig | None = None,
+    initial_activated_closures: frozenset[int] | None = None,
 ) -> CommitmentAwareAStarResult:
     """Plan over position plus activated closure history.
+
+    ``initial_activated_closures`` carries action-triggered hazards that were
+    activated before this planning invocation. This is required for online
+    replanning: resetting the augmented state to an empty hazard set would erase
+    recoverability-relevant execution history.
 
     ``planning_time_ms`` measures search latency through popping the goal state.
     Diagnostic return-probability profiling used only to populate result metrics
@@ -140,6 +155,8 @@ def commitment_aware_astar(
     safe = set(safe_cells or {start})
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
+    initial_active = frozenset(initial_activated_closures or ())
+    _validate_initial_active(model, initial_active)
     if not grid.in_bounds(start) or not grid.in_bounds(goal):
         raise ValueError("start and goal must be inside the grid")
     if not grid.passable(start) or not grid.passable(goal):
@@ -148,7 +165,7 @@ def commitment_aware_astar(
         )
 
     t0 = time.perf_counter()
-    initial: AugmentedState = (start, frozenset())
+    initial: AugmentedState = (start, initial_active)
     frontier: list[tuple[float, int, AugmentedState]] = [(0.0, 0, initial)]
     costs: dict[AugmentedState, float] = {initial: 0.0}
     parents: dict[AugmentedState, AugmentedState] = {}
@@ -186,7 +203,7 @@ def commitment_aware_astar(
                 cumulative_return_fragility=sum(
                     1.0 - probability for probability in return_probabilities[1:]
                 ),
-                activated_closure_count=len(active),
+                activated_closure_count=len(states[-1][1]),
                 mode=mode,
             )
 
@@ -224,6 +241,6 @@ def commitment_aware_astar(
         0.0,
         0.0,
         float("inf"),
-        0,
+        len(initial_active),
         mode,
     )

@@ -22,6 +22,7 @@ find_package(tf2_geometry_msgs REQUIRED)
 
 add_library(dynnav_grid_search STATIC
   src/grid_search.cpp
+  src/history_grid_search.cpp
 )
 set_target_properties(dynnav_grid_search PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_include_directories(dynnav_grid_search PUBLIC
@@ -77,6 +78,10 @@ if(BUILD_TESTING)
   ament_add_gtest(test_grid_search test/test_grid_search.cpp)
   target_link_libraries(test_grid_search dynnav_grid_search)
   target_include_directories(test_grid_search PRIVATE include)
+
+  ament_add_gtest(test_history_grid_search test/test_history_grid_search.cpp)
+  target_link_libraries(test_history_grid_search dynnav_grid_search)
+  target_include_directories(test_history_grid_search PRIVATE include)
 
   ament_add_gtest(test_plugin_load test/test_plugin_load.cpp)
   ament_target_dependencies(test_plugin_load nav2_core pluginlib)
