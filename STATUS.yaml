@@ -1,55 +1,45 @@
 project: DynNav
-branch: docs/all-markdown-evidence-pass
-status: in_progress
-completion_claimed: false
-last_updated: 2026-07-15
-scope:
-  all_markdown_files: true
-  readmes_only: false
-verified_baseline:
-  source: PR #64 CI run #268
+branch: main
+status: active_research
+last_updated: 2026-09-14
+verified_main:
+  sha: 97fdf7d97403cef738858ce4fe82e1dfe90ee961
+  ci_run: 34831325240
+  ci_status: success
   python_versions: ["3.10", "3.11", "3.12"]
-  python_tests: passed
-  realtime_replanning: passed
-  smoke_run: passed
-  benchmark_smoke: passed
-  website_install: passed
-  website_typecheck: passed
+  ros2_nav2: passed
   website_build: passed
-markdown_audit:
-  recursive_inventory:
-    status: running_in_github_actions
-    implementation: scripts/audit_markdown.py
-  local_links:
-    status: running_in_github_actions
-  local_assets:
-    status: running_in_github_actions
-  anchors:
-    status: running_in_github_actions
-  unsupported_claim_review:
-    status: warnings_enabled
-  machine_readable_report:
-    path: results/markdown_audit.json
-    status: generated_by_ci
-remaining:
-  inspect_every_markdown_file:
-    status: required
-  repair_every_reported_reference:
-    status: required
-  validate_documented_commands:
-    status: required
-  generated_markdown_regeneration:
-    status: required
-  docker:
-    status: not_run
-  ros2_nav2:
-    status: not_run
-  gazebo:
-    status: not_run
-  hardware:
-    status: not_claimed
-blocker:
-  local_clean_checkout:
-    status: blocked
-    reason: execution container cannot resolve github.com
-    mitigation: required Markdown audit runs in GitHub Actions against a complete checkout
+  researcher_web_build: passed
+  markdown_audit: passed
+publication_core:
+  title: "When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards"
+  manuscript: paper/dynnav_r/main.tex
+  evidence_manifest: paper/dynnav_r/evidence_manifest.json
+  status: integrated_in_main
+research_evidence:
+  same_state_history_gap: retained
+  stochastic_execution: retained
+  heldout_probability_horizon: retained
+  geometric_heldout: retained
+  geometric_pareto: retained
+  joint_cut_counterexample: retained
+ros2:
+  history_conditioned_cpp_nav2_planner: integrated
+  persistent_history_from_executed_transitions: implemented
+  action_triggered_gazebo_protocol: frozen
+  action_triggered_gazebo_comparative_outcomes: pending
+claims_not_made:
+  - safety_certification
+  - universal_superiority
+  - physical_robot_efficacy
+  - broad_real_world_generalization
+next_validation:
+  - retained action-triggered Gazebo paired execution
+  - trigger-probability miscalibration stress tests
+  - partial-observability and delayed-revelation stress tests
+repository_organization:
+  canonical_guide: docs/REPOSITORY_GUIDE.md
+  claim_boundary: CLAIM_EVIDENCE_MATRIX.md
+  canonical_python: dynnav/
+  canonical_ros2: ros2_ws/src/
+  retained_results: results/

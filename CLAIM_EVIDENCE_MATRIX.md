@@ -1,19 +1,30 @@
 # Claim–Evidence Matrix
 
-| Claim | Required evidence | Current evidence | Status | Missing experiment |
-|---|---|---|---|---|
-| J0–J3 objectives are implemented | deterministic known-answer tests and zero-weight equivalence | C++ grid search and unit tests; static six-configuration artifact | SUPPORTED | none for implementation claim |
-| DynNav loads as a Nav2 plugin | Jazzy build, pluginlib discovery, planner-server activation logs | CI definition and plugin-load test; retained planner-server results, no raw lifecycle logs | PARTIALLY SUPPORTED | retain configure/activate/createPlan/deactivate logs from clean run |
-| DynNav returns paths through planner_server | action result and planner-server trace | retained 36/36 static `ComputePathToPose` artifact | SUPPORTED | repeat at paper revision with non-null SHA and logs |
-| Dynamic obstacle is perceived at runtime | Gazebo event plus post-event live costmap evidence | 8/8 commissioning trials show required lethal-cell increase and costmap snapshots | SUPPORTED | repeat across final scenarios/seeds |
-| Online replanning occurred | timestamped pre/post planner-server calls and paths | direct `/plan` capture and event-relative replan counting implemented but not yet executed | PARTIALLY SUPPORTED | execute Jazzy/Gazebo V2 and retain paths/logs |
-| Recoverability metric estimates recovery feasibility | held-out discrimination/calibration against executed recovery outcomes | local neighbor-count heuristic and synthetic route profiles | UNSUPPORTED | estimator validation on held-out rollout labels |
-| H1: recoverability reduces irreversible failures | powered paired dynamic trials with failures and CIs | bias-controlled Level 1 V2 synthetic run exists; dynamic `n=1` still has 0/8 irreversible failures | UNSUPPORTED | execute powered Level 4 V2 benchmark |
-| H2: benefit increases with uncertainty | factorial uncertainty interaction | no adequate dynamic uncertainty sweep | UNSUPPORTED | frozen multi-level uncertainty experiment |
-| H3: overhead is bounded | preregistered margins and CIs on paired dynamic trials | static path/latency descriptive data only | UNSUPPORTED | dynamic non-inferiority analysis |
-| H4: joint outperforms components where appropriate | balanced risk/recovery mechanism families and J0–J3 | one joint timeout; no J2/J0 dynamic trials | UNSUPPORTED | V2 aligned/conflict/neutral families |
-| Static planner configurations succeed on retained queries | raw paths/results, parameters, map, versions | 36/36 retained requests | SUPPORTED | avoid generalizing beyond two queries |
-| Dynamic Gazebo navigation works | robot execution with Nav2 and event | retained 8-trial commissioning artifact, 7 successes | SUPPORTED | evidence is commissioning, not efficacy |
-| Operational irreversibility is measurable | validated recovery label and event-time state | graph reachability on post-event inflated costmap | PARTIALLY SUPPORTED | compare graph label to executed recovery trials |
-| Safety is improved | collisions, recovery failures, adequate power, deployment limits | no powered evidence or formal safety analysis | UNSUPPORTED | efficacy experiment plus explicit non-certification |
-| Physical robot validation | named hardware, configuration, logs and rosbags | hardware launch and safety checklist implemented; no execution | UNSUPPORTED | staged named-TurtleBot3 run with bags/logs |
+This matrix defines what the current repository may and may not claim. Publication-facing numerical values should be checked against `paper/dynnav_r/evidence_manifest.json` before reuse.
+
+| Claim | Current evidence | Status | Boundary / next step |
+|---|---|---|---|
+| Action-triggered hazard history is implemented | `CommitmentHazardModel`, exact history-conditioned return probability, deterministic regressions | SUPPORTED | implementation claim only |
+| Same geometric state can have different recoverability under different histories | frozen same-endpoint information-gap benchmark; separation equals trigger probability in the controlled construction | SUPPORTED | mechanism result, not universal frequency claim |
+| A state-only marginal model cannot represent both same-state histories exactly | counterfactual benchmark plus elementary minimax lower-bound argument | SUPPORTED | representation result under the stated construction |
+| Exact augmented-state history planner is implemented | Python planner over `(cell, activated hazards)` with known-answer and online-history tests | SUPPORTED | computational scaling remains scenario-dependent |
+| Critical-cut approximation is exact in the tested series-critical family | exact-vs-cut scaling benchmark | SUPPORTED | do not generalize exactness beyond that family |
+| Critical-cut approximation can be optimistic | parallel joint-cut adversarial benchmark; disagreement in all 9 frozen settings | SUPPORTED | explicit failure boundary |
+| History-conditioned planning reduces irreversible failure in the controlled repeated-module execution family | paired CRN stochastic execution benchmark | SUPPORTED | mechanism family only |
+| Result generalizes across held-out probability/horizon patterns in the frozen repeated-module family | 6/7/8-module held-out study, 500 paired seeds per scenario | SUPPORTED | not geometric-domain generalization |
+| Result replicates across three frozen hand-authored geometric topologies | fork/L-room/chamber held-out study, 500 paired seeds | SUPPORTED | three synthetic geometries, not broad domain guarantee |
+| State-only marginal baseline aliases shortest in the frozen history-trigger families | exact paired equality in retained controlled/held-out studies | SUPPORTED | specific baseline/model semantics |
+| Soft history objective universally outperforms hard safe-return constraints | geometric Pareto sweep shows hard thresholds can match zero-hazard routes | UNSUPPORTED | objective choice depends on operating regime |
+| Critical-cut planner universally matches exact history planner | joint-cut counterexample disproves this | UNSUPPORTED | approximation must report topology assumptions |
+| History-conditioned C++ planner integrates with ROS 2 Jazzy/Nav2 | plugin build/discovery/tests plus persistent executed-history state | SUPPORTED | integration, not execution efficacy |
+| Planned paths do not falsely activate persistent hazard history | planner wiring updates persistent state from executed-transition input only | SUPPORTED | execution source still requires valid observation semantics |
+| Action-triggered Gazebo protocol is frozen before comparative outcomes | frozen trigger/closure/probability configuration and protocol documentation | SUPPORTED | efficacy outcomes still pending |
+| History-conditioned planner improves Gazebo execution outcomes | no retained comparative action-triggered execution artifact yet | UNSUPPORTED | run paired validated Gazebo study |
+| Recoverability probabilities are calibrated to real-world recovery success | synthetic/model probabilities only | UNSUPPORTED | calibration/miscalibration study required |
+| Robustness to partial observability or delayed hazard revelation | not yet evaluated in the publication-facing evidence stack | UNSUPPORTED | frozen stress-test protocol required |
+| Safety is improved in deployment | no formal safety proof, powered hardware study, or certification evidence | UNSUPPORTED | explicit non-certification remains required |
+| Physical-robot efficacy | no retained hardware execution study for the history-conditioned planner | UNSUPPORTED | staged named-hardware validation required |
+
+## Interpretation rule
+
+A `SUPPORTED` entry means the repository contains evidence for the **narrow wording shown in that row**. It does not imply safety, deployment readiness, broad generalization, or superiority outside the evaluated assumptions.
