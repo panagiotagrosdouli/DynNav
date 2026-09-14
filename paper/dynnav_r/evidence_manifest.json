@@ -87,6 +87,89 @@
       }
     }
   },
+  "frozen_geometric_heldout": {
+    "workflow_name": "Geometric held-out evidence",
+    "run_id": 34823759539,
+    "head_sha": "8552a42466b598fcf12c9e20137eb4166b866cbd",
+    "artifact_id": 10339442639,
+    "artifact_digest": "sha256:d8b59cfd6432d8ade1351b882cc29c6371e3437504346322817d41bb4b608e93",
+    "paired_seeds_per_scenario": 500,
+    "recoverability_weight": 8.0,
+    "scenarios": {
+      "fork": {
+        "shortest_failure_rate": 0.81,
+        "state_only_failure_rate": 0.81,
+        "history_exact_failure_rate": 0.0,
+        "shortest_path_length": 6,
+        "history_exact_path_length": 8,
+        "shortest_activated_closures": 1,
+        "history_exact_activated_closures": 0,
+        "history_exact_vs_shortest_risk_difference": -0.81,
+        "history_exact_vs_shortest_bootstrap_95": [-0.844, -0.776],
+        "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.420369946780824e-122,
+        "state_only_vs_shortest_discordant_pairs": 0
+      },
+      "l_room": {
+        "shortest_failure_rate": 0.756,
+        "state_only_failure_rate": 0.756,
+        "history_exact_failure_rate": 0.0,
+        "shortest_path_length": 8,
+        "history_exact_path_length": 8,
+        "shortest_activated_closures": 1,
+        "history_exact_activated_closures": 0,
+        "history_exact_vs_shortest_risk_difference": -0.756,
+        "history_exact_vs_shortest_bootstrap_95": [-0.794, -0.718],
+        "history_exact_vs_shortest_mcnemar_exact_pvalue": 3.248565551764031e-114,
+        "state_only_vs_shortest_discordant_pairs": 0
+      },
+      "chamber_two_trigger": {
+        "shortest_failure_rate": 0.89,
+        "state_only_failure_rate": 0.89,
+        "history_exact_failure_rate": 0.0,
+        "shortest_path_length": 7,
+        "history_exact_path_length": 9,
+        "shortest_activated_closures": 2,
+        "history_exact_activated_closures": 0,
+        "history_exact_vs_shortest_risk_difference": -0.89,
+        "history_exact_vs_shortest_bootstrap_95": [-0.916, -0.862],
+        "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.2013136429275836e-134,
+        "state_only_vs_shortest_discordant_pairs": 0
+      }
+    },
+    "scope": "three predeclared hand-built held-out topologies; stronger than repeated-series-only evidence but not arbitrary-map or real-world geometric generalization"
+  },
+  "geometric_soft_vs_hard_pareto": {
+    "workflow_name": "Geometric Pareto evidence",
+    "run_id": 34823943257,
+    "head_sha": "1bd538b831e741f869161828b2a3f63672ee124a",
+    "artifact_id": 10339560355,
+    "artifact_digest": "sha256:864fe19cf7c02efd1f4c978fbe80dbbbdb546aa90f1f6488ef6327e7696401aa",
+    "paired_seeds_per_configuration": 500,
+    "soft_weights": [0.0, 1.0, 2.0, 4.0, 8.0, 16.0],
+    "hard_thresholds": [0.5, 0.7, 0.8, 0.9, 0.95, 0.99],
+    "all_configurations_planner_feasible": true,
+    "scenario_summary": {
+      "fork": {
+        "soft_risky_weights": [0.0, 1.0],
+        "soft_zero_failure_from_weight": 2.0,
+        "hard_zero_failure_all_thresholds": true,
+        "safe_route_path_length": 8
+      },
+      "l_room": {
+        "soft_risky_weights": [0.0],
+        "soft_zero_failure_from_weight": 1.0,
+        "hard_zero_failure_all_thresholds": true,
+        "safe_route_path_length": 8
+      },
+      "chamber_two_trigger": {
+        "soft_risky_weights": [0.0],
+        "soft_zero_failure_from_weight": 1.0,
+        "hard_zero_failure_all_thresholds": true,
+        "safe_route_path_length": 9
+      }
+    },
+    "interpretation": "the held-out geometric evidence supports history-conditioned hazard state, not universal superiority of the soft objective; every frozen hard threshold selected a zero-hazard, zero-failure route in these three worlds"
+  },
   "series_cut_scaling": {
     "hazard_count": 12,
     "exact_ms": 49.53930700003184,
@@ -118,14 +201,15 @@
     }
   },
   "claim_scope": {
-    "supported": "mechanism-level evidence that action-triggered environmental topology history can carry safe-return-connectivity information absent from a state-only marginal hazard model",
+    "supported": "mechanism-level evidence that action-triggered environmental topology history can carry safe-return-connectivity information absent from a state-only marginal hazard model, replicated across repeated procedural families and three predeclared hand-built held-out topologies",
     "not_claimed": [
       "first history-dependent risk planner",
       "first safe-return planner",
       "universal safety improvement",
       "formal kinodynamic safety guarantee",
       "hardware validation of the history-conditioned planner",
-      "geometric-domain generalization",
+      "arbitrary-map or real-world geometric generalization",
+      "universal superiority of a soft objective over hard safe-return constraints",
       "novelty of articulation or cut-set graph theory"
     ]
   }
