@@ -53,8 +53,94 @@ def test_multiseed_aggregation_and_pairing() -> None:
     summary = aggregate(records, config=config)
     assert summary["baseline"]["trials"] == 3
     assert summary["baseline"]["planning_failure_rate"] == 0.0
+    assert summary["baseline"]["planning_time_ms"]["finite_trials"] == 3
     comparison = paired_comparisons(records, "baseline", "proposed", config=config)
     assert comparison["mean_difference"] < 0.0
+    assert comparison["paired_trials"] == 3
+    assert comparison["excluded_non_finite_pairs"] == 0
+
+
+def test_failed_trials_remain_in_rates_and_non_finite_metrics_are_audited() -> None:
+    config = EvaluationConfig(seeds=(1, 2), bootstrap_resamples=200)
+    records = [
+        TrialRecord(
+            seed=1,
+            method="planner",
+            success=True,
+            irreversible_failure=False,
+            path_length=5.0,
+            planning_time_ms=2.0,
+            nodes_expanded=10.0,
+            cumulative_risk=0.5,
+            cumulative_irreversibility=0.25,
+            minimum_escape_options=2.0,
+        ),
+        TrialRecord(
+            seed=2,
+            method="planner",
+            success=False,
+            irreversible_failure=False,
+            path_length=0.0,
+            planning_time_ms=3.0,
+            nodes_expanded=8.0,
+            cumulative_risk=float("inf"),
+            cumulative_irreversibility=float("inf"),
+            minimum_escape_options=0.0,
+            planning_failure=True,
+        ),
+    ]
+
+    summary = aggregate(records, config=config)["planner"]
+
+    assert summary["trials"] == 2
+    assert summary["success_rate"] == pytest.approx(0.5)
+    assert summary["planning_failure_rate"] == pytest.approx(0.5)
+    assert summary["cumulative_risk"]["finite_trials"] == 1
+    assert summary["cumulative_risk"]["excluded_non_finite"] == 1
+    assert summary["cumulative_risk"]["summary"]["mean"] == pytest.approx(0.5)
+
+
+def test_paired_comparison_reports_non_finite_pair_exclusion() -> None:
+    config = EvaluationConfig(seeds=(1, 2), bootstrap_resamples=200)
+    baseline = _runner(1, "baseline", {})
+    proposed = _runner(1, "proposed", {})
+    failed_baseline = TrialRecord(
+        seed=2,
+        method="baseline",
+        success=False,
+        irreversible_failure=False,
+        path_length=0.0,
+        planning_time_ms=4.0,
+        nodes_expanded=10.0,
+        cumulative_risk=float("inf"),
+        cumulative_irreversibility=float("inf"),
+        minimum_escape_options=0.0,
+        planning_failure=True,
+    )
+    failed_proposed = TrialRecord(
+        seed=2,
+        method="proposed",
+        success=False,
+        irreversible_failure=False,
+        path_length=0.0,
+        planning_time_ms=5.0,
+        nodes_expanded=11.0,
+        cumulative_risk=float("inf"),
+        cumulative_irreversibility=float("inf"),
+        minimum_escape_options=0.0,
+        planning_failure=True,
+    )
+
+    comparison = paired_comparisons(
+        [baseline, proposed, failed_baseline, failed_proposed],
+        "baseline",
+        "proposed",
+        metric="cumulative_risk",
+        config=config,
+    )
+
+    assert comparison["paired_trials"] == 1
+    assert comparison["excluded_non_finite_pairs"] == 1
 
 
 def test_sensitivity_grid_and_artifacts(tmp_path) -> None:
