@@ -10,10 +10,14 @@ from pathlib import Path
 
 import rclpy
 from nav2_simple_commander.robot_navigator import BasicNavigator
+from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 from std_msgs.msg import String
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
-from dynnav_nav2_benchmark.dynamic_analysis import Pose3D, assess_recovery_reachability
+from dynnav_nav2_benchmark.dynamic_analysis import (
+    Pose3D,
+    assess_recovery_reachability,
+)
 from dynnav_nav2_benchmark.dynamic_runner import (
     _pose_message,
     _result_details,
@@ -30,19 +34,34 @@ from dynnav_nav2_benchmark.history_execution import (
     world_to_cell,
 )
 from dynnav_nav2_benchmark.history_runtime import HistoryRuntimeState
-from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 
 
-def _trial(navigator, set_pose_client, suite, planner_id, repetition, order_index, bt, reset_s):
+def _trial(
+    navigator,
+    set_pose_client,
+    suite,
+    planner_id,
+    repetition,
+    order_index,
+    bt,
+    reset_s,
+):
     scenario = suite.scenario
-    _set_entity_pose(navigator, set_pose_client, suite.blocker_entity, suite.blocker_parking_pose)
+    _set_entity_pose(
+        navigator,
+        set_pose_client,
+        suite.blocker_entity,
+        suite.blocker_parking_pose,
+    )
     _set_entity_pose(
         navigator,
         set_pose_client,
         suite.robot_entity,
         Pose3D(scenario.start.x, scenario.start.y, 0.01, scenario.start.yaw),
     )
-    navigator.setInitialPose(_pose_message(navigator, scenario.start, scenario.frame_id))
+    navigator.setInitialPose(
+        _pose_message(navigator, scenario.start, scenario.frame_id)
+    )
     navigator.clearAllCostmaps()
     time.sleep(reset_s)
     costmap = navigator.getGlobalCostmap()
@@ -57,13 +76,25 @@ def _trial(navigator, set_pose_client, suite, planner_id, repetition, order_inde
         resolution=resolution,
     )
     latent = deterministic_event_draw(
-        suite.seed, scenario.name, repetition, scenario.trigger.hazard_id
+        suite.seed,
+        scenario.name,
+        repetition,
+        scenario.trigger.hazard_id,
     )
-    state = HistoryRuntimeState(trigger, latent, scenario.trigger.closure_probability)
-    publisher = navigator.create_publisher(String, "dynnav/executed_transition", 10)
+    state = HistoryRuntimeState(
+        trigger,
+        latent,
+        scenario.trigger.closure_probability,
+    )
+    publisher = navigator.create_publisher(
+        String,
+        "dynnav/executed_transition",
+        10,
+    )
     navigator.feedback = None
     accepted = navigator.goToPose(
-        _pose_message(navigator, scenario.goal, scenario.frame_id), behavior_tree=str(bt)
+        _pose_message(navigator, scenario.goal, scenario.frame_id),
+        behavior_tree=str(bt),
     )
     if not accepted:
         navigator.destroy_publisher(publisher)
@@ -109,10 +140,15 @@ def _trial(navigator, set_pose_client, suite, planner_id, repetition, order_inde
                             scenario.blocker_pose,
                         )
                     except Exception as exc:
-                        injection_error = f"event_injection_failed:{type(exc).__name__}:{exc}"
+                        injection_error = (
+                            "event_injection_failed:"
+                            f"{type(exc).__name__}:{exc}"
+                        )
                     else:
                         closure_applied = True
-            nav_s = float(feedback.navigation_time.sec) + float(feedback.navigation_time.nanosec) / 1e9
+            nav_s = float(feedback.navigation_time.sec) + (
+                float(feedback.navigation_time.nanosec) / 1e9
+            )
             if nav_s >= scenario.execution_timeout_s:
                 navigator.cancelTask()
                 _wait_after_cancel(navigator)
@@ -147,13 +183,16 @@ def _trial(navigator, set_pose_client, suite, planner_id, repetition, order_inde
         ).to_dict()
     navigator.destroy_publisher(publisher)
     valid = state.observation_valid and injection_error is None
-    recovery_feasible = None if recovery is None else bool(recovery["within_budget"])
+    recovery_feasible = (
+        None if recovery is None else bool(recovery["within_budget"])
+    )
     return {
         "planner_id": planner_id,
         "repetition": repetition,
         "order_index": order_index,
         "valid_trial": valid,
-        "invalid_reason": injection_error or ("sampling_gap" if not state.observation_valid else None),
+        "invalid_reason": injection_error
+        or ("sampling_gap" if not state.observation_valid else None),
         "navigation_success": success,
         "result_error_code": error_code,
         "result_error_message": error_message,
@@ -168,7 +207,10 @@ def _trial(navigator, set_pose_client, suite, planner_id, repetition, order_inde
         "recovery_assessment": recovery,
         "recovery_feasible": recovery_feasible,
         "operational_irreversible_failure": bool(
-            valid and not success and closure_applied and recovery_feasible is False
+            valid
+            and not success
+            and closure_applied
+            and recovery_feasible is False
         ),
     }
 
@@ -185,8 +227,14 @@ def main() -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     rclpy.init()
     nav = BasicNavigator(node_name="dynnav_history_execution_benchmark")
-    spawn = nav.create_client(SpawnEntity, f"/world/{suite.world_name}/create")
-    set_pose = nav.create_client(SetEntityPose, f"/world/{suite.world_name}/set_pose")
+    spawn = nav.create_client(
+        SpawnEntity,
+        f"/world/{suite.world_name}/create",
+    )
+    set_pose = nav.create_client(
+        SetEntityPose,
+        f"/world/{suite.world_name}/set_pose",
+    )
     try:
         _wait_for_service(spawn, "spawn blocker")
         _wait_for_service(set_pose, "set entity pose")
@@ -196,19 +244,34 @@ def main() -> int:
             pass
         nav.waitUntilNav2Active()
         bts = _write_behavior_trees(args.output, suite.planner_ids)
-        schedule = balanced_trial_order(suite.planner_ids, args.repetitions, suite.seed)
+        schedule = balanced_trial_order(
+            suite.planner_ids,
+            args.repetitions,
+            suite.seed,
+        )
         trials = []
         for repetition, block in enumerate(schedule):
             for order_index, planner_id in enumerate(block):
                 trials.append(
                     _trial(
-                        nav, set_pose, suite, planner_id, repetition, order_index,
-                        bts[planner_id], args.reset_settle_s,
+                        nav,
+                        set_pose,
+                        suite,
+                        planner_id,
+                        repetition,
+                        order_index,
+                        bts[planner_id],
+                        args.reset_settle_s,
                     )
                 )
-        payload = {"schema_version": 1, "seed": suite.seed, "trials": trials}
+        payload = {
+            "schema_version": 1,
+            "seed": suite.seed,
+            "trials": trials,
+        }
         (args.output / "results.json").write_text(
-            json.dumps(payload, indent=2, sort_keys=True), encoding="utf-8"
+            json.dumps(payload, indent=2, sort_keys=True),
+            encoding="utf-8",
         )
         return 0 if all(item["valid_trial"] for item in trials) else 2
     finally:
