@@ -3,7 +3,14 @@ name: Action-triggered Gazebo evidence
 on:
   push:
     branches:
-      - paper/submission-readiness-audit
+      - ci/fix-history-gazebo-provenance
+    paths:
+      - '.github/workflows/history-gazebo-evidence.yml'
+      - 'ros2_ws/src/dynnav_nav2_cpp/**'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/**'
+  pull_request:
+    branches:
+      - main
     paths:
       - '.github/workflows/history-gazebo-evidence.yml'
       - 'ros2_ws/src/dynnav_nav2_cpp/**'
@@ -50,13 +57,18 @@ jobs:
 
       - name: Record environment and frozen configuration
         run: |
+          set -o pipefail
           source /opt/ros/jazzy/setup.bash
           mkdir -p /tmp/dynnav_history/results
-          dpkg-query -W -f='${binary:Package}\t${Version}\n' 'ros-jazzy-*' | sort > /tmp/dynnav_history/results/ros_packages.tsv
+          dpkg-query -W -f='${binary:Package}\t${Version}\n' | awk '$1 ~ /^ros-jazzy-/' | sort > /tmp/dynnav_history/results/ros_packages.tsv
           uname -a > /tmp/dynnav_history/results/kernel.txt
-          gz sim --versions > /tmp/dynnav_history/results/gazebo_versions.txt
+          if command -v gz >/dev/null 2>&1; then
+            gz sim --versions > /tmp/dynnav_history/results/gazebo_versions.txt 2>&1 || gz --versions > /tmp/dynnav_history/results/gazebo_versions.txt 2>&1 || true
+          else
+            printf 'gz command unavailable after rosdep install\n' > /tmp/dynnav_history/results/gazebo_versions.txt
+          fi
           cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml /tmp/dynnav_history/results/frozen_scenario.yaml
-          git rev-parse HEAD > /tmp/dynnav_history/results/source_revision.txt
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_history/results/source_revision.txt
           sha256sum ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml > /tmp/dynnav_history/results/frozen_scenario.sha256
 
       - name: Run frozen paired action-triggered trials
