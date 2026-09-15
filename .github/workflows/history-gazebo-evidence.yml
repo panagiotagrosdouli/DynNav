@@ -61,7 +61,7 @@ jobs:
             printf 'gz command unavailable after rosdep install\n' > /tmp/dynnav_history/results/gazebo_versions.txt
           fi
           cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml /tmp/dynnav_history/results/frozen_scenario.yaml
-          git rev-parse HEAD > /tmp/dynnav_history/results/source_revision.txt
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_history/results/source_revision.txt
           sha256sum ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml > /tmp/dynnav_history/results/frozen_scenario.sha256
 
       - name: Run frozen paired action-triggered trials
