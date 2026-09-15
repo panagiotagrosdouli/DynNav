@@ -64,8 +64,15 @@ def _launch_setup(context):
         origin_y=origin_y,
         resolution=resolution,
     )
+    # The physical blocker pose is the frozen closure location. Derive the
+    # planner's grid-cell representation from the same world-space source so
+    # the execution and planning configurations cannot silently diverge.
     closure_cell = world_to_cell(
-        scenario.trigger.closure_cell,
+        Pose2D(
+            scenario.blocker_pose.x,
+            scenario.blocker_pose.y,
+            scenario.blocker_pose.yaw,
+        ),
         origin_x=origin_x,
         origin_y=origin_y,
         resolution=resolution,
