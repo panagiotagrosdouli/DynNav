@@ -8,6 +8,7 @@ import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
 
+from dynnav_nav2_benchmark.analysis import Pose2D
 from dynnav_nav2_benchmark.configuration import inject_history_planner_parameters
 from dynnav_nav2_benchmark.history_execution import (
     load_history_execution_suite,
