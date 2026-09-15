@@ -3,6 +3,7 @@ name: Action-triggered Gazebo evidence
 on:
   push:
     branches:
+      - main
       - ci/fix-history-gazebo-provenance
     paths:
       - '.github/workflows/history-gazebo-evidence.yml'
