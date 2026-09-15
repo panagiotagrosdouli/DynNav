@@ -3,7 +3,7 @@ name: Action-triggered Gazebo evidence
 on:
   push:
     branches:
-      - paper/submission-readiness-audit
+      - ci/run-history-gazebo-evidence
     paths:
       - '.github/workflows/history-gazebo-evidence.yml'
       - 'ros2_ws/src/dynnav_nav2_cpp/**'
