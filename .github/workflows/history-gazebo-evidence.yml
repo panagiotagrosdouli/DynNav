@@ -1,0 +1,119 @@
+name: Action-triggered Gazebo evidence
+
+on:
+  push:
+    branches:
+      - paper/submission-readiness-audit
+    paths:
+      - '.github/workflows/history-gazebo-evidence.yml'
+      - 'ros2_ws/src/dynnav_nav2_cpp/**'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/**'
+  workflow_dispatch:
+    inputs:
+      repetitions:
+        description: Frozen paired repetitions per planner
+        required: true
+        default: '3'
+
+permissions:
+  contents: read
+
+jobs:
+  history-gazebo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    container: ros:jazzy-ros-base-noble
+    env:
+      LIBGL_ALWAYS_SOFTWARE: '1'
+      QT_QPA_PLATFORM: offscreen
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS and Gazebo dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-colcon-common-extensions python3-rosdep ros-jazzy-rosbag2 ros-jazzy-rosbag2-storage-default-plugins
+          rosdep init 2>/dev/null || true
+          rosdep update
+          rosdep install --from-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark --ignore-src --rosdistro jazzy -r -y
+
+      - name: Build and test planner and benchmark contracts
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon --log-base /tmp/dynnav_history/log build --base-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark --build-base /tmp/dynnav_history/build --install-base /tmp/dynnav_history/install --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark --event-handlers console_direct+
+          source /tmp/dynnav_history/install/setup.bash
+          colcon --log-base /tmp/dynnav_history/test-log test --build-base /tmp/dynnav_history/build --install-base /tmp/dynnav_history/install --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark --event-handlers console_direct+
+          colcon test-result --test-result-base /tmp/dynnav_history/build --verbose
+
+      - name: Record environment and frozen configuration
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          mkdir -p /tmp/dynnav_history/results
+          dpkg-query -W -f='${binary:Package}\t${Version}\n' 'ros-jazzy-*' | sort > /tmp/dynnav_history/results/ros_packages.tsv
+          uname -a > /tmp/dynnav_history/results/kernel.txt
+          gz sim --versions > /tmp/dynnav_history/results/gazebo_versions.txt
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml /tmp/dynnav_history/results/frozen_scenario.yaml
+          git rev-parse HEAD > /tmp/dynnav_history/results/source_revision.txt
+          sha256sum ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml > /tmp/dynnav_history/results/frozen_scenario.sha256
+
+      - name: Run frozen paired action-triggered trials
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_history/install/setup.bash
+          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '3' }} output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
+          test -s /tmp/dynnav_history/results/results.json
+
+      - name: Validate paired event and trial contract
+        run: |
+          python3 - <<'PY'
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+
+          p = Path('/tmp/dynnav_history/results/results.json')
+          data = json.loads(p.read_text())
+          assert data['schema_version'] == 1
+          trials = data['trials']
+          repetitions = int("${{ inputs.repetitions || '3' }}")
+          assert len(trials) == repetitions * 3
+          by_rep = defaultdict(list)
+          for row in trials:
+              by_rep[row['repetition']].append(row)
+              assert 'valid_trial' in row
+              assert 'latent_draw' in row
+              assert 'trigger_observed' in row
+              assert 'closure_realized' in row
+              assert 'closure_applied' in row
+              assert 'sampling_gaps' in row
+              assert 'recovery_feasible' in row
+          assert set(by_rep) == set(range(repetitions))
+          for rows in by_rep.values():
+              assert {r['planner_id'] for r in rows} == {'NavFn', 'DynNavShortest', 'DynNavHistory'}
+              assert len({r['latent_draw'] for r in rows}) == 1
+              assert len({r['closure_realized'] for r in rows}) == 1
+          summary = {
+              planner: {
+                  'trials': sum(r['planner_id'] == planner for r in trials),
+                  'valid_trials': sum(r['planner_id'] == planner and r['valid_trial'] for r in trials),
+                  'trigger_observed': sum(r['planner_id'] == planner and r.get('trigger_observed', False) for r in trials),
+                  'closure_applied': sum(r['planner_id'] == planner and r.get('closure_applied', False) for r in trials),
+                  'navigation_success': sum(r['planner_id'] == planner and r.get('navigation_success', False) for r in trials),
+                  'irreversible_failures': sum(r['planner_id'] == planner and r.get('operational_irreversible_failure', False) for r in trials),
+              }
+              for planner in ('NavFn', 'DynNavShortest', 'DynNavHistory')
+          }
+          Path('/tmp/dynnav_history/results/audit_summary.json').write_text(json.dumps(summary, indent=2, sort_keys=True))
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload raw action-triggered evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-action-triggered-gazebo-${{ github.sha }}
+          path: /tmp/dynnav_history/results
+          if-no-files-found: warn
