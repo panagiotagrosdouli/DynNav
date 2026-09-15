@@ -1,120 +1,113 @@
 # DynNav Submission-Readiness Audit
 
-This document is the publication gate for the current DynNav paper. It distinguishes evidence that is already traceable from evidence that still requires execution or independent reproduction. It must not be used to promote a claim beyond the evidence level defined in `CLAIM_EVIDENCE_MATRIX.md` and `EXPERIMENT_PROTOCOL_V3.md`.
-
 ## Central claim
-
-The submission-facing claim is deliberately narrow:
 
 > When executed robot actions can activate future topology hazards, activated-hazard history can contain safe-return-connectivity information that a state-only marginal environmental-risk representation cannot, in general, represent from geometric state alone.
 
-This is a representation/mechanism claim. It is not a claim of universal planner superiority, certified safety, arbitrary-map generalization, calibrated real-world hazard probabilities, or physical-robot efficacy.
+This is a representation/mechanism claim. It is not universal planner superiority, certified safety, arbitrary-map generalization, real-world probability calibration, or physical-robot efficacy.
 
-## Evidence audit
+## Raw-artifact verification completed
 
-| Claim | Experiment / implementation | Retained provenance | Statistical / logical validation | Limitation | Submission status |
-|---|---|---|---|---|---|
-| Same geometric endpoint can have different return reliability under different activated histories | `history_information_gap_benchmark.py` and Proposition 1 | values recorded in `evidence_manifest.json` | constructive proof; maximum retained separation 0.9 | controlled construction | SUPPORTED |
-| A deterministic state-only marginal representation cannot represent both same-endpoint histories exactly | information-gap construction | manifest + paper proposition | representational argument; same state maps to one state-only value | applies to stated state-only semantics | SUPPORTED |
-| Exact augmented-state history-aware planner is implemented | `commitment_aware_astar.py` | source + regression tests | augmented `(cell, activated hazards)` state | exact oracle scales with active hazard count | SUPPORTED |
-| History conditioning changes irreversible-failure outcomes in the repeated-module family | homogeneous stochastic execution | manifest records 1000 paired seeds per probability | paired CRN; retained rates include 0.992 shortest/state-only vs 0.000 history-exact at p=0.8 | constructed repeated-module family | SUPPORTED |
-| Result transfers to frozen 6/7/8-module probability/horizon settings | held-out history generalization | manifest records 500 paired seeds/scenario | retained rates 0.992, 0.998, 1.000 vs 0.000 | same procedural topology family | SUPPORTED |
-| Result replicates in three frozen hand-built geometric worlds | `geometric_heldout_benchmark.py` | workflow run 34823759539; artifact 10339442639; digest recorded in manifest | 500 paired seeds/scenario; paired bootstrap and exact McNemar implemented | three synthetic topologies only | SUPPORTED |
-| Soft history objective universally dominates hard safe-return constraints | geometric Pareto sweep | retained workflow/artifact in manifest | falsified: every tested hard threshold selects a zero-hazard route in the three worlds | objective depends on operating regime | UNSUPPORTED / MUST NOT CLAIM |
-| Critical-cut approximation can reduce exact-oracle cost in the series-critical construction | cut scaling benchmark | representative timing recorded in manifest | exact/cut comparison | timing is a representative retained CI run, not a universal speed claim | SUPPORTED WITH SCOPE |
-| Critical-cut approximation is generally exact | joint-cut adversarial benchmark | 9/9 disagreement settings in manifest | explicit parallel joint-cut counterexample | multi-cell cuts violate the single-critical assumption | UNSUPPORTED / FALSIFIED |
-| C++ history-conditioned planner integrates with ROS 2 Jazzy/Nav2 | `ros2_ws/src/dynnav_nav2_cpp` | build/discovery/regression evidence | persistent history updated from executed-transition input | integration is not execution efficacy | SUPPORTED |
-| Planned paths do not mutate persistent hazard history | Python/ROS semantics and tests | source + protocol | activation is tied to executed transitions | execution observation must still satisfy protocol | SUPPORTED |
-| Action-triggered Gazebo protocol is frozen | benchmark config + `ACTION_TRIGGER_PROTOCOL.md` + V3 protocol | trigger `(174,189)->(175,189)`, closure `(181,191)`, p=0.8 | predeclared validity and pairing rules | no comparative retained efficacy artifact yet | SUPPORTED AS PROTOCOL |
-| History-aware planner improves action-triggered Gazebo execution outcomes | pending paired execution study | none currently authorized by manifest | not yet available | must satisfy trigger, blocker, costmap, recovery and validity contracts | UNSUPPORTED / SUBMISSION GATE |
-| Physical-robot/deployment safety | none | none | none | outside current evidence | UNSUPPORTED / MUST NOT CLAIM |
+The publication-facing retained evidence has now been checked below the README/manuscript layer by downloading the actual GitHub Actions artifacts.
 
-## Numerical provenance checks completed
+### Hazard-planner retained artifact
 
-The publication-facing geometric evidence is not merely a README transcription. The repository contains a successful GitHub Actions run (`34823759539`) at SHA `8552a42466b598fcf12c9e20137eb4166b866cbd`, and its retained artifact (`10339442639`) is still available with digest `sha256:d8b59cfd6432d8ade1351b882cc29c6371e3437504346322817d41bb4b608e93`. The workflow explicitly executes the frozen benchmark with 500 seeds and recoverability weight 8.0 before uploading `results/geometric_heldout`.
+- workflow run: `34714856493`
+- artifact: `10303733811`
+- artifact digest: `sha256:2d45ba9666be630b27c31138e954fdfcf9fc3d0a6db741a1e783ffe9f94ca135`
+- retained raw directories include information-gap, phase-boundary, stochastic execution, held-out history generalization, cut scaling, augmented-state scaling, hard-threshold sensitivity, and joint-cut counterexample trials/summaries.
 
-The benchmark source fixes the three maps and probabilities before execution and computes paired binary effects against shortest using common seed identities. `dynnav/experiments/statistics.py` computes proposed-minus-baseline paired risk differences, paired bootstrap intervals, and a two-sided exact McNemar p-value from discordant pairs.
+Verified values from the downloaded artifact:
 
-The following manifest values are therefore traceable to a retained workflow/artifact contract, but should still be regenerated in the final clean-room reproduction before release:
+| Experiment | Raw retained result | Audit status |
+|---|---|---|
+| Same-state/different-history | 5 trials; mean separation `0.5`; maximum separation `0.9`; risky-history state-only max abs error `0.0` | VERIFIED |
+| Analytic phase boundary | 75 trials; analytic-boundary match rate `1.0` | VERIFIED |
+| Homogeneous execution p=0.2 | shortest/state-only `0.512`; exact/cut/hard `0.000`; 1000 trials/planner | VERIFIED |
+| Homogeneous execution p=0.5 | shortest/state-only `0.881`; exact/cut/hard `0.000`; 1000 trials/planner | VERIFIED |
+| Homogeneous execution p=0.8 | shortest/state-only `0.992`; exact/cut/hard `0.000`; 1000 trials/planner | VERIFIED |
+| State-only control | identical failure outcomes to shortest at p=0.2/0.5/0.8; discordant pairs `0`; exact McNemar `p=1.0` | VERIFIED |
+| 6/7/8-module held-out | shortest/state-only `0.992 / 0.998 / 1.000`; exact history `0 / 0 / 0`; 500 paired trials/scenario | VERIFIED |
+| Exact vs critical-cut scaling | at 12 hazards exact `49.539307 ms`, cut `0.262433 ms`, retained ratio `188.769350661x`; max cut error `0.0` in this series-critical construction | VERIFIED, REPRESENTATIVE TIMING ONLY |
+| Augmented-state scaling at 6 modules | shortest: 25 nodes / 24 length / `0.178244 ms`; cut: 72 / 36 / `5.537094 ms`; exact: 72 / 36 / `12.496013 ms` | VERIFIED, REPRESENTATIVE TIMING ONLY |
+| Joint-cut counterexample | 9/9 optimism/disagreement settings; exact return on cut route `0.96`, `0.75`, `0.36` for p=0.2/0.5/0.8; cut estimate `1.0`; equal path length 6 | VERIFIED |
 
-- Fork: shortest/state-only failure 0.810; history-exact 0.000; 500 paired seeds.
-- L-room: shortest/state-only failure 0.756; history-exact 0.000; 500 paired seeds.
-- Chamber/two-trigger: shortest/state-only failure 0.890; history-exact 0.000; 500 paired seeds.
-- Held-out modules: 0.992, 0.998, and 1.000 shortest/state-only failure versus 0.000 history-exact for 6, 7, and 8 modules respectively, with 500 paired seeds per scenario.
-- Homogeneous p=0.8: 0.992 shortest/state-only failure versus 0.000 history-exact, with 1000 paired seeds per probability.
-- Joint-cut counterexample: approximation optimism in all 9 frozen settings; exact return values on the cut-selected route follow `1-p^2` for the retained p values.
+The stochastic artifact also contains the paired binary statistics. At p=0.8, exact-history versus shortest has risk difference `-0.992`, 95% paired bootstrap interval `[-0.997,-0.986]`, 992 baseline-only discordant events, zero proposed-only events, and two-sided exact McNemar p-value `4.778309726736481e-299`.
 
-These values are retained experimental/model results under the declared synthetic protocols. They are not real-world probabilities or safety guarantees.
+### Frozen geometric retained artifact
+
+- workflow run: `34823759539`
+- source SHA: `8552a42466b598fcf12c9e20137eb4166b866cbd`
+- artifact: `10339442639`
+- artifact digest: `sha256:d8b59cfd6432d8ade1351b882cc29c6371e3437504346322817d41bb4b608e93`
+- raw trial rows: 4500 = 3 scenarios x 3 planners x 500 paired seeds.
+
+Verified from raw `trials.csv` and `summary.json`:
+
+| Scenario | Shortest | State-only | Exact history | Path length shortest/history | Activated hazards shortest/history | Paired 95% CI exact-shortest | Exact McNemar p |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Fork | 0.810 | 0.810 | 0.000 | 6 / 8 | 1 / 0 | [-0.844,-0.776] | 2.420369946780824e-122 |
+| L-room | 0.756 | 0.756 | 0.000 | 8 / 8 | 1 / 0 | [-0.794,-0.718] | 3.248565551764031e-114 |
+| Chamber/two-trigger | 0.890 | 0.890 | 0.000 | 7 / 9 | 2 / 0 | [-0.916,-0.862] | 2.2013136429275836e-134 |
+
+These are real retained computational experiment results. They are not physical-robot measurements and are not safety guarantees.
+
+### Frozen soft-vs-hard Pareto artifact
+
+- workflow run: `34823943257`
+- source SHA: `1bd538b831e741f869161828b2a3f63672ee124a`
+- artifact: `10339560355`
+- artifact digest: `sha256:864fe19cf7c02efd1f4c978fbe80dbbbdb546aa90f1f6488ef6327e7696401aa`
+
+The downloaded raw artifact verifies the negative result: every hard-return threshold in `{0.5,0.7,0.8,0.9,0.95,0.99}` selects a zero-activated-hazard route with zero observed irreversible failure in all three frozen worlds. The soft objective requires weight >=2 in Fork and >=1 in L-room/Chamber to select the zero-hazard route. Therefore universal soft-objective superiority is falsified and must not be claimed.
 
 ## Statistical audit
 
-The current publication protocol correctly requires pairing whenever planners share scenario/seed/event identity. Binary comparisons must retain protocol-valid failures in the denominator, report paired risk differences, and may use exact McNemar tests plus paired bootstrap intervals. The geometric benchmark implements this pairing by seed and calls `paired_binary_effect` rather than treating planner rows as independent samples.
+The publication-facing binary comparisons are paired by shared seed/scenario/event identity. `paired_binary_effect` computes proposed-minus-baseline risk difference, paired bootstrap intervals over pairwise differences, discordant-pair counts, and a two-sided exact McNemar conditional binomial p-value. State-only versus shortest correctly produces zero discordant pairs in the frozen history-trigger families.
 
-Before submission, the final clean-room run must regenerate all reported intervals and p-values from raw per-trial artifacts and compare them mechanically against the manifest. Any mismatch is a release blocker until explained and recorded.
+Timing numbers are not promoted to population-level performance claims: the cut and augmented-state timing values above are representative retained CI-run measurements and are sensitive to runtime environment.
 
-## Falsification requirements
+## Falsification boundary
 
-The following negative/boundary results are part of the paper, not optional cleanup:
+The evidence stack must preserve the following controls/negative results: same-state/same-history agreement; directed-trigger reverse traversal non-activation; same-cell non-activation; sampling gaps not interpolated; unrealized events not injected; hard-safe-return equivalence; joint-cut optimism; and limitations from miscalibration, correlated closures, delayed revelation, kinodynamic mismatch, localization/discretization, and narrow necessary passages.
 
-- same-state/same-history must produce agreement;
-- reverse trigger traversal must not activate a directed trigger;
-- planned-only paths must not activate persistent history;
-- sampling gaps must remain unknown/invalid rather than be interpolated;
-- unrealized latent events must not create closures;
-- hard safe-return equivalence must remain visible;
-- critical-cut joint-failure optimism must remain visible;
-- probability miscalibration, correlated closures, delayed revelation, kinodynamic mismatch, localization/discretization sensitivity and narrow necessary passages remain limitations unless separately validated.
+## Gazebo execution gate
 
-## Gazebo submission gate
+The frozen action-triggered scenario remains:
 
-Do not add a Gazebo efficacy number to the abstract, results, conclusion, README evidence table, or manifest until a retained paired artifact satisfies all V3 validity conditions.
+- seed `20260914`;
+- planners `NavFn`, `DynNavShortest`, `DynNavHistory`;
+- trigger `(174,189) -> (175,189)`;
+- closure cell `(181,191)`;
+- closure probability `0.8`;
+- recoverability weight `4.0`.
 
-The frozen first scenario is:
+The implementation uses deterministic event draws keyed by `(seed, scenario, repetition, hazard_id)` and reuses the same latent draw across planners. Same-cell observations are ignored, adjacent observed transitions are accepted, and sampling gaps invalidate the observation stream rather than being interpolated. The runner injects the blocker only after the directed trigger is observed and the paired latent closure realizes.
 
-- trigger: `(174,189) -> (175,189)`;
-- closure cell: `(181,191)`;
-- activation-conditioned closure probability: `0.8`;
-- planners: `NavFn`, `DynNavShortest`, `DynNavHistory`.
+A dedicated CI workflow, `.github/workflows/history-gazebo-evidence.yml`, has been added on this audit branch to execute the frozen `tb3_history_execution_benchmark.launch.py`, build/test ROS 2 Jazzy/Nav2 first, retain environment/configuration provenance, validate paired latent events, and upload raw results. This workflow is execution evidence only when a completed valid artifact exists; its presence alone is not efficacy evidence.
 
-For each `(scenario, repetition, hazard_id)`, the latent event draw must be deterministic and reused across planners. Physical closure is injected only if that planner executes the trigger and the paired event realizes. Planned geometry never activates the event.
+## Physical-robot gate
 
-A trial enters efficacy analysis only if lifecycle, reset/start tolerance, executed-transition observation, required blocker injection, costmap observation, and post-event recovery assessment are valid. Invalid trials are reported separately with reasons.
+No physical robot is connected to the current execution environment. Therefore physical execution is not claimed and no synthetic/Gazebo value may be relabeled as physical evidence. Physical-robot efficacy and deployment safety remain `UNSUPPORTED` unless real supervised hardware trials are performed and retained.
 
-Required retained output: raw per-trial CSV/JSON, seed/event identity, planner identity/parameters, trigger trace, blocker injection status, costmap observation, mission outcome, independent recovery label, validity/exclusion reason, Git SHA/dirty state, environment versions, summary statistics, and logs/rosbag metadata where feasible.
+## Final claim table
 
-If the paired Gazebo result is neutral or negative, retain it and narrow the paper. Do not tune the frozen geometry/probability after seeing comparative outcomes without a new protocol version.
+| Claim | Evidence | Raw artifact reproduced/inspected? | Statistics | Limitation | Status |
+|---|---|---|---|---|---|
+| History can contain recoverability information missing from state-only geometric representation | proposition + information-gap experiment | YES | constructive gap; 5 frozen cases | controlled mechanism | SUPPORTED |
+| Exact history-aware planner is implemented | Python planner + tests | source audited | deterministic regression evidence | bounded hazard enumeration | SUPPORTED |
+| History conditioning reduces irreversible failure in repeated-module family | 1000-seed homogeneous + 500-seed held-out | YES | paired risk differences, bootstrap, exact McNemar | synthetic procedural family | SUPPORTED |
+| Result appears in three frozen geometric worlds | Fork/L-room/Chamber | YES | paired bootstrap + exact McNemar | only three hand-built worlds | SUPPORTED |
+| State-only marginal baseline differs from shortest in frozen trigger family | control | YES | zero discordant pairs | baseline-specific | UNSUPPORTED; observed equality |
+| Soft objective universally beats hard safe-return | Pareto sweep | YES | direct retained comparison | hard baseline matches safe routes | UNSUPPORTED / FALSIFIED |
+| Critical-cut is exact generally | joint-cut counterexample | YES | 9/9 disagreement | joint cutsets | UNSUPPORTED / FALSIFIED |
+| Critical-cut is faster in retained series-critical timing run | scaling artifact | YES | representative timing | environment-specific timing | PARTIALLY SUPPORTED |
+| ROS 2/Nav2 history integration exists | C++ plugin + benchmark contracts | source/tests audited | integration tests | not efficacy | SUPPORTED |
+| Action-triggered Gazebo efficacy | frozen execution workflow/protocol | NOT YET: valid completed artifact required | paired analysis required | simulation only | UNSUPPORTED / ACTIVE GATE |
+| Physical robot efficacy | none | NO | none | no connected hardware | UNSUPPORTED |
 
-## Reproducibility gate
+## Current decision
 
-Before tagging a submission release, execute from a clean checkout/environment:
+**NO-GO FOR SUBMISSION** at this exact audit point.
 
-1. install the declared Python package/extras;
-2. run Ruff;
-3. run the full pytest suite;
-4. rerun every publication-facing Python benchmark with frozen parameters/seeds;
-5. regenerate machine-readable summaries and compare all manuscript numbers against them;
-6. build and test the ROS 2 Jazzy/Nav2 packages;
-7. verify plugin discovery and executed-history regression tests;
-8. execute the frozen Gazebo study if execution efficacy is to be claimed;
-9. build the IEEE manuscript from source;
-10. verify bibliography, figures, tables, manifest provenance and claim matrix against the final paper commit.
-
-Any manual dependency or unreproducible step must be documented rather than silently assumed.
-
-## Paper structure gate
-
-The final manuscript should preserve this argument order:
-
-Problem -> state-only information loss -> proposition/construction -> augmented state -> exact recoverability -> planning methods/baselines -> controlled evidence -> held-out evidence -> objective/approximation falsification -> ROS/Nav2 integration -> Gazebo evidence only if valid -> limitations -> conclusion.
-
-The abstract and conclusion must not outrun the claim matrix.
-
-## Current go/no-go decision
-
-**NO-GO for final submission package today.**
-
-The central representation claim and the main synthetic/geometric evidence are sufficiently defined to support a paper. The remaining high-priority gate is execution-level Gazebo evidence if the manuscript intends to claim execution efficacy. Independently of whether Gazebo efficacy is ultimately included, a final clean-room numerical reproduction and manuscript/manifest consistency pass are required before tagging the submission version.
-
-A valid path to GO is:
-
-`clean-room reproduction -> resolve every numerical discrepancy -> valid paired Gazebo artifact (or explicitly omit efficacy claim) -> final paper rewrite/audit -> paper build -> frozen manifest/claim matrix -> submission tag/release`.
+The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact if Gazebo efficacy is to appear in the paper; perform final manuscript-number consistency and bibliography review; execute final clean-environment CI/paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
