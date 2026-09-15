@@ -7,6 +7,7 @@ on:
     branches:
       - main
       - ci/fix-history-gazebo-provenance
+      - ci/gazebo-runtime-preflight
     paths:
       - '.github/workflows/history-gazebo-evidence.yml'
       - 'ros2_ws/src/dynnav_nav2_cpp/**'
@@ -55,6 +56,21 @@ jobs:
           source /tmp/dynnav_history/install/setup.bash
           colcon --log-base /tmp/dynnav_history/test-log test --build-base /tmp/dynnav_history/build --install-base /tmp/dynnav_history/install --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark --event-handlers console_direct+
           colcon test-result --test-result-base /tmp/dynnav_history/build --verbose
+      - name: Preflight frozen Gazebo launch
+        run: |
+          set -euo pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_history/install/setup.bash
+          ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py --show-args > /tmp/dynnav_history/launch_show_args.txt
+          python3 - <<'PY'
+          from dynnav_nav2_benchmark.history_execution import load_history_execution_suite
+          suite = load_history_execution_suite('ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml')
+          suite.validate()
+          print('scenario:', suite.scenario.name)
+          print('planners:', suite.planner_ids)
+          print('trigger:', suite.scenario.trigger.hazard_id)
+          print('closure_probability:', suite.scenario.trigger.closure_probability)
+          PY
       - name: Record environment and frozen configuration
         run: |
           set -o pipefail
