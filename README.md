@@ -2,9 +2,7 @@
 
 **History-Conditioned Safe-Return Planning for Autonomous Robots under Action-Triggered Topology Hazards**
 
-DynNav is a research and engineering repository for autonomous navigation in environments where **executed robot actions can change future topology**. Its central observation is that two trajectories may reach the **same geometric location** while leaving the robot with different future recovery options because their executed histories activated different hazards.
-
-> **Research question:** Does path history carry recoverability-relevant information that a state-only future-risk model discards when robot actions activate future topology hazards?
+DynNav is a research project about autonomous navigation in environments where **what the robot has already done can change what remains safely possible later**. The repository develops the idea from a formal planning question into exact and approximate algorithms, controlled experiments, falsification tests, a C++ ROS 2/Nav2 planner, and a frozen Gazebo validation protocol.
 
 [English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE manuscript](paper/dynnav_r/main.tex)
 
@@ -14,15 +12,19 @@ DynNav is a research and engineering repository for autonomous navigation in env
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-22314E)](ros2_ws/src/dynnav_nav2_cpp/README.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-4C1.svg)](LICENSE)
 
-> **Research status:** active research prototype with retained synthetic/geometric evidence, a C++ ROS 2/Nav2 planner, a frozen action-triggered Gazebo protocol, and an IEEE-style evidence pipeline. DynNav does **not** claim safety certification, universal planner superiority, calibrated real-world hazard probabilities, arbitrary-map generalization, or demonstrated physical-robot efficacy.
+> **Research status:** active research prototype. The strongest current evidence is controlled synthetic/geometric simulation, complemented by software and ROS 2/Nav2 integration evidence. DynNav does not claim safety certification, universal planner superiority, calibrated real-world hazard probabilities, arbitrary-map generalization, or demonstrated physical-robot efficacy.
 
 ---
 
-## Research problem
+## The research question
 
-Classical graph and grid planners usually evaluate future consequences from the current state. That representation becomes insufficient when an **executed transition can activate a future topology hazard**.
+This project asks:
 
-Consider two histories that end at the same cell `x`:
+> **When robot actions can trigger future changes in environment topology, is the robot's current geometric state sufficient for recoverability-aware planning, or must the planner also represent relevant executed-action history?**
+
+The central observation is simple but consequential: **the same place is not always the same planning state**.
+
+Two trajectories can reach the same cell `x` but leave different future recovery options:
 
 ```text
 History A: start ── trigger ──► x     hazard activated
@@ -35,111 +37,62 @@ Geometrically,
 x_A = x_B
 ```
 
-but their future safe-return probabilities may differ:
+but the safe-return probabilities can differ:
 
 ```text
 P(return | x, H_A) != P(return | x, H_B)
 ```
 
-A state-only model aliases these cases. DynNav therefore represents the planning state as
+A state-only model assigns one future-risk description to `x` and therefore aliases these two cases. DynNav instead uses the augmented planning state
 
 ```text
 (x, H)
 ```
 
-where `x` is the current grid/costmap state and `H` is the set of hazards activated by **executed** transitions.
+where `x` is the current grid/costmap state and `H` records hazards activated by **executed** transitions.
 
-This is the mechanism behind the manuscript title **“When the Same Place Is Not the Same State.”**
+For two histories with true return probabilities `R1` and `R2` at the same geometric state, any single state-only estimate `g(x)` must have worst-case absolute error at least
+
+```text
+|R1 - R2| / 2
+```
+
+when `R1 != R2`. This is a representational argument: it establishes an information gap, not universal superiority of a particular planner.
+
+This question is the mechanism behind the manuscript title **“When the Same Place Is Not the Same State.”**
 
 ---
 
-## Core model
+## What I built in this project
 
-### Action-triggered topology hazards
+DynNav was developed as an end-to-end research prototype rather than a single planner implementation. The work in this repository includes:
 
-The reference semantics are implemented in [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py). A directed transition can activate a stochastic future closure elsewhere in the environment:
+1. **Action-triggered topology hazards.** A directed executed transition can activate a stochastic future closure elsewhere in the environment. Planned paths do not activate hazards.
+2. **Explicit safe-return reasoning.** For bounded hazard sets, the project computes future return-connectivity probabilities instead of relying only on local traversal-risk scores.
+3. **Exact history-aware A\*.** The reference search state is `(GridCell, activated-hazard history)`, so geometrically identical cells can remain distinct when their executed histories imply different futures.
+4. **Approximate online methods.** The repository implements most-reliable-return-path, hazard-disjoint-return-path, and critical-return-cut approximations for cheaper recoverability reasoning.
+5. **Controlled baselines.** Shortest-path, state-only future-risk, and hard safe-return planners provide comparison points for the history-conditioned method.
+6. **Same-state/different-history experiments.** These isolate the information lost when a planner compresses different histories into the same geometric state.
+7. **Paired stochastic evaluation.** Common random numbers (CRN) reuse the same latent hazard realizations across planners, enabling matched comparisons rather than unrelated Monte Carlo runs.
+8. **Held-out evaluations.** The project tests longer repeated-module horizons, held-out hazard probabilities, and hand-authored geometric worlds.
+9. **Falsification and negative tests.** Counterexamples and controls are retained even when they weaken the preferred method or expose approximation failures.
+10. **C++ ROS 2 Jazzy/Nav2 integration.** A `nav2_core::GlobalPlanner` implementation carries persistent executed-hazard history and supports controlled shortest/history-aware comparisons.
+11. **Action-triggered Gazebo validation infrastructure.** The benchmark observes actual robot transitions, injects paired stochastic blockers only after valid trigger execution, checks costmaps and recovery reachability, and retains validity/provenance data.
+12. **Research reproducibility infrastructure.** Deterministic seeds, statistical utilities, retained outputs, evidence manifests, claim/evidence matrices, CI checks, protocols, and regression tests connect the implementation to publication-facing claims.
 
-```text
-(source -> target)  =>  activate hazard h
-```
-
-The semantics deliberately separate planning, execution, activation, and realization:
-
-```text
-transition planned
-      |
-transition executed
-      |
-hazard activated
-      |
-closure may or may not realize
-```
-
-**Planned paths never activate hazards.** Persistent hazard history changes only when the corresponding transition is actually executed.
-
-### Exact safe-return probability
-
-For bounded hazard sets, DynNav enumerates possible future closure realizations and checks connectivity to a designated safe region. The reference implementation is primarily in:
-
-- [`dynnav/recoverability_belief.py`](dynnav/recoverability_belief.py)
-- [`dynnav/recoverability_estimation.py`](dynnav/recoverability_estimation.py)
-- [`dynnav/recoverability_cut.py`](dynnav/recoverability_cut.py)
-
-The target quantity is
-
-```text
-R(x, H) = P(safe return | x, H)
-```
-
-rather than a generic local risk score.
-
-### History-aware planning
-
-The exact reference planner is [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py). Its search state is
-
-```text
-(GridCell, frozenset[activated hazard indices])
-```
-
-and its soft objective augments nominal transition cost with a recoverability term based on
-
-```text
-1 - P(safe return | next state, activated history)
-```
-
-The main planner families are:
-
-| Planner | Role |
-|---|---|
-| Shortest path | geometric baseline |
-| State-only hazard/reliability planner | marginal future-risk baseline |
-| Exact history-aware planner | augmented-state reference method |
-| Critical-cut planner | faster approximation |
-| Hard safe-return planner | probability-threshold baseline |
-
-The soft history-aware objective is **not** assumed to dominate every alternative. Hard safe-return constraints can match or outperform it in some tested environments.
+The canonical Python implementations include [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py), [`dynnav/recoverability_belief.py`](dynnav/recoverability_belief.py), [`dynnav/recoverability_estimation.py`](dynnav/recoverability_estimation.py), [`dynnav/recoverability_cut.py`](dynnav/recoverability_cut.py), and [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py).
 
 ---
 
-## Main contributions
+## What the project shows
 
-DynNav provides:
+The strongest supported conclusion is deliberately narrower than “this planner is always better”:
 
-1. an action-triggered topology-hazard model in which executed robot transitions can change the distribution of future connectivity;
-2. a constructive same-state/different-history example showing that equal geometric states can have different exact safe-return probabilities;
-3. an augmented-state history-aware planner;
-4. an exact future-connectivity oracle for bounded hazard sets;
-5. critical-cut and related online approximations;
-6. adversarial counterexamples that expose approximation failure boundaries;
-7. paired stochastic evaluation using common random numbers (CRN);
-8. held-out horizon/probability and hand-authored geometric evaluations;
-9. a C++ ROS 2 Jazzy/Nav2 implementation with persistent executed-history state;
-10. a frozen action-triggered Gazebo protocol and explicit validity rules;
-11. a claim-evidence/falsification pipeline linking publication-facing claims to retained artifacts and limitations.
+> **When executed actions can alter future topology, path history can contain recoverability-relevant information that cannot, in general, be represented by geometric state alone.**
 
----
+The same-state/different-history construction demonstrates this directly. The controlled execution experiments then test whether the representational difference can affect decisions.
 
-## Key retained evidence
+### Retained mechanism evidence
 
 | Study | State-only / shortest | Exact history-aware | Scope |
 |---|---:|---:|---|
@@ -151,115 +104,115 @@ DynNav provides:
 | L-room | 0.756 | 0.000 | frozen hand-authored topology |
 | Chamber | 0.890 | 0.000 | frozen hand-authored topology |
 
-The larger-module and geometric studies use 500 paired CRN seeds per reported scenario. These results are evidence for the mechanism **within the tested constructed families**; they are not evidence of universal or arbitrary-map generalization.
+The larger-module and geometric studies use **500 paired CRN seeds per reported scenario**. These results show the mechanism within the tested constructed families. They do not establish arbitrary-map or broad real-world generalization.
 
-### Important negative result
+The geometric cases also probe different reasons for selecting a safer route: a longer safe branch in the fork, trigger avoidance without a longer final path in the L-room, and a safe detour in the chamber environment.
 
-The geometric Pareto study showed that hard safe-return constraints can also select zero-hazard routes and can have lower single-run planning latency in some cases. The supported contribution is therefore about **history-conditioned state representation and action-triggered return-connectivity**, not universal superiority of the soft objective.
-
-The critical-cut approximation also has an explicit joint-failure counterexample: with two parallel return corridors and independent closure probability `p`, exact return probability can be `1 - p^2` while a single-critical-cut approximation remains optimistic. This failure case is intentionally retained.
-
-Authoritative paper-facing values and provenance live in [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json).
+Authoritative publication-facing values and provenance are retained in [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json).
 
 ---
 
-## Quick start
+## What we learned when the preferred method did not win
 
-### Python
+Negative results are part of the project rather than being removed from the evidence trail.
 
-DynNav requires Python 3.10 or newer and is configured for Python 3.10, 3.11, and 3.12.
+A soft history-aware objective does **not** universally dominate a hard safe-return constraint. In tested cases, hard thresholds can select the same zero-hazard route and can sometimes have lower single-run planning latency. The contribution is therefore not universal dominance of one objective; it is the need to represent relevant history when history changes future recoverability.
 
-```bash
-git clone https://github.com/panagiotagrosdouli/DynNav.git
-cd DynNav
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev,researcher,dashboard]"
+The critical-cut approximation is also **not exact**. A retained joint-cut counterexample contains two parallel return corridors. Neither closure is individually critical, but the two closures together eliminate safe return. With independent closure probability `p`, the exact return probability is
+
+```text
+P(safe return) = 1 - p^2
 ```
 
-On Windows, activate the environment with:
+so for `p = 0.2, 0.5, 0.8` the exact values are `0.96, 0.75, 0.36`. A single-critical-cut approximation remains optimistic and disagrees with the exact calculation across the tested counterexample settings.
 
-```powershell
-.venv\Scripts\activate
+These failures narrow the scientific claim and make the distinction between the **history-conditioned representation** and any particular approximation or objective explicit.
+
+---
+
+## Core model
+
+### Action-triggered topology hazards
+
+The reference semantics are implemented in [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py):
+
+```text
+(source -> target)  =>  activate hazard h
 ```
 
-Available package entry points include:
+Planning, execution, activation, and realization are deliberately separate:
 
-```bash
-dynnav-demo
-dynnav-benchmark
+```text
+transition planned
+      |
+transition executed
+      |
+hazard activated
+      |
+closure may or may not realize
 ```
 
-Run the regression suite and lint checks with:
+**Planned paths never activate hazards.** Persistent history changes only when the corresponding transition is actually executed.
 
-```bash
-python -m pytest -q
-ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
+### Exact safe-return probability
+
+For bounded hazard sets, DynNav enumerates future closure realizations and checks connectivity to a designated safe region. The target quantity is
+
+```text
+R(x, H) = P(safe return | x, H)
 ```
 
-### ROS 2 Jazzy / Nav2
+rather than a generic local risk score.
 
-```bash
-source /opt/ros/jazzy/setup.bash
-rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
-colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
-source install/setup.bash
-colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+### History-aware planning
+
+The exact reference planner [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py) searches over
+
+```text
+(GridCell, frozenset[activated hazard indices])
 ```
+
+and augments nominal transition cost with a recoverability term based on
+
+```text
+1 - P(safe return | next state, activated history)
+```
+
+| Planner | Role |
+|---|---|
+| Shortest path | geometric baseline |
+| State-only hazard/reliability planner | marginal future-risk baseline |
+| Exact history-aware planner | augmented-state reference method |
+| Critical-cut planner | faster approximation |
+| Hard safe-return planner | probability-threshold baseline |
 
 ---
 
 ## Experimental methodology
 
-The evaluation stack is designed around matched comparisons and retained evidence rather than isolated demo runs. It includes:
-
-- paired common-random-number comparisons;
-- deterministic seed policies;
-- exact McNemar tests for paired binary outcomes;
-- paired bootstrap confidence intervals;
-- equivalence/non-inferiority utilities where appropriate;
-- operational mission/recovery/failure labels;
-- path-length, latency, replanning and risk measurements;
-- frozen configurations and machine-readable artifacts;
-- provenance manifests tying reported values to retained outputs.
+The evaluation is built around matched comparisons and retained evidence. It includes paired common-random-number comparisons, deterministic seed policies, exact McNemar tests for paired binary outcomes, paired bootstrap confidence intervals, equivalence/non-inferiority utilities where appropriate, operational mission/recovery/failure labels, timing and path metrics, frozen configurations, and machine-readable provenance.
 
 When planners share a generated world or latent event realization, analysis uses the paired denominator rather than treating rows as independent observations.
 
-The current experiment contract is [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md). The historical J0-J3 protocol is retained under [`docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md`](docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md) as research history rather than as the current paper claim.
+The current experiment contract is [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md). The historical J0-J3 protocol is retained in [`docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md`](docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md) as research history rather than the current paper claim.
 
-### Main experiment families
-
-The publication-facing evaluation includes:
-
-- same-state/different-history information-gap construction;
-- analytic commitment phase-boundary tests;
-- stochastic commitment execution;
-- critical-cut scaling;
-- held-out probability/horizon generalization;
-- geometric held-out topologies (`fork`, `l_room`, `chamber_two_trigger`);
-- joint-cut adversarial counterexample;
-- soft-history versus hard-safe-return Pareto sweeps.
-
-Experiment implementations live primarily in [`dynnav/experiments/`](dynnav/experiments/) and reproducible runners in [`scripts/`](scripts/).
+Publication-facing experiment families include same-state/different-history information-gap constructions, analytic commitment phase boundaries, stochastic commitment execution, critical-cut scaling, held-out probability/horizon tests, geometric held-out worlds (`fork`, `l_room`, `chamber_two_trigger`), the joint-cut adversarial counterexample, and soft-history versus hard-safe-return Pareto sweeps.
 
 ---
 
 ## ROS 2 / Nav2 implementation
 
-The publication-facing C++ package is [`ros2_ws/src/dynnav_nav2_cpp`](ros2_ws/src/dynnav_nav2_cpp).
-
-The C++ core includes:
+The publication-facing C++ package is [`ros2_ws/src/dynnav_nav2_cpp`](ros2_ws/src/dynnav_nav2_cpp). It includes:
 
 - augmented `(costmap cell, activated-hazard bitmask)` search state;
 - exact small-hazard return-connectivity enumeration;
 - `initial_active_mask` support for replanning after previous triggers;
-- soft history-aware transition cost;
+- soft history-aware transition costs;
 - proactive trigger-avoidance tests;
 - same-cell/different-history reliability tests;
 - retained-history online replanning tests.
 
-The Nav2 plugin implements `nav2_core::GlobalPlanner` and exposes shortest/history modes through the same implementation for controlled comparisons.
+The Nav2 plugin implements `nav2_core::GlobalPlanner` and exposes shortest/history modes through the same implementation.
 
 ### Executed-history semantics
 
@@ -275,15 +228,15 @@ with transitions encoded as
 sx:sy>tx:ty
 ```
 
-This prevents a planned-but-never-executed path from incorrectly modifying the future environment state.
+This prevents a planned-but-never-executed route from incorrectly modifying the future environment state.
 
 ---
 
 ## Action-triggered Gazebo protocol
 
-The benchmark package is [`ros2_ws/src/dynnav_nav2_benchmark`](ros2_ws/src/dynnav_nav2_benchmark). It supports Gazebo blocker injection, Nav2 execution, planner-path observation, global-costmap snapshots, blocker-observation validation, independent recovery-reachability checks, validity/exclusion labels, retained traces, and balanced planner ordering.
+The benchmark package [`ros2_ws/src/dynnav_nav2_benchmark`](ros2_ws/src/dynnav_nav2_benchmark) provides Gazebo blocker injection, Nav2 execution, planner-path observation, global-costmap snapshots, blocker validation, independent recovery-reachability checks, failure/validity labels, retained traces, hashes, and balanced planner ordering.
 
-The frozen action-triggered scenario is defined in [`sandbox_history_triggered_events.yaml`](ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml) and documented in [`ACTION_TRIGGER_PROTOCOL.md`](ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md).
+The frozen scenario is configured in [`sandbox_history_triggered_events.yaml`](ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml) and documented in [`ACTION_TRIGGER_PROTOCOL.md`](ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md).
 
 The first frozen trigger is
 
@@ -293,17 +246,93 @@ The first frozen trigger is
 
 with closure cell `(181,191)` and declared closure probability `p = 0.8`.
 
-Protocol rules include:
+Protocol rules require that trigger credit comes only from observed consecutive robot states; same-cell samples are ignored; observation gaps are reported rather than interpolated; the latent closure draw is paired across planners; the blocker moves only if the trigger was actually observed and the latent closure realizes; trigger avoidance is valid; and planned geometry never activates the hazard.
 
-- trigger credit only from observed consecutive states quantizing to the configured directed adjacent cells;
-- same-cell samples are ignored;
-- observation gaps are reported and never interpolated;
-- the latent closure draw is paired across planners;
-- the physical blocker moves only when the trigger is observed and the paired latent closure realizes;
-- trigger avoidance is a valid planner outcome;
-- planned geometry never activates the hazard.
+This protocol is execution-level research infrastructure, not a claim of completed physical-robot validation.
 
-The frozen protocol should not be confused with a claim of completed physical-robot or broad real-world efficacy.
+---
+
+## Falsification, scope, and limitations
+
+DynNav intentionally retains tests that weaken or delimit the preferred method. The falsification suite includes:
+
+- same-state/same-history controls;
+- reverse-direction trigger controls;
+- sampling and trigger-observation gaps;
+- unrealized stochastic events;
+- false-conservatism cases;
+- hard-constraint equivalence;
+- critical-cut joint failures;
+- probability miscalibration;
+- correlated closures;
+- delayed hazard revelation;
+- kinodynamic-model mismatch;
+- geometric-generalization limits.
+
+These tests distinguish cases where history conditioning is representationally necessary from cases where a simpler state representation, hard constraint, or approximation may be sufficient.
+
+DynNav does **not** currently establish:
+
+- formal safety guarantees or safety certification;
+- universal planner superiority;
+- calibrated real-world closure probabilities;
+- arbitrary-map or broad real-world generalization;
+- collision-avoidance or kinodynamic completeness of the grid model;
+- physical-robot efficacy or hardware reliability;
+- exactness of the critical-cut approximation;
+- dominance of the soft objective over hard safe-return constraints.
+
+The strongest current empirical evidence is controlled synthetic/geometric simulation with retained reproducible artifacts, complemented by software and ROS 2/Nav2 integration evidence.
+
+---
+
+## Research evolution
+
+DynNav began with the broader J0-J3 risk/recoverability-aware replanning framework:
+
+- **J0:** shortest path;
+- **J1:** path length + traversal risk;
+- **J2:** path length + structural recoverability penalty;
+- **J3:** path length + risk + recoverability.
+
+That work established deterministic replanning, dynamic route invalidation, risk-aware scoring, operational recovery definitions, paired evaluation, artifact retention, and failure taxonomies.
+
+The project then narrowed the publication-facing question: vague structural recoverability was replaced by explicit future-connectivity probability; action-triggered hazards were introduced; same-state/different-history aliasing was isolated; exact augmented-state planning and critical-cut approximations were implemented; counterexamples and held-out evaluations were added; and the mechanism was transferred to ROS 2/Nav2 with executed-history semantics.
+
+Historical protocols and audits remain under [`docs/archive/`](docs/archive/) for provenance. They are research history, not the current paper claim.
+
+---
+
+## Quick start
+
+### Python
+
+DynNav requires Python 3.10 or newer.
+
+```bash
+git clone https://github.com/panagiotagrosdouli/DynNav.git
+cd DynNav
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev,researcher,dashboard]"
+python -m pytest -q
+ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
+```
+
+On Windows, activate with `.venv\Scripts\activate`.
+
+Available entry points include `dynnav-demo` and `dynnav-benchmark`.
+
+### ROS 2 Jazzy / Nav2
+
+```bash
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
+colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+source install/setup.bash
+colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+```
 
 ---
 
@@ -329,13 +358,11 @@ apps/api/ + apps/web/                research API/workspace
 contributions/                       exploratory programme; not paper evidence
 ```
 
-The repository contains historical prototypes and exploratory modules in addition to the canonical publication path. Their presence does **not** imply equal validation maturity or support for the current paper claims. See [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md) for the authoritative code/evidence map.
+The repository also contains historical prototypes and exploratory modules. Their presence does not imply equal validation maturity or support for the current paper claims. See [`docs/REPOSITORY_GUIDE.md`](docs/REPOSITORY_GUIDE.md) for the canonical map.
 
 ---
 
 ## Evidence hierarchy and reproducibility
-
-DynNav distinguishes implementation from empirical evidence:
 
 | Level | Meaning |
 |---|---|
@@ -345,12 +372,10 @@ DynNav distinguishes implementation from empirical evidence:
 | D | ROS 2/Nav2 integration evidence |
 | E | execution-level validation under frozen protocol contracts |
 
-A publication-facing claim is expected to have implementation, regression coverage, frozen configuration/seed policy, retained machine-readable output, provenance, appropriate paired/statistical analysis, and an explicit limitation or failure boundary.
-
-Key evidence documents are:
+Key evidence documents:
 
 - [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json) — authoritative numerical provenance;
-- [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md) — supported, partial and unsupported claims;
+- [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md) — supported, partial, and unsupported claims;
 - [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md) — current experiment semantics;
 - [`FAILURE_CASES.md`](FAILURE_CASES.md) — falsification and negative cases.
 
@@ -358,70 +383,14 @@ The manuscript and evidence pipeline are CI-checked so publication-facing numeri
 
 ---
 
-## Falsification, Scope, and Limitations
-
-DynNav follows a **falsification-oriented evaluation strategy**. The repository intentionally retains experiments that expose failure modes, identify approximation errors, or show conditions under which the proposed history-conditioned formulation provides no advantage over simpler alternatives.
-
-The falsification suite examines several important boundary conditions, including:
-
-- same-state/same-history controls;
-- reverse-direction trigger controls;
-- trigger-observation and sampling gaps;
-- unrealized stochastic hazard events;
-- false-conservatism cases;
-- equivalence with hard safe-return constraints;
-- joint-failure cases for the critical-cut approximation;
-- probability miscalibration;
-- correlated topology closures;
-- delayed hazard revelation;
-- kinodynamic-model mismatch;
-- limits of geometric generalization.
-
-These experiments are retained as part of the scientific evidence rather than excluded when they weaken the preferred method. Their purpose is to distinguish **where history conditioning is representationally necessary** from cases where simpler state representations, constraints, or approximations may be sufficient.
-
-### Current scope of the evidence
-
-The current evidence supports the study of **history-dependent recoverability under action-triggered topology hazards** in controlled synthetic and geometric environments, together with implementation-level validation in ROS 2/Nav2.
-
-It does **not** currently establish:
-
-- formal safety guarantees or safety certification;
-- universal superiority over alternative planners;
-- calibrated probabilities for real-world topology changes;
-- arbitrary-map or broad real-world generalization;
-- complete collision-avoidance or kinodynamic guarantees beyond the adopted grid-level model;
-- demonstrated physical-robot efficacy or hardware reliability;
-- exactness of the critical-cut approximation;
-- universal dominance of the soft history-aware objective over hard safe-return constraints.
-
-Accordingly, the strongest current empirical evidence consists of **controlled stochastic and geometric simulation experiments with retained, reproducible artifacts**. This evidence is complemented by software-level and ROS 2/Nav2 integration validation.
-
-The resulting claims should therefore be interpreted as evidence for a specific planning mechanism and representation:
-
-> **When executed actions can alter future topology, path history may contain recoverability-relevant information that cannot, in general, be represented by geometric state alone.**
-
-Extending this conclusion to partially observed environments, correlated or miscalibrated hazards, kinodynamic systems, physical robots, or broader classes of real-world navigation environments requires additional empirical validation.
-
----
-
-## Research evolution
-
-DynNav began with a broader J0-J3 risk/recoverability-aware replanning framework and progressively narrowed its publication-facing question. Early work established deterministic replanning, dynamic route invalidation, risk-aware scoring, operational recovery definitions, paired evaluation, artifact retention, and failure taxonomies.
-
-The project then replaced vague structural recoverability with explicit future-connectivity probability, introduced action-triggered hazards, demonstrated same-state/different-history aliasing, implemented augmented-state planning, added approximation counterexamples and held-out evaluations, and transferred the mechanism into ROS 2/Nav2.
-
-Historical protocols and audits remain under [`docs/archive/`](docs/archive/) for provenance. They should not be interpreted as the current paper claim.
-
----
-
 ## Reviewer path
 
-For a fast technical review, read in this order:
+For a fast technical review:
 
 1. [`paper/dynnav_r/main.tex`](paper/dynnav_r/main.tex) — scientific argument and results.
 2. [`paper/dynnav_r/evidence_manifest.json`](paper/dynnav_r/evidence_manifest.json) — artifact/run provenance.
 3. [`CLAIM_EVIDENCE_MATRIX.md`](CLAIM_EVIDENCE_MATRIX.md) — supported vs. unsupported claims.
-4. [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md) — current experiment semantics.
+4. [`EXPERIMENT_PROTOCOL_V3.md`](EXPERIMENT_PROTOCOL_V3.md) — experiment semantics.
 5. [`FAILURE_CASES.md`](FAILURE_CASES.md) — falsification and negative cases.
 6. [`dynnav/commitment_hazard.py`](dynnav/commitment_hazard.py) — action-trigger model.
 7. [`dynnav/planners/commitment_aware_astar.py`](dynnav/planners/commitment_aware_astar.py) — exact reference planner.
@@ -437,7 +406,7 @@ The current manuscript is [`paper/dynnav_r/main.tex`](paper/dynnav_r/main.tex):
 
 > **When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards**
 
-Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Please use that file for the repository's current citation metadata rather than copying author/version information from secondary documentation.
+Citation metadata is provided in [`CITATION.cff`](CITATION.cff).
 
 ---
 
