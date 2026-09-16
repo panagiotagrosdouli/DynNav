@@ -1,9 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": null,
-  "installCommand": "npm --prefix website ci --no-audit --no-fund && npm --prefix apps/web ci --no-audit --no-fund",
-  "buildCommand": "bash scripts/build_web_portal.sh",
-  "outputDirectory": ".web-dist",
-  "cleanUrls": true,
-  "trailingSlash": true
+  "framework": "nextjs",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build"
 }
