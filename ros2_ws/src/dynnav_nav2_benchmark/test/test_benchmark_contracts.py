@@ -15,6 +15,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import (
     load_dynamic_suite,
     planner_behavior_tree,
 )
+from dynnav_nav2_benchmark.history_dynamic_runner import _parse_args
 from dynnav_nav2_benchmark.history_execution import (
     classify_observed_cells,
     deterministic_event_draw,
@@ -90,6 +91,29 @@ def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:
     assert "(174,189) -> (175,189)" in text
     assert "closure_probability: 0.8" in text
     assert "DynNavHistory" in text
+
+
+def test_history_runner_accepts_ros_launch_arguments() -> None:
+    args = _parse_args(
+        [
+            "history_dynamic_execution_benchmark",
+            "--scenario",
+            "scenario.yaml",
+            "--blocker-sdf",
+            "blocker.sdf",
+            "--output",
+            "results",
+            "--repetitions",
+            "3",
+            "--ros-args",
+            "-r",
+            "__node:=dynnav_history_execution_benchmark",
+        ]
+    )
+    assert args.scenario == Path("scenario.yaml")
+    assert args.blocker_sdf == Path("blocker.sdf")
+    assert args.output == Path("results")
+    assert args.repetitions == 3
 
 
 def test_execution_observations_never_interpolate_sampling_gaps() -> None:
