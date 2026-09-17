@@ -5,11 +5,13 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import sys
 import time
 from pathlib import Path
 
 import rclpy
 from nav2_simple_commander.robot_navigator import BasicNavigator
+from rclpy.utilities import remove_ros_args
 from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 from std_msgs.msg import String
 
@@ -215,17 +217,22 @@ def _trial(
     }
 
 
-def main() -> int:
+def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scenario", type=Path, required=True)
     parser.add_argument("--blocker-sdf", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--repetitions", type=int, default=1)
     parser.add_argument("--reset-settle-s", type=float, default=2.0)
-    args = parser.parse_args()
+    raw_argv = sys.argv if argv is None else argv
+    return parser.parse_args(remove_ros_args(args=raw_argv)[1:])
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parse_args(argv)
     suite = load_history_execution_suite(args.scenario)
     args.output.mkdir(parents=True, exist_ok=True)
-    rclpy.init()
+    rclpy.init(args=argv)
     nav = BasicNavigator(node_name="dynnav_history_execution_benchmark")
     spawn = nav.create_client(
         SpawnEntity,
