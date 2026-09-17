@@ -40,12 +40,26 @@ def test_complete_blocks_are_reproducible() -> None:
     assert schedule == balanced_trial_order(PLANNER_IDS, repetitions=10, seed=20260811)
     assert all(set(block) == set(PLANNER_IDS) for block in schedule)
     for planner in PLANNER_IDS:
-        position_counts = [sum(block[position] == planner for block in schedule) for position in range(len(PLANNER_IDS))]
+        position_counts = [
+            sum(block[position] == planner for block in schedule) for position in range(len(PLANNER_IDS))
+        ]
         assert max(position_counts) - min(position_counts) <= 1
 
 
+def _base_planner_parameters() -> dict:
+    return {
+        "planner_server": {
+            "ros__parameters": {
+                "expected_planner_frequency": 20.0,
+                "planner_plugins": ["GridBased"],
+                "GridBased": {"plugin": "default"},
+            }
+        }
+    }
+
+
 def test_parameter_injection_preserves_unrelated_nav2_settings() -> None:
-    base = {"planner_server": {"ros__parameters": {"expected_planner_frequency": 20.0, "planner_plugins": ["GridBased"], "GridBased": {"plugin": "default"}}}}
+    base = _base_planner_parameters()
     merged = inject_planner_parameters(base)
     parameters = merged["planner_server"]["ros__parameters"]
     assert parameters["expected_planner_frequency"] == 20.0
@@ -55,8 +69,15 @@ def test_parameter_injection_preserves_unrelated_nav2_settings() -> None:
 
 
 def test_history_parameter_injection_isolates_history_representation() -> None:
-    base = {"planner_server": {"ros__parameters": {"expected_planner_frequency": 20.0, "planner_plugins": ["GridBased"], "GridBased": {"plugin": "default"}}}}
-    merged = inject_history_planner_parameters(base, safe_cell=(160, 190), trigger=((174, 189), (175, 189)), closure_cell=(181, 191), closure_probability=0.8, recoverability_weight=4.0)
+    base = _base_planner_parameters()
+    merged = inject_history_planner_parameters(
+        base,
+        safe_cell=(160, 190),
+        trigger=((174, 189), (175, 189)),
+        closure_cell=(181, 191),
+        closure_probability=0.8,
+        recoverability_weight=4.0,
+    )
     parameters = merged["planner_server"]["ros__parameters"]
     assert parameters["planner_plugins"] == list(HISTORY_PLANNER_IDS)
     shortest = parameters["DynNavShortest"]
@@ -83,7 +104,8 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
     model = ElementTree.parse(PACKAGE_ROOT / "models" / "dynamic_blocker.sdf")
     size_text = model.findtext(".//collision/geometry/box/size")
     assert size_text is not None
-    assert tuple(float(value) for value in size_text.split()) == (suite.blocker_size.x, suite.blocker_size.y, suite.blocker_size.z)
+    expected_size = (suite.blocker_size.x, suite.blocker_size.y, suite.blocker_size.z)
+    assert tuple(float(value) for value in size_text.split()) == expected_size
 
 
 def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:
@@ -131,7 +153,12 @@ def test_execution_observations_never_interpolate_sampling_gaps() -> None:
 def test_trigger_requires_observed_directed_transition() -> None:
     trigger = ((174, 189), (175, 189))
     hit = trigger_decision(observed=trigger, trigger=trigger, latent_draw=0.2, closure_probability=0.8)
-    reverse = trigger_decision(observed=((175, 189), (174, 189)), trigger=trigger, latent_draw=0.2, closure_probability=0.8)
+    reverse = trigger_decision(
+        observed=((175, 189), (174, 189)),
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
     no_closure = trigger_decision(observed=trigger, trigger=trigger, latent_draw=0.9, closure_probability=0.8)
     assert hit.event_should_apply
     assert hit.outcome == "closure_should_apply"
@@ -154,7 +181,17 @@ def test_recovery_oracle_rejects_sealed_safe_region() -> None:
     costs = [0] * 25
     for y in range(5):
         costs[y * 5 + 2] = 254
-    result = assess_recovery_reachability(costs=costs, width=5, height=5, resolution=1.0, origin_x=0.0, origin_y=0.0, start=Pose2D(0.5, 2.5), safe_region=SafeRegion(Pose2D(4.5, 2.5), radius_m=0.49), budget_m=10.0)
+    result = assess_recovery_reachability(
+        costs=costs,
+        width=5,
+        height=5,
+        resolution=1.0,
+        origin_x=0.0,
+        origin_y=0.0,
+        start=Pose2D(0.5, 2.5),
+        safe_region=SafeRegion(Pose2D(4.5, 2.5), radius_m=0.49),
+        budget_m=10.0,
+    )
     assert not result.reachable
     assert result.reason == "no_recovery_path"
 
