@@ -2,9 +2,9 @@
 
 **History-Conditioned Safe-Return Planning for Autonomous Robots under Action-Triggered Topology Hazards**
 
-DynNav is a research and engineering repository for autonomous navigation in environments where **executed robot actions can change future topology**. Its central observation is that two trajectories may reach the **same geometric location** while leaving the robot with different future recovery options because their executed histories activated different hazards.
+> **Same place does not always mean the same planning state.**
 
-> **Research question:** Does path history carry recoverability-relevant information that a state-only future-risk model discards when robot actions activate future topology hazards?
+DynNav studies autonomous navigation in environments where a robot's **executed actions can change future topology**. Two trajectories can end at the same geometric location while leaving the robot with different safe-return options because one trajectory activated a future hazard and the other did not.
 
 [English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE manuscript](paper/dynnav_r/main.tex)
 
@@ -14,42 +14,125 @@ DynNav is a research and engineering repository for autonomous navigation in env
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-22314E)](ros2_ws/src/dynnav_nav2_cpp/README.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-4C1.svg)](LICENSE)
 
-> **Research status:** active research prototype with retained synthetic/geometric evidence, a C++ ROS 2/Nav2 planner, a frozen action-triggered Gazebo protocol, and an IEEE-style evidence pipeline. DynNav does **not** claim safety certification, universal planner superiority, calibrated real-world hazard probabilities, arbitrary-map generalization, or demonstrated physical-robot efficacy.
+## The idea in 20 seconds
 
----
-
-## Research problem
-
-Classical graph and grid planners usually evaluate future consequences from the current state. That representation becomes insufficient when an **executed transition can activate a future topology hazard**.
-
-Consider two histories that end at the same cell `x`:
+Consider two histories that reach the same cell:
 
 ```text
 History A: start ── trigger ──► x     hazard activated
 History B: start ── detour  ──► x     hazard not activated
 ```
 
-Geometrically,
+Both robots are at the same geometric state `x`, but they do not necessarily have the same future:
 
 ```text
 x_A = x_B
+
+P(return | x, H_A) ≠ P(return | x, H_B)
 ```
 
-but their future safe-return probabilities may differ:
+A planner that reasons only about position aliases these cases. DynNav instead plans over the augmented state
 
 ```text
-P(return | x, H_A) != P(return | x, H_B)
+(position, activated-hazard history) = (x, H)
 ```
 
-A state-only model aliases these cases. DynNav therefore represents the planning state as
+so the consequences of **what the robot actually executed** remain part of the planning problem.
+
+## Why this matters
+
+A shortest path can be attractive now while committing the robot to a future topology change that makes safe return impossible if a closure realizes. DynNav explicitly reasons about this commitment instead of treating future hazard probability as a state-only map.
+
+The project asks a narrow research question:
+
+> **Does executed path history contain recoverability-relevant information that a state-only future-risk model discards when robot actions activate future topology hazards?**
+
+## What is implemented
+
+- **Exact history-aware A\*** over `(grid cell, activated hazards)`
+- **Exact safe-return probability** for bounded hazard sets
+- **State-only, shortest-path, hard safe-return, and approximation baselines**
+- **Critical-cut approximation** with retained counterexamples showing where it fails
+- **Paired stochastic and held-out geometric evaluation**
+- **C++ ROS 2 Jazzy / Nav2 global planner**
+- **Persistent executed-history tracking**: planned paths do not activate hazards
+- **Gazebo benchmark infrastructure** for action-triggered topology changes
+- **Reproducible evidence pipeline** with frozen protocols, statistical tests, negative results, and explicit limitations
+
+## Representative evidence
+
+In the retained constructed evaluations, the exact history-aware planner avoids action-triggered closures that cause high irreversible-failure rates for shortest/state-only planning:
+
+| Scenario | Shortest / state-only failure | Exact history-aware failure |
+|---|---:|---:|
+| 3-module execution, `p=0.8` | 0.992 | 0.000 |
+| Held-out 6 modules | 0.992 | 0.000 |
+| Fork topology | 0.810 | 0.000 |
+| L-room topology | 0.756 | 0.000 |
+| Chamber topology | 0.890 | 0.000 |
+
+These are **mechanism-level results in controlled synthetic/geometric environments**, not evidence of universal planner superiority or real-world safety.
+
+An important negative result is retained as well: hard safe-return constraints can match the zero-hazard behavior of the soft history-aware objective in some tested environments. The main contribution is therefore the **history-conditioned state representation and action-triggered return-connectivity model**, not a claim that one objective always wins.
+
+## From research model to robotics stack
 
 ```text
-(x, H)
+Executed robot motion
+        │
+        ▼
+Directed trigger detection
+        │
+        ▼
+Activated hazard history H
+        │
+        ├──────────────► Safe-return model R(x, H)
+        │                         │
+        ▼                         ▼
+   Nominal cost ─────────► History-aware search
+                                  │
+                                  ▼
+                            ROS 2 / Nav2
+                                  │
+                                  ▼
+                         Gazebo validation
 ```
 
-where `x` is the current grid/costmap state and `H` is the set of hazards activated by **executed** transitions.
+The ROS 2 implementation preserves hazard history from **executed transitions**, not from paths that were merely planned. This distinction is part of the core semantics of DynNav.
 
-This is the mechanism behind the manuscript title **“When the Same Place Is Not the Same State.”**
+## Quick start
+
+### Python
+
+```bash
+git clone https://github.com/panagiotagrosdouli/DynNav.git
+cd DynNav
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev,researcher,dashboard]"
+
+dynnav-demo
+```
+
+Run the regression suite:
+
+```bash
+python -m pytest -q
+ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
+```
+
+### ROS 2 Jazzy / Nav2
+
+```bash
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
+colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+source install/setup.bash
+colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+```
+
+> **Research status:** DynNav is an active research prototype. It does not claim safety certification, arbitrary-map generalization, calibrated real-world hazard probabilities, universal planner superiority, or demonstrated physical-robot efficacy.
 
 ---
 
