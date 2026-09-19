@@ -10,6 +10,8 @@
   C++ implementation while retaining the absence of comparative Gazebo
   efficacy as an explicit limitation;
 - added publication-readiness and venue-fit assessments;
+- added a three-reviewer hostile review with fixability classifications and a
+  second-pass decision;
 - labelled superseded audit reports as historical snapshots so their old
   capability gaps cannot be mistaken for current repository status.
 
