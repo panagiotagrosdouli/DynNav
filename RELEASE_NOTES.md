@@ -1,5 +1,18 @@
 # Release Notes
 
+## Unreleased — repository-wide audit corrections
+
+- repaired malformed ROS-independent action-trigger benchmark contracts;
+- included those contracts in the default pytest collection and consolidated
+  pytest configuration into the authoritative `pytest.ini`;
+- restored the intended package coverage report in default and CI test runs;
+- aligned the manuscript's ROS 2/Nav2 integration statement with the current
+  C++ implementation while retaining the absence of comparative Gazebo
+  efficacy as an explicit limitation;
+- added publication-readiness and venue-fit assessments;
+- labelled superseded audit reports as historical snapshots so their old
+  capability gaps cannot be mistaken for current repository status.
+
 ## 0.2.0 — History-conditioned safe-return research stack
 
 This release moves DynNav from the original risk/recoverability scaffold to a publication-facing history-conditioned safe-return research stack.

@@ -1,5 +1,15 @@
 # DynNav Repository Audit
 
+> **Historical snapshot (2026-07-15).** This document records the Milestone 0
+> baseline and is not a description of the current repository. In particular,
+> its statements that no compiled Nav2 plugin, ROS CI, multi-seed statistics,
+> or retained Gazebo commissioning evidence existed were accurate for the
+> recorded baseline but are now superseded. Use
+> [`../PUBLICATION_READINESS.md`](../PUBLICATION_READINESS.md),
+> [`../CLAIM_EVIDENCE_MATRIX.md`](../CLAIM_EVIDENCE_MATRIX.md), and
+> [`REPOSITORY_GUIDE.md`](REPOSITORY_GUIDE.md) for current status. No current
+> Gazebo comparative-efficacy or physical-robot claim follows from this notice.
+
 **Baseline:** `main` at `28717f0dc2f04ae0f35b2b8b29fad3f168ced2cc`  
 **Audit date:** 2026-07-15  
 **Scope:** Milestone 0 — truthfulness, executable baseline, architecture, tests, scientific evidence.  

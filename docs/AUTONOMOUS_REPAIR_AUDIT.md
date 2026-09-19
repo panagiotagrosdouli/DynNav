@@ -1,5 +1,12 @@
 # Autonomous Repair Audit
 
+> **Historical snapshot.** This early scaffold audit is retained as research
+> history. Its test counts and ROS/tooling limitations are not current. See
+> [`../PUBLICATION_READINESS.md`](../PUBLICATION_READINESS.md),
+> [`../CLAIM_EVIDENCE_MATRIX.md`](../CLAIM_EVIDENCE_MATRIX.md), and
+> [`REPOSITORY_GUIDE.md`](REPOSITORY_GUIDE.md) for the current evidence and
+> validation boundaries.
+
 ## Scientific audit
 
 **Critical**: The repository needs a reproducible executable pipeline that distinguishes implemented synthetic demonstrations from pending real-world results. The repair branch adds `scripts/run_all.py`, which generates deterministic synthetic simulation artifacts, metrics, figures, GIF, MP4 when ffmpeg is available, and reports from code.
