@@ -71,8 +71,3 @@ select = ["E", "F", "I", "B", "UP"]
 "dynnav/__init__.py" = ["I001"]
 "dynnav/benchmarks.py" = ["I001"]
 "dynnav/research_pipeline.py" = ["E501"]
-
-[tool.pytest.ini_options]
-pythonpath = ["."]
-testpaths = ["tests"]
-addopts = "--cov=dynnav --cov-report=term-missing"
