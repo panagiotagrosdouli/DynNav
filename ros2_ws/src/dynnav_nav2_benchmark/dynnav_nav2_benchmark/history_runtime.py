@@ -22,6 +22,20 @@ class HistoryRuntimeState:
     trigger_observed: bool = False
     closure_requested: bool = False
 
+    @property
+    def closure_realized(self) -> bool:
+        """Return the frozen latent event outcome for this paired trial."""
+        return self.latent_draw < self.closure_probability
+
+    @property
+    def event_outcome(self) -> str:
+        """Describe the event outcome using the trigger observed so far."""
+        if not self.trigger_observed:
+            return "trigger_avoided"
+        if self.closure_realized:
+            return "closure_should_apply"
+        return "trigger_observed_no_closure"
+
     def observe(self, cell: tuple[int, int]) -> str | None:
         if self.previous_cell is None:
             self.previous_cell = cell
