@@ -55,7 +55,10 @@ jobs:
           --show-error-codes
 
       - name: Unified regression suite
-        run: python -m pytest -q --tb=short
+        run: >-
+          python -m pytest -q --tb=short
+          --cov=dynnav
+          --cov-report=term-missing
 
       - name: Reproducibility smoke tests
         if: matrix.python-version == '3.12'

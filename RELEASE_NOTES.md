@@ -5,7 +5,9 @@
 - repaired malformed ROS-independent action-trigger benchmark contracts;
 - included those contracts in the default pytest collection and consolidated
   pytest configuration into the authoritative `pytest.ini`;
-- restored the intended package coverage report in default and CI test runs;
+- restored the intended package coverage report in Python CI test runs;
+- scoped coverage flags to Python CI so ROS/ament test environments without
+  `pytest-cov` can consume the shared pytest configuration;
 - aligned the manuscript's ROS 2/Nav2 integration statement with the current
   C++ implementation while retaining the absence of comparative Gazebo
   efficacy as an explicit limitation;
