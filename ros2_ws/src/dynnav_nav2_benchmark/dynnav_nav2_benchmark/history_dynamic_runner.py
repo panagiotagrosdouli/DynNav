@@ -215,17 +215,17 @@ def _trial(
     }
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--scenario", type=Path, required=True)
     parser.add_argument("--blocker-sdf", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--repetitions", type=int, default=1)
     parser.add_argument("--reset-settle-s", type=float, default=2.0)
-    args = parser.parse_args()
+    args, ros_arguments = parser.parse_known_args(argv)
     suite = load_history_execution_suite(args.scenario)
     args.output.mkdir(parents=True, exist_ok=True)
-    rclpy.init()
+    rclpy.init(args=ros_arguments)
     nav = BasicNavigator(node_name="dynnav_history_execution_benchmark")
     spawn = nav.create_client(
         SpawnEntity,

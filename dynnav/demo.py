@@ -87,11 +87,18 @@ def generate_demo(
             for a, b in zip(risky[:frame], risky[1 : frame + 1], strict=False)
         )
         safe_triggered = any(
-            (a, b) == (trigger_source, trigger_target)
-            for a, b in zip(safe[:frame], safe[1 : frame + 1], strict=False)
+            (a, b) == (trigger_source, trigger_target) for a, b in zip(safe[:frame], safe[1 : frame + 1], strict=False)
         )
-        status_left.set_text(f"H = {{closure}}\ntrigger activated: {risky_triggered}" if risky_triggered else "H = {}\ntrigger activated: False")
-        status_right.set_text(f"H = {{closure}}\ntrigger activated: {safe_triggered}" if safe_triggered else "H = {}\ntrigger activated: False")
+        status_left.set_text(
+            f"H = {{closure}}\ntrigger activated: {risky_triggered}"
+            if risky_triggered
+            else "H = {}\ntrigger activated: False"
+        )
+        status_right.set_text(
+            f"H = {{closure}}\ntrigger activated: {safe_triggered}"
+            if safe_triggered
+            else "H = {}\ntrigger activated: False"
+        )
 
         if frame == frames - 1:
             footer.set_text(
