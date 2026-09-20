@@ -8,6 +8,8 @@
 - restored the intended package coverage report in Python CI test runs;
 - scoped coverage flags to Python CI so ROS/ament test environments without
   `pytest-cov` can consume the shared pytest configuration;
+- forwarded launch-injected ROS arguments from the history-execution benchmark
+  into `rclpy` instead of rejecting them in the application argument parser;
 - aligned the manuscript's ROS 2/Nav2 integration statement with the current
   C++ implementation while retaining the absence of comparative Gazebo
   efficacy as an explicit limitation;
