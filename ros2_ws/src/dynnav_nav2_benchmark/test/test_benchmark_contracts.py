@@ -20,6 +20,7 @@ from dynnav_nav2_benchmark.history_execution import (
     deterministic_event_draw,
     trigger_decision,
 )
+from dynnav_nav2_benchmark.history_runtime import HistoryRuntimeState
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 
@@ -150,6 +151,38 @@ def test_trigger_requires_observed_directed_transition() -> None:
     assert no_closure.trigger_observed
     assert not no_closure.event_should_apply
     assert no_closure.outcome == "trigger_observed_no_closure"
+
+
+def test_runtime_state_exposes_frozen_event_outcome() -> None:
+    trigger = ((174, 189), (175, 189))
+    state = HistoryRuntimeState(
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
+    assert state.closure_realized
+    assert state.event_outcome == "trigger_avoided"
+
+    state.observe(trigger[0])
+    state.observe(trigger[1])
+    assert state.trigger_observed
+    assert state.closure_requested
+    assert state.event_outcome == "closure_should_apply"
+
+
+def test_runtime_state_reports_observed_trigger_without_closure() -> None:
+    trigger = ((174, 189), (175, 189))
+    state = HistoryRuntimeState(
+        trigger=trigger,
+        latent_draw=0.9,
+        closure_probability=0.8,
+    )
+    state.observe(trigger[0])
+    state.observe(trigger[1])
+    assert not state.closure_realized
+    assert state.trigger_observed
+    assert not state.closure_requested
+    assert state.event_outcome == "trigger_observed_no_closure"
 
 
 def test_common_random_draw_is_planner_independent() -> None:
