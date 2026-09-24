@@ -1,11 +1,11 @@
 # Publication Readiness
 
-Assessment date: 2026-09-19. Status terms are `READY`, `PARTIAL`, and `NOT READY`.
+Assessment date: 2026-09-24. Status terms are `READY`, `PARTIAL`, and `NOT READY`.
 
 | Category | Status | Evidence and boundary |
 |---|---|---|
 | 1. Core scientific claim | READY | The constructive proposition, exact oracle, information-gap benchmark, and retained controls support the narrow claim that an activated-hazard sufficient statistic can distinguish equal geometric states under action-triggered topology hazards. |
-| 2. Novelty | PARTIAL | The manuscript explicitly distinguishes this representation from established history-dependent risk, safe-return planning, belief-state planning, and endogenous uncertainty. Final venue-specific literature review is still required. |
+| 2. Novelty | PARTIAL | The manuscript now states explicitly that `(position, active hazards)` is standard MDP Markovization and that the state-only marginal planner is a restricted ablation. AFADA is added as a close stochastic-topology precedent. The manuscript makes no first-of-kind claim; broader venue-specific literature screening remains required. |
 | 3. Mathematical validity | READY | The finite independent-Bernoulli model, exact enumeration, bounds, analytic phase boundary, and joint-cut counterexample have executable regression tests. This judgment does not extend to correlated or delayed-revelation hazards. |
 | 4. Implementation validity | READY | The canonical Python suite and ROS-independent benchmark contracts pass. The C++ implementation has dedicated unit/plugin tests in ROS CI; local ROS compilation was unavailable in this audit environment. |
 | 5. Baseline fairness | READY | Shortest, state-only marginal, exact-history, critical-cut, and hard-threshold baselines are retained. The negative result that hard constraints can match the soft objective is publication-facing. |
@@ -23,4 +23,3 @@ Assessment date: 2026-09-19. Status terms are `READY`, `PARTIAL`, and `NOT READY
 ## Decision
 
 **No-go for submission from the current moving `main` branch.** The narrow representation result is defensible, but the repository should be released from a tagged, clean-CI commit after final bibliography and manifest checks. Action-triggered Gazebo efficacy must remain absent unless a valid comparative artifact is retained and audited.
-

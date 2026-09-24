@@ -28,3 +28,5 @@ This matrix defines what the current repository may and may not claim. Publicati
 ## Interpretation rule
 
 A `SUPPORTED` entry means the repository contains evidence for the **narrow wording shown in that row**. It does not imply safety, deployment readiness, broad generalization, or superiority outside the evaluated assumptions.
+
+The state-only marginal planner is a deliberately restricted ablation that omits active-hazard history. Its null result does not establish superiority over a general MDP/POMDP whose state retains the active hazard process; `(position, active hazards)` is standard Markovization under the model assumptions.

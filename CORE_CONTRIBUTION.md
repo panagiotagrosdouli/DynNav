@@ -2,11 +2,11 @@
 
 ## One-sentence contribution
 
-DynNav studies **history-conditioned safe-return planning under action-triggered topology hazards**: robot actions can activate future closure hazards, so two trajectories that end at the same geometric state can have different future return-connectivity.
+DynNav is a controlled study of **history-conditioned safe-return planning under action-triggered topology hazards**: robot actions can activate future closure hazards, so two trajectories that end at the same geometric state can have different future return-connectivity.
 
 ## Publication-facing claim
 
-The supported contribution is not generic recoverability or generic history-dependent planning. It is the narrower combination of:
+The supported contribution is an explicit model and controlled empirical characterization, not a claim that state augmentation or history-aware planning is new. It is the narrower combination of:
 
 1. action-triggered stochastic degradation of environmental return-connectivity;
 2. a same-state/different-history information gap for state-only marginal models;
@@ -14,6 +14,8 @@ The supported contribution is not generic recoverability or generic history-depe
 4. a critical-cut approximation with both a scaling regime and an explicit joint-cut failure boundary;
 5. retained paired evaluations across controlled, held-out probability/horizon and frozen geometric scenarios;
 6. ROS 2 Jazzy / Nav2 integration with persistent history updated from executed transitions.
+
+The augmented state `(x, H)` is the standard Markovization of this finite history-dependent model. Any fully specified MDP/POMDP that retains the active hazard state can represent the same process. The state-only marginal planner is a deliberately restricted ablation that drops this variable; it is not a general MDP/POMDP baseline, and its failure does not establish superiority over all history-aware planners.
 
 ## Primary baselines
 

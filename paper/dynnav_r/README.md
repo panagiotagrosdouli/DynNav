@@ -1,10 +1,10 @@
-# DynNav-R Manuscript
+# DynNav-R manuscript and evidence
 
-This directory contains the LaTeX manuscript scaffold for the recoverability-aware navigation paper track.
+`main.tex` is the current IEEE-style manuscript for the narrow DynNav study. The evidence boundary and current numerical claims are defined by [`evidence_manifest.json`](evidence_manifest.json) and cross-referenced in the repository's [`CLAIM_EVIDENCE_MATRIX.md`](../../CLAIM_EVIDENCE_MATRIX.md).
 
 ## Build
 
-From `paper/dynnav_r/`:
+From this directory, use `latexmk -pdf main.tex` when available. Otherwise run:
 
 ```bash
 pdflatex main.tex
@@ -13,53 +13,21 @@ pdflatex main.tex
 pdflatex main.tex
 ```
 
-A `latexmk` installation can instead run:
+The build requires IEEEtran, AMS math, booktabs, graphicx, hyperref, microtype, and TikZ packages.
+
+## Reproduce the core evidence
+
+From the repository root:
 
 ```bash
-latexmk -pdf main.tex
+python scripts/run_history_information_gap_benchmark.py --out-dir results/history_information_gap
+python scripts/run_heldout_history_generalization.py --seeds 500 --out-dir results/heldout_history_generalization
+python scripts/run_geometric_heldout_benchmark.py --seeds 500 --output-dir results/geometric_heldout
+python scripts/run_geometric_pareto_benchmark.py --seeds 500 --output-dir results/geometric_pareto
 ```
 
-## Experimental artifact workflow
+The exact CLI options for each runner are available with `--help`. Use the frozen experiment protocol and retained outputs when making manuscript-facing changes. Do not copy numbers into the paper unless they are regenerated or verified against the evidence manifest.
 
-Generate randomized benchmark results:
+## Scope
 
-```bash
-python ../../benchmarks/fragile_commitment/random_benchmark.py \
-  --seeds 100 \
-  --output random_topology_results.csv
-```
-
-Run paired hypothesis tests:
-
-```bash
-python ../../benchmarks/fragile_commitment/paired_tests.py \
-  random_topology_results.csv \
-  --baseline risk_only \
-  --candidate recoverability_aware \
-  --output-csv paired_tests.csv \
-  --markdown paired_tests.md
-```
-
-Generate figures:
-
-```bash
-python ../../benchmarks/fragile_commitment/paper_figures.py \
-  random_topology_results.csv \
-  --output-dir ../figures/fragile_commitment \
-  --format pdf
-```
-
-Generate tables:
-
-```bash
-python ../../benchmarks/fragile_commitment/paper_tables.py \
-  random_topology_results.csv \
-  paired_tests.csv \
-  --output-dir ../tables/fragile_commitment
-```
-
-## Evidence policy
-
-The manuscript contains explicit TODO markers where quantitative findings, citations, environment details, or inferential decisions still require validation. Do not replace those markers with claims until the corresponding commands have been executed and their outputs have been inspected.
-
-The benchmark is synthetic and does not establish formal safety, ROS 2 integration, or hardware validation.
+The augmented state `(position, activated hazards)` is a standard Markovization of the declared finite model, not a novel general planning principle. The state-only marginal method is a restricted ablation that omits activated-hazard history. Evidence is synthetic and does not establish calibrated real-world probabilities, Gazebo efficacy, physical-robot efficacy, or a formal safety guarantee.
