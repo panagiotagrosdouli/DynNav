@@ -152,7 +152,7 @@ def commitment_aware_astar(
     grid.validate()
     cfg = config or CommitmentAwareAStarConfig()
     cfg.validate()
-    safe = set(safe_cells or {start})
+    safe = set(safe_cells) if safe_cells is not None else {start}
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
     initial_active = frozenset(initial_activated_closures or ())

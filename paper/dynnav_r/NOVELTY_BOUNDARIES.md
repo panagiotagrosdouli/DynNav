@@ -23,6 +23,12 @@ The manuscript tests the narrower statement:
 
 This is a representational/information claim, not a universal planning-superiority claim.
 
+## Markov-state qualification
+
+The augmented state `(x, A)` is a standard Markovization for the stated finite model; it is not itself a novel planning principle. A conventional MDP can represent this process exactly when its state includes the active hazard state (and any other variables required by the event model). The state-only marginal planner in this repository is a deliberately restricted ablation that omits that variable, not a general MDP/POMDP baseline. Its null result isolates information loss under that restriction and does not demonstrate superiority over general history-aware planning.
+
+The closest environmental-topology precedent located in this audit is Kameyama et al.'s AFADA, which demonstrates robot navigation in an environment whose topology changes stochastically. AFADA assigns routing and topology management to an active modular environment; the DynNav model instead makes future closure hazards conditional on the robot's own executed directed transitions and evaluates safe-return connectivity. This is a difference in modeled mechanism, not evidence that either work subsumes the other.
+
 ## What the current evidence supports
 
 The retained CI artifacts support only the following mechanism-level statements:

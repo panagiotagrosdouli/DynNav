@@ -87,6 +87,22 @@ def test_zero_recoverability_weight_collapses_to_direct_geometric_choice() -> No
     assert result.activated_closure_count == 1
 
 
+def test_explicitly_empty_safe_set_is_not_replaced_with_start() -> None:
+    grid, start, goal, model = _trap_problem()
+
+    result = commitment_aware_astar(
+        grid,
+        start,
+        goal,
+        safe_cells=set(),
+        hazard_model=model,
+        mode=CommitmentPlannerMode.SHORTEST,
+    )
+
+    assert result.success
+    assert result.final_return_probability == pytest.approx(0.0)
+
+
 def test_low_closure_probability_does_not_force_unnecessary_detour() -> None:
     grid = GridMap.from_obstacles(4, 3, obstacles={(1, 0), (1, 2)})
     start, goal = (0, 1), (3, 1)

@@ -1,0 +1,33 @@
+{
+  "decision_threshold_failure_probability": 0.2,
+  "methods": [
+    "activation_oracle",
+    "bayes_posterior",
+    "detector_as_truth",
+    "prior_only"
+  ],
+  "metrics": [
+    "empirical_failure_rate",
+    "mean_predicted_failure_probability",
+    "brier_score",
+    "false_safe_rate_at_0_2",
+    "safe_decision_rate_at_0_2"
+  ],
+  "scenario_seeds": {
+    "false_positive_sensor": 20260927,
+    "high_activation_risk": 20260929,
+    "informative_correct": 20260924,
+    "low_activation_risk": 20260928,
+    "missed_activation": 20260926,
+    "weak_correct": 20260925
+  },
+  "scenarios": [
+    "false_positive_sensor",
+    "high_activation_risk",
+    "informative_correct",
+    "low_activation_risk",
+    "missed_activation",
+    "weak_correct"
+  ],
+  "trials_per_scenario": 100000
+}

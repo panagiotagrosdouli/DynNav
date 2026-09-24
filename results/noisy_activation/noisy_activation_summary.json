@@ -1,0 +1,182 @@
+{
+  "false_positive_sensor": {
+    "activation_oracle": {
+      "brier_score": 0.08090000000000078,
+      "empirical_failure_rate": 0.40042,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4014400000000579,
+      "safe_decision_rate_at_0_2": 0.4982
+    },
+    "bayes_posterior": {
+      "brier_score": 0.22380158257794064,
+      "empirical_failure_rate": 0.40042,
+      "false_safe_rate_at_0_2": 0.11372639072277398,
+      "mean_predicted_failure_probability": 0.5204026065168638,
+      "safe_decision_rate_at_0_2": 0.34838
+    },
+    "detector_as_truth": {
+      "brier_score": 0.24017680000010644,
+      "empirical_failure_rate": 0.40042,
+      "false_safe_rate_at_0_2": 0.11372639072277398,
+      "mean_predicted_failure_probability": 0.5212960000004939,
+      "safe_decision_rate_at_0_2": 0.34838
+    },
+    "prior_only": {
+      "brier_score": 0.24008400000005578,
+      "empirical_failure_rate": 0.40042,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4000000000007539,
+      "safe_decision_rate_at_0_2": 0.0
+    }
+  },
+  "high_activation_risk": {
+    "activation_oracle": {
+      "brier_score": 0.12889400000017157,
+      "empirical_failure_rate": 0.63915,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.6404800000009275,
+      "safe_decision_rate_at_0_2": 0.1994
+    },
+    "bayes_posterior": {
+      "brier_score": 0.2067657934431212,
+      "empirical_failure_rate": 0.63915,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.6407503448268732,
+      "safe_decision_rate_at_0_2": 0.0
+    },
+    "detector_as_truth": {
+      "brier_score": 0.29438520000022794,
+      "empirical_failure_rate": 0.63915,
+      "false_safe_rate_at_0_2": 0.4566831090465016,
+      "mean_predicted_failure_probability": 0.4659040000002924,
+      "safe_decision_rate_at_0_2": 0.41762
+    },
+    "prior_only": {
+      "brier_score": 0.23063800000012674,
+      "empirical_failure_rate": 0.63915,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.6399999999995107,
+      "safe_decision_rate_at_0_2": 0.0
+    }
+  },
+  "informative_correct": {
+    "activation_oracle": {
+      "brier_score": 0.07967480000000023,
+      "empirical_failure_rate": 0.40067,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.400096000000053,
+      "safe_decision_rate_at_0_2": 0.49988
+    },
+    "bayes_posterior": {
+      "brier_score": 0.13735384000021297,
+      "empirical_failure_rate": 0.40067,
+      "false_safe_rate_at_0_2": 0.07932562195537558,
+      "mean_predicted_failure_probability": 0.40074880000078456,
+      "safe_decision_rate_at_0_2": 0.49883
+    },
+    "detector_as_truth": {
+      "brier_score": 0.14365880000010492,
+      "empirical_failure_rate": 0.40067,
+      "false_safe_rate_at_0_2": 0.07932562195537558,
+      "mean_predicted_failure_probability": 0.4009360000000561,
+      "safe_decision_rate_at_0_2": 0.49883
+    },
+    "prior_only": {
+      "brier_score": 0.24013400000005694,
+      "empirical_failure_rate": 0.40067,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4000000000007539,
+      "safe_decision_rate_at_0_2": 0.0
+    }
+  },
+  "low_activation_risk": {
+    "activation_oracle": {
+      "brier_score": 0.03190239999999474,
+      "empirical_failure_rate": 0.1574,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.157927999999944,
+      "safe_decision_rate_at_0_2": 0.80259
+    },
+    "bayes_posterior": {
+      "brier_score": 0.09914493657375578,
+      "empirical_failure_rate": 0.1574,
+      "false_safe_rate_at_0_2": 0.06068979633609661,
+      "mean_predicted_failure_probability": 0.15924811188775048,
+      "safe_decision_rate_at_0_2": 0.78168
+    },
+    "detector_as_truth": {
+      "brier_score": 0.12118880000001854,
+      "empirical_failure_rate": 0.1574,
+      "false_safe_rate_at_0_2": 0.06068979633609661,
+      "mean_predicted_failure_probability": 0.17465599999992878,
+      "safe_decision_rate_at_0_2": 0.78168
+    },
+    "prior_only": {
+      "brier_score": 0.1326320000002084,
+      "empirical_failure_rate": 0.1574,
+      "false_safe_rate_at_0_2": 0.1574,
+      "mean_predicted_failure_probability": 0.15999999999987768,
+      "safe_decision_rate_at_0_2": 1.0
+    }
+  },
+  "missed_activation": {
+    "activation_oracle": {
+      "brier_score": 0.08041880000000068,
+      "empirical_failure_rate": 0.39959,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4002160000000535,
+      "safe_decision_rate_at_0_2": 0.49973
+    },
+    "bayes_posterior": {
+      "brier_score": 0.22558214979829944,
+      "empirical_failure_rate": 0.39959,
+      "false_safe_rate_at_0_2": 0.24811856503070318,
+      "mean_predicted_failure_probability": 0.2808585463657662,
+      "safe_decision_rate_at_0_2": 0.64977
+    },
+    "detector_as_truth": {
+      "brier_score": 0.24234520000009754,
+      "empirical_failure_rate": 0.39959,
+      "false_safe_rate_at_0_2": 0.24811856503070318,
+      "mean_predicted_failure_probability": 0.2801839999998328,
+      "safe_decision_rate_at_0_2": 0.64977
+    },
+    "prior_only": {
+      "brier_score": 0.23991800000005634,
+      "empirical_failure_rate": 0.39959,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4000000000007539,
+      "safe_decision_rate_at_0_2": 0.0
+    }
+  },
+  "weak_correct": {
+    "activation_oracle": {
+      "brier_score": 0.07921560000000004,
+      "empirical_failure_rate": 0.40199,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.40051200000005455,
+      "safe_decision_rate_at_0_2": 0.49936
+    },
+    "bayes_posterior": {
+      "brier_score": 0.23389592000011322,
+      "empirical_failure_rate": 0.40199,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.40017440000000715,
+      "safe_decision_rate_at_0_2": 0.0
+    },
+    "detector_as_truth": {
+      "brier_score": 0.3358876000000526,
+      "empirical_failure_rate": 0.40199,
+      "false_safe_rate_at_0_2": 0.3211801727766531,
+      "mean_predicted_failure_probability": 0.40087200000005585,
+      "safe_decision_rate_at_0_2": 0.49891
+    },
+    "prior_only": {
+      "brier_score": 0.24039800000005646,
+      "empirical_failure_rate": 0.40199,
+      "false_safe_rate_at_0_2": 0.0,
+      "mean_predicted_failure_probability": 0.4000000000007539,
+      "safe_decision_rate_at_0_2": 0.0
+    }
+  }
+}

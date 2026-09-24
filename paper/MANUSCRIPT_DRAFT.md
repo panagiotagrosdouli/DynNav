@@ -1,5 +1,8 @@
 # DynNav-R: Recoverability-Aware Risk-Sensitive Navigation with Runtime Safety Supervision
 
+> **Historical draft; superseded.** This exploratory DynNav-R material predates the current action-triggered topology-hazard study in [`dynnav_r/main.tex`](dynnav_r/main.tex). Its proposed claims, metrics, and gap statement are not current publication claims.
+
+
 **Panagiota Grosdouli**
 
 > Working manuscript. Numerical claims must be inserted only after running the integrated benchmark defined in `RESEARCH_PLAN.md`.

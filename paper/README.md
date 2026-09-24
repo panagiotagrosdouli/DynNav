@@ -1,8 +1,14 @@
 # Paper-facing material
 
+> **Current canonical manuscript:** [`dynnav_r/main.tex`](dynnav_r/main.tex). The remaining root-level DynNav-R draft and its original gap analysis are historical exploratory material; they are not current claims or publication evidence. Read [`dynnav_r/README.md`](dynnav_r/README.md), [`dynnav_r/NOVELTY_BOUNDARIES.md`](dynnav_r/NOVELTY_BOUNDARIES.md), and the repository [`CLAIM_EVIDENCE_MATRIX.md`](../CLAIM_EVIDENCE_MATRIX.md) for the active scope.
+
 This directory contains manuscript-oriented notes and artifacts for a possible DynNav research paper.
 
 **Status:** **Planned / Pending Validation.** A manuscript structure or conceptual contribution list is not evidence of a completed publication, accepted paper, statistically supported claim, or validated robotics system.
+
+## Additional provisional study
+
+[`../RESEARCH_DISCOVERY.md`](../RESEARCH_DISCOVERY.md) records a separate exploratory robustness study of uncertain action-trigger execution and noisy crossing observations. It includes a selective literature map, rejected candidate questions, the exact belief update, synthetic results, and explicit limits. The study is **not** part of the current canonical manuscript and does not support a novelty claim yet; it needs systematic literature screening and broader experiments before manuscript integration.
 
 ## Evidence requirements
 
