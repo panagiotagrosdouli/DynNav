@@ -1,8 +1,6 @@
 from pathlib import Path
 
-from dynnav_nav2_benchmark.canonical_g1_contract import (
-    evaluate_canonical_g1_topology,
-)
+from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
 
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
