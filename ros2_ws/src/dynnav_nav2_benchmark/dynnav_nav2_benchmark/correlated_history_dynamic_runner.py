@@ -152,12 +152,20 @@ def _trial(
     injection_error = None
     last_feedback = None
     navigation_time_s = None
+    max_start_displacement_m = 0.0
     start_wall = time.monotonic()
     while not navigator.isTaskComplete():
         feedback = navigator.getFeedback()
         if feedback is not None:
             last_feedback = feedback
             pose = feedback.current_pose.pose.position
+            max_start_displacement_m = max(
+                max_start_displacement_m,
+                math.hypot(
+                    float(pose.x) - scenario.start.x,
+                    float(pose.y) - scenario.start.y,
+                ),
+            )
             emitted = state.observe_world(float(pose.x), float(pose.y))
             for text in emitted:
                 publisher.publish(String(data=text))
@@ -226,7 +234,8 @@ def _trial(
             budget_m=scenario.recovery_budget_m,
         ).to_dict()
 
-    valid = state.observation_valid and injection_error is None
+    motion_valid = max_start_displacement_m >= 0.25
+    valid = state.observation_valid and injection_error is None and motion_valid
     recovery_feasible = (
         None if recovery is None else bool(recovery["within_budget"])
     )
@@ -237,9 +246,11 @@ def _trial(
         "order_index": order_index,
         "valid_trial": valid,
         "invalid_reason": injection_error
-        or ("localization_jump" if not state.observation_valid else None),
+        or ("localization_jump" if not state.observation_valid else None)
+        or ("insufficient_motion" if not motion_valid else None),
         "navigation_success": success,
         "navigation_time_s": navigation_time_s,
+        "max_start_displacement_m": max_start_displacement_m,
         "result_error_code": error_code,
         "result_error_message": error_message,
         "latent_closures": list(latent),
