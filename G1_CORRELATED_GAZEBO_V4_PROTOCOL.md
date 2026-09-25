@@ -58,6 +58,14 @@ Therefore the current robot pose is aligned exactly with the frozen map start af
 
 The transform is then propagated with every `/odom` update. This uses simulator wheel odometry as the localization source and removes scan-matching ambiguity from the execution study.
 
+### V4.1 Jazzy startup amendment (pre-valid-outcome)
+
+The first V4 commissioning attempt did not reach a benchmark trial. Its retained log showed a ROS 2 Jazzy launch-compatibility issue: in the Jazzy `nav2_bringup`, setting `use_localization=False` skips the entire localization launch, including the static map server. The planner therefore configured before any full static-map costmap geometry existed and correctly rejected frozen history cells as out of bounds.
+
+Before inspecting any V4 trial outcome, the launch was amended to start `nav2_map_server` and a dedicated one-node lifecycle manager explicitly, then start `navigation_launch.py` after the map server has been given time to activate. AMCL remains absent. This startup amendment changes no map pixels, trigger gates, blocker geometry, closure probabilities, dependence conditions, planner parameters, objective, recoverability weight, latent outcomes, validity thresholds, or analysis.
+
+Retained canceled commissioning artifact: workflow run `36175413395`, artifact `10882222865`, digest `sha256:640165d3caf34d389b6d92d90d56c985b180c4b5b4767add81f8ce2dff125ae8`. It contains no valid V4 trial result and is not efficacy evidence.
+
 ### What remains sensor-driven
 
 The local Nav2 costmap remains unchanged and consumes the simulated range sensor. Physical blockers are therefore still observed by the controller/collision layer. V4 is not a kinematic path replay.
