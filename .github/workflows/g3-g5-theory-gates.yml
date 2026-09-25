@@ -1,0 +1,36 @@
+name: G3-G5 theory gates
+
+on:
+  push:
+    branches:
+      - research/g3-g5-theory-parallel
+    paths:
+      - "dynnav/exposure_identifiability.py"
+      - "dynnav/history_compression_objective.py"
+      - "tests/test_exposure_identifiability.py"
+      - "tests/test_history_compression_objective.py"
+      - ".github/workflows/g3-g5-theory-gates.yml"
+  workflow_dispatch:
+
+jobs:
+  theory:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install DynNav research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,researcher]"
+      - name: Run G3/G5 theory tests
+        run: |
+          python -m pytest -q \
+            tests/test_exposure_identifiability.py \
+            tests/test_safe_learning_lockout_theory.py \
+            tests/test_history_compression_exactness.py \
+            tests/test_history_compression_objective.py \
+            tests/test_compressed_commitment_astar.py
