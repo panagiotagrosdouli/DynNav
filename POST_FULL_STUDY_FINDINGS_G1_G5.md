@@ -139,3 +139,48 @@ G4 is currently infrastructure for causal validation, not the headline method.
 - New G3/G5 diagnostics are explicitly post-full-study exploratory.
 - Null, harmful and failure regimes remain retained.
 - No ROS/Gazebo, physical-robot, certification or universal-safety conclusion follows from the synthetic studies.
+
+
+## Expanded post-V1 exploratory evidence
+
+A later retained exploratory artifact extends the post-V1 diagnostics without changing the frozen V1 claims.
+
+**Source commit:** `562d2c01567188094c77fd433a7dccf3fbf40df4`  
+**Workflow:** `36107200128`  
+**Artifact:** `10851712188`  
+**Digest:** `sha256:ff7985ee0e807351f0c0b63e5520ef535658957ffbc2fb1f3be468ca341c0df6`
+
+### G1 — topology-dependent dependence is not a hand-built artifact
+
+Across 40 held-out connected random 6x5 grids, every unordered pair of free nonterminal cells was evaluated as a two-hazard candidate. The survey covered 7,881 hazard pairs:
+
+- negative interaction: 254 pairs;
+- zero interaction: 7,375 pairs;
+- positive interaction: 252 pairs;
+- 37/40 maps contained at least one negative interaction;
+- 25/40 maps contained at least one positive interaction;
+- 23/40 maps contained both signs.
+
+These counts are not estimates of real-world prevalence. Their role is narrower: both dependence-sensitivity directions occur beyond the serial/parallel hand constructions, while the exact two-hazard interaction identity predicts the sign.
+
+### G3 — risk-budget deadlock breaking replicates as an information/risk frontier
+
+The exploratory risk-budget benchmark was repeated over 10 independent seeds for all 12 combinations of true closure probability `{0.1,0.3,0.5,0.7}` and minimum-return threshold `{0.5,0.7,0.9}`.
+
+Across all 12 conditions:
+
+- mean exposures were nondecreasing from budget 5 -> 20 -> 50;
+- mean observed failures were also nondecreasing from budget 5 -> 20 -> 50;
+- budget 5 had lower mean absolute estimation error than the strict credible gate in 10/12 conditions;
+- budget 20 did so in 10/12;
+- budget 50 did so in 12/12.
+
+A representative unsafe regime is true closure probability 0.7 with minimum return 0.7. The strict credible gate takes zero exposures and remains at mean absolute error 0.45. Budget 5 averages 7.4 exposures, 5.1 failures and error 0.159; budget 20 averages 28.6 exposures, 19.0 failures and error 0.101; budget 50 averages 70.4 exposures, 48.6 failures and error 0.048.
+
+This does not make the risk-budget method a safety solution. It establishes the trade-off: trigger-conditioned identification can be purchased with explicitly admitted exposure risk. The next G3 method must obtain information more efficiently or introduce defensible side information / transfer assumptions.
+
+### G5 — full reachable-state redundancy is large
+
+The post-V1 exhaustive state-space diagnostic clarifies why the frozen early-goal A* timing result looked modest. At 6 duplicated-trigger modules, the raw augmented graph has 33,354 reachable position-history states, while the exact closure-event quotient has 126, a 264.7x ratio (99.62% reduction).
+
+This strengthens G5 as an exact representation/computation companion, but does not convert the result into a universal online speedup claim.
