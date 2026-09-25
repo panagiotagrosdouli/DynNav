@@ -33,6 +33,10 @@ setup(
                 "correlated_history_dynamic_execution_benchmark = "
                 "dynnav_nav2_benchmark.correlated_history_dynamic_runner:main"
             ),
+            (
+                "resettable_odom_localizer = "
+                "dynnav_nav2_benchmark.resettable_odom_localizer:main"
+            ),
         ],
     },
 )
