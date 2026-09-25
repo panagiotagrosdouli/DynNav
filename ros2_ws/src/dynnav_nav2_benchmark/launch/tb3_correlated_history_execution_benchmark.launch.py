@@ -44,6 +44,7 @@ def _launch_setup(context):
     world_file = LaunchConfiguration("world_file").perform(context)
     output = LaunchConfiguration("output_dir").perform(context)
     repetitions = LaunchConfiguration("repetitions").perform(context)
+    dependence = LaunchConfiguration("dependence").perform(context).strip()
     headless_requested = LaunchConfiguration("headless").perform(context)
     headless = (
         "True"
@@ -132,17 +133,21 @@ def _launch_setup(context):
             f"/world/{suite.world_name}/set_pose@ros_gz_interfaces/srv/SetEntityPose",
         ],
     )
+    runner_arguments = [
+        "--scenario", str(scenario_path),
+        "--blocker-sdf", blocker_sdf,
+        "--output", output,
+        "--repetitions", repetitions,
+    ]
+    if dependence:
+        runner_arguments.extend(["--dependence", dependence])
+
     runner = Node(
         package="dynnav_nav2_benchmark",
         executable="correlated_history_dynamic_execution_benchmark",
         name="dynnav_correlated_history_execution_benchmark",
         output="screen",
-        arguments=[
-            "--scenario", str(scenario_path),
-            "--blocker-sdf", blocker_sdf,
-            "--output", output,
-            "--repetitions", repetitions,
-        ],
+        arguments=runner_arguments,
     )
     delayed_runner = TimerAction(period=10.0, actions=[runner])
     shutdown = RegisterEventHandler(
@@ -200,6 +205,11 @@ def generate_launch_description() -> LaunchDescription:
                 default_value="/tmp/dynnav_correlated_history_benchmark",
             ),
             DeclareLaunchArgument("repetitions", default_value="1"),
+            DeclareLaunchArgument(
+                "dependence",
+                default_value="",
+                description="Optional frozen dependence slice for confirmatory runs.",
+            ),
             DeclareLaunchArgument("headless", default_value="true"),
             OpaqueFunction(function=_launch_setup),
         ]
