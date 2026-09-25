@@ -382,6 +382,7 @@ def run_g1_v2_heldout_benchmark(
     for scenario in frozen_g1_v2_scenarios():
         scenario.model.validate(scenario.grid)
         for dependence in scenario.dependence_modes:
+            dependence_seed_base = seed + condition_index * 100_003
             for weight in weights:
                 plans = _plan_set(scenario, dependence, weight)
                 plan_metadata: dict[str, tuple[frozenset[int], float]] = {}
@@ -396,12 +397,7 @@ def run_g1_v2_heldout_benchmark(
                     plan_metadata[planner] = (active, true_return)
 
                 for repetition in range(repetitions):
-                    condition_seed = (
-                        seed
-                        + condition_index * 100_003
-                        + int(round(weight * 1000.0)) * 17
-                        + repetition
-                    )
+                    condition_seed = dependence_seed_base + repetition
                     rng = random.Random(condition_seed)
                     failure_counts = {planner: 0 for planner in plans}
                     failure_cache: dict[
@@ -477,7 +473,7 @@ def run_g1_v2_heldout_benchmark(
                                 ),
                             )
                         )
-                condition_index += 1
+            condition_index += 1
     return records
 
 
