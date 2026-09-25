@@ -91,6 +91,15 @@ def _trial(
         "dynnav/executed_transition",
         10,
     )
+    reset_publisher = navigator.create_publisher(
+        String,
+        "dynnav/reset_history",
+        10,
+    )
+    reset_publisher.publish(
+        String(data=f"trial={repetition} planner={planner_id}")
+    )
+    time.sleep(0.15)
     navigator.feedback = None
     accepted = navigator.goToPose(
         _pose_message(navigator, scenario.goal, scenario.frame_id),
@@ -98,6 +107,7 @@ def _trial(
     )
     if not accepted:
         navigator.destroy_publisher(publisher)
+        navigator.destroy_publisher(reset_publisher)
         return {
             "planner_id": planner_id,
             "repetition": repetition,
@@ -124,7 +134,7 @@ def _trial(
                 resolution=resolution,
             )
             text = state.observe(cell)
-            if text is not None:
+            if text is not None and planner_id == "DynNavHistory":
                 publisher.publish(String(data=text))
             if state.closure_requested and not closure_applied:
                 clearance = math.hypot(
@@ -191,6 +201,7 @@ def _trial(
             budget_m=scenario.recovery_budget_m,
         ).to_dict()
     navigator.destroy_publisher(publisher)
+    navigator.destroy_publisher(reset_publisher)
     if (
         injection_error is None
         and state.closure_requested
