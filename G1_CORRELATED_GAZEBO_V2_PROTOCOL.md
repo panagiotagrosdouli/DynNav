@@ -1,6 +1,6 @@
-# G1 Correlated Gazebo V3 Protocol
+# G1 Correlated Gazebo V3.1 Protocol
 
-**Status:** V2.3 computational-validity amendment after two invalid integration smokes and before any valid comparative planner outcome.
+**Status:** V3.1 protocol version after retaining and excluding the V3 smoke from confirmatory use because its pre-execution planner audit exposed trial-order global-costmap contamination.
 
 ## Why a new environment is required
 
@@ -24,6 +24,16 @@ The correction is derived entirely from the static map geometry. At each trigger
 - arbitrary-dependence robust-history: lower trigger-free detour, 230 transitions, objective cost 230.
 
 The V2.x execution outcomes are not used to tune these values and are not included in V3 efficacy denominators.
+
+### V3.1 frozen global-planning costmap
+
+The V3 smoke produced physically valid robot motion, but its mandatory pre-execution planner audit exposed a comparability failure: even `DynNavShortest`, which has no history or dependence state, changed between the direct and detour routes across trial order. The dependence truth is sampled only after route choice and cannot causally alter that initial plan. Therefore the V3 planner/execution comparisons are retained as diagnostic evidence but excluded from confirmatory denominators.
+
+V3.1 changes the **global planning costmap only** to a deterministic static-map-plus-inflation stack. The global obstacle/voxel layer is removed for all three planner conditions. The local costmap is unchanged and remains sensor-driven, so the controller and collision stack still observe physical Gazebo blockers.
+
+This change is applied identically to `DynNavShortest`, `DynNavHistory` and `DynNavRobustHistory`; it does not change the map, trigger gates, blocker footprints, marginal probabilities, dependence conditions, safe region, recoverability weight, or planner objective. The initial-plan audit is now a hard integrity gate: within a repetition-independent frozen static costmap, `DynNavShortest` and `DynNavHistory` must always cross both trigger gates and `DynNavRobustHistory` must always take the trigger-free lower detour.
+
+Because the global planning costmap no longer contains live obstacle observations, post-trial recovery is evaluated on the same static global costmap with the **actually applied physical blocker footprints overlaid as lethal cells**. This preserves the realized topology for the recovery oracle without reintroducing scan-history-dependent planner inputs.
 
 ### V2.3 planner-route diagnostic amendment
 
@@ -135,7 +145,8 @@ Secondary outcomes include navigation duration. V2.3 additionally records a mand
 
 ## Stop and integrity rules
 
-- No trigger, blocker relative pose, corridor geometry, dependence distribution, weight, or timeout may be changed after the first valid V2.3 Gazebo outcome is inspected without a protocol version change. The V2.2 rigid translation and V2.3 exact-connectivity caching/trial-feedback reset are the only pre-valid-outcome amendments and are documented above.
+- V3 smoke results are retained but excluded from confirmatory use because the planner audit showed trial-order global-costmap contamination. V3.1 freezes a static-map-only global planning costmap as a new protocol version.
+- No trigger, blocker relative pose, corridor geometry, dependence distribution, weight, timeout, or V3.1 global-costmap policy may be changed after the first valid V3.1 outcome is inspected without another protocol version change.
 - A failed topology contract blocks execution.
 - A failed ROS build/test blocks execution.
 - Invalid trials are retained and reported; they are not silently replaced.
