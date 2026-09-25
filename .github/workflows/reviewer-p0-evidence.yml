@@ -50,6 +50,21 @@ jobs:
           tests/test_hazard_reliability_astar.py
           tests/test_unavoidable_history_benchmark.py
 
+      - name: Re-run controlled execution with exact state-only baseline
+        run: >-
+          python scripts/run_commitment_execution_benchmark.py
+          --out-dir results/reviewer_p0/commitment_execution
+
+      - name: Re-run heterogeneous held-out with exact state-only baseline
+        run: >-
+          python scripts/run_heldout_history_generalization.py
+          --out-dir results/reviewer_p0/heldout_history_generalization
+
+      - name: Re-run geometric held-out with exact state-only baseline
+        run: >-
+          python scripts/run_geometric_heldout_benchmark.py
+          --out-dir results/reviewer_p0/geometric_heldout
+
       - name: Run frozen unavoidable-hazard challenge suite
         run: >-
           python -m dynnav.experiments.unavoidable_history_benchmark
