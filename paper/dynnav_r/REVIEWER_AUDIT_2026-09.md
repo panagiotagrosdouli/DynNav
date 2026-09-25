@@ -76,7 +76,7 @@ Exact closure enumeration is a small-hazard reference oracle. The critical-cut a
 
 **Status: still the largest empirical limitation.**
 
-The ROS 2/Nav2 implementation supports the semantics at software level, but the current manuscript must not claim Gazebo efficacy or hardware efficacy without a retained valid execution artifact. A simulation-scoped paper is still possible if this boundary remains explicit.
+The ROS 2/Nav2 implementation supports the semantics at software level. A retained paired Gazebo diagnostic now exists, but it is negative rather than efficacy evidence: the pre-fix history condition completed 0/8 navigation trials while the two comparison planners completed 8/8 each. The artifact exposed trial-history isolation and exact-oracle execution issues that are being fixed on the paper branch. No positive Gazebo efficacy claim is allowed until a fresh frozen rerun passes the same contract.
 
 ## Submission-critical checks
 
