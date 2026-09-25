@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
-import json
+from collections import Counter
 from dataclasses import asdict
+import json
 from pathlib import Path
 from typing import Any
 
@@ -42,10 +43,6 @@ def _paired_rows(
         if condition == dependence and planner == baseline
         and (dependence, repetition, proposed) in index
     )
-    if not repetitions:
-        raise ValueError(
-            f"no valid paired trials for {dependence}: {baseline} vs {proposed}"
-        )
     return (
         [index[(dependence, repetition, baseline)] for repetition in repetitions],
         [index[(dependence, repetition, proposed)] for repetition in repetitions],
@@ -80,18 +77,50 @@ def analyze_g1_gazebo_v2(
     for condition_index, dependence in enumerate(DEPENDENCE_CONDITIONS):
         condition: dict[str, Any] = {"descriptive": {}, "paired_effects": {}}
         for planner in PLANNERS:
-            rows = [
+            all_rows = [
                 row
-                for (dep, _rep, method), row in index.items()
-                if dep == dependence and method == planner
+                for row in data["trials"]
+                if str(row["dependence"]) == dependence
+                and str(row["planner_id"]) == planner
             ]
+            rows = [row for row in all_rows if row.get("valid_trial", False)]
             times = [
                 float(row["navigation_time_s"])
                 for row in rows
                 if row.get("navigation_time_s") is not None
             ]
+            invalid_reasons = Counter(
+                str(row.get("invalid_reason") or "unspecified")
+                for row in all_rows
+                if not row.get("valid_trial", False)
+            )
+            initial_plans = [
+                row["initial_plan"]
+                for row in all_rows
+                if isinstance(row.get("initial_plan"), dict)
+                and row["initial_plan"].get("success", False)
+            ]
+            initial_lengths = [
+                float(plan["path_length_m"])
+                for plan in initial_plans
+                if plan.get("path_length_m") is not None
+            ]
+            initial_routes = sorted(
+                {str(plan["route_class"]) for plan in initial_plans}
+            )
+            initial_gate_patterns = sorted(
+                {
+                    tuple(bool(value) for value in plan["trigger_gate_crossings"])
+                    for plan in initial_plans
+                }
+            )
             condition["descriptive"][planner] = {
+                "total_trials": len(all_rows),
                 "valid_trials": len(rows),
+                "valid_trial_rate": (
+                    len(rows) / len(all_rows) if all_rows else None
+                ),
+                "invalid_reasons": dict(sorted(invalid_reasons.items())),
                 "both_trigger_rate": (
                     sum(_both_triggers(row) for row in rows) / len(rows)
                     if rows else None
@@ -108,6 +137,17 @@ def analyze_g1_gazebo_v2(
                 "mean_navigation_time_s": (
                     sum(times) / len(times) if times else None
                 ),
+                "initial_plan": {
+                    "successful_audits": len(initial_plans),
+                    "route_classes": initial_routes,
+                    "trigger_gate_crossing_patterns": [
+                        list(pattern) for pattern in initial_gate_patterns
+                    ],
+                    "mean_path_length_m": (
+                        sum(initial_lengths) / len(initial_lengths)
+                        if initial_lengths else None
+                    ),
+                },
             }
 
         for comparison_index, (baseline, proposed) in enumerate(
@@ -119,6 +159,15 @@ def analyze_g1_gazebo_v2(
             baseline_rows, proposed_rows = _paired_rows(
                 index, dependence, baseline, proposed
             )
+            if not baseline_rows:
+                condition["paired_effects"][f"{proposed}_vs_{baseline}"] = {
+                    "paired_valid_trials": 0,
+                    "both_trigger_exposure": None,
+                    "irreversible_failure": None,
+                    "navigation_time": None,
+                }
+                continue
+
             exposure_effect = paired_binary_effect(
                 [_both_triggers(row) for row in baseline_rows],
                 [_both_triggers(row) for row in proposed_rows],
