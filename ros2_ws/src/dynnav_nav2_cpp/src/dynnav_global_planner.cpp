@@ -88,11 +88,21 @@ std::vector<HistoryHazard> parseHistoryHazards(
               "history hazard must be trigger@closure@probability");
     }
     const auto trigger = parseTransition(fields[0]);
+    const auto closure_parts = split(fields[1], '+');
+    if (closure_parts.empty()) {
+      throw std::invalid_argument("history hazard closure footprint cannot be empty");
+    }
+    std::vector<std::size_t> closure_indices;
+    closure_indices.reserve(closure_parts.size());
+    for (const auto & closure_part : closure_parts) {
+      closure_indices.push_back(checkedIndex(costmap, parseCell(closure_part)));
+    }
     result.push_back({
       checkedIndex(costmap, trigger.first),
       checkedIndex(costmap, trigger.second),
-      checkedIndex(costmap, parseCell(fields[1])),
-      std::stod(fields[2])});
+      closure_indices.front(),
+      std::stod(fields[2]),
+      std::move(closure_indices)});
   }
   return result;
 }
