@@ -136,3 +136,21 @@ def select_safe_information_probe(
     if best_index is None:
         return SafeProbeDecision(None, 0.0, "no candidate satisfies the return constraint")
     return SafeProbeDecision(best_index, best_score, "max expected variance reduction per traversal cost")
+
+
+def naive_unexposed_as_open_limit(
+    exposure_probability: float,
+    true_closure_probability: float,
+) -> float:
+    """Asymptotic naive estimate when non-exposures are logged as open.
+
+    If exposure occurs with probability r and closure conditional on exposure
+    occurs with probability p, coding every non-exposure as a Bernoulli zero
+    makes the sample mean converge to r*p instead of p.
+    """
+
+    if not 0.0 <= exposure_probability <= 1.0:
+        raise ValueError("exposure_probability must be in [0, 1]")
+    if not 0.0 <= true_closure_probability <= 1.0:
+        raise ValueError("true_closure_probability must be in [0, 1]")
+    return exposure_probability * true_closure_probability
