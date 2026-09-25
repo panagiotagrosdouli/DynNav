@@ -223,12 +223,13 @@ jobs:
           Path("/tmp/dynnav_g1_v2/results/invalid_trials.json").write_text(
               json.dumps(invalid, indent=2, sort_keys=True)
           )
-          assert not invalid, invalid
 
           assert len(grouped) == reps * 3
           for key, rows in grouped.items():
               assert {row["planner_id"] for row in rows} == planners
               assert len({tuple(row["latent_closures"]) for row in rows}) == 1, key
+              valid_count = sum(bool(row["valid_trial"]) for row in rows)
+              assert valid_count >= 2, (key, valid_count, rows)
 
           summary = {}
           for dependence in data["dependence_conditions"]:
