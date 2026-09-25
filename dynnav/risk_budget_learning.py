@@ -47,7 +47,7 @@ class ExplorationRiskBudget:
         self.validate()
         return max(0.0, self.total - self.spent)
 
-    def charge(self, amount: float) -> "ExplorationRiskBudget":
+    def charge(self, amount: float) -> ExplorationRiskBudget:
         self.validate()
         if not isfinite(amount) or amount < 0.0:
             raise ValueError("risk charge must be finite and non-negative")
