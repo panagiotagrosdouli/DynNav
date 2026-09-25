@@ -148,3 +148,13 @@ No physical robot is connected to the current execution environment. Therefore p
 **CONDITIONAL GO FOR A SIMULATION-SCOPED SUBMISSION** once the final exact-head CI/paper build and release freeze are green.
 
 The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. The core representation claim now has retained same-oracle and unavoidable-hazard evidence. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact only if Gazebo efficacy is to appear in the paper; perform the final manuscript-number/citation consistency check; execute final exact-head CI and paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
+
+
+## Expanded measurement gate
+
+A retained reviewer-measurement workflow now adds two measurements that were previously weak or single-shot:
+
+- **96 frozen unavoidable-hazard scenarios**, 250 paired execution seeds per scenario (24,000 trials per planner). State-only exact return-infeasibility is 0.74425 and history exact is 0.66604. The scenario-level history-minus-state-only mean difference is -0.07821 with 95% bootstrap CI [-0.1090, -0.04983]. History exact improves 36/96 scenarios and is nonworse in 96/96.
+- **Repeated timing distributions**, 100 measured repetitions after 10 warm-ups. On the retained GitHub Actions runner, the 12-hazard exact oracle has median 38.47 ms (IQR 0.181 ms, p95 38.75 ms) and critical-cut has median 0.192 ms (IQR 0.0064 ms, p95 0.204 ms), a median ratio of 200.7x. At six modules, median online planning latency is 0.114 ms for shortest augmented, 4.06 ms for history-cut, and 5.79 ms for history-exact.
+
+The timing distributions are descriptive for the retained runner environment and must not be presented as hardware-independent real-time guarantees. The 96-scenario family remains a structured synthetic generator and does not establish arbitrary-map or deployment generalization.
