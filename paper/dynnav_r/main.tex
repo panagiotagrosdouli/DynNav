@@ -39,12 +39,11 @@ Traversal-dependent topology is itself established. Carmesin \emph{et al.} forma
 
 The contributions are:
 \begin{itemize}
-  \item a compact model of action-triggered topology hazards and an augmented planning state $(x,\Aset)$ that retains which future closures have been activated;
-  \item an exact safe-return reliability oracle for independent future closures and an A* objective that trades path length against history-conditioned return fragility;
-  \item a counterfactual same-state/different-history test showing an information gap that a state-only marginal model cannot represent;
-  \item controlled, frozen heterogeneous, and three predeclared geometrically distinct held-out evaluations against shortest-path and state-only probability-aware baselines;
-  \item a predeclared soft-history versus hard safe-return sweep that separates representation evidence from objective-function superiority claims;
-  \item scaling and adversarial tests that expose both the computational value and the joint-cut failure boundary of a critical-cut approximation.
+  \item an explicit action-triggered stochastic topology model in which executed transitions activate future closure events and safe-return reliability is conditioned on the resulting activation state;
+  \item a same-position/different-history construction together with a representation lower bound: collapsing two histories with reliabilities $R_1$ and $R_2$ to one deterministic endpoint-only estimate incurs worst-history error at least $|R_1-R_2|/2$;
+  \item an exact small-hazard return-connectivity oracle and augmented-state A* reference planner, evaluated against shortest-path, state-only marginal-risk, and hard safe-return baselines;
+  \item frozen paired evaluations across probability/horizon transfer and three hand-authored geometries, plus an objective-sensitivity study that explicitly retains cases where hard safe-return constraints match the history-conditioned route;
+  \item a structural critical-cut approximation with both a measured scaling regime and an adversarial multi-cell-cut counterexample that exposes its failure boundary.
 \end{itemize}
 
 \begin{figure}[t]
