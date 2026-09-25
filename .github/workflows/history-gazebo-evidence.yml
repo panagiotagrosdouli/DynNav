@@ -24,7 +24,7 @@ on:
       repetitions:
         description: Frozen paired repetitions per planner
         required: true
-        default: '3'
+        default: '8'
 
 permissions:
   contents: read
@@ -76,7 +76,7 @@ jobs:
           set -o pipefail
           source /opt/ros/jazzy/setup.bash
           source /tmp/dynnav_history/install/setup.bash
-          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '3' }} output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
+          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
           test -s /tmp/dynnav_history/results/results.json
       - name: Validate paired event and trial contract
         run: |
@@ -93,7 +93,7 @@ jobs:
           by_rep = defaultdict(list)
           for row in trials:
               by_rep[row['repetition']].append(row)
-              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','recovery_feasible'): assert key in row
+              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible'): assert key in row
           assert set(by_rep) == set(range(repetitions))
           for rows in by_rep.values():
               assert {r['planner_id'] for r in rows} == {'NavFn','DynNavShortest','DynNavHistory'}
