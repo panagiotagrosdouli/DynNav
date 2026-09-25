@@ -1,4 +1,4 @@
-"""Post-full-study exploratory diagnostics for G3 and G5.
+"""Post-full-study exploratory diagnostics for G1, G3 and G5.
 
 These diagnostics were designed after inspecting the frozen V1 full-study
 artifact. They must not be mixed with the confirmatory V1 claim gate.
@@ -16,6 +16,9 @@ from dynnav.experiments.history_compression_state_space import (
 from dynnav.experiments.safe_learning_lockout_benchmark import (
     run_safe_learning_lockout_benchmark,
 )
+from dynnav.experiments.topology_dependence_control import (
+    run_topology_dependence_control,
+)
 
 
 def run_post_full_study_diagnostics(
@@ -23,10 +26,12 @@ def run_post_full_study_diagnostics(
     opportunities: int = 2_000,
     seed: int = 20260925,
 ) -> dict[str, object]:
-    """Run the frozen exploratory G3 lockout and G5 state-space sweeps."""
+    """Run exploratory topology, lockout and full-state diagnostics."""
 
     if opportunities <= 0:
         raise ValueError("opportunities must be positive")
+
+    g1 = [asdict(row) for row in run_topology_dependence_control()]
 
     g3: list[dict[str, object]] = []
     condition = 0
@@ -59,6 +64,7 @@ def run_post_full_study_diagnostics(
                 "not part of frozen EXPERIMENT_PROTOCOL_G1_G5_V1"
             ),
         },
+        "G1_topology_dependence_sign_reversal": g1,
         "G3_safe_learning_lockout": g3,
         "G5_full_reachable_state_space": g5,
     }
