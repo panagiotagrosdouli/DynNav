@@ -145,6 +145,7 @@ def _trial(
     applied = [False, False]
     injection_error = None
     last_feedback = None
+    navigation_time_s = None
     start_wall = time.monotonic()
     while not navigator.isTaskComplete():
         feedback = navigator.getFeedback()
@@ -191,6 +192,7 @@ def _trial(
             nav_s = float(feedback.navigation_time.sec) + (
                 float(feedback.navigation_time.nanosec) / 1e9
             )
+            navigation_time_s = nav_s
             if nav_s >= scenario.execution_timeout_s:
                 navigator.cancelTask()
                 _wait_after_cancel(navigator)
@@ -237,6 +239,7 @@ def _trial(
         "invalid_reason": injection_error
         or ("sampling_gap" if not state.observation_valid else None),
         "navigation_success": success,
+        "navigation_time_s": navigation_time_s,
         "result_error_code": error_code,
         "result_error_message": error_message,
         "latent_closures": list(latent),
