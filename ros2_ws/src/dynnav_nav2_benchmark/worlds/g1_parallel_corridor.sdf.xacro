@@ -34,28 +34,28 @@
     </model>
 
     <model name="boundary_left">
-      <static>1</static><pose>0.075 3.2 0.5 0 0 0</pose>
+      <static>1</static><pose>-0.725 -2.025 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></collision>
         <visual name="visual"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></visual>
       </link>
     </model>
     <model name="boundary_right">
-      <static>1</static><pose>6.925 3.2 0.5 0 0 0</pose>
+      <static>1</static><pose>6.125 -2.025 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></collision>
         <visual name="visual"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></visual>
       </link>
     </model>
     <model name="boundary_bottom">
-      <static>1</static><pose>3.5 0.075 0.5 0 0 0</pose>
+      <static>1</static><pose>2.7 -5.15 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></collision>
         <visual name="visual"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></visual>
       </link>
     </model>
     <model name="boundary_top">
-      <static>1</static><pose>3.5 6.325 0.5 0 0 0</pose>
+      <static>1</static><pose>2.7 1.1 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></collision>
         <visual name="visual"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></visual>
@@ -63,7 +63,7 @@
     </model>
 
     <model name="central_island">
-      <static>1</static><pose>3.5 3.2 0.5 0 0 0</pose>
+      <static>1</static><pose>2.7 -2.025 0.5 0 0 0</pose>
       <link name="link">
         <collision name="collision"><geometry><box><size>4.0 2.0 1.0</size></box></geometry></collision>
         <visual name="visual">
