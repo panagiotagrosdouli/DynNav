@@ -3,6 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from dynnav_nav2_benchmark.correlated_history_execution import (
+    blocker_footprint_cells,
     load_correlated_history_execution_suite,
 )
 
@@ -69,3 +70,18 @@ scenario:
         "anti_correlated",
     )
     assert suite.blocker_size == (0.35, 1.2, 1.0)
+
+
+def test_blocker_footprint_rasterizes_physical_rectangle() -> None:
+    from dynnav_nav2_benchmark.dynamic_analysis import Pose3D
+
+    cells = blocker_footprint_cells(
+        center=Pose3D(1.0, 2.0, 0.5, 0.0),
+        size_xy=(0.4, 1.0),
+        origin_x=0.0,
+        origin_y=0.0,
+        resolution=0.2,
+    )
+    assert (4, 7) in cells
+    assert (6, 12) in cells
+    assert len(cells) == 18
