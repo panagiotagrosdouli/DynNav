@@ -189,9 +189,6 @@ In a controlled world with a direct path of length $4$ and a trigger-avoiding de
 \end{equation}
 Across 75 combinations of detour depth, closure probability, and weight, the exact history-aware planner matches the analytic route choice in all 75 cases. The shortest-path baseline never detours.
 
-\subsection{Primary generated challenge}
-The publication-facing empirical result is the frozen unavoidable-hazard suite, which removes the easiest trigger-avoidance regime: every feasible start-to-goal path activates at least one hazard per module. The expanded evaluation contains 96 generated scenarios with 250 paired execution seeds per scenario (24,000 trials per planner). The exact state-only control selects exactly the same paths and activated hazard identities as shortest in all 96 scenarios. History-conditioned planning changes the activated-hazard choice in 36 of 96 scenarios and has higher exact final return probability in those same 36, while remaining nonworse in empirical return-infeasibility in all 96.
-
 \begin{figure*}[t]
 \centering
 \begin{minipage}[t]{0.485\textwidth}
@@ -279,14 +276,19 @@ The publication-facing empirical result is the frozen unavoidable-hazard suite, 
 \node[anchor=south west,font=\scriptsize,align=left]
   at (rel axis cs:0.03,0.06)
   {36 improved\\60 unchanged\\0 worse};
-\node[anchor=north west,font=\scriptsize]
-  at (axis cs:-0.074,94) {$\Delta=-0.078$};
+\node[anchor=north east,font=\scriptsize]
+  at (rel axis cs:0.96,0.96) {mean $\Delta=-0.078$};
 \end{axis}
 \end{tikzpicture}
 \end{minipage}
 \caption{Primary 96-scenario unavoidable-hazard result. (a) Scenario-level empirical return-infeasibility for the exact state-only control and history-conditioned planner; points below the diagonal favor history conditioning. (b) The same scenarios ranked by paired risk difference. Each scenario summarizes 250 paired execution seeds. History conditioning improves 36 of 96 scenarios, ties 60, and is worse in none; the scenario-level mean difference is $-0.0782$ with 95\% bootstrap CI $[-0.1090,-0.0498]$.}
 \label{fig:unavoidable-primary}
 \end{figure*}
+
+\subsection{Primary generated challenge}
+The publication-facing empirical result is the frozen unavoidable-hazard suite, which removes the easiest trigger-avoidance regime: every feasible start-to-goal path activates at least one hazard per module. The expanded evaluation contains 96 generated scenarios with 250 paired execution seeds per scenario (24,000 trials per planner). The exact state-only control selects exactly the same paths and activated hazard identities as shortest in all 96 scenarios. History-conditioned planning changes the activated-hazard choice in 36 of 96 scenarios and has higher exact final return probability in those same 36, while remaining nonworse in empirical return-infeasibility in all 96.
+
+
 
 Pooling the 96 scenarios equally, empirical return-infeasibility decreases from $0.7443$ for the exact state-only control to $0.6660$ with history conditioning, while mean exact final return reliability increases from $0.2535$ to $0.3314$. Mean path length increases from $11.77$ to $13.33$ steps. Both planners activate the same mean number of hazards (2.35), so the improvement does not come from avoiding stochastic commitments altogether; it comes from selecting different activated hazards. This is the main empirical evidence for the representation claim because every feasible route in the suite activates hazards.
 
