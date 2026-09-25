@@ -1,0 +1,59 @@
+{
+  "artifact_scope": "Initial bounded G1-G5 mechanism evidence; not deployment efficacy",
+  "generated_from_commit": "dc5af872b1755cf9f0bbbbf5988e94d27e90787c",
+  "workflow_run_id": 36100343146,
+  "artifact_id": 10848937658,
+  "artifact_digest": "sha256:63bc1fcd96bec3034fab266e29550178aa5d4568f15a3b38f400f585e6e8082b",
+  "seed": 20260925,
+  "trials_per_stochastic_section": 2000,
+  "selected_results": {
+    "G1": {
+      "parallel_corridors_p_0_5": {
+        "2": {"independent_return": 0.75, "worst_case_return": 0.5},
+        "3": {"independent_return": 0.875, "worst_case_return": 0.5},
+        "4": {"independent_return": 0.9375, "worst_case_return": 0.5},
+        "5": {"independent_return": 0.96875, "worst_case_return": 0.5}
+      },
+      "two_corridor_pairwise_identified_return": 0.75
+    },
+    "G2": {
+      "calibrated_informative": {
+        "bayes_brier": 0.135076,
+        "prior_brier": 0.2369,
+        "threshold_0_2_bayes_safe_decision_rate": 0.507,
+        "threshold_0_2_bayes_false_safe_rate": 0.07001972386587771
+      },
+      "missed_activation_miscalibrated": {
+        "bayes_brier": 0.20822688550951315,
+        "threshold_0_2_bayes_safe_decision_rate": 0.651,
+        "threshold_0_2_bayes_false_safe_rate": 0.22196620583717358
+      }
+    },
+    "G3": {
+      "always_probe_posterior_mean": 0.6781437125748503,
+      "half_probe_correct_posterior_mean": 0.6743027888446215,
+      "half_probe_naive_unexposed_as_open_posterior_mean": 0.3378243512974052,
+      "true_probability": 0.7
+    },
+    "G4": {
+      "randomized_positive_true_ate": 0.6,
+      "randomized_positive_estimate": 0.574,
+      "randomized_null_true_ate": 0.0,
+      "randomized_null_estimate": 0.030000000000000027,
+      "hidden_confounding_true_ate": 0.0,
+      "hidden_confounding_spurious_estimate": 0.42600000000000005
+    },
+    "G5": {
+      "raw_hazards_12": 12,
+      "quotient_events": 2,
+      "raw_subset_states": 4096,
+      "quotient_subset_states": 4
+    }
+  },
+  "limitations": [
+    "single retained seed for this initial artifact",
+    "bounded synthetic mechanism experiments",
+    "no ROS/Gazebo or hardware efficacy claim",
+    "later branch commits add execution and scaling benchmarks not represented by this artifact"
+  ]
+}
