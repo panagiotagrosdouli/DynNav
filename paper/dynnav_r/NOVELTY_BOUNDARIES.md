@@ -13,6 +13,7 @@ This file records the claims that the manuscript must **not** make and the narro
 | Predicting near-miss commitment / future bottleneck closure is new | RCSP and related predictive-commitment work | **Excluded** |
 | Contingency or backup feasibility is new | Backup-plan MPC, contingency MPPI, safe-return and reachability methods | **Excluded** |
 | Action-dependent environmental evolution is new | Existing robotics work models action-dependent environmental transition fields, including 2026 sequential cleanup/risk-field work | **Excluded** |
+| Traversal-dependent edge deletion / self-deleting graphs are new | Carmesin et al., *Journal of Computational Science* 2023, DOI 10.1016/j.jocs.2023.102156: visited vertices can delete future edges, so the residual graph depends on path history | **Excluded** |
 | Self-induced environmental obstacles / history-dependent traversability are new | Frenkel, Parker, Mansouri, *IEEE RA-L* 2026, DOI 10.1109/LRA.2026.3656776: robot traversal creates future obstacles and feasible successors depend on path history | **Excluded** |
 | Graph articulation / cut concepts are new | Classical graph theory and prior robotics/network applications | **Excluded** |
 
