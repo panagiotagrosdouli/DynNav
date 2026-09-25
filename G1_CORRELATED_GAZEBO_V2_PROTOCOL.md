@@ -1,6 +1,6 @@
-# G1 Correlated Gazebo V2.2 Protocol
+# G1 Correlated Gazebo V2.3 Protocol
 
-**Status:** V2.2 validity amendment after an invalid no-motion smoke and before any valid comparative planner outcome.
+**Status:** V2.3 computational-validity amendment after two invalid integration smokes and before any valid comparative planner outcome.
 
 ## Why a new environment is required
 
@@ -13,6 +13,18 @@ V2 instantiates the already-defined analytic G1 parallel-corridor construction d
 The first V2 smoke completed the software path but all nine trials remained at the start and timed out because the simulator initially spawned the robot at `(0,0)` while the original canonical map occupied only positive coordinates. That smoke is retained as invalid integration evidence and is not used as an efficacy result. V2.2 applies one rigid translation to the map origin, Gazebo world and all scenario poses so that `(0,0)` is the frozen start pose. The occupancy pixels, grid-cell topology, trigger cells, blocker footprints, marginal probabilities, dependence conditions and recoverability weight are unchanged. The machine-checkable topology contract must remain identical after translation.
 
 Before any admissible V2.2 outcome, this document was also synchronized with the already-committed V2.1 canonical assets: the island is `4.0 × 2.0 m`, the blocker footprint is `0.40 × 2.05 m`, and the trigger grid row is `104`. These are documentation corrections only; the underlying committed assets and machine-checkable topology contract are unchanged.
+
+### V2.3 computational-validity amendment
+
+The translated V2.2 smoke preserved the required topology contract exactly, but it was still invalid: the first history-aware planning request remained inside `compute_path_to_pose` until the 75 s execution timeout, so the robot never moved. The direct cause was computational rather than geometric: the exact history search recomputed full-grid safe-return reachability separately for nearly every augmented state. After the first timeout, `BasicNavigator` also retained the previous feedback object, so subsequent trials could observe a stale 75 s `navigation_time` and cancel immediately.
+
+V2.3 changes only execution efficiency and trial isolation:
+
+1. closure-scenario reachability is cached exactly inside one planning call; with two hazards, at most four closure-realization connectivity maps are computed and all state-wise return probabilities are exact lookups;
+2. the public direct return-probability oracles remain unchanged and continue to serve as reference implementations/tests;
+3. `navigator.feedback` is explicitly cleared before each new trial so stale timeout feedback cannot affect the next planner condition.
+
+No map cell, world geometry, trigger gate, blocker footprint, closure probability, dependence condition, recoverability weight, safe region, planner objective or timeout is changed. Because no V2/V2.2 trial produced a valid comparative execution, this amendment occurs before any admissible planner outcome.
 
 ## Frozen environment
 
@@ -104,7 +116,7 @@ Secondary outcomes include navigation duration and planner path information when
 
 ## Stop and integrity rules
 
-- No trigger, blocker relative pose, corridor geometry, dependence distribution, weight, or timeout may be changed after the first valid V2.2 Gazebo outcome is inspected without a protocol version change. The V2.2 rigid translation is the sole post-smoke validity amendment and is documented above.
+- No trigger, blocker relative pose, corridor geometry, dependence distribution, weight, or timeout may be changed after the first valid V2.3 Gazebo outcome is inspected without a protocol version change. The V2.2 rigid translation and V2.3 exact-connectivity caching/trial-feedback reset are the only pre-valid-outcome amendments and are documented above.
 - A failed topology contract blocks execution.
 - A failed ROS build/test blocks execution.
 - Invalid trials are retained and reported; they are not silently replaced.
