@@ -399,6 +399,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--blocker-sdf", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--repetitions", type=int, default=1)
+    parser.add_argument(
+        "--dependence",
+        action="append",
+        choices=("independent", "common_cause", "anti_correlated"),
+        help="Run only selected frozen dependence condition(s).",
+    )
     parser.add_argument("--reset-settle-s", type=float, default=2.0)
     args, ros_arguments = parser.parse_known_args(argv)
 
@@ -434,9 +440,15 @@ def main(argv: list[str] | None = None) -> int:
         publisher = nav.create_publisher(String, "dynnav/executed_transition", 10)
         time.sleep(0.5)
         trials = []
-        for condition_index, dependence in enumerate(
-            suite.scenario.dependence_conditions
-        ):
+        selected_dependence = (
+            tuple(args.dependence)
+            if args.dependence
+            else suite.scenario.dependence_conditions
+        )
+        for dependence in selected_dependence:
+            condition_index = suite.scenario.dependence_conditions.index(
+                dependence
+            )
             schedule = balanced_trial_order(
                 suite.planner_ids,
                 args.repetitions,
@@ -463,9 +475,7 @@ def main(argv: list[str] | None = None) -> int:
             "schema_version": 1,
             "benchmark_type": "correlated_action_triggered_history",
             "seed": suite.seed,
-            "dependence_conditions": list(
-                suite.scenario.dependence_conditions
-            ),
+            "dependence_conditions": list(selected_dependence),
             "trials": trials,
         }
         (args.output / "results.json").write_text(
