@@ -12,6 +12,8 @@ V2 instantiates the already-defined analytic G1 parallel-corridor construction d
 
 The first V2 smoke completed the software path but all nine trials remained at the start and timed out because the simulator initially spawned the robot at `(0,0)` while the original canonical map occupied only positive coordinates. That smoke is retained as invalid integration evidence and is not used as an efficacy result. V2.2 applies one rigid translation to the map origin, Gazebo world and all scenario poses so that `(0,0)` is the frozen start pose. The occupancy pixels, grid-cell topology, trigger cells, blocker footprints, marginal probabilities, dependence conditions and recoverability weight are unchanged. The machine-checkable topology contract must remain identical after translation.
 
+Before any admissible V2.2 outcome, this document was also synchronized with the already-committed V2.1 canonical assets: the island is `4.0 × 2.0 m`, the blocker footprint is `0.40 × 2.05 m`, and the trigger grid row is `104`. These are documentation corrections only; the underlying committed assets and machine-checkable topology contract are unchanged.
+
 ## Frozen environment
 
 - map: `maps/g1_parallel_corridor.yaml`;
@@ -22,8 +24,8 @@ The first V2 smoke completed the software path but all nine trials remained at t
 - occupancy resolution: 0.05 m;
 - start / safe-region center: `(0.0, 0.0)`;
 - goal: `(5.4, 0.0)`;
-- central static island: 4.0 m × 1.6 m;
-- two dynamic blocker footprints: 0.40 m × 1.55 m.
+- central static island: 4.0 m × 2.0 m;
+- two dynamic blocker footprints: 0.40 m × 2.05 m.
 
 The machine-checkable topology contract must satisfy
 
@@ -40,11 +42,11 @@ No Gazebo trial may be interpreted if this contract fails.
 Both hazards have marginal closure probability 0.5.
 
 1. Top return gate:
-   - trigger grid transition `(72,81) -> (73,81)`;
+   - trigger grid transition `(72,104) -> (73,104)`;
    - world trigger `(2.825,0.0) -> (2.875,0.0)`;
    - blocker center `(1.0,0.0)`.
 2. Bottom return gate:
-   - trigger grid transition `(92,81) -> (93,81)`;
+   - trigger grid transition `(92,104) -> (93,104)`;
    - world trigger `(3.825,0.0) -> (3.875,0.0)`;
    - blocker center `(1.0,-4.05)`.
 
