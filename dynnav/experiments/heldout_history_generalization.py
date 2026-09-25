@@ -126,7 +126,8 @@ def run_heldout_history_generalization(
             config=HazardReliabilityAStarConfig(
                 reliability_weight=recoverability_weight
             ),
-        )        state_only_exact = hazard_reliability_astar(
+        )
+        state_only_exact = hazard_reliability_astar(
             grid,
             start,
             goal,
