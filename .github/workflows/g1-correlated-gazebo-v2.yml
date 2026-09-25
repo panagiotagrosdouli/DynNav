@@ -42,6 +42,7 @@ jobs:
           apt-get update
           apt-get install -y --no-install-recommends \
             python3-colcon-common-extensions \
+            python3-pip \
             python3-rosdep
           rosdep init 2>/dev/null || true
           rosdep update
@@ -219,6 +220,15 @@ jobs:
           out.write_text(json.dumps(summary, indent=2, sort_keys=True))
           print(json.dumps(summary, indent=2, sort_keys=True))
           PY
+
+      - name: Run preregistered paired statistical analysis
+        run: |
+          python3 -m pip install -e . --break-system-packages
+          python3 scripts/analyze_g1_gazebo_v2.py \
+            --input /tmp/dynnav_g1_v2/results/results.json \
+            --output /tmp/dynnav_g1_v2/results/paired_analysis.json \
+            --bootstrap-resamples 5000 \
+            --seed 20260925
 
       - name: Upload canonical G1 V2 evidence
         if: always()
