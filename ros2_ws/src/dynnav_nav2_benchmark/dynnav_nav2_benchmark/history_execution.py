@@ -214,6 +214,36 @@ def classify_observed_cells(source: GridCell, target: GridCell) -> ObservedTrans
     return ObservedTransition(source, target, "sampling_gap")
 
 
+def sampling_gap_can_hide_transition(
+    source: GridCell,
+    target: GridCell,
+    trigger: DirectedTransition,
+) -> bool:
+    """Return whether a sampling gap can conceal the configured trigger.
+
+    No missing transition is reconstructed.  The test only asks whether the
+    directed trigger lies on at least one minimum-length 4-connected path
+    between the two observed endpoint cells.  Gaps elsewhere remain recorded
+    but do not make the single-hazard activation label ambiguous.
+    """
+
+    observed = classify_observed_cells(source, target)
+    if observed.kind != "sampling_gap":
+        return False
+
+    def manhattan(left: GridCell, right: GridCell) -> int:
+        return abs(left[0] - right[0]) + abs(left[1] - right[1])
+
+    trigger_source, trigger_target = trigger
+    observed_distance = manhattan(source, target)
+    through_trigger = (
+        manhattan(source, trigger_source)
+        + 1
+        + manhattan(trigger_target, target)
+    )
+    return through_trigger == observed_distance
+
+
 def trigger_decision(
     *, observed: DirectedTransition | None, trigger: DirectedTransition, latent_draw: float, closure_probability: float
 ) -> TriggerDecision:
