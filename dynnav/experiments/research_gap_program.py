@@ -34,15 +34,11 @@ from dynnav.experiments.dependence_shift_benchmark import (
 )
 from dynnav.experiments.history_compression_benchmark import (
     records_as_dicts as compression_records_as_dicts,
-)
-from dynnav.experiments.history_compression_benchmark import (
     run_history_compression_scaling,
 )
 from dynnav.experiments.noisy_activation_benchmark import ActivationObservationScenario
 from dynnav.experiments.online_calibration_benchmark import (
     records_as_dicts as calibration_records_as_dicts,
-)
-from dynnav.experiments.online_calibration_benchmark import (
     run_online_calibration_benchmark,
 )
 from dynnav.history_compression import build_hazard_event_quotient
