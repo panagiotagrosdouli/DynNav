@@ -14,6 +14,7 @@ on:
       - "dynnav/experiments/cut_scaling_benchmark.py"
       - "dynnav/experiments/multi_commitment_benchmark.py"
       - "dynnav/experiments/commitment_execution_benchmark.py"
+      - "dynnav/experiments/forced_hazard_choice_benchmark.py"
       - "dynnav/experiments/history_state_scaling_benchmark.py"
       - "dynnav/experiments/safe_return_threshold_benchmark.py"
       - "dynnav/experiments/history_information_gap_benchmark.py"
@@ -30,6 +31,7 @@ on:
       - "scripts/run_cut_scaling_benchmark.py"
       - "scripts/run_multi_commitment_benchmark.py"
       - "scripts/run_commitment_execution_benchmark.py"
+      - "scripts/run_forced_hazard_choice_benchmark.py"
       - "scripts/run_history_state_scaling_benchmark.py"
       - "scripts/run_safe_return_threshold_benchmark.py"
       - "scripts/run_history_information_gap_benchmark.py"
@@ -49,6 +51,7 @@ on:
       - "tests/test_cut_scaling_benchmark.py"
       - "tests/test_multi_commitment_benchmark.py"
       - "tests/test_commitment_execution_benchmark.py"
+      - "tests/test_forced_hazard_choice_benchmark.py"
       - "tests/test_history_state_scaling_benchmark.py"
       - "tests/test_safe_return_threshold_benchmark.py"
       - "tests/test_history_information_gap_benchmark.py"
@@ -91,6 +94,7 @@ jobs:
           tests/test_cut_scaling_benchmark.py
           tests/test_multi_commitment_benchmark.py
           tests/test_commitment_execution_benchmark.py
+          tests/test_forced_hazard_choice_benchmark.py
           tests/test_history_state_scaling_benchmark.py
           tests/test_safe_return_threshold_benchmark.py
           tests/test_history_information_gap_benchmark.py
@@ -116,6 +120,8 @@ jobs:
         run: python scripts/run_multi_commitment_benchmark.py --out-dir results/multi_commitment
       - name: Execute stochastic commitment benchmark
         run: python scripts/run_commitment_execution_benchmark.py --out-dir results/commitment_execution
+      - name: Execute unavoidable-hazard generated suite
+        run: python scripts/run_forced_hazard_choice_benchmark.py --out-dir results/forced_hazard_choice
       - name: Execute augmented history-state scaling benchmark
         run: python scripts/run_history_state_scaling_benchmark.py --out-dir results/history_state_scaling
       - name: Execute hard safe-return threshold sensitivity
@@ -138,6 +144,7 @@ jobs:
             results/cut_scaling
             results/multi_commitment
             results/commitment_execution
+            results/forced_hazard_choice
             results/history_state_scaling
             results/safe_return_threshold
             results/history_information_gap
