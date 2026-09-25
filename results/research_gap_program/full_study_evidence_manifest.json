@@ -1,0 +1,141 @@
+{
+  "artifact_scope": "Frozen synthetic G1-G5 full-study evidence; not ROS/Gazebo or hardware efficacy",
+  "generated_from_commit": "308a594d8a64f18a40b300b812f7eb5eeabc91f4",
+  "workflow_run_id": 36101578097,
+  "artifact_id": 10850230790,
+  "artifact_digest": "sha256:c3eafc891e8c78a8abcb666f1c751ca14ee945f7a6adb649db3f8509d10a7cd3",
+  "configuration": {
+    "master_seed": 20260925,
+    "repetitions": 5,
+    "trials_per_stochastic_condition": 2000
+  },
+  "selected_results": {
+    "G1_dependence_shift": {
+      "independence_history": {
+        "independent_failure_rate": 0.2473,
+        "independent_failure_rate_wilson_95": [0.23894183208828387, 0.2558522478179793],
+        "common_cause_failure_rate": 0.5074,
+        "common_cause_failure_rate_wilson_95": [0.49760011288603007, 0.5171942037292989],
+        "anti_correlated_failure_rate": 0.0,
+        "path_length": 4,
+        "activated_hazards": 2
+      },
+      "dependence_robust_history": {
+        "failure_rate_all_three_dependence_conditions": 0.0,
+        "pooled_zero_failure_wilson_upper_95_per_10000_condition_trials": 0.00038401247776654115,
+        "path_length": 8,
+        "activated_hazards": 0
+      },
+      "interpretation": "The frozen construction reproduces the planned safety-efficiency tradeoff: the independence-assuming shortcut fails about 24.7% under independent closures and 50.7% under common-cause closures, while the marginal-dependence-robust planner selects the trigger-free detour and has no failures in the retained synthetic trials. Anti-correlation is a negative regime in which the shortcut has zero return failures and the robust detour is unnecessarily conservative."
+    },
+    "G2_uncertain_activation": {
+      "strong_calibrated_mean_brier_over_qp_grid": {
+        "bayes_posterior": 0.10881120436414678,
+        "prior_only": 0.1533702222222222,
+        "detector_as_truth": 0.11058366666666668,
+        "activation_oracle": 0.09525211111111112,
+        "bayes_beats_prior_conditions": "9/9"
+      },
+      "weak_calibrated_mean_brier_over_qp_grid": {
+        "bayes_posterior": 0.14933364180877168,
+        "prior_only": 0.15368777777777778,
+        "detector_as_truth": 0.20323033333333335,
+        "activation_oracle": 0.09416866666666666,
+        "bayes_beats_prior_conditions": "9/9"
+      },
+      "sensitivity_miscalibrated_mean_brier_over_qp_grid": {
+        "bayes_posterior": 0.1549256120961908,
+        "prior_only": 0.15297822222222224,
+        "detector_as_truth": 0.17115655555555556,
+        "activation_oracle": 0.09396633333333333,
+        "bayes_beats_prior_conditions": "5/9"
+      },
+      "miscalibrated_threshold_0_2_high_risk_cases": {
+        "q_0_5_p_0_8": {
+          "bayes_false_safe_rate": 0.249921,
+          "bayes_safe_decision_rate": 0.6497
+        },
+        "q_0_8_p_0_8": {
+          "bayes_false_safe_rate": 0.51168,
+          "bayes_safe_decision_rate": 0.4972
+        }
+      },
+      "interpretation": "Correctly specified informative sensing improves calibration; weak sensing provides smaller benefit; severe sensitivity misspecification can erase the benefit and produce high false-safe rates. This supports a robustness-boundary claim, not generic POMDP novelty."
+    },
+    "G3_policy_dependent_calibration": {
+      "examples": {
+        "true_p_0_1_min_return_0_5": {
+          "safe_probe_mean_exposures": 2000.0,
+          "safe_probe_mean_absolute_error": 0.006327
+        },
+        "true_p_0_3_min_return_0_7": {
+          "safe_probe_mean_exposures": 128.6,
+          "safe_probe_mean_absolute_error": 0.066791
+        },
+        "true_p_0_5_min_return_0_7": {
+          "safe_probe_mean_exposures": 1.8,
+          "safe_probe_mean_absolute_error": 0.153333
+        },
+        "true_p_0_7_min_return_0_5": {
+          "safe_probe_mean_exposures": 7.0,
+          "safe_probe_mean_absolute_error": 0.147619
+        }
+      },
+      "mechanism_negative_control_from_initial_artifact": {
+        "true_probability": 0.7,
+        "half_probe_correct_posterior_mean": 0.6743027888446215,
+        "half_probe_naive_unexposed_as_open_posterior_mean": 0.3378243512974052
+      },
+      "interpretation": "Exposure-aware logging avoids the severe downward bias caused by treating non-exposure as a negative observation, but the simple posterior-mean safe-probe rule can stop learning after very few exposures in high-risk/high-threshold regimes. The retained result is a feedback-lockout tradeoff, not a claim that the current probing rule solves safe online learning."
+    },
+    "G4_interventional_trigger_effects": {
+      "randomized_graph_recovery": {
+        "trials_per_pair": [250, 500, 1000, 2000],
+        "mean_precision_all_sample_sizes": 1.0,
+        "mean_recall_all_sample_sizes": 1.0,
+        "false_positives_all_retained_repetitions": 0,
+        "false_negatives_all_retained_repetitions": 0
+      },
+      "hidden_confounding_negative_control_from_initial_artifact": {
+        "true_ate": 0.0,
+        "spurious_ipw_estimate_with_wrong_constant_propensity": 0.42600000000000005
+      },
+      "interpretation": "The simple IPW screen recovers the deliberately easy randomized sparse graph, but the hidden-confounding control remains a required failure case. The current implementation is a validation primitive, not a general causal-discovery contribution."
+    },
+    "G5_exact_history_compression": {
+      "exactness": {
+        "raw_final_return_all_modules": 0.8,
+        "compressed_final_return_all_modules": 0.8,
+        "path_length_agreement": true
+      },
+      "module_8": {
+        "raw_hazard_count": 16,
+        "quotient_event_count": 8,
+        "raw_nodes_expanded": 50,
+        "compressed_nodes_expanded": 43,
+        "node_reduction_fraction": 0.14,
+        "raw_planning_ms": 0.212311,
+        "compressed_planning_ms": 0.183528,
+        "raw_over_compressed_time_ratio": 1.156832
+      },
+      "interpretation": "The quotient preserves the tested objective exactly, but the current shortest-path scaling benchmark yields only modest realized search reduction despite a much larger theoretical subset-state reduction. G5 is therefore currently a computational companion, not a strong standalone empirical claim."
+    }
+  },
+  "claim_gate_status": {
+    "G1": "ADVANCES: strong synthetic mechanism and dependence-shift result; still needs systematic literature review and realistic execution validation for a main robotics claim",
+    "G2": "SUPPORTING: robust negative/positive sensing boundary; no standalone novelty claim",
+    "G3": "OPEN: exposes a real policy-learning feedback problem, but the current safe-probe rule is not a satisfactory solution",
+    "G4": "SUPPORTING: valid interventional measurement primitive under randomized assignment; low standalone novelty",
+    "G5": "SUPPORTING: exact quotient validated, realized A* savings currently modest"
+  },
+  "limitations": [
+    "synthetic grid-world conditions",
+    "five independent repetitions and 2000 trials per stochastic condition",
+    "no ROS/Gazebo execution in this artifact",
+    "no physical-robot evidence",
+    "G2 thresholds share matched trials and are not independent samples",
+    "G3 safe-probe uses posterior-mean modeled return rather than a formal high-confidence safety guarantee",
+    "G4 randomized graph is deliberately sparse/easy and does not establish hidden-confounder identification",
+    "G5 timing is machine-dependent and the retained early-goal A* benchmark does not realize the full theoretical quotient-state reduction"
+  ]
+}
