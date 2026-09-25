@@ -17,6 +17,15 @@ namespace
 
 constexpr double kEpsilon = 1.0e-12;
 
+std::vector<std::pair<std::size_t, std::size_t>> triggerEdges(
+  const HistoryHazard & hazard)
+{
+  if (!hazard.trigger_edges.empty()) {
+    return hazard.trigger_edges;
+  }
+  return {{hazard.source_index, hazard.target_index}};
+}
+
 std::vector<std::size_t> closureCells(const HistoryHazard & hazard)
 {
   if (!hazard.closure_indices.empty()) {
@@ -131,8 +140,11 @@ std::uint64_t activatedAfter(
   std::uint64_t mask)
 {
   for (std::size_t i = 0; i < hazards.size(); ++i) {
-    if (hazards[i].source_index == source && hazards[i].target_index == target) {
-      mask |= (1ULL << i);
+    for (const auto & edge : triggerEdges(hazards[i])) {
+      if (edge.first == source && edge.second == target) {
+        mask |= (1ULL << i);
+        break;
+      }
     }
   }
   return mask;
@@ -212,19 +224,24 @@ void validateHistorySearchInputs(
         throw std::out_of_range("history hazard closure footprint is outside the grid");
       }
     }
-    if (manhattan(hazard.source_index, hazard.target_index, width) != 1U) {
-      throw std::invalid_argument("history hazard trigger must be a 4-connected edge");
+    for (const auto & edge : triggerEdges(hazard)) {
+      if (edge.first >= costs.size() || edge.second >= costs.size()) {
+        throw std::out_of_range("history hazard trigger edge is outside the grid");
+      }
+      if (manhattan(edge.first, edge.second, width) != 1U) {
+        throw std::invalid_argument("history hazard trigger must be a 4-connected edge");
+      }
+      const auto trigger_key =
+        (static_cast<std::uint64_t>(edge.first) << 32U) |
+        static_cast<std::uint64_t>(edge.second);
+      if (!triggers.insert(trigger_key).second) {
+        throw std::invalid_argument("duplicate history hazard trigger edge");
+      }
     }
     if (!std::isfinite(hazard.closure_probability) || hazard.closure_probability < 0.0 ||
       hazard.closure_probability > 1.0)
     {
       throw std::invalid_argument("closure probability must be in [0, 1]");
-    }
-    const auto trigger_key =
-      (static_cast<std::uint64_t>(hazard.source_index) << 32U) |
-      static_cast<std::uint64_t>(hazard.target_index);
-    if (!triggers.insert(trigger_key).second) {
-      throw std::invalid_argument("duplicate history hazard trigger");
     }
   }
   if (config.robust_pairwise_dependence && hazards.size() == 2U) {
