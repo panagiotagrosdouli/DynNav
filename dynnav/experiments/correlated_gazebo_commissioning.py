@@ -223,8 +223,10 @@ def commission_second_blocker(
         center_y=safe_center[1],
         radius_m=safe_radius_m,
     )
-    if not _reachable(baseline, query_cell, safe, frozenset()):
+    f00_fixed = int(_reachable(baseline, query_cell, safe, frozenset()))
+    if not f00_fixed:
         raise ValueError("baseline does not connect the query state to the safe region")
+    f10_fixed = int(_reachable(baseline, query_cell, safe, first_closed))
 
     candidates: list[CommissionedGeometry] = []
     for y in range(baseline.height):
@@ -251,8 +253,8 @@ def commission_second_blocker(
             if query_index in second_closed:
                 continue
 
-            f00 = int(_reachable(baseline, query_cell, safe, frozenset()))
-            f10 = int(_reachable(baseline, query_cell, safe, first_closed))
+            f00 = f00_fixed
+            f10 = f10_fixed
             f01 = int(_reachable(baseline, query_cell, safe, second_closed))
             f11 = int(_reachable(baseline, query_cell, safe, first_closed | second_closed))
             interaction = f00 - f10 - f01 + f11
@@ -298,6 +300,13 @@ def commission_second_blocker(
         "first_blocker_pose": list(first_blocker_pose),
         "blocker_size": list(blocker_size),
         "anchor_world": list(anchor_world),
+        "fixed_first_blocker_truth": {
+            "f00": f00_fixed,
+            "f10": f10_fixed,
+            "negative_interaction_possible_under_monotone_closure": bool(
+                f00_fixed == 1 and f10_fixed == 1
+            ),
+        },
         "candidate_count_nonzero_interaction": len(candidates),
         "negative_interaction_count": len(negative),
         "positive_interaction_count": len(positive),
