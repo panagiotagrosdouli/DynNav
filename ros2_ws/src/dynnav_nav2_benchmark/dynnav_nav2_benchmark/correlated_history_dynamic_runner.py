@@ -34,7 +34,7 @@ from dynnav_nav2_benchmark.dynamic_runner import (
     _wait_for_service,
     _write_behavior_trees,
 )
-from dynnav_nav2_benchmark.history_execution import world_to_cell
+from dynnav_nav2_benchmark.history_execution import HISTORY_RESET_COMMAND, world_to_cell
 
 
 def _spawn_named_blocker(
@@ -65,6 +65,7 @@ def _trial(
     order_index: int,
     bt: Path,
     reset_s: float,
+    publisher,
 ):
     scenario = suite.scenario
     for hazard in scenario.hazards:
@@ -120,14 +121,15 @@ def _trial(
         ),
     )
     state = CorrelatedHistoryRuntimeState(runtime_specs, latent)
-    publisher = navigator.create_publisher(String, "dynnav/executed_transition", 10)
+    publisher.publish(String(data=HISTORY_RESET_COMMAND))
+    rclpy.spin_once(navigator, timeout_sec=0.1)
+    time.sleep(0.1)
 
     accepted = navigator.goToPose(
         _pose_message(navigator, scenario.goal, scenario.frame_id),
         behavior_tree=str(bt),
     )
     if not accepted:
-        navigator.destroy_publisher(publisher)
         return {
             "dependence": dependence,
             "planner_id": planner_id,
@@ -219,7 +221,6 @@ def _trial(
             budget_m=scenario.recovery_budget_m,
         ).to_dict()
 
-    navigator.destroy_publisher(publisher)
     valid = state.observation_valid and injection_error is None
     recovery_feasible = (
         None if recovery is None else bool(recovery["within_budget"])
@@ -289,6 +290,8 @@ def main(argv: list[str] | None = None) -> int:
 
         nav.waitUntilNav2Active()
         bts = _write_behavior_trees(args.output, suite.planner_ids)
+        publisher = nav.create_publisher(String, "dynnav/executed_transition", 10)
+        time.sleep(0.5)
         trials = []
         for condition_index, dependence in enumerate(
             suite.scenario.dependence_conditions
@@ -311,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
                             order_index=order_index,
                             bt=bts[planner_id],
                             reset_s=args.reset_settle_s,
+                            publisher=publisher,
                         )
                     )
 
@@ -327,6 +331,7 @@ def main(argv: list[str] | None = None) -> int:
             json.dumps(payload, indent=2, sort_keys=True),
             encoding="utf-8",
         )
+        nav.destroy_publisher(publisher)
         return 0 if all(item["valid_trial"] for item in trials) else 2
     finally:
         nav.destroy_node()
