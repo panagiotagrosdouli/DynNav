@@ -73,3 +73,7 @@ def test_smoke_suite_includes_exact_state_only_and_nonzero_history_hazards() -> 
         assert "history_exact" in block
         assert block["history_exact"]["activated_closure_count"] >= scenario.module_count
         assert block["state_only_exact"]["trials"] == 8
+
+    aggregate = summary["aggregate"]
+    assert aggregate["history_exact_vs_state_only_exact_scenario_effect"]["sample_size"] == 2
+    assert aggregate["history_exact_vs_state_only_exact_nonworse_scenarios"] <= 2
