@@ -65,6 +65,7 @@ class UnavoidableRecord:
     planner: str
     path_length: int
     activated_closure_count: int
+    activated_hazard_indices: tuple[int, ...]
     realized_closure_count: int
     final_exact_return_probability: float
     return_infeasible: bool
@@ -357,6 +358,7 @@ def run_unavoidable_history_benchmark(
                         planner=planner,
                         path_length=result.geometric_length,
                         activated_closure_count=len(active),
+                        activated_hazard_indices=tuple(sorted(active)),
                         realized_closure_count=realized,
                         final_exact_return_probability=final_exact,
                         return_infeasible=failure,
@@ -384,6 +386,7 @@ def summarize_unavoidable_history(
                 "trials": len(planner_rows),
                 "path_length": planner_rows[0].path_length,
                 "activated_closure_count": planner_rows[0].activated_closure_count,
+                "activated_hazard_indices": planner_rows[0].activated_hazard_indices,
                 "final_exact_return_probability": planner_rows[0].final_exact_return_probability,
                 "return_infeasible_rate": sum(row.return_infeasible for row in planner_rows)
                 / len(planner_rows),
@@ -416,6 +419,61 @@ def summarize_unavoidable_history(
             )
         block["paired_binary_effects_vs_shortest"] = effects
         result[scenario] = block
+
+    scenario_names = sorted({row.scenario for row in records})
+    planner_names = sorted({row.planner for row in records})
+    aggregate: dict[str, object] = {}
+    for planner in planner_names:
+        planner_rows = [row for row in records if row.planner == planner]
+        aggregate[planner] = {
+            "trials": len(planner_rows),
+            "mean_return_infeasible_rate": sum(row.return_infeasible for row in planner_rows)
+            / len(planner_rows),
+            "mean_path_length": sum(row.path_length for row in planner_rows) / len(planner_rows),
+            "mean_activated_closure_count": sum(
+                row.activated_closure_count for row in planner_rows
+            )
+            / len(planner_rows),
+            "mean_final_exact_return_probability": sum(
+                row.final_exact_return_probability for row in planner_rows
+            )
+            / len(planner_rows),
+        }
+
+    shortest_by_scenario = {
+        scenario: next(
+            row
+            for row in records
+            if row.scenario == scenario and row.planner == "shortest"
+        )
+        for scenario in scenario_names
+    }
+    for planner in ("state_only_single", "state_only_exact", "history_exact"):
+        candidate_by_scenario = {
+            scenario: next(
+                row
+                for row in records
+                if row.scenario == scenario and row.planner == planner
+            )
+            for scenario in scenario_names
+        }
+        changed = sum(
+            candidate_by_scenario[scenario].activated_hazard_indices
+            != shortest_by_scenario[scenario].activated_hazard_indices
+            for scenario in scenario_names
+        )
+        lower_risk = sum(
+            candidate_by_scenario[scenario].final_exact_return_probability
+            > shortest_by_scenario[scenario].final_exact_return_probability
+            for scenario in scenario_names
+        )
+        aggregate[f"{planner}_vs_shortest"] = {
+            "different_hazard_choice_scenarios": changed,
+            "higher_exact_return_probability_scenarios": lower_risk,
+            "scenario_count": len(scenario_names),
+        }
+
+    result["aggregate"] = aggregate
     return result
 
 
