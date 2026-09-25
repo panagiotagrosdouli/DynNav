@@ -352,7 +352,8 @@
       "hardware validation of the history-conditioned planner",
       "arbitrary-map or real-world geometric generalization",
       "universal superiority of a soft objective over hard safe-return constraints",
-      "novelty of articulation or cut-set graph theory"
+      "novelty of articulation or cut-set graph theory",
+      "comparative Gazebo efficacy from the retained 8-repetition mechanism probe"
     ]
   },
   "reviewer_p0_protocol": {
@@ -409,5 +410,41 @@
         "nonworse_scenarios": 24
       }
     }
+  },
+  "gazebo_mechanism_probe": {
+    "status": "retained_valid_integration_evidence_no_efficacy_claim",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36131438728,
+    "source_branch_head_sha": "c21f900212be7c6cdf5d28a5796147eb0c31c278",
+    "pull_request_merge_checkout_sha": "eb61dc41dcea5ba09390eebe621464128c0c63c0",
+    "artifact_id": 10862446501,
+    "artifact_name": "dynnav-action-triggered-gazebo-eb61dc41dcea5ba09390eebe621464128c0c63c0",
+    "downloaded_artifact_sha256": "95ada9ee3c33e590e85d38e967d468d3b5d764bdf861409d3392f8e8957dcde1",
+    "frozen_scenario_sha256": "60e43cf2f0015a8f625309be26d440615126bf8f8b88fd597cf45681f5cc1864",
+    "repetitions_per_planner": 8,
+    "total_trials": 24,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "shared_latent_closure_realizations_per_planner": 7,
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 7
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 6
+    },
+    "costmap_recovery_infeasible": {
+      "NavFn": 0,
+      "DynNavShortest": 2,
+      "DynNavHistory": 1
+    },
+    "interpretation": "strict end-to-end ROS 2/Nav2/Gazebo integration and measurement evidence; one-trial DynNav exposure difference is insufficient for comparative efficacy"
   }
 }
