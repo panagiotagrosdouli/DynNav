@@ -6,6 +6,7 @@ This matrix defines what the current repository may and may not claim. Publicati
 |---|---|---|---|
 | Action-triggered hazard history is implemented | `CommitmentHazardModel`, exact history-conditioned return probability, deterministic regressions | SUPPORTED | implementation claim only |
 | Same geometric state can have different recoverability under different histories | frozen same-endpoint information-gap benchmark; separation equals trigger probability in the controlled construction | SUPPORTED | mechanism result, not universal frequency claim |
+| Any deterministic endpoint-only scalar estimator has a worst-history error lower bound under an aliased endpoint | triangle-inequality proposition in `paper/dynnav_r/HISTORY_ALIASING_NOTE.md`; bridge construction gives lower bound `p/2` | SUPPORTED | representation statement only; does not apply once memory/latent state distinguishes histories |
 | A state-only marginal model cannot represent both same-state histories exactly | counterfactual benchmark plus elementary minimax lower-bound argument | SUPPORTED | representation result under the stated construction |
 | Exact augmented-state history planner is implemented | Python planner over `(cell, activated hazards)` with known-answer and online-history tests | SUPPORTED | computational scaling remains scenario-dependent |
 | Critical-cut approximation is exact in the tested series-critical family | exact-vs-cut scaling benchmark | SUPPORTED | do not generalize exactness beyond that family |
