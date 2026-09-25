@@ -19,6 +19,15 @@ def test_canonical_g1_assets_realize_parallel_redundant_truth_table() -> None:
         ((72, 104), (73, 104)),
         ((92, 104), (93, 104)),
     )
-    assert contract.trigger_gate_edge_counts == (31, 31)
+    assert contract.trigger_gate_edge_counts == (41, 41)
+    assert contract.trigger_gate_full_corridor_cuts == (True, True)
+    assert contract.independence_route.steps == 108
+    assert contract.independence_route.total_cost == 204.0
+    assert contract.independence_route.final_active_mask == 3
+    assert contract.independence_route.trigger_crossings == (True, True)
+    assert contract.robust_route.steps == 230
+    assert contract.robust_route.total_cost == 230.0
+    assert contract.robust_route.final_active_mask == 0
+    assert contract.robust_route.trigger_crossings == (False, False)
     assert contract.blocker_cell_counts[0] > 300
     assert contract.blocker_cell_counts[1] > 300
