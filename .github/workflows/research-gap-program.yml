@@ -1,0 +1,43 @@
+name: Research gap programme
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/**"
+      - "scripts/run_research_gap_program.py"
+      - "tests/**"
+      - "RESEARCH_GAPS_G1_G5.md"
+      - ".github/workflows/research-gap-program.yml"
+  workflow_dispatch:
+
+jobs:
+  g1-g5:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,researcher]"
+
+      - name: Run focused G1-G5 tests
+        run: |
+          python -m pytest -q             tests/test_research_gap_program.py             tests/test_robust_commitment_astar.py
+
+      - name: Run bounded G1-G5 experiment
+        run: |
+          python scripts/run_research_gap_program.py             --trials 2000             --seed 20260925             --output results/research_gap_program/ci_summary.json
+
+      - name: Upload G1-G5 evidence artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-g5-research-gap-evidence
+          path: results/research_gap_program/ci_summary.json
+          if-no-files-found: warn
