@@ -3,8 +3,10 @@ from xml.etree import ElementTree
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order, load_suite
 from dynnav_nav2_benchmark.configuration import (
+    CORRELATED_HISTORY_PLANNER_IDS,
     HISTORY_PLANNER_IDS,
     PLANNER_IDS,
+    inject_correlated_history_planner_parameters,
     inject_history_planner_parameters,
     inject_planner_parameters,
     planner_parameter_overrides,
@@ -93,6 +95,48 @@ def test_history_parameter_injection_isolates_history_representation() -> None:
     assert history["history_hazards"] == "174:189>175:189@181:191@0.80000000000000004"
     assert history["history_recoverability_weight"] == 4.0
     assert parameters["expected_planner_frequency"] == 20.0
+
+
+
+def test_correlated_history_parameter_injection_isolates_dependence_model() -> None:
+    base = {
+        "planner_server": {
+            "ros__parameters": {
+                "expected_planner_frequency": 20.0,
+                "planner_plugins": ["GridBased"],
+                "GridBased": {"plugin": "default"},
+            }
+        }
+    }
+    merged = inject_correlated_history_planner_parameters(
+        base,
+        safe_cell=(160, 190),
+        hazards=(
+            (((174, 189), (175, 189)), (181, 191), 0.5),
+            (((175, 189), (176, 189)), (181, 187), 0.5),
+        ),
+        recoverability_weight=12.0,
+        pairwise_joint_lower=0.0,
+        pairwise_joint_upper=0.5,
+    )
+    parameters = merged["planner_server"]["ros__parameters"]
+    assert parameters["planner_plugins"] == list(CORRELATED_HISTORY_PLANNER_IDS)
+
+    shortest = parameters["DynNavShortest"]
+    history = parameters["DynNavHistory"]
+    robust = parameters["DynNavRobustHistory"]
+    assert shortest["plugin"] == history["plugin"] == robust["plugin"]
+    assert not shortest.get("history_aware", False)
+    assert history["history_aware"] is True
+    assert not history.get("history_robust_pairwise_dependence", False)
+    assert robust["history_aware"] is True
+    assert robust["history_robust_pairwise_dependence"] is True
+    assert robust["history_pairwise_joint_lower"] == 0.0
+    assert robust["history_pairwise_joint_upper"] == 0.5
+    assert robust["history_hazards"] == (
+        "174:189>175:189@181:191@0.5;"
+        "175:189>176:189@181:187@0.5"
+    )
 
 
 def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
