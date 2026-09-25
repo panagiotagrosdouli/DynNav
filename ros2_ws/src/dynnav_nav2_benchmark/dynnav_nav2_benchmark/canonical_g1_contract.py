@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import heapq
 import math
 from collections import deque
 from dataclasses import asdict, dataclass
@@ -16,6 +17,15 @@ from dynnav_nav2_benchmark.correlated_history_execution import (
     quantized_hazard_trigger_gates,
 )
 from dynnav_nav2_benchmark.history_execution import world_to_cell
+
+
+@dataclass(frozen=True)
+class CanonicalG1RoutePlan:
+    steps: int
+    total_cost: float
+    final_active_mask: int
+    trigger_crossings: tuple[bool, bool]
+    minimum_grid_y: int
 
 
 @dataclass(frozen=True)
@@ -34,6 +44,8 @@ class CanonicalG1TopologyContract:
     trigger_gate_full_corridor_cuts: tuple[bool, bool]
     goal_cell: tuple[int, int]
     safe_cell_count: int
+    independence_route: CanonicalG1RoutePlan
+    robust_route: CanonicalG1RoutePlan
 
     def to_dict(self) -> dict[str, object]:
         return asdict(self)
@@ -163,6 +175,191 @@ def _corridor_edges_containing_trigger(
     return frozenset(((sx, y), (tx, y)) for y in range(low, high + 1))
 
 
+def _reachable_component(
+    grid: _Map,
+    safe_cell: tuple[int, int],
+    blocked: frozenset[tuple[int, int]],
+) -> frozenset[tuple[int, int]]:
+    if safe_cell in grid.occupied or safe_cell in blocked:
+        return frozenset()
+    queue: deque[tuple[int, int]] = deque([safe_cell])
+    visited = {safe_cell}
+    while queue:
+        x, y = queue.popleft()
+        for next_cell in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            nx, ny = next_cell
+            if not (0 <= nx < grid.width and 0 <= ny < grid.height):
+                continue
+            if (
+                next_cell in visited
+                or next_cell in grid.occupied
+                or next_cell in blocked
+            ):
+                continue
+            visited.add(next_cell)
+            queue.append(next_cell)
+    return frozenset(visited)
+
+
+def _route_plan(
+    grid: _Map,
+    *,
+    start: tuple[int, int],
+    goal: tuple[int, int],
+    trigger_gates,
+    blocker_sets,
+    recoverability_weight: float,
+    robust: bool,
+    pairwise_joint_lower: float,
+    pairwise_joint_upper: float,
+) -> CanonicalG1RoutePlan:
+    """Replicate the two-hazard C++ augmented-state objective on the raw map."""
+
+    realizations = (
+        (False, False),
+        (True, False),
+        (False, True),
+        (True, True),
+    )
+    components = {}
+    for first_closed, second_closed in realizations:
+        blocked: set[tuple[int, int]] = set()
+        if first_closed:
+            blocked.update(blocker_sets[0])
+        if second_closed:
+            blocked.update(blocker_sets[1])
+        components[(first_closed, second_closed)] = _reachable_component(
+            grid,
+            start,
+            frozenset(blocked),
+        )
+
+    def connected(cell, realization) -> float:
+        return float(cell in components[realization])
+
+    def return_probability(cell, mask: int) -> float:
+        if mask == 0:
+            return 1.0
+        if mask == 1:
+            return 0.5 * connected(cell, (False, False)) + 0.5 * connected(
+                cell, (True, False)
+            )
+        if mask == 2:
+            return 0.5 * connected(cell, (False, False)) + 0.5 * connected(
+                cell, (False, True)
+            )
+
+        f00 = connected(cell, (False, False))
+        f10 = connected(cell, (True, False))
+        f01 = connected(cell, (False, True))
+        f11 = connected(cell, (True, True))
+        if not robust:
+            return 0.25 * (f00 + f10 + f01 + f11)
+
+        interaction = f00 - f10 - f01 + f11
+        frechet_lower = 0.0
+        frechet_upper = 0.5
+        q_lower = max(frechet_lower, pairwise_joint_lower)
+        q_upper = min(frechet_upper, pairwise_joint_upper)
+        q = q_upper if interaction < 0.0 else q_lower
+        return (
+            q * f00
+            + (0.5 - q) * f10
+            + (0.5 - q) * f01
+            + q * f11
+        )
+
+    gate_sets = (frozenset(trigger_gates[0]), frozenset(trigger_gates[1]))
+
+    def activate(
+        cell: tuple[int, int],
+        next_cell: tuple[int, int],
+        mask: int,
+    ) -> int:
+        for index, gate in enumerate(gate_sets):
+            if (cell, next_cell) in gate:
+                mask |= 1 << index
+        return mask
+
+    start_state = (start, 0)
+    distance = {start_state: 0.0}
+    parent: dict[
+        tuple[tuple[int, int], int],
+        tuple[tuple[int, int], int],
+    ] = {}
+    frontier: list[tuple[float, float, int, int, int]] = []
+    order = 0
+    heapq.heappush(
+        frontier,
+        (
+            float(abs(start[0] - goal[0]) + abs(start[1] - goal[1])),
+            0.0,
+            order,
+            start[0] + start[1] * grid.width,
+            0,
+        ),
+    )
+
+    final_state = None
+    while frontier:
+        _priority, known_cost, _order, flat, mask = heapq.heappop(frontier)
+        cell = (flat % grid.width, flat // grid.width)
+        state = (cell, mask)
+        if abs(known_cost - distance.get(state, math.inf)) > 1.0e-12:
+            continue
+        if cell == goal:
+            final_state = state
+            break
+
+        x, y = cell
+        for next_cell in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            nx, ny = next_cell
+            if not (0 <= nx < grid.width and 0 <= ny < grid.height):
+                continue
+            if next_cell in grid.occupied:
+                continue
+            next_mask = activate(cell, next_cell, mask)
+            r = return_probability(next_cell, next_mask)
+            candidate = known_cost + 1.0 + recoverability_weight * (1.0 - r)
+            next_state = (next_cell, next_mask)
+            if candidate + 1.0e-12 >= distance.get(next_state, math.inf):
+                continue
+            distance[next_state] = candidate
+            parent[next_state] = state
+            order += 1
+            heuristic = abs(nx - goal[0]) + abs(ny - goal[1])
+            heapq.heappush(
+                frontier,
+                (
+                    candidate + float(heuristic),
+                    candidate,
+                    order,
+                    nx + ny * grid.width,
+                    next_mask,
+                ),
+            )
+
+    if final_state is None:
+        raise ValueError("canonical planner contract could not find a path")
+
+    states = [final_state]
+    while states[-1] != start_state:
+        states.append(parent[states[-1]])
+    states.reverse()
+    cells = [cell for cell, _mask in states]
+    crossings = tuple(
+        any((left, right) in gate for left, right in zip(cells, cells[1:], strict=False))
+        for gate in gate_sets
+    )
+    return CanonicalG1RoutePlan(
+        steps=len(cells) - 1,
+        total_cost=distance[final_state],
+        final_active_mask=final_state[1],
+        trigger_crossings=(bool(crossings[0]), bool(crossings[1])),
+        minimum_grid_y=min(cell[1] for cell in cells),
+    )
+
+
 def evaluate_canonical_g1_topology(
     *,
     map_yaml: str | Path,
@@ -238,6 +435,36 @@ def evaluate_canonical_g1_topology(
     f10 = int(_reachable(grid, goal, safe, blocker_sets[0]))
     f01 = int(_reachable(grid, goal, safe, blocker_sets[1]))
     f11 = int(_reachable(grid, goal, safe, blocker_sets[0] | blocker_sets[1]))
+
+    planner_safe_cell = world_to_cell(
+        scenario.safe_region.center,
+        origin_x=grid.origin_x,
+        origin_y=grid.origin_y,
+        resolution=grid.resolution,
+    )
+    independence_route = _route_plan(
+        grid,
+        start=planner_safe_cell,
+        goal=goal,
+        trigger_gates=trigger_gates,
+        blocker_sets=blocker_sets,
+        recoverability_weight=scenario.recoverability_weight,
+        robust=False,
+        pairwise_joint_lower=scenario.pairwise_joint_lower,
+        pairwise_joint_upper=scenario.pairwise_joint_upper,
+    )
+    robust_route = _route_plan(
+        grid,
+        start=planner_safe_cell,
+        goal=goal,
+        trigger_gates=trigger_gates,
+        blocker_sets=blocker_sets,
+        recoverability_weight=scenario.recoverability_weight,
+        robust=True,
+        pairwise_joint_lower=scenario.pairwise_joint_lower,
+        pairwise_joint_upper=scenario.pairwise_joint_upper,
+    )
+
     return CanonicalG1TopologyContract(
         f00=f00,
         f10=f10,
@@ -253,4 +480,6 @@ def evaluate_canonical_g1_topology(
         ),
         goal_cell=goal,
         safe_cell_count=len(safe),
+        independence_route=independence_route,
+        robust_route=robust_route,
     )
