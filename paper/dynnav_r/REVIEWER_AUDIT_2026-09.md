@@ -64,7 +64,7 @@ The frozen soft-vs-hard sweep preserves the negative result that hard safe-retur
 
 **Status: materially addressed, with synthetic-scope caveat.**
 
-The original large effects arise in constructed worlds where a trigger-free route exists. A frozen reviewer-targeted suite now removes that regime: 24 generated scenarios contain one to four modules and every feasible route activates at least one hazard per module. Across 500 paired seeds per scenario, history exact is nonworse than state-only exact in 24/24 scenarios, improves 8/24, and reduces mean return-infeasibility from 0.7796 to 0.6926; the scenario-level mean difference is -0.087 with 95% bootstrap CI [-0.1629,-0.0247]. The generator remains synthetic and structured, so this is not a deployment effect-size estimate.
+The original large effects arise in constructed worlds where a trigger-free route exists. A frozen reviewer-targeted suite now removes that regime: 96 generated scenarios contain one to four modules and every feasible route activates at least one hazard per module. Across 250 paired seeds per scenario (24,000 trials per planner), history exact is nonworse than state-only exact in 96/96 scenarios, improves 36/96, and reduces mean return-infeasibility from 0.7443 to 0.6660; the scenario-level mean difference is -0.0782 with 95% bootstrap CI [-0.1090,-0.0498]. The generator remains synthetic and structured, so this is not a deployment effect-size estimate.
 
 ### 6. “The exact method does not scale.”
 
@@ -95,7 +95,7 @@ Before submission:
 
 The highest-value additional Gazebo upgrade is a topology in which the same C++ DynNav search graph contains a verified trigger-taking route and a verified trigger-avoiding alternative. The current strict mechanism probe validates execution and measurement, but the history-aware condition changes exposure in only one of eight repetitions. Any stronger Gazebo claim requires a new predeclared topology-level test rather than post-hoc parameter tuning.
 
-The broader automatically generated challenge family is now implemented and retained: 24 frozen scenarios vary module count, detour geometry, direction, and hazard probabilities while enforcing unavoidable stochastic commitments. Further random-map diversity remains useful but is no longer a prerequisite for the narrow representation claim.
+The broader automatically generated challenge family is now implemented and retained: 96 frozen scenarios vary module count, detour geometry, direction, and hazard probabilities while enforcing unavoidable stochastic commitments. Further random-map diversity remains useful but is no longer a prerequisite for the narrow representation claim. Repeated timing distributions are also retained (100 measured repetitions after 10 warm-ups), replacing the earlier single-shot latency evidence; these remain runner-specific descriptive measurements.
 
 ## Reviewer-facing one-sentence claim
 
