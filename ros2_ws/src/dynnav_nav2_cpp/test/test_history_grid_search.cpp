@@ -202,34 +202,25 @@ TEST(HistoryGridSearch, AnyEdgeInTriggerGateActivatesSameHazard)
   const std::size_t width = 5;
   const std::size_t height = 4;
   const std::vector<std::uint8_t> costs(width * height, 0U);
-  const std::vector<std::size_t> safe{5U};
+  const std::vector<std::size_t> safe{10U};
 
-  HistoryHazard hazard{6U, 7U, 5U, 1.0};
+  HistoryHazard hazard{6U, 7U, 5U, 0.5};
   hazard.trigger_edges = {
     {6U, 7U},
     {11U, 12U},
     {16U, 17U},
   };
   const std::vector<HistoryHazard> hazards{hazard};
-
-  HistorySearchConfig config;
-  config.recoverability_weight = 4.0;
+  const HistorySearchConfig config{};
 
   const auto middle_gate = planHistoryGridPath(
-    width, height, costs, 11U, 14U, safe, hazards, 0U, config);
+    width, height, costs, 11U, 12U, safe, hazards, 0U, config);
 
   ASSERT_TRUE(middle_gate.success);
-  ASSERT_FALSE(middle_gate.path.empty());
-
-  bool crossed_middle_gate = false;
-  for (std::size_t i = 1; i < middle_gate.path.size(); ++i) {
-    if (middle_gate.path[i - 1] == 11U && middle_gate.path[i] == 12U) {
-      crossed_middle_gate = true;
-    }
-  }
-  if (crossed_middle_gate) {
-    EXPECT_EQ(middle_gate.final_active_mask & 1U, 1U);
-  }
+  ASSERT_EQ(middle_gate.path.size(), 2U);
+  EXPECT_EQ(middle_gate.path[0], 11U);
+  EXPECT_EQ(middle_gate.path[1], 12U);
+  EXPECT_EQ(middle_gate.final_active_mask, 1U);
 }
 
 }  // namespace
