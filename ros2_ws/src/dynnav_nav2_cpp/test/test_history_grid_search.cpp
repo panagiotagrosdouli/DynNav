@@ -13,6 +13,7 @@ using dynnav_nav2_cpp::HistoryHazard;
 using dynnav_nav2_cpp::HistorySearchConfig;
 using dynnav_nav2_cpp::exactHistoryReturnProbability;
 using dynnav_nav2_cpp::planHistoryGridPath;
+using dynnav_nav2_cpp::robustPairwiseHistoryReturnProbability;
 
 TEST(HistoryGridSearch, SameCellReliabilityDependsOnActivatedHistory)
 {
@@ -70,6 +71,109 @@ TEST(HistoryGridSearch, OnlineReplanRetainsActivatedMask)
   EXPECT_EQ(result.final_active_mask, 1U);
   EXPECT_NEAR(result.final_return_probability, 0.2, 1.0e-12);
   EXPECT_NEAR(result.minimum_return_probability, 0.2, 1.0e-12);
+}
+
+
+TEST(HistoryGridSearch, RobustPairwiseParallelReturnUsesWorstCaseJointClosure)
+{
+  const std::size_t width = 3;
+  const std::size_t height = 3;
+  std::vector<std::uint8_t> costs(width * height, 0U);
+  costs[4U] = 254U;
+  const std::vector<std::size_t> safe{3U};
+  const std::vector<HistoryHazard> hazards{
+    {2U, 1U, 1U, 0.5},
+    {8U, 7U, 7U, 0.5},
+  };
+  HistorySearchConfig independent;
+  HistorySearchConfig robust;
+  robust.robust_pairwise_dependence = true;
+  robust.max_hazard_cells = 2U;
+
+  EXPECT_NEAR(
+    exactHistoryReturnProbability(width, height, costs, 5U, safe, hazards, 3U, independent),
+    0.75,
+    1.0e-12);
+  EXPECT_NEAR(
+    robustPairwiseHistoryReturnProbability(width, height, costs, 5U, safe, hazards, 3U, robust),
+    0.5,
+    1.0e-12);
+
+  robust.pairwise_joint_lower = 0.0;
+  robust.pairwise_joint_upper = 0.0;
+  EXPECT_NEAR(
+    robustPairwiseHistoryReturnProbability(width, height, costs, 5U, safe, hazards, 3U, robust),
+    1.0,
+    1.0e-12);
+}
+
+TEST(HistoryGridSearch, RobustPairwiseSerialReturnHasOppositeDependenceSensitivity)
+{
+  const std::size_t width = 4;
+  const std::size_t height = 1;
+  const std::vector<std::uint8_t> costs(width * height, 0U);
+  const std::vector<std::size_t> safe{0U};
+  const std::vector<HistoryHazard> hazards{
+    {0U, 1U, 1U, 0.5},
+    {2U, 3U, 2U, 0.5},
+  };
+  HistorySearchConfig robust;
+  robust.robust_pairwise_dependence = true;
+  robust.max_hazard_cells = 2U;
+
+  EXPECT_NEAR(
+    robustPairwiseHistoryReturnProbability(width, height, costs, 3U, safe, hazards, 3U, robust),
+    0.0,
+    1.0e-12);
+
+  robust.pairwise_joint_lower = 0.5;
+  robust.pairwise_joint_upper = 0.5;
+  EXPECT_NEAR(
+    robustPairwiseHistoryReturnProbability(width, height, costs, 3U, safe, hazards, 3U, robust),
+    0.5,
+    1.0e-12);
+}
+
+TEST(HistoryGridSearch, RobustPairwisePlannerChoosesTriggerFreeDetour)
+{
+  const std::size_t width = 5;
+  const std::size_t height = 3;
+  std::vector<std::uint8_t> costs(width * height, 254U);
+  for (std::size_t x = 0; x < width; ++x) {
+    costs[x] = 0U;
+    costs[10U + x] = 0U;
+  }
+  costs[5U] = 0U;
+  costs[9U] = 0U;
+
+  const std::vector<std::size_t> safe{0U};
+  const std::vector<HistoryHazard> hazards{
+    {2U, 3U, 1U, 0.5},
+    {3U, 4U, 11U, 0.5},
+  };
+
+  HistorySearchConfig independent;
+  independent.recoverability_weight = 12.0;
+  independent.max_hazard_cells = 2U;
+  const auto independent_result = planHistoryGridPath(
+    width, height, costs, 0U, 4U, safe, hazards, 0U, independent);
+
+  HistorySearchConfig robust;
+  robust.recoverability_weight = 12.0;
+  robust.robust_pairwise_dependence = true;
+  robust.max_hazard_cells = 2U;
+  const auto robust_result = planHistoryGridPath(
+    width, height, costs, 0U, 4U, safe, hazards, 0U, robust);
+
+  ASSERT_TRUE(independent_result.success);
+  ASSERT_TRUE(robust_result.success);
+  EXPECT_EQ(independent_result.path.size() - 1U, 4U);
+  EXPECT_EQ(independent_result.final_active_mask, 3U);
+  EXPECT_NEAR(independent_result.final_return_probability, 0.75, 1.0e-12);
+
+  EXPECT_EQ(robust_result.path.size() - 1U, 8U);
+  EXPECT_EQ(robust_result.final_active_mask, 0U);
+  EXPECT_DOUBLE_EQ(robust_result.final_return_probability, 1.0);
 }
 
 }  // namespace
