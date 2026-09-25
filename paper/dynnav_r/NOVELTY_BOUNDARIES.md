@@ -8,6 +8,8 @@ This file records the claims that the manuscript must **not** make and the narro
 |---|---|---|
 | Safe-return planning is new | Guo et al., *IEEE TAC* 2023, DOI 10.1109/TAC.2023.3244884; Zhang & Guo, *Online Planning of Uncertain MDPs under Temporal Tasks and Safe-Return Constraints* | **Excluded** |
 | Returnability in safe exploration is new | Moldovan & Abbeel, *ICML* 2012; Stephens et al., *Autonomous Robots* 2024 | **Excluded** |
+| Safe reachability plus returnability is new | Turchetta, Berkenkamp & Krause, *NeurIPS* 2016 (SafeMDP) | **Excluded** |
+| State abstraction / aggregation and aliasing consequences are new | Li, Walsh & Littman, *ISAIM* 2006 and broader MDP abstraction literature | **Excluded** |
 | Uncertain-topology / blocked-edge navigation is new | Papadimitriou & Yannakakis, *Theoretical Computer Science* 1991 (Canadian Traveller / shortest paths without a map) and extensive subsequent CTP literature | **Excluded** |
 | History-dependent probabilistic robot risk is new | Xiao, Dufek, Murphy, *IEEE RA-L* 2020, DOI 10.1109/LRA.2020.2974434 | **Excluded** |
 | Decision-dependent/endogenous uncertainty is new | Mature stochastic/robust optimization literature; decision-dependent network reliability formulations predate this work | **Excluded** |
@@ -17,6 +19,7 @@ This file records the claims that the manuscript must **not** make and the narro
 | Action-dependent environmental evolution is new | Existing robotics work models action-dependent environmental transition fields, including 2026 sequential cleanup/risk-field work | **Excluded** |
 | Traversal-dependent edge deletion / self-deleting graphs are new | Carmesin et al., *Journal of Computational Science* 2023, DOI 10.1016/j.jocs.2023.102156: visited vertices can delete future edges, so the residual graph depends on path history | **Excluded** |
 | Traversal-dependent pathfinding / self-deleting shortest paths are new | Dvořák et al., *ISAAC* 2025, DOI 10.4230/LIPIcs.ISAAC.2025.28: shortest pathfinding is studied directly on traversal-dependent self-deleting graphs | **Excluded** |
+| Network reliability / cut-set connectivity analysis is new | Provan & Ball, *SIAM J. Comput.* 1983; Ball & Provan, *Networks* 1983 | **Excluded** |
 | Self-induced environmental obstacles / history-dependent traversability are new | Frenkel, Parker, Mansouri, *IEEE RA-L* 2026, DOI 10.1109/LRA.2026.3656776: robot traversal creates future obstacles and feasible successors depend on path history | **Excluded** |
 | Graph articulation / cut concepts are new | Classical graph theory and prior robotics/network applications | **Excluded** |
 
