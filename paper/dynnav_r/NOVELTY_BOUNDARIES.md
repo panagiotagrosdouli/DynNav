@@ -8,6 +8,7 @@ This file records the claims that the manuscript must **not** make and the narro
 |---|---|---|
 | Safe-return planning is new | Guo et al., *IEEE TAC* 2023, DOI 10.1109/TAC.2023.3244884; Zhang & Guo, *Online Planning of Uncertain MDPs under Temporal Tasks and Safe-Return Constraints* | **Excluded** |
 | Returnability in safe exploration is new | Moldovan & Abbeel, *ICML* 2012; Stephens et al., *Autonomous Robots* 2024 | **Excluded** |
+| Uncertain-topology / blocked-edge navigation is new | Papadimitriou & Yannakakis, *Theoretical Computer Science* 1991 (Canadian Traveller / shortest paths without a map) and extensive subsequent CTP literature | **Excluded** |
 | History-dependent probabilistic robot risk is new | Xiao, Dufek, Murphy, *IEEE RA-L* 2020, DOI 10.1109/LRA.2020.2974434 | **Excluded** |
 | Decision-dependent/endogenous uncertainty is new | Mature stochastic/robust optimization literature; decision-dependent network reliability formulations predate this work | **Excluded** |
 | Actions changing future robot capability is new | Baldes et al., *A Model for Optimal Resilient Planning Subject to Fallible Actuators*, 2024 | **Excluded** |
