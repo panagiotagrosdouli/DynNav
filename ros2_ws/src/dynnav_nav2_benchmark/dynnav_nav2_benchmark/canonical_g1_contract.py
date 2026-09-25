@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
+import math
 from collections import deque
 from dataclasses import asdict, dataclass
-import math
 from pathlib import Path
 
 import yaml
@@ -12,8 +12,8 @@ import yaml
 from dynnav_nav2_benchmark.correlated_history_execution import (
     blocker_footprint_cells,
     load_correlated_history_execution_suite,
-    quantized_hazard_trigger_gates,
     quantized_hazard_transitions,
+    quantized_hazard_trigger_gates,
 )
 from dynnav_nav2_benchmark.history_execution import world_to_cell
 
