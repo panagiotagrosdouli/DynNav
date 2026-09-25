@@ -72,7 +72,10 @@ class TopologyAmbiguitySet:
         seen_pairs: set[frozenset[GridCell]] = set()
         for constraint in self.pairwise:
             constraint.validate()
-            if constraint.first not in self.marginals or constraint.second not in self.marginals:
+            if (
+                constraint.first not in self.marginals
+                or constraint.second not in self.marginals
+            ):
                 raise ValueError("pairwise cells must also appear in marginals")
             key = frozenset((constraint.first, constraint.second))
             if key in seen_pairs:
