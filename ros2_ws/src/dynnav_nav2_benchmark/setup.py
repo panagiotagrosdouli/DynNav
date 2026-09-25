@@ -29,7 +29,10 @@ setup(
             "static_planner_benchmark = dynnav_nav2_benchmark.benchmark_runner:main",
             "dynamic_execution_benchmark = dynnav_nav2_benchmark.dynamic_runner:main",
             "history_dynamic_execution_benchmark = dynnav_nav2_benchmark.history_dynamic_runner:main",
-            "correlated_history_dynamic_execution_benchmark = dynnav_nav2_benchmark.correlated_history_dynamic_runner:main",
+            (
+                "correlated_history_dynamic_execution_benchmark = "
+                "dynnav_nav2_benchmark.correlated_history_dynamic_runner:main"
+            ),
         ],
     },
 )
