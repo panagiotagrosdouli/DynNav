@@ -154,3 +154,41 @@ def naive_unexposed_as_open_limit(
     if not 0.0 <= true_closure_probability <= 1.0:
         raise ValueError("true_closure_probability must be in [0, 1]")
     return exposure_probability * true_closure_probability
+
+
+def conservative_return_lower_bound(
+    posterior: BetaClosurePosterior,
+    *,
+    confidence: float = 0.90,
+) -> float:
+    """One-sided Bayesian lower bound on return in a single critical-trigger model.
+
+    If closure makes return fail and the closure probability has a Beta
+    posterior, the one-sided upper posterior quantile for closure risk induces
+    a lower bound on return probability. This is a diagnostic model quantity,
+    not a frequentist or deployment-safety guarantee.
+    """
+
+    posterior.validate()
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0, 1)")
+    upper_closure = float(
+        beta_distribution.ppf(confidence, posterior.alpha, posterior.beta)
+    )
+    return min(1.0, max(0.0, 1.0 - upper_closure))
+
+
+def credible_safe_probe_allowed(
+    posterior: BetaClosurePosterior,
+    *,
+    minimum_return_probability: float,
+    confidence: float = 0.90,
+) -> bool:
+    """Return whether a one-sided posterior return bound admits exposure."""
+
+    if not 0.0 <= minimum_return_probability <= 1.0:
+        raise ValueError("minimum_return_probability must be in [0, 1]")
+    return (
+        conservative_return_lower_bound(posterior, confidence=confidence)
+        >= minimum_return_probability
+    )
