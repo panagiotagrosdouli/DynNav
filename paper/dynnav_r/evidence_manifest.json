@@ -448,14 +448,14 @@
     "interpretation": "strict end-to-end ROS 2/Nav2/Gazebo integration and measurement evidence; one-trial DynNav exposure difference is insufficient for comparative efficacy"
   },
   "reviewer_measurement_expansion": {
-    "status": "retained_success",
+    "status": "retained_success_exact_release_head",
     "workflow_name": "Reviewer measurement expansion",
-    "run_id": 36138666091,
-    "source_branch_head_sha": "10d438ce6b7916d6d5ba0a70cf792d08c1af5014",
-    "pull_request_merge_checkout_sha": "0865bd9b22a57c939a04e31c02e88b20a0e43f58",
-    "artifact_id": 10865721001,
-    "artifact_name": "dynnav-reviewer-measurements-0865bd9b22a57c939a04e31c02e88b20a0e43f58",
-    "downloaded_artifact_sha256": "2893b2f14022cb48558606b67778d2bba85774710c0f24e1b7e9b234b85e2b35",
+    "run_id": 36139174706,
+    "source_branch_head_sha": "8ef50f9ec167c7e8cc29f112f5b04ce4a821f7df",
+    "pull_request_merge_checkout_sha": "d8625dc1032da07ec26eaeeb8766a76f07f08cfe",
+    "artifact_id": 10865996586,
+    "artifact_name": "dynnav-reviewer-measurements-d8625dc1032da07ec26eaeeb8766a76f07f08cfe",
+    "downloaded_artifact_sha256": "0c9c9cf46f4fd81034f6e91381cd298b1ff0071d5658c50cada4a22afc624958",
     "generator_seed": 20260925,
     "scenario_count": 96,
     "paired_execution_seeds_per_scenario": 250,
@@ -491,36 +491,36 @@
       "scope": "descriptive GitHub Actions runner measurements using planner internal online-latency instrumentation; not hardware-independent runtime guarantees",
       "oracle_12_hazards": {
         "exact": {
-          "median_ms": 38.4682585,
-          "iqr_ms": 0.18104375000000061,
-          "p95_ms": 38.7513952
+          "median_ms": 34.5146145,
+          "iqr_ms": 0.33664599999999467,
+          "p95_ms": 37.0076535
         },
         "critical_cut": {
-          "median_ms": 0.191685,
-          "iqr_ms": 0.006411250000000007,
-          "p95_ms": 0.20366155000000002
+          "median_ms": 0.1701545,
+          "iqr_ms": 0.005494500000000013,
+          "p95_ms": 0.18832805
         },
-        "median_speedup_exact_over_cut": 200.6847614575997
+        "median_speedup_exact_over_cut": 202.84279581204143
       },
       "planner_6_modules": {
         "shortest_augmented": {
-          "median_ms": 0.1135170000168273,
-          "iqr_ms": 0.0036827499627634097,
-          "p95_ms": 0.12129765001702708,
+          "median_ms": 0.10248949996594092,
+          "iqr_ms": 0.0024217499969836354,
+          "p95_ms": 0.11332639994634519,
           "nodes_expanded": 25,
           "path_length": 24
         },
         "history_cut": {
-          "median_ms": 4.060639499982699,
-          "iqr_ms": 0.03944624998553081,
-          "p95_ms": 4.127676050018181,
+          "median_ms": 3.6453140000389794,
+          "iqr_ms": 0.02951199996914511,
+          "p95_ms": 3.8795295499596705,
           "nodes_expanded": 72,
           "path_length": 36
         },
         "history_exact": {
-          "median_ms": 5.792564999978822,
-          "iqr_ms": 0.03995325002392747,
-          "p95_ms": 5.856277049966252,
+          "median_ms": 5.1637395000625474,
+          "iqr_ms": 0.0973337499488025,
+          "p95_ms": 5.738602400060699,
           "nodes_expanded": 72,
           "path_length": 36
         }
