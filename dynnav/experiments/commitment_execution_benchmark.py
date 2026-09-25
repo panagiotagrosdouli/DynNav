@@ -132,6 +132,17 @@ def run_commitment_execution_benchmark(
             config=HazardReliabilityAStarConfig(
                 reliability_weight=recoverability_weight
             ),
+        )        state_only_exact = hazard_reliability_astar(
+            grid,
+            start,
+            goal,
+            safe_cells=safe,
+            hazard=_state_only_marginal_hazard(model),
+            mode=HazardReliabilityMode.EXACT_RETURN,
+            config=HazardReliabilityAStarConfig(
+                reliability_weight=recoverability_weight,
+                max_hazard_cells=max(16, len(model.closures)),
+            ),
         )
         exact = commitment_aware_astar(
             grid,
@@ -168,6 +179,7 @@ def run_commitment_execution_benchmark(
         plans = {
             "shortest": shortest,
             "state_only_single": state_only,
+            "state_only_exact": state_only_exact,
             "history_exact": exact,
             "history_cut": cut,
             f"hard_return_{safe_return_threshold:g}": hard,
