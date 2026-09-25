@@ -22,6 +22,9 @@ from dynnav.experiments.safe_learning_lockout_benchmark import (
 from dynnav.experiments.topology_dependence_control import (
     run_topology_dependence_control,
 )
+from dynnav.experiments.topology_interaction_survey import (
+    run_topology_interaction_survey,
+)
 
 
 def run_post_full_study_diagnostics(
@@ -35,6 +38,14 @@ def run_post_full_study_diagnostics(
         raise ValueError("opportunities must be positive")
 
     g1 = [asdict(row) for row in run_topology_dependence_control()]
+    g1_survey = [
+        asdict(row)
+        for row in run_topology_interaction_survey(
+            accepted_maps=40,
+            obstacle_probability=0.30,
+            seed=seed,
+        )
+    ]
 
     g3_lockout: list[dict[str, object]] = []
     condition = 0
@@ -83,6 +94,7 @@ def run_post_full_study_diagnostics(
             ),
         },
         "G1_topology_dependence_sign_reversal": g1,
+        "G1_held_out_topology_interaction_survey": g1_survey,
         "G3_safe_learning_lockout": g3_lockout,
         "G3_risk_budget_deadlock_breaker": g3_budget,
         "G5_full_reachable_state_space": g5,
