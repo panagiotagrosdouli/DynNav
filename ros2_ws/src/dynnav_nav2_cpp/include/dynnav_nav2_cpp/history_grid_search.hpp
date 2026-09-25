@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <utility>
 #include <vector>
 
 namespace dynnav_nav2_cpp
@@ -16,6 +17,7 @@ struct HistoryHazard
   std::size_t closure_index{0};
   double closure_probability{0.0};
   std::vector<std::size_t> closure_indices{};
+  std::vector<std::pair<std::size_t, std::size_t>> trigger_edges{};
 };
 
 struct HistorySearchConfig
