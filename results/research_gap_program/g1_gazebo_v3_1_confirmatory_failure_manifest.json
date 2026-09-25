@@ -1,0 +1,58 @@
+{
+  "artifact_scope": "G1 Gazebo V3.1 confirmatory execution validity study; retained failed confirmatory gate",
+  "source_revision": "8f30628521c14835b628d9abd7ce6584661fe09a",
+  "workflow_run_id": 36136448336,
+  "protocol": "G1_CORRELATED_GAZEBO_V2_PROTOCOL.md (V3.1 section)",
+  "minimum_paired_valid_required_per_slice": 8,
+  "slices": {
+    "independent": {
+      "artifact_id": 10864499258,
+      "digest": "sha256:698c80cae32bc94432561db9cd44f10dcb50952fb3d8182b836a0fba63260f6d",
+      "attempted_trials": 30,
+      "route_audit_passed": true,
+      "route_violations": 0,
+      "localization_jumps": 4,
+      "valid_trials": {
+        "DynNavShortest": 10,
+        "DynNavHistory": 9,
+        "DynNavRobustHistory": 7
+      },
+      "paired_valid_history_robust": 6,
+      "execution_inference_complete": false
+    },
+    "common_cause": {
+      "artifact_id": 10864839459,
+      "digest": "sha256:055ba78150987c8b4c8994e2818efa8a198d1ce2e572dd2bf159f24881ecccdf",
+      "attempted_trials": 30,
+      "route_audit_passed": true,
+      "route_violations": 0,
+      "localization_jumps": 5,
+      "valid_trials": {
+        "DynNavShortest": 9,
+        "DynNavHistory": 8,
+        "DynNavRobustHistory": 8
+      },
+      "paired_valid_history_robust": 6,
+      "execution_inference_complete": false
+    },
+    "anti_correlated": {
+      "artifact_id": 10864499139,
+      "digest": "sha256:ad56222b3c0c0cafbcf32ab4c611f3a385ba66e6e2c85c1b56cec7b643ecc4e0",
+      "attempted_trials": 30,
+      "route_audit_passed": true,
+      "route_violations": 0,
+      "localization_jumps": 4,
+      "valid_trials": {
+        "DynNavShortest": 10,
+        "DynNavHistory": 9,
+        "DynNavRobustHistory": 7
+      },
+      "paired_valid_history_robust": 7,
+      "execution_inference_complete": false
+    }
+  },
+  "retained_planning_result": "Across all 90 attempted trials, the mandatory initial-plan audit remained consistent with the frozen planner mechanism: DynNavShortest and DynNavHistory selected the direct two-trigger route; DynNavRobustHistory selected the trigger-free detour.",
+  "confirmatory_verdict": "FAIL_EXECUTION_VALIDITY",
+  "exclusion_rule": "No execution-efficacy or irreversible-failure conclusion may use V3.1 as confirmatory evidence because every dependence slice failed the preregistered minimum paired-valid History-vs-Robust threshold.",
+  "next_protocol_constraint": "A new protocol may change localization infrastructure only if it preserves the exact frozen topology, trigger gates, blocker footprints, marginal probabilities, dependence conditions, planner objective, recoverability weight, and route-audit expectations."
+}
