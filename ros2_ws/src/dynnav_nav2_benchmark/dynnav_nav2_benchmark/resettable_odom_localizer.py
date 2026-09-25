@@ -117,6 +117,8 @@ class ResettableOdomLocalizer(Node):
         if self._map_to_odom is None or self._reset_pending:
             self._realign()
         if was_pending and not self._reset_pending:
+            self._reset_count += 1
+            self._log_reset_alignment()
             self._publish_reset_ack()
         if self._map_to_odom is not None:
             self._broadcast(message)
@@ -131,6 +133,8 @@ class ResettableOdomLocalizer(Node):
             )
             return
         self._realign()
+        self._reset_count += 1
+        self._log_reset_alignment()
         self._publish_reset_ack()
 
     def _publish_reset_ack(self) -> None:
@@ -145,7 +149,9 @@ class ResettableOdomLocalizer(Node):
             current_odom_base=self._latest_odom,
         )
         self._reset_pending = False
-        self._reset_count += 1
+
+    def _log_reset_alignment(self) -> None:
+        assert self._map_to_odom is not None
         self.get_logger().info(
             "Aligned map->odom reset=%d offset=(%.3f, %.3f, %.3f)",
             self._reset_count,
