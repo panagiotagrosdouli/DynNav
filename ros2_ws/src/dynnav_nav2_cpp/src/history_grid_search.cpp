@@ -17,6 +17,26 @@ namespace
 
 constexpr double kEpsilon = 1.0e-12;
 
+std::vector<std::size_t> closureCells(const HistoryHazard & hazard)
+{
+  if (!hazard.closure_indices.empty()) {
+    return hazard.closure_indices;
+  }
+  return {hazard.closure_index};
+}
+
+void addClosedCells(
+  std::unordered_set<std::size_t> & closed,
+  const HistoryHazard & hazard,
+  const std::size_t current_index)
+{
+  for (const auto cell : closureCells(hazard)) {
+    if (cell != current_index) {
+      closed.insert(cell);
+    }
+  }
+}
+
 bool traversable(const std::uint8_t cost, const HistorySearchConfig & config)
 {
   if (cost == config.unknown_cost) {
@@ -187,6 +207,11 @@ void validateHistorySearchInputs(
     {
       throw std::out_of_range("history hazard index is outside the grid");
     }
+    for (const auto closure_index : closureCells(hazard)) {
+      if (closure_index >= costs.size()) {
+        throw std::out_of_range("history hazard closure footprint is outside the grid");
+      }
+    }
     if (manhattan(hazard.source_index, hazard.target_index, width) != 1U) {
       throw std::invalid_argument("history hazard trigger must be a 4-connected edge");
     }
@@ -248,8 +273,8 @@ double exactHistoryReturnProbability(
       const auto & hazard = hazards[active_indices[bit]];
       const bool closes = (realization & (1ULL << bit)) != 0U;
       mass *= closes ? hazard.closure_probability : (1.0 - hazard.closure_probability);
-      if (closes && hazard.closure_index != current_index) {
-        closed.insert(hazard.closure_index);
+      if (closes) {
+        addClosedCells(closed, hazard, current_index);
       }
     }
     if (mass <= 0.0) {continue;}
@@ -314,11 +339,11 @@ double robustPairwiseHistoryReturnProbability(
   std::unordered_set<std::size_t> safe(safe_indices.begin(), safe_indices.end());
   const auto connected = [&](const bool first_closed, const bool second_closed) {
       std::unordered_set<std::size_t> closed;
-      if (first_closed && first.closure_index != current_index) {
-        closed.insert(first.closure_index);
+      if (first_closed) {
+        addClosedCells(closed, first, current_index);
       }
-      if (second_closed && second.closure_index != current_index) {
-        closed.insert(second.closure_index);
+      if (second_closed) {
+        addClosedCells(closed, second, current_index);
       }
       return reachesSafe(width, height, costs, current_index, safe, closed, config) ? 1.0 : 0.0;
     };
