@@ -6,6 +6,20 @@
 
 This is a representation/mechanism claim. It is not universal planner superiority, certified safety, arbitrary-map generalization, real-world probability calibration, or physical-robot efficacy.
 
+## September 25, 2026 paper-hardening pass
+
+The submission branch now strengthens the manuscript in four ways:
+
+- adds a formal endpoint-aliasing lower bound: for same-endpoint histories with reliabilities (R_1,R_2), every deterministic endpoint-only scalar estimate has worst-history absolute error at least (|R_1-R_2|/2);
+- expands direct novelty constraints to include returnability-based safe exploration, uncertain-MDP safe-return planning, traversal-dependent edge deletion, shortest pathfinding on self-deleting graphs, and coverage with self-induced obstacles;
+- reorganizes the evaluation around four research questions: representation, planning consequence, objective sensitivity, and computational/approximation boundary;
+- distinguishes empirical zero observed failures from formal zero-risk or safety guarantees.
+
+Citation-key integrity on the branch is clean: every manuscript citation key resolves to exactly one bibliography entry, with no unused entries. The closest new bibliography records were checked against venue/DOI or authoritative archive metadata.
+
+The surviving paper claim is intentionally narrower than any of the individual prior-art categories: **executed transitions activate stochastic future closures; activation and realization are distinct; the resulting activation history can change safe-return connectivity at the same geometric endpoint.**
+
+
 ## Raw-artifact verification completed
 
 The publication-facing retained evidence has now been checked below the README/manuscript layer by downloading the actual GitHub Actions artifacts.
