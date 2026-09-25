@@ -1,7 +1,7 @@
 name: Action-triggered Gazebo evidence
 
-# Publication gate: this workflow must produce a real results.json before any Gazebo efficacy claim is promoted.
-# Reviewer P1 rerun: validate the frozen execution protocol on the paper-hardening branch.
+# Publication gate: this workflow must produce a fully valid paired results.json before any Gazebo efficacy claim is promoted.
+# Reviewer P1: controlled return-cut positive control for the history-conditioned mechanism.
 
 on:
   push:
@@ -68,15 +68,15 @@ jobs:
           dpkg-query -W -f='${binary:Package}\t${Version}\n' | awk '$1 ~ /^ros-jazzy-/' | sort > /tmp/dynnav_history/results/ros_packages.tsv
           uname -a > /tmp/dynnav_history/results/kernel.txt
           if command -v gz >/dev/null 2>&1; then gz sim --versions > /tmp/dynnav_history/results/gazebo_versions.txt 2>&1 || gz --versions > /tmp/dynnav_history/results/gazebo_versions.txt 2>&1 || true; else printf 'gz command unavailable after rosdep install\n' > /tmp/dynnav_history/results/gazebo_versions.txt; fi
-          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml /tmp/dynnav_history/results/frozen_scenario.yaml
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml /tmp/dynnav_history/results/frozen_scenario.yaml
           printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_history/results/source_revision.txt
-          sha256sum ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml > /tmp/dynnav_history/results/frozen_scenario.sha256
+          sha256sum ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml > /tmp/dynnav_history/results/frozen_scenario.sha256
       - name: Run frozen paired action-triggered trials
         run: |
           set -o pipefail
           source /opt/ros/jazzy/setup.bash
           source /tmp/dynnav_history/install/setup.bash
-          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
+          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} scenario_file:=/tmp/dynnav_history/install/dynnav_nav2_benchmark/share/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
           test -s /tmp/dynnav_history/results/results.json
       - name: Validate paired event and trial contract
         run: |
@@ -95,6 +95,10 @@ jobs:
               by_rep[row['repetition']].append(row)
               for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible'): assert key in row
           assert set(by_rep) == set(range(repetitions))
+          assert all(r['valid_trial'] for r in trials), [
+              (r['planner_id'], r['repetition'], r.get('invalid_reason'))
+              for r in trials if not r['valid_trial']
+          ]
           for rows in by_rep.values():
               assert {r['planner_id'] for r in rows} == {'NavFn','DynNavShortest','DynNavHistory'}
               assert len({r['latent_draw'] for r in rows}) == 1
