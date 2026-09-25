@@ -112,3 +112,12 @@ Results must cite the exact source revision and retained artifact directory.
 - [Official minimal TurtleBot3 simulation](https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation)
 - [Smac 2D planner configuration](https://docs.nav2.org/configuration/packages/smac/configuring-smac-2d.html)
 - [NavFn planner configuration](https://docs.nav2.org/configuration/packages/configuring-navfn.html)
+
+
+## Independent-trial history reset
+
+Action-triggered trials are independent experimental units. Before every planner trial, the benchmark publishes an explicit `dynnav/reset_history` message. The history-aware Nav2 plugin clears its persistent activated-hazard mask and observed-cell tracker on that reset.
+
+Only execution from the `DynNavHistory` condition is forwarded to the plugin's `dynnav/executed_transition` stream. Baseline planner trajectories are still observed by the benchmark runner for paired event accounting, but they are not allowed to mutate the persistent state of the history-aware plugin.
+
+If feedback sampling skips grid cells, the plugin may resynchronize its observed position on the next genuinely observed adjacent transition. It does not reconstruct or infer the missing transitions. The benchmark separately marks a sampling gap invalid when the configured trigger could have been hidden inside that gap.
