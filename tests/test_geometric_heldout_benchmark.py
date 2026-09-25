@@ -29,11 +29,16 @@ def test_history_conditioning_reduces_trigger_activation_on_frozen_geometries() 
     for scenario, block in summary.items():
         shortest = block["shortest"]
         state_only = block["state_only_single"]
+        state_only_exact = block["state_only_exact"]
         history = block["history_exact"]
 
         assert shortest["activated_closure_count"] > 0, scenario
         assert state_only["activated_closure_count"] == shortest["activated_closure_count"], scenario
         assert state_only["path_length"] == shortest["path_length"], scenario
+        assert state_only_exact["activated_closure_count"] == shortest[
+            "activated_closure_count"
+        ], scenario
+        assert state_only_exact["path_length"] == shortest["path_length"], scenario
         assert history["activated_closure_count"] < shortest["activated_closure_count"], scenario
         assert history["irreversible_failure_rate"] <= shortest["irreversible_failure_rate"], scenario
 
@@ -43,5 +48,8 @@ def test_state_only_outcomes_remain_paired_with_shortest() -> None:
     summary = summarize_geometric_heldout(records)
     for block in summary.values():
         effect = block["paired_binary_effects_vs_shortest"]["state_only_single"]
+        exact_effect = block["paired_binary_effects_vs_shortest"]["state_only_exact"]
         assert effect["risk_difference"] == 0.0
         assert effect["discordant_pairs"] == 0
+        assert exact_effect["risk_difference"] == 0.0
+        assert exact_effect["discordant_pairs"] == 0
