@@ -23,7 +23,10 @@ class TriggerOutcomeRecord:
     def validate(self) -> None:
         if not self.trigger_id or not self.closure_id:
             raise ValueError("trigger_id and closure_id must be non-empty")
-        if not isfinite(self.execution_propensity) or not 0.0 < self.execution_propensity < 1.0:
+        if (
+            not isfinite(self.execution_propensity)
+            or not 0.0 < self.execution_propensity < 1.0
+        ):
             raise ValueError("execution_propensity must be strictly between 0 and 1")
 
 
