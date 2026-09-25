@@ -88,6 +88,8 @@ jobs:
           payload = contract.to_dict()
           assert [payload["f00"], payload["f10"], payload["f01"], payload["f11"]] == [1, 1, 1, 0]
           assert payload["interaction"] == -1
+          assert payload["trigger_gate_full_corridor_cuts"] == [True, True]
+          assert payload["trigger_gate_edge_counts"] == [41, 41]
           Path("/tmp/dynnav_g1_v2_topology_contract.json").write_text(
               json.dumps(payload, indent=2, sort_keys=True)
           )
