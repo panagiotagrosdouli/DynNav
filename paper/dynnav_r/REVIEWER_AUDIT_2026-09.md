@@ -74,9 +74,9 @@ Exact closure enumeration is a small-hazard reference oracle. The critical-cut a
 
 ### 7. “There is no realistic execution evidence.”
 
-**Status: still the largest empirical limitation.**
+**Status: integration evidence added; comparative efficacy still unsupported.**
 
-The ROS 2/Nav2 implementation supports the semantics at software level. A retained paired Gazebo diagnostic now exists, but it is negative rather than efficacy evidence: the pre-fix history condition completed 0/8 navigation trials while the two comparison planners completed 8/8 each. The artifact exposed trial-history isolation and exact-oracle execution issues that are being fixed on the paper branch. No positive Gazebo efficacy claim is allowed until a fresh frozen rerun passes the same contract.
+A strict retained ROS 2/Nav2/Gazebo mechanism probe now has 24/24 valid trials and 8/8 outbound navigation successes for each of NavFn, DynNavShortest, and DynNavHistory. Paired latent closure draws are shared across planners and persistent history is reset explicitly between trials. In the frozen probe, DynNavShortest executes the configured trigger in 8/8 trials, DynNavHistory in 7/8, and NavFn in 0/8; realized closures are applied in 7/8, 6/8, and 0/8 trials respectively. Independent costmap recovery assessment is infeasible in 2/8 DynNavShortest trials, 1/8 DynNavHistory trial, and 0/8 NavFn trials. These differences are not sufficient for a comparative efficacy claim. The artifact closes the implementation/execution gap but not the broader simulation-performance gap.
 
 ## Submission-critical checks
 
@@ -88,12 +88,12 @@ Before submission:
 4. No sentence may imply that history-dependent planning, safe return, self-deleting topology, or Markov state augmentation is first-of-kind.
 5. Tables must distinguish observed empirical zero failures from formal zero-risk guarantees.
 6. Timing claims must remain environment-specific and descriptive.
-7. If no valid Gazebo comparison is retained, Gazebo must remain implementation/protocol evidence only.
+7. Gazebo claims must remain limited to validated execution/integration; the retained 8-repetition mechanism probe does not support comparative efficacy.
 8. Physical-robot safety or deployment claims remain out of scope.
 
 ## Optional high-value empirical upgrade
 
-The highest-value additional experiment is a valid paired action-triggered ROS 2/Gazebo execution study using the already frozen protocol. It would not establish real-world safety, but it would close the largest gap between the graph-level mechanism and the integrated robotics stack.
+The highest-value additional Gazebo upgrade is a topology in which the same C++ DynNav search graph contains a verified trigger-taking route and a verified trigger-avoiding alternative. The current strict mechanism probe validates execution and measurement, but the history-aware condition changes exposure in only one of eight repetitions. Any stronger Gazebo claim requires a new predeclared topology-level test rather than post-hoc parameter tuning.
 
 The broader automatically generated challenge family is now implemented and retained: 24 frozen scenarios vary module count, detour geometry, direction, and hazard probabilities while enforcing unavoidable stochastic commitments. Further random-map diversity remains useful but is no longer a prerequisite for the narrow representation claim.
 
