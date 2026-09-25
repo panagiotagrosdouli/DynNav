@@ -193,13 +193,18 @@ def run_repeated_timing_benchmark(
             elif signature != expected[method]:
                 raise RuntimeError(f"{method} result changed across repetitions")
             if repetition >= 0:
+                result_value = (
+                    float(result.final_return_upper_bound)
+                    if method == "history_cut"
+                    else float(result.final_return_probability)
+                )
                 records.append(
                     TimingRecord(
                         benchmark=f"planner_m{planner_modules}",
                         method=method,
                         repetition=repetition,
                         elapsed_ms=elapsed,
-                        result_value=float(result.final_return_probability),
+                        result_value=result_value,
                         nodes_expanded=result.nodes_expanded,
                         geometric_length=result.geometric_length,
                     )
