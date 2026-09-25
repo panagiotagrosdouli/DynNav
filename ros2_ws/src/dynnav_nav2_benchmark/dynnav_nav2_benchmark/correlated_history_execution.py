@@ -221,3 +221,39 @@ def quantized_hazard_transitions(
             resolution=resolution,
         ),
     )
+
+
+def blocker_footprint_cells(
+    *,
+    center: Pose3D,
+    size_xy: tuple[float, float],
+    origin_x: float,
+    origin_y: float,
+    resolution: float,
+) -> tuple[tuple[int, int], ...]:
+    """Rasterize an axis-aligned physical blocker into map cells.
+
+    The v2 canonical environment uses yaw=0 blockers, so the footprint can be
+    represented exactly as an axis-aligned rectangle on the planning grid.
+    """
+
+    if resolution <= 0.0 or not math.isfinite(resolution):
+        raise ValueError("resolution must be finite and positive")
+    size_x, size_y = size_xy
+    if size_x <= 0.0 or size_y <= 0.0:
+        raise ValueError("blocker footprint dimensions must be positive")
+    if abs(center.yaw) > 1.0e-12:
+        raise ValueError("footprint rasterization currently requires blocker yaw=0")
+
+    min_x = math.floor((center.x - size_x / 2.0 - origin_x) / resolution)
+    max_x = math.floor((center.x + size_x / 2.0 - origin_x) / resolution)
+    min_y = math.floor((center.y - size_y / 2.0 - origin_y) / resolution)
+    max_y = math.floor((center.y + size_y / 2.0 - origin_y) / resolution)
+    cells = tuple(
+        (x, y)
+        for y in range(min_y, max_y + 1)
+        for x in range(min_x, max_x + 1)
+    )
+    if not cells:
+        raise ValueError("blocker footprint rasterized to no cells")
+    return cells
