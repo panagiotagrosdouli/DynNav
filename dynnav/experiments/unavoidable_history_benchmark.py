@@ -524,8 +524,8 @@ def write_unavoidable_history_artifacts(
         )
     protocol = {
         "generator_seed": FROZEN_GENERATOR_SEED,
-        "scenario_count": FROZEN_SCENARIO_COUNT,
-        "execution_seeds": len(FROZEN_EXECUTION_SEEDS),
+        "scenario_count": len({row.scenario for row in records}),
+        "execution_seeds": len({row.seed for row in records}),
         "probability_choices": PROBABILITY_CHOICES,
         "invariant": "every start-to-goal route activates at least one hazard per module",
     }
