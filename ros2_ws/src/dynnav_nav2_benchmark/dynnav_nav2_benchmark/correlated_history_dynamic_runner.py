@@ -133,6 +133,10 @@ def _trial(
     publisher.publish(String(data=HISTORY_RESET_COMMAND))
     rclpy.spin_once(navigator, timeout_sec=0.1)
     time.sleep(0.1)
+    # BasicNavigator keeps the previous task feedback object. Clear it before
+    # starting a new trial so an earlier timeout cannot immediately cancel the
+    # next goal via a stale navigation_time value.
+    navigator.feedback = None
 
     accepted = navigator.goToPose(
         _pose_message(navigator, scenario.goal, scenario.frame_id),
