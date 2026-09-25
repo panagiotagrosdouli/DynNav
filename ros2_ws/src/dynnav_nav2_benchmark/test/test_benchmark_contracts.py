@@ -6,6 +6,7 @@ from dynnav_nav2_benchmark.configuration import (
     CORRELATED_HISTORY_PLANNER_IDS,
     HISTORY_PLANNER_IDS,
     PLANNER_IDS,
+    freeze_global_costmap_for_planner_comparison,
     inject_correlated_history_planner_parameters,
     inject_history_planner_parameters,
     inject_planner_parameters,
@@ -96,6 +97,54 @@ def test_history_parameter_injection_isolates_history_representation() -> None:
     assert history["history_recoverability_weight"] == 4.0
     assert parameters["expected_planner_frequency"] == 20.0
 
+
+
+def test_frozen_global_costmap_removes_scan_history_from_planner_comparison() -> None:
+    base = {
+        "global_costmap": {
+            "global_costmap": {
+                "ros__parameters": {
+                    "plugins": [
+                        "static_layer",
+                        "obstacle_layer",
+                        "inflation_layer",
+                    ],
+                    "static_layer": {
+                        "plugin": "nav2_costmap_2d::StaticLayer",
+                    },
+                    "obstacle_layer": {
+                        "plugin": "nav2_costmap_2d::ObstacleLayer",
+                    },
+                    "inflation_layer": {
+                        "plugin": "nav2_costmap_2d::InflationLayer",
+                    },
+                    "resolution": 0.05,
+                }
+            }
+        },
+        "local_costmap": {
+            "local_costmap": {
+                "ros__parameters": {
+                    "plugins": ["voxel_layer", "inflation_layer"],
+                }
+            }
+        },
+    }
+
+    frozen = freeze_global_costmap_for_planner_comparison(base)
+    global_params = frozen["global_costmap"]["global_costmap"]["ros__parameters"]
+    assert global_params["plugins"] == ["static_layer", "inflation_layer"]
+    assert "obstacle_layer" not in global_params
+    assert "voxel_layer" not in global_params
+    assert global_params["resolution"] == 0.05
+    assert global_params["static_layer"]["map_subscribe_transient_local"] is True
+
+    assert frozen["local_costmap"] == base["local_costmap"]
+    assert base["global_costmap"]["global_costmap"]["ros__parameters"]["plugins"] == [
+        "static_layer",
+        "obstacle_layer",
+        "inflation_layer",
+    ]
 
 
 def test_correlated_history_parameter_injection_isolates_dependence_model() -> None:
