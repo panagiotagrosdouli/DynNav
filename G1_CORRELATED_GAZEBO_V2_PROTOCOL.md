@@ -12,6 +12,12 @@ V2 instantiates the already-defined analytic G1 parallel-corridor construction d
 
 The first V2 smoke completed the software path but all nine trials remained at the start and timed out because the simulator initially spawned the robot at `(0,0)` while the original canonical map occupied only positive coordinates. That smoke is retained as invalid integration evidence and is not used as an efficacy result. V2.2 applies one rigid translation to the map origin, Gazebo world and all scenario poses so that `(0,0)` is the frozen start pose. The occupancy pixels, grid-cell topology, trigger cells, blocker footprints, marginal probabilities, dependence conditions and recoverability weight are unchanged. The machine-checkable topology contract must remain identical after translation.
 
+### V2.3 planner-route diagnostic amendment
+
+V2.2 demonstrated that the robot can physically traverse the canonical world, but execution outcomes were partly contaminated by controller replanning failures and one localization jump. Before any further execution-level interpretation, V2.3 records a direct `ComputePathToPose` query for the frozen start and goal immediately after the history reset and before robot motion. For each planner it retains path length, path cells, route class, and whether the path crosses each frozen trigger gate.
+
+This diagnostic does not alter the executed navigation goal or any planner parameter. It separates the planner mechanism claim from localization/controller behavior. The preregistered planning mechanism is supported only if the initial plan itself shows the expected direct-versus-detour distinction.
+
 Before any admissible V2.2 outcome, this document was also synchronized with the already-committed V2.1 canonical assets: the island is `4.0 × 2.0 m`, the blocker footprint is `0.40 × 2.05 m`, and the trigger grid row is `104`. These are documentation corrections only; the underlying committed assets and machine-checkable topology contract are unchanged.
 
 ### V2.3 computational-validity amendment
@@ -104,7 +110,7 @@ For each dependence condition and planner:
 - accepted executed-transition trace;
 - sampling-gap incidence.
 
-Secondary outcomes include navigation duration and planner path information when available.
+Secondary outcomes include navigation duration. V2.3 additionally records a mandatory pre-execution planner-server path audit: planning success, path length, route class, trigger-gate crossings and rasterized path cells.
 
 ## Frozen hypotheses
 
