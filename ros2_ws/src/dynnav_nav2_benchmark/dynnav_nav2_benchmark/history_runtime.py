@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 
 from dynnav_nav2_benchmark.history_execution import (
     classify_observed_cells,
+    sampling_gap_can_hide_transition,
     transition_text,
     trigger_decision,
 )
@@ -19,6 +20,9 @@ class HistoryRuntimeState:
     sampling_gaps: list[tuple[tuple[int, int], tuple[int, int]]] = field(
         default_factory=list
     )
+    ambiguous_trigger_gaps: list[
+        tuple[tuple[int, int], tuple[int, int]]
+    ] = field(default_factory=list)
     trigger_observed: bool = False
     closure_requested: bool = False
 
@@ -43,7 +47,14 @@ class HistoryRuntimeState:
         observed = classify_observed_cells(self.previous_cell, cell)
         self.previous_cell = cell
         if observed.kind == "sampling_gap":
-            self.sampling_gaps.append((observed.source, observed.target))
+            gap = (observed.source, observed.target)
+            self.sampling_gaps.append(gap)
+            if sampling_gap_can_hide_transition(
+                observed.source,
+                observed.target,
+                self.trigger,
+            ):
+                self.ambiguous_trigger_gaps.append(gap)
             return None
         if observed.transition is None:
             return None
@@ -62,4 +73,4 @@ class HistoryRuntimeState:
 
     @property
     def observation_valid(self) -> bool:
-        return not self.sampling_gaps
+        return not self.ambiguous_trigger_gaps
