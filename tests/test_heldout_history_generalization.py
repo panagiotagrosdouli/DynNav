@@ -27,8 +27,9 @@ def test_state_only_marginal_model_cannot_exploit_trigger_avoiding_detours() -> 
     )
     shortest = [row for row in records if row.planner == "shortest"]
     state_only = [row for row in records if row.planner == "state_only_single"]
+    state_only_exact = [row for row in records if row.planner == "state_only_exact"]
 
-    assert len(shortest) == len(state_only) == 20
+    assert len(shortest) == len(state_only) == len(state_only_exact) == 20
     assert shortest[0].path_length == state_only[0].path_length
     assert (
         shortest[0].activated_closure_count
@@ -38,6 +39,14 @@ def test_state_only_marginal_model_cannot_exploit_trigger_avoiding_detours() -> 
     assert [row.irreversible_failure for row in shortest] == [
         row.irreversible_failure for row in state_only
     ]
+    assert [row.irreversible_failure for row in shortest] == [
+        row.irreversible_failure for row in state_only_exact
+    ]
+    assert shortest[0].path_length == state_only_exact[0].path_length
+    assert (
+        shortest[0].activated_closure_count
+        == state_only_exact[0].activated_closure_count
+    )
 
 
 def test_history_aware_planners_reduce_heldout_commitment_exposure() -> None:
