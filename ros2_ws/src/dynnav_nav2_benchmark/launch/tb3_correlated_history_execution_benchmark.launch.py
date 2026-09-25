@@ -14,6 +14,7 @@ from dynnav_nav2_benchmark.configuration import (
 from dynnav_nav2_benchmark.correlated_history_execution import (
     blocker_footprint_cells,
     load_correlated_history_execution_suite,
+    quantized_hazard_trigger_gates,
     quantized_hazard_transitions,
 )
 from dynnav_nav2_benchmark.history_execution import world_to_cell
@@ -63,6 +64,12 @@ def _launch_setup(context):
         origin_y=origin_y,
         resolution=resolution,
     )
+    trigger_gates = quantized_hazard_trigger_gates(
+        suite,
+        origin_x=origin_x,
+        origin_y=origin_y,
+        resolution=resolution,
+    )
     safe_cell = world_to_cell(
         scenario.safe_region.center,
         origin_x=origin_x,
@@ -71,7 +78,7 @@ def _launch_setup(context):
     )
     hazards = tuple(
         (
-            triggers[index],
+            trigger_gates[index],
             blocker_footprint_cells(
                 center=hazard.blocker_pose,
                 size_xy=(suite.blocker_size[0], suite.blocker_size[1]),
