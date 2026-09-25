@@ -33,7 +33,7 @@ jobs:
           python -m pip install -e ".[dev,researcher]"
 
       - name: Run focused G1-G5 tests
-        run: python -m pytest -q tests/test_research_gap_program.py tests/test_research_gap_runner.py tests/test_robust_commitment_astar.py tests/test_robust_dependence_route_choice.py tests/test_history_compression_exactness.py tests/test_compressed_commitment_astar.py tests/test_extended_research_benchmarks.py tests/test_research_theory_controls.py tests/test_post_full_study_diagnostics.py tests/test_topology_dependence_control.py tests/test_dependence_topology_theory.py tests/test_dependence_connectivity_interaction.py tests/test_risk_budget_learning.py tests/test_empirical_topology_ambiguity.py tests/test_safe_learning_lockout_theory.py tests/test_correlated_gazebo_commissioning.py tests/test_risk_budget_replication.py tests/test_topology_interaction_survey.py tests/test_exposure_identifiability.py tests/test_history_compression_objective.py
+        run: python -m pytest -q tests/test_research_gap_program.py tests/test_research_gap_runner.py tests/test_robust_commitment_astar.py tests/test_robust_dependence_route_choice.py tests/test_history_compression_exactness.py tests/test_compressed_commitment_astar.py tests/test_extended_research_benchmarks.py tests/test_research_theory_controls.py tests/test_post_full_study_diagnostics.py tests/test_topology_dependence_control.py tests/test_dependence_topology_theory.py tests/test_dependence_connectivity_interaction.py tests/test_risk_budget_learning.py tests/test_empirical_topology_ambiguity.py tests/test_safe_learning_lockout_theory.py tests/test_correlated_gazebo_commissioning.py tests/test_risk_budget_replication.py tests/test_topology_interaction_survey.py tests/test_exposure_identifiability.py tests/test_history_compression_objective.py tests/test_g3_information_assumptions.py tests/test_history_compression_memory.py
 
       - name: Run bounded G1-G5 experiment
         run: python scripts/run_research_gap_program.py --trials 2000 --seed 20260925 --output results/research_gap_program/ci_summary.json
@@ -44,6 +44,9 @@ jobs:
       - name: Run multi-seed G3 risk-budget replication
         run: python scripts/run_risk_budget_replication.py --opportunities 1000 --repetitions 10 --seed 20260925 --output results/research_gap_program/risk_budget_replication.json
 
+      - name: Run frozen G3-G5 publication controls
+        run: python scripts/run_g3_g5_publication_controls.py --opportunities 1000 --repetitions 20 --seed 20260925 --output results/research_gap_program/g3_g5_publication_controls.json
+
       - name: Upload G1-G5 evidence artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -53,4 +56,5 @@ jobs:
             results/research_gap_program/ci_summary.json
             results/research_gap_program/post_full_study_diagnostics.json
             results/research_gap_program/risk_budget_replication.json
+            results/research_gap_program/g3_g5_publication_controls.json
           if-no-files-found: warn
