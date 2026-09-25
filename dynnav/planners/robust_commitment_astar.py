@@ -27,6 +27,9 @@ class RobustCommitmentAStarConfig:
     pairwise_constraints: tuple[PairwiseClosureConstraint, ...] = field(
         default_factory=tuple
     )
+    marginal_intervals: dict[GridCell, ProbabilityInterval] = field(
+        default_factory=dict
+    )
 
     def validate(self) -> None:
         if self.step_cost <= 0.0:
@@ -39,6 +42,10 @@ class RobustCommitmentAStarConfig:
             raise ValueError("max_hazard_cells must be non-negative")
         for constraint in self.pairwise_constraints:
             constraint.validate()
+        for cell, interval in self.marginal_intervals.items():
+            if not isinstance(cell, tuple) or len(cell) != 2:
+                raise ValueError("marginal interval keys must be grid cells")
+            interval.validate(name=f"marginal interval override for {cell}")
 
 
 @dataclass(frozen=True)
@@ -73,15 +80,19 @@ def _ambiguity_from_active(
     active: frozenset[int],
     current: GridCell,
     pairwise_constraints: tuple[PairwiseClosureConstraint, ...],
+    marginal_intervals: dict[GridCell, ProbabilityInterval],
 ) -> TopologyAmbiguitySet:
     marginals: dict[GridCell, ProbabilityInterval] = {}
     for index in active:
         closure = model.closures[index]
         if closure.closure_cell == current:
             continue
-        interval = ProbabilityInterval(
-            float(closure.closure_probability),
-            float(closure.closure_probability),
+        interval = marginal_intervals.get(
+            closure.closure_cell,
+            ProbabilityInterval(
+                float(closure.closure_probability),
+                float(closure.closure_probability),
+            ),
         )
         existing = marginals.get(closure.closure_cell)
         if existing is not None and existing != interval:
@@ -112,6 +123,7 @@ def _return_probability(
         active,
         cell,
         config.pairwise_constraints,
+        config.marginal_intervals,
     )
     return robust_safe_return_probability(
         grid,
