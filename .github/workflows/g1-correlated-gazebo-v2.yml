@@ -1,13 +1,6 @@
 name: G1 correlated Gazebo V3.1
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - ".github/workflows/g1-correlated-gazebo-v2.yml"
-      - "G1_CORRELATED_GAZEBO_V2_PROTOCOL.md"
-      - "ros2_ws/src/dynnav_nav2_cpp/**"
-      - "ros2_ws/src/dynnav_nav2_benchmark/**"
   workflow_dispatch:
     inputs:
       repetitions:
