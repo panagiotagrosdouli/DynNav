@@ -22,7 +22,7 @@ This matrix defines what the current repository may and may not claim. Publicati
 | History-conditioned C++ planner integrates with ROS 2 Jazzy/Nav2 | plugin build/discovery/tests plus persistent executed-history state | SUPPORTED | integration, not execution efficacy |
 | Planned paths do not falsely activate persistent hazard history | planner wiring updates persistent state from executed-transition input only | SUPPORTED | execution source still requires valid observation semantics |
 | Action-triggered Gazebo protocol is frozen before comparative outcomes | frozen trigger/closure/probability configuration and protocol documentation | SUPPORTED | efficacy outcomes still pending |
-| History-conditioned planner improves Gazebo execution outcomes | no retained comparative action-triggered execution artifact yet | UNSUPPORTED | run paired validated Gazebo study |
+| History-conditioned planner improves Gazebo execution outcomes | retained paired diagnostic artifact exists, but the pre-fix history condition completed 0/8 navigation trials while NavFn and DynNavShortest completed 8/8 | UNSUPPORTED | protocol-isolation and exact-oracle performance fixes require a fresh frozen rerun before any efficacy claim |
 | Recoverability probabilities are calibrated to real-world recovery success | synthetic/model probabilities only | UNSUPPORTED | calibration/miscalibration study required |
 | Robustness to partial observability or delayed hazard revelation | not yet evaluated in the publication-facing evidence stack | UNSUPPORTED | frozen stress-test protocol required |
 | Safety is improved in deployment | no formal safety proof, powered hardware study, or certification evidence | UNSUPPORTED | explicit non-certification remains required |
