@@ -143,6 +143,12 @@ void DynNavGlobalPlanner::configure(
   nav2_util::declare_parameter_if_not_declared(
     node, name_ + ".history_recoverability_weight", rclcpp::ParameterValue(4.0));
   nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_robust_pairwise_dependence", rclcpp::ParameterValue(false));
+  nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_pairwise_joint_lower", rclcpp::ParameterValue(0.0));
+  nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_pairwise_joint_upper", rclcpp::ParameterValue(1.0));
+  nav2_util::declare_parameter_if_not_declared(
     node, name_ + ".history_max_hazard_cells", rclcpp::ParameterValue(16));
 
   int lethal_cost_threshold = 253;
@@ -174,6 +180,13 @@ void DynNavGlobalPlanner::configure(
     node->get_parameter(name_ + ".history_hazards", hazards_raw);
     node->get_parameter(
       name_ + ".history_recoverability_weight", history_config_.recoverability_weight);
+    node->get_parameter(
+      name_ + ".history_robust_pairwise_dependence",
+      history_config_.robust_pairwise_dependence);
+    node->get_parameter(
+      name_ + ".history_pairwise_joint_lower", history_config_.pairwise_joint_lower);
+    node->get_parameter(
+      name_ + ".history_pairwise_joint_upper", history_config_.pairwise_joint_upper);
     node->get_parameter(name_ + ".history_max_hazard_cells", history_max_hazard_cells);
     if (history_max_hazard_cells < 0) {
       throw nav2_core::PlannerException("history_max_hazard_cells must be non-negative");
@@ -208,10 +221,12 @@ void DynNavGlobalPlanner::configure(
 
   RCLCPP_INFO(
     logger_,
-    "Configured %s: risk_weight=%.3f irreversibility_weight=%.3f allow_unknown=%s history_aware=%s",
+    "Configured %s: risk_weight=%.3f irreversibility_weight=%.3f allow_unknown=%s "
+    "history_aware=%s robust_pairwise=%s",
     name_.c_str(), search_config_.risk_weight, search_config_.irreversibility_weight,
     search_config_.allow_unknown ? "true" : "false",
-    history_aware_ ? "true" : "false");
+    history_aware_ ? "true" : "false",
+    history_config_.robust_pairwise_dependence ? "true" : "false");
 }
 
 void DynNavGlobalPlanner::cleanup()
