@@ -6,6 +6,7 @@ on:
       - "dynnav/**"
       - "scripts/run_research_gap_program.py"
       - "scripts/run_post_full_study_diagnostics.py"
+      - "scripts/run_risk_budget_replication.py"
       - "tests/**"
       - "RESEARCH_GAPS_G1_G5.md"
       - ".github/workflows/research-gap-program.yml"
