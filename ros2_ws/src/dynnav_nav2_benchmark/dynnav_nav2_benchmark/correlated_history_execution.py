@@ -22,12 +22,18 @@ class CorrelatedExecutionHazard:
     trigger: ActionTriggerSpec
     blocker_entity: str
     blocker_pose: Pose3D
+    trigger_gate_half_width_m: float = 0.0
 
     def validate(self) -> None:
         self.trigger.validate()
         self.blocker_pose.validate()
         if not self.blocker_entity:
             raise ValueError("blocker_entity cannot be empty")
+        if (
+            not math.isfinite(self.trigger_gate_half_width_m)
+            or self.trigger_gate_half_width_m < 0.0
+        ):
+            raise ValueError("trigger_gate_half_width_m must be finite and non-negative")
 
 
 @dataclass(frozen=True, slots=True)
@@ -158,6 +164,9 @@ def load_correlated_history_execution_suite(
                 ),
                 blocker_entity=str(raw["blocker_entity"]),
                 blocker_pose=_pose3(raw["blocker_pose"]),
+                trigger_gate_half_width_m=float(
+                    raw.get("trigger_gate_half_width_m", 0.0)
+                ),
             )
         )
     if len(hazards) != 2:
@@ -257,3 +266,47 @@ def blocker_footprint_cells(
     if not cells:
         raise ValueError("blocker footprint rasterized to no cells")
     return cells
+
+
+def quantized_hazard_trigger_gates(
+    suite: CorrelatedHistoryExecutionSuite,
+    *,
+    origin_x: float,
+    origin_y: float,
+    resolution: float,
+) -> tuple[
+    tuple[tuple[tuple[int, int], tuple[int, int]], ...],
+    tuple[tuple[tuple[int, int], tuple[int, int]], ...],
+]:
+    """Expand each continuous vertical trigger gate to directed grid edges."""
+
+    if resolution <= 0.0 or not math.isfinite(resolution):
+        raise ValueError("resolution must be finite and positive")
+
+    gates = []
+    for hazard in suite.scenario.hazards:
+        canonical = transition_from_world_trigger(
+            hazard.trigger,
+            origin_x=origin_x,
+            origin_y=origin_y,
+            resolution=resolution,
+        )
+        (sx, sy), (tx, ty) = canonical
+        if sy != ty:
+            raise ValueError("V2 trigger gates currently require horizontal motion")
+        if abs(tx - sx) != 1:
+            raise ValueError("V2 trigger gate must cross one x cell boundary")
+
+        half_cells = math.floor(
+            hazard.trigger_gate_half_width_m / resolution + 1.0e-12
+        )
+        edges = tuple(
+            ((sx, y), (tx, y))
+            for y in range(sy - half_cells, sy + half_cells + 1)
+            if y >= 0
+        )
+        if not edges:
+            raise ValueError("trigger gate rasterized to no edges")
+        gates.append(edges)
+
+    return gates[0], gates[1]
