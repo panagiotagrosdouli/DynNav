@@ -49,7 +49,7 @@ class BetaClosurePosterior:
             float(beta_distribution.ppf(1.0 - tail, self.alpha, self.beta)),
         )
 
-    def update(self, *, exposed: bool, closure_observed: bool = False) -> "BetaClosurePosterior":
+    def update(self, *, exposed: bool, closure_observed: bool = False) -> BetaClosurePosterior:
         """Update only from an activated/exposed trigger.
 
         A non-exposed action carries no information about P(closure | trigger).
