@@ -12,6 +12,7 @@ import yaml
 from dynnav_nav2_benchmark.correlated_history_execution import (
     blocker_footprint_cells,
     load_correlated_history_execution_suite,
+    quantized_hazard_trigger_gates,
     quantized_hazard_transitions,
 )
 from dynnav_nav2_benchmark.history_execution import world_to_cell
@@ -29,6 +30,7 @@ class CanonicalG1TopologyContract:
         tuple[tuple[int, int], tuple[int, int]],
     ]
     blocker_cell_counts: tuple[int, int]
+    trigger_gate_edge_counts: tuple[int, int]
     goal_cell: tuple[int, int]
     safe_cell_count: int
 
@@ -148,6 +150,12 @@ def evaluate_canonical_g1_topology(
         origin_y=grid.origin_y,
         resolution=grid.resolution,
     )
+    trigger_gates = quantized_hazard_trigger_gates(
+        suite,
+        origin_x=grid.origin_x,
+        origin_y=grid.origin_y,
+        resolution=grid.resolution,
+    )
     blocker_sets = tuple(
         frozenset(
             blocker_footprint_cells(
@@ -177,6 +185,13 @@ def evaluate_canonical_g1_topology(
         for cell in trigger:
             if cell in grid.occupied:
                 raise ValueError(f"trigger cell lies in static obstacle: {cell}")
+    for gate in trigger_gates:
+        for edge in gate:
+            for cell in edge:
+                if cell in grid.occupied:
+                    raise ValueError(
+                        f"trigger-gate cell lies in static obstacle: {cell}"
+                    )
     if goal in grid.occupied:
         raise ValueError("goal lies in a static obstacle")
     if goal in blocker_sets[0] or goal in blocker_sets[1]:
@@ -194,6 +209,7 @@ def evaluate_canonical_g1_topology(
         interaction=f00 - f10 - f01 + f11,
         trigger_cells=triggers,
         blocker_cell_counts=(len(blocker_sets[0]), len(blocker_sets[1])),
+        trigger_gate_edge_counts=(len(trigger_gates[0]), len(trigger_gates[1])),
         goal_cell=goal,
         safe_cell_count=len(safe),
     )
