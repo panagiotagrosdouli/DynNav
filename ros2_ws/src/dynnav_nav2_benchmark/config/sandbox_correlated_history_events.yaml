@@ -16,10 +16,10 @@ planners:
 scenario:
   name: g1_parallel_corridor_v2_1
   frame_id: map
-  start: {x: 0.8, y: 5.225, yaw: 0.0}
-  goal: {x: 6.2, y: 5.225, yaw: 0.0}
+  start: {x: 0.0, y: 0.0, yaw: 0.0}
+  goal: {x: 5.4, y: 0.0, yaw: 0.0}
   safe_region:
-    center: {x: 0.8, y: 5.225, yaw: 0.0}
+    center: {x: 0.0, y: 0.0, yaw: 0.0}
     radius_m: 0.35
 
   # V2.1 validity amendment: each action trigger is a continuous vertical gate.
@@ -30,19 +30,19 @@ scenario:
       trigger_gate_half_width_m: 0.75
       action_trigger:
         hazard_id: top_return_gate
-        source: {x: 3.625, y: 5.225, yaw: 0.0}
-        target: {x: 3.675, y: 5.225, yaw: 0.0}
+        source: {x: 2.825, y: 0.0, yaw: 0.0}
+        target: {x: 2.875, y: 0.0, yaw: 0.0}
         closure_probability: 0.5
-      blocker_pose: {x: 1.8, y: 5.225, z: 0.5, yaw: 0.0}
+      blocker_pose: {x: 1.0, y: 0.0, z: 0.5, yaw: 0.0}
 
     - blocker_entity: dynnav_g1_blocker_bottom
       trigger_gate_half_width_m: 0.75
       action_trigger:
         hazard_id: bottom_return_gate
-        source: {x: 4.625, y: 5.225, yaw: 0.0}
-        target: {x: 4.675, y: 5.225, yaw: 0.0}
+        source: {x: 3.825, y: 0.0, yaw: 0.0}
+        target: {x: 3.875, y: 0.0, yaw: 0.0}
         closure_probability: 0.5
-      blocker_pose: {x: 1.8, y: 1.175, z: 0.5, yaw: 0.0}
+      blocker_pose: {x: 1.0, y: -4.05, z: 0.5, yaw: 0.0}
 
   dependence_conditions:
     - independent
