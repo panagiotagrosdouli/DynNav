@@ -169,6 +169,21 @@ def commitment_aware_astar(
     frontier: list[tuple[float, int, AugmentedState]] = [(0.0, 0, initial)]
     costs: dict[AugmentedState, float] = {initial: 0.0}
     parents: dict[AugmentedState, AugmentedState] = {}
+    return_cache: dict[AugmentedState, float] = {}
+
+    def return_probability(cell: GridCell, active: frozenset[int]) -> float:
+        state = (cell, active)
+        if state not in return_cache:
+            return_cache[state] = _return_probability(
+                grid,
+                cell,
+                safe,
+                model,
+                active,
+                cfg.max_hazard_cells,
+            )
+        return return_cache[state]
+
     counter = 0
     nodes_expanded = 0
 
@@ -181,14 +196,7 @@ def commitment_aware_astar(
             states = _reconstruct_states(parents, state)
             path = tuple(item[0] for item in states)
             return_probabilities = [
-                _return_probability(
-                    grid,
-                    item_cell,
-                    safe,
-                    model,
-                    item_active,
-                    cfg.max_hazard_cells,
-                )
+                return_probability(item_cell, item_active)
                 for item_cell, item_active in states
             ]
             return CommitmentAwareAStarResult(
@@ -212,14 +220,7 @@ def commitment_aware_astar(
             next_state: AugmentedState = (neighbor, next_active)
             transition = cfg.step_cost
             if mode is CommitmentPlannerMode.HISTORY_AWARE:
-                probability = _return_probability(
-                    grid,
-                    neighbor,
-                    safe,
-                    model,
-                    next_active,
-                    cfg.max_hazard_cells,
-                )
+                probability = return_probability(neighbor, next_active)
                 transition += cfg.recoverability_weight * (1.0 - probability)
             new_cost = costs[state] + transition
             if new_cost < costs.get(next_state, float("inf")):
