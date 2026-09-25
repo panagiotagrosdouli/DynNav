@@ -1,0 +1,40 @@
+name: Research gap full study
+
+on:
+  workflow_dispatch:
+    inputs:
+      trials_per_condition:
+        description: Trials per stochastic condition
+        required: true
+        default: "2000"
+      repetitions:
+        description: Independent repetitions
+        required: true
+        default: "5"
+
+jobs:
+  full-study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,researcher]"
+
+      - name: Run full synthetic G1-G5 study
+        run: python scripts/run_research_gap_full_study.py --trials-per-condition ${{ inputs.trials_per_condition }} --repetitions ${{ inputs.repetitions }} --seed 20260925 --output results/research_gap_program/full_study.json
+
+      - name: Upload full-study artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-g5-full-study
+          path: results/research_gap_program/full_study.json
+          if-no-files-found: error
