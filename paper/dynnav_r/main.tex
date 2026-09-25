@@ -157,7 +157,7 @@ Exact enumeration scales exponentially in the number of active hazards. We there
 \begin{equation}
 R_{\mathrm{cut}}=\prod_{i\in K}(1-p_i).
 \end{equation}
-Because multi-cell cutsets may disconnect the graph even when no individual cell is critical, $R_{\mathrm{cut}}$ is an upper bound in general. This sits within classical stochastic-network reliability, where exact connectivity computation is hard in general and cut-based bounds are well established \cite{provan1983reliability,ball1983bounds}. We therefore treat the approximation as scalability infrastructure, not as a novel graph-theoretic contribution.
+Because multi-cell cutsets may disconnect the graph even when no individual cell is critical, $R_{\mathrm{cut}}$ is an upper bound in general. This sits within classical stochastic-network reliability, where exact connectivity computation is hard in general and cut-based bounds are well established \cite{provan1983reliability,ball1983networkreliability}. We therefore treat the approximation as scalability infrastructure, not as a novel graph-theoretic contribution.
 
 \section{Experimental Design}
 All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. The empirical failure metric is post-closure inability to reach the safe set in the resulting grid; we refer to this as post-closure return infeasibility. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
