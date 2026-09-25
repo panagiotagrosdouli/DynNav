@@ -132,7 +132,8 @@ def run_commitment_execution_benchmark(
             config=HazardReliabilityAStarConfig(
                 reliability_weight=recoverability_weight
             ),
-        )        state_only_exact = hazard_reliability_astar(
+        )
+        state_only_exact = hazard_reliability_astar(
             grid,
             start,
             goal,
