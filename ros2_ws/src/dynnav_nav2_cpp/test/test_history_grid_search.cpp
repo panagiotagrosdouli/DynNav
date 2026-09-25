@@ -14,6 +14,21 @@ using dynnav_nav2_cpp::HistorySearchConfig;
 using dynnav_nav2_cpp::exactHistoryReturnProbability;
 using dynnav_nav2_cpp::planHistoryGridPath;
 
+
+TEST(HistoryGridSearch, NoActiveHazardsStillChecksStaticSafeReachability)
+{
+  const std::size_t width = 3;
+  const std::size_t height = 1;
+  const std::vector<std::uint8_t> costs{0U, 254U, 0U};
+  const std::vector<std::size_t> safe{0U};
+  const std::vector<HistoryHazard> hazards;
+  const HistorySearchConfig config{};
+
+  EXPECT_DOUBLE_EQ(
+    exactHistoryReturnProbability(width, height, costs, 2U, safe, hazards, 0U, config),
+    0.0);
+}
+
 TEST(HistoryGridSearch, SameCellReliabilityDependsOnActivatedHistory)
 {
   const std::size_t width = 5;
