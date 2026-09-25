@@ -7,6 +7,7 @@ This file records the claims that the manuscript must **not** make and the narro
 | Broad claim | Prior art that already covers it | Status for this paper |
 |---|---|---|
 | Safe-return planning is new | Guo et al., *IEEE TAC* 2023, DOI 10.1109/TAC.2023.3244884; Zhang & Guo, *Online Planning of Uncertain MDPs under Temporal Tasks and Safe-Return Constraints* | **Excluded** |
+| Returnability in safe exploration is new | Moldovan & Abbeel, *ICML* 2012; Stephens et al., *Autonomous Robots* 2024 | **Excluded** |
 | History-dependent probabilistic robot risk is new | Xiao, Dufek, Murphy, *IEEE RA-L* 2020, DOI 10.1109/LRA.2020.2974434 | **Excluded** |
 | Decision-dependent/endogenous uncertainty is new | Mature stochastic/robust optimization literature; decision-dependent network reliability formulations predate this work | **Excluded** |
 | Actions changing future robot capability is new | Baldes et al., *A Model for Optimal Resilient Planning Subject to Fallible Actuators*, 2024 | **Excluded** |
@@ -14,6 +15,7 @@ This file records the claims that the manuscript must **not** make and the narro
 | Contingency or backup feasibility is new | Backup-plan MPC, contingency MPPI, safe-return and reachability methods | **Excluded** |
 | Action-dependent environmental evolution is new | Existing robotics work models action-dependent environmental transition fields, including 2026 sequential cleanup/risk-field work | **Excluded** |
 | Traversal-dependent edge deletion / self-deleting graphs are new | Carmesin et al., *Journal of Computational Science* 2023, DOI 10.1016/j.jocs.2023.102156: visited vertices can delete future edges, so the residual graph depends on path history | **Excluded** |
+| Traversal-dependent pathfinding / self-deleting shortest paths are new | Dvořák et al., *ISAAC* 2025, DOI 10.4230/LIPIcs.ISAAC.2025.28: shortest pathfinding is studied directly on traversal-dependent self-deleting graphs | **Excluded** |
 | Self-induced environmental obstacles / history-dependent traversability are new | Frenkel, Parker, Mansouri, *IEEE RA-L* 2026, DOI 10.1109/LRA.2026.3656776: robot traversal creates future obstacles and feasible successors depend on path history | **Excluded** |
 | Graph articulation / cut concepts are new | Classical graph theory and prior robotics/network applications | **Excluded** |
 
