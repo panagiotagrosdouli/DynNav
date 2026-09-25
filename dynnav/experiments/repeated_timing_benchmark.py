@@ -178,9 +178,12 @@ def run_repeated_timing_benchmark(
     expected: dict[str, tuple[int, int, int]] = {}
     for method in ("shortest_augmented", "history_cut", "history_exact"):
         for repetition in range(-warmups, repetitions):
-            start = time.perf_counter_ns()
             result = run_planner(method)
-            elapsed = (time.perf_counter_ns() - start) / 1_000_000.0
+            # Use the planner's internal online latency instrumentation, which
+            # deliberately excludes post-hoc diagnostics. External wall-clock
+            # timing would otherwise reintroduce the confound removed from the
+            # publication-facing timing contract.
+            elapsed = result.planning_time_ms
             if not result.success:
                 raise RuntimeError(f"{method} failed during timing benchmark")
             signature = (
