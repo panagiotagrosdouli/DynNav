@@ -155,6 +155,20 @@ The core representation paper is supported by traceable retained computational e
 A retained reviewer-measurement workflow now adds two measurements that were previously weak or single-shot:
 
 - **96 frozen unavoidable-hazard scenarios**, 250 paired execution seeds per scenario (24,000 trials per planner). State-only exact return-infeasibility is 0.74425 and history exact is 0.66604. The scenario-level history-minus-state-only mean difference is -0.07821 with 95% bootstrap CI [-0.1090, -0.04983]. History exact improves 36/96 scenarios and is nonworse in 96/96.
-- **Repeated timing distributions**, 100 measured repetitions after 10 warm-ups. On the retained GitHub Actions runner, the 12-hazard exact oracle has median 38.47 ms (IQR 0.181 ms, p95 38.75 ms) and critical-cut has median 0.192 ms (IQR 0.0064 ms, p95 0.204 ms), a median ratio of 200.7x. At six modules, median online planning latency is 0.114 ms for shortest augmented, 4.06 ms for history-cut, and 5.79 ms for history-exact.
+- **Repeated timing distributions**, 100 measured repetitions after 10 warm-ups. On the retained GitHub Actions runner, the 12-hazard exact oracle has median 34.51 ms (IQR 0.337 ms, p95 37.01 ms) and critical-cut has median 0.170 ms (IQR 0.0055 ms, p95 0.188 ms), a median ratio of 202.8x. At six modules, median online planning latency is 0.102 ms for shortest augmented, 3.65 ms for history-cut, and 5.16 ms for history-exact.
 
 The timing distributions are descriptive for the retained runner environment and must not be presented as hardware-independent real-time guarantees. The 96-scenario family remains a structured synthetic generator and does not establish arbitrary-map or deployment generalization.
+
+
+### Measurement artifact provenance (exact release-head rerun)
+
+- workflow: `Reviewer measurement expansion`
+- run: `36139174706`
+- source branch head: `8ef50f9ec167c7e8cc29f112f5b04ce4a821f7df`
+- PR merge checkout recorded inside artifact: `d8625dc1032da07ec26eaeeb8766a76f07f08cfe`
+- artifact: `10865996586`
+- downloaded artifact SHA-256: `0c9c9cf46f4fd81034f6e91381cd298b1ff0071d5658c50cada4a22afc624958`
+- embedded unavoidable-suite protocol: 96 scenarios, 250 seeds/scenario
+- embedded repeated-timing protocol: 100 measured repetitions after 10 warm-ups
+
+The manuscript timing values above are taken from this exact release-head artifact. Earlier retained timing runs are preserved as historical measurements but are not publication-facing because runner-specific timing values differ across CI executions.
