@@ -13,6 +13,10 @@ on:
       - "tests/test_unavoidable_history_benchmark.py"
       - ".github/workflows/reviewer-p0-evidence.yml"
 
+concurrency:
+  group: reviewer-p0-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   reviewer-p0:
     name: Exact state-only and unavoidable-hazard evidence
