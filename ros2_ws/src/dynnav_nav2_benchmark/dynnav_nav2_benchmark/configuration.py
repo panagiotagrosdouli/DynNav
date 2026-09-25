@@ -166,7 +166,8 @@ def inject_correlated_history_planner_parameters(
     safe_cell: tuple[int, int],
     hazards: tuple[
         tuple[
-            tuple[tuple[int, int], tuple[int, int]],
+            tuple[tuple[int, int], tuple[int, int]]
+            | tuple[tuple[tuple[int, int], tuple[int, int]], ...],
             tuple[int, int] | tuple[tuple[int, int], ...],
             float,
         ],
@@ -193,10 +194,29 @@ def inject_correlated_history_planner_parameters(
         raise ValueError("pairwise joint bounds must satisfy 0 <= lower <= upper <= 1")
 
     encoded: list[str] = []
-    for trigger, closure_spec, probability in hazards:
+    for trigger_spec, closure_spec, probability in hazards:
         if not 0.0 <= probability <= 1.0:
             raise ValueError("closure probability must be in [0, 1]")
-        (sx, sy), (tx, ty) = trigger
+
+        if (
+            len(trigger_spec) == 2
+            and all(
+                isinstance(cell, tuple)
+                and len(cell) == 2
+                and all(isinstance(value, int) for value in cell)
+                for cell in trigger_spec
+            )
+        ):
+            trigger_edges = (trigger_spec,)
+        else:
+            trigger_edges = tuple(trigger_spec)
+        if not trigger_edges:
+            raise ValueError("trigger gate cannot be empty")
+        trigger_text = "+".join(
+            f"{int(sx)}:{int(sy)}>{int(tx)}:{int(ty)}"
+            for (sx, sy), (tx, ty) in trigger_edges
+        )
+
         if (
             len(closure_spec) == 2
             and all(isinstance(value, int) for value in closure_spec)
@@ -210,7 +230,7 @@ def inject_correlated_history_planner_parameters(
             f"{int(cx)}:{int(cy)}" for cx, cy in closure_cells
         )
         encoded.append(
-            f"{sx}:{sy}>{tx}:{ty}@{closure_text}@{probability:.17g}"
+            f"{trigger_text}@{closure_text}@{probability:.17g}"
         )
 
     merged = copy.deepcopy(payload)
