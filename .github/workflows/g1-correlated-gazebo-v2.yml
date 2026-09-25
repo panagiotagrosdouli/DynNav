@@ -1,4 +1,4 @@
-name: G1 correlated Gazebo V3
+name: G1 correlated Gazebo V3.1
 
 on:
   pull_request:
@@ -104,7 +104,7 @@ jobs:
           print(json.dumps(payload, indent=2, sort_keys=True))
           PY
 
-      - name: Record frozen V2 inputs
+      - name: Record frozen V3.1 inputs
         run: |
           mkdir -p /tmp/dynnav_g1_v2/results
           cp /tmp/dynnav_g1_v2_topology_contract.json /tmp/dynnav_g1_v2/results/topology_contract.json
@@ -140,7 +140,7 @@ jobs:
             2>&1 | tee /tmp/dynnav_g1_v2/results/ros_launch.log
           test -s /tmp/dynnav_g1_v2/results/results.json
 
-      - name: Validate paired V2 contract and summarize
+      - name: Validate paired V3.1 contract and summarize
         env:
           REPS: ${{ inputs.repetitions || '1' }}
         run: |
@@ -290,10 +290,10 @@ jobs:
               --seed 20260925
           fi
 
-      - name: Upload canonical G1 V2 evidence
+      - name: Upload canonical G1 V3.1 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: g1-correlated-gazebo-v3-${{ github.sha }}
+          name: g1-correlated-gazebo-v3-1-${{ github.sha }}
           path: /tmp/dynnav_g1_v2/results
           if-no-files-found: warn
