@@ -67,7 +67,7 @@ jobs:
       - name: Re-run geometric held-out with exact state-only baseline
         run: >-
           python scripts/run_geometric_heldout_benchmark.py
-          --out-dir results/reviewer_p0/geometric_heldout
+          --output-dir results/reviewer_p0/geometric_heldout
 
       - name: Run frozen unavoidable-hazard challenge suite
         run: >-
