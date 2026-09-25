@@ -26,7 +26,25 @@ from dynnav.distributional_recoverability import (
 from dynnav.experiments.activation_threshold_frontier import (
     run_activation_threshold_frontier,
 )
+from dynnav.experiments.causal_graph_benchmark import (
+    run_causal_graph_recovery_benchmark,
+)
+from dynnav.experiments.dependence_shift_benchmark import (
+    run_dependence_shift_benchmark,
+)
+from dynnav.experiments.history_compression_benchmark import (
+    records_as_dicts as compression_records_as_dicts,
+)
+from dynnav.experiments.history_compression_benchmark import (
+    run_history_compression_scaling,
+)
 from dynnav.experiments.noisy_activation_benchmark import ActivationObservationScenario
+from dynnav.experiments.online_calibration_benchmark import (
+    records_as_dicts as calibration_records_as_dicts,
+)
+from dynnav.experiments.online_calibration_benchmark import (
+    run_online_calibration_benchmark,
+)
 from dynnav.history_compression import build_hazard_event_quotient
 from dynnav.online_hazard_learning import BetaClosurePosterior
 from dynnav.planners.grid_map import GridMap
@@ -355,10 +373,32 @@ def run_research_gap_program(
             "scope": "bounded mechanism study; not deployment efficacy",
         },
         "G1_dependence_ambiguity": _g1(),
+        "G1_dependence_shift_execution": [
+            asdict(record)
+            for record in run_dependence_shift_benchmark(
+                trials=trials,
+                seed=seed + 5,
+            )
+        ],
         "G2_activation_belief_frontier": _g2(trials=trials, seed=seed + 10),
-        "G3_online_calibration": _g3(trials=trials, seed=seed + 20),
+        "G3_logging_bias_control": _g3(trials=trials, seed=seed + 20),
+        "G3_online_policy_benchmark": calibration_records_as_dicts(
+            run_online_calibration_benchmark(
+                opportunities=min(trials, 5_000),
+                seed=seed + 21,
+            )
+        ),
         "G4_interventional_trigger_effect": _g4(trials=trials, seed=seed + 30),
-        "G5_history_compression": _g5(),
+        "G4_causal_graph_recovery": asdict(
+            run_causal_graph_recovery_benchmark(
+                trials_per_pair=max(200, min(trials, 2_000)),
+                seed=seed + 31,
+            )
+        ),
+        "G5_history_compression_counts": _g5(),
+        "G5_search_scaling": compression_records_as_dicts(
+            run_history_compression_scaling()
+        ),
     }
 
 
