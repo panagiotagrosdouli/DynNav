@@ -13,7 +13,7 @@ from nav2_simple_commander.robot_navigator import BasicNavigator
 from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 from std_msgs.msg import String
 
-from dynnav_nav2_benchmark.analysis import balanced_trial_order, Pose2D
+from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.correlated_history_execution import (
     load_correlated_history_execution_suite,
     quantized_hazard_transitions,
@@ -34,7 +34,10 @@ from dynnav_nav2_benchmark.dynamic_runner import (
     _wait_for_service,
     _write_behavior_trees,
 )
-from dynnav_nav2_benchmark.history_execution import HISTORY_RESET_COMMAND, world_to_cell
+from dynnav_nav2_benchmark.history_execution import (
+    HISTORY_RESET_COMMAND,
+    world_to_cell,
+)
 
 
 def _spawn_named_blocker(
