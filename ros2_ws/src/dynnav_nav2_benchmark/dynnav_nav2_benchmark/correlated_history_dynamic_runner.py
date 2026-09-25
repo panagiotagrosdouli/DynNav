@@ -11,7 +11,7 @@ from pathlib import Path
 import rclpy
 from nav2_simple_commander.robot_navigator import BasicNavigator
 from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
-from std_msgs.msg import String
+from std_msgs.msg import String, UInt64
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.correlated_history_execution import (
@@ -159,6 +159,7 @@ def _trial(
     reset_s: float,
     publisher,
     localization_mode: str,
+    localization_epoch: dict[str, int],
 ):
     scenario = suite.scenario
     for hazard in scenario.hazards:
@@ -223,9 +224,32 @@ def _trial(
         for index, hazard in enumerate(scenario.hazards)
     )
     state = CorrelatedHistoryRuntimeState(runtime_specs, latent)
+    expected_localization_epoch = None
+    if localization_mode == "odom_reset":
+        expected_localization_epoch = localization_epoch["value"] + 1
     publisher.publish(String(data=HISTORY_RESET_COMMAND))
-    rclpy.spin_once(navigator, timeout_sec=0.1)
-    time.sleep(0.1)
+
+    if expected_localization_epoch is not None:
+        reset_deadline = time.monotonic() + 5.0
+        while (
+            localization_epoch["value"] < expected_localization_epoch
+            and time.monotonic() < reset_deadline
+        ):
+            rclpy.spin_once(navigator, timeout_sec=0.05)
+        if localization_epoch["value"] < expected_localization_epoch:
+            return {
+                "dependence": dependence,
+                "planner_id": planner_id,
+                "repetition": repetition,
+                "order_index": order_index,
+                "valid_trial": False,
+                "invalid_reason": "localization_reset_timeout",
+                "initial_plan": None,
+                "localization_reset_epoch": localization_epoch["value"],
+            }
+    else:
+        rclpy.spin_once(navigator, timeout_sec=0.1)
+        time.sleep(0.1)
 
     initial_plan = _initial_plan_audit(
         navigator,
@@ -373,6 +397,7 @@ def _trial(
         or ("localization_jump" if not state.observation_valid else None)
         or ("insufficient_motion" if not motion_valid else None),
         "navigation_success": success,
+        "localization_reset_epoch": localization_epoch["value"],
         "navigation_time_s": navigation_time_s,
         "initial_plan": initial_plan,
         "max_start_displacement_m": max_start_displacement_m,
@@ -448,6 +473,20 @@ def main(argv: list[str] | None = None) -> int:
             nav.waitUntilNav2Active()
         bts = _write_behavior_trees(args.output, suite.planner_ids)
         publisher = nav.create_publisher(String, "dynnav/executed_transition", 10)
+        localization_epoch = {"value": 0}
+
+        def _on_localization_epoch(message: UInt64) -> None:
+            localization_epoch["value"] = max(
+                localization_epoch["value"],
+                int(message.data),
+            )
+
+        localization_subscription = nav.create_subscription(
+            UInt64,
+            "dynnav/localization_reset_epoch",
+            _on_localization_epoch,
+            20,
+        )
         time.sleep(0.5)
         trials = []
         selected_dependence = (
@@ -479,6 +518,7 @@ def main(argv: list[str] | None = None) -> int:
                             reset_s=args.reset_settle_s,
                             publisher=publisher,
                             localization_mode=args.localization_mode,
+                            localization_epoch=localization_epoch,
                         )
                     )
 
@@ -486,6 +526,7 @@ def main(argv: list[str] | None = None) -> int:
             "schema_version": 1,
             "benchmark_type": "correlated_action_triggered_history",
             "seed": suite.seed,
+            "localization_mode": args.localization_mode,
             "dependence_conditions": list(selected_dependence),
             "trials": trials,
         }
@@ -493,6 +534,7 @@ def main(argv: list[str] | None = None) -> int:
             json.dumps(payload, indent=2, sort_keys=True),
             encoding="utf-8",
         )
+        nav.destroy_subscription(localization_subscription)
         nav.destroy_publisher(publisher)
         return 0 if all(item["valid_trial"] for item in trials) else 2
     finally:
