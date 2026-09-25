@@ -269,6 +269,14 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
   if (!history_aware_ || costmap_ == nullptr) {
     return;
   }
+  if (message->data == "__RESET__") {
+    std::lock_guard<std::mutex> lock(history_mutex_);
+    active_history_mask_ = 0U;
+    observed_cell_valid_ = false;
+    observed_cell_ = 0U;
+    RCLCPP_DEBUG(logger_, "Reset executed-history state for %s", name_.c_str());
+    return;
+  }
   try {
     const auto transition = parseTransition(message->data);
     const auto source = checkedIndex(costmap_, transition.first);
