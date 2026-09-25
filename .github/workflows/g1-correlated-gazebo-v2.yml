@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - ".github/workflows/g1-correlated-gazebo-v2.yml"
-      - "G1_GAZEBO_V2_PROTOCOL.md"
+      - "G1_CORRELATED_GAZEBO_V2_PROTOCOL.md"
       - "ros2_ws/src/dynnav_nav2_cpp/**"
       - "ros2_ws/src/dynnav_nav2_benchmark/**"
   workflow_dispatch:
@@ -70,23 +70,47 @@ jobs:
             --test-result-base /tmp/dynnav_g1_v2/build \
             --verbose
 
+      - name: Reconfirm canonical topology contract
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v2/install/setup.bash
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
+
+          root = Path("ros2_ws/src/dynnav_nav2_benchmark")
+          contract = evaluate_canonical_g1_topology(
+              map_yaml=root / "maps" / "g1_parallel_corridor.yaml",
+              scenario_yaml=root / "config" / "sandbox_correlated_history_events.yaml",
+          )
+          payload = contract.to_dict()
+          assert [payload["f00"], payload["f10"], payload["f01"], payload["f11"]] == [1, 1, 1, 0]
+          assert payload["interaction"] == -1
+          Path("/tmp/dynnav_g1_v2_topology_contract.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True)
+          )
+          print(json.dumps(payload, indent=2, sort_keys=True))
+          PY
+
       - name: Record frozen V2 inputs
         run: |
           mkdir -p /tmp/dynnav_g1_v2/results
-          cp G1_GAZEBO_V2_PROTOCOL.md /tmp/dynnav_g1_v2/results/
-          cp ros2_ws/src/dynnav_nav2_benchmark/config/g1_parallel_corridor_correlated.yaml /tmp/dynnav_g1_v2/results/frozen_scenario.yaml
+          cp /tmp/dynnav_g1_v2_topology_contract.json /tmp/dynnav_g1_v2/results/topology_contract.json
+          cp G1_CORRELATED_GAZEBO_V2_PROTOCOL.md /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml /tmp/dynnav_g1_v2/results/frozen_scenario.yaml
           cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml /tmp/dynnav_g1_v2/results/
           cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm /tmp/dynnav_g1_v2/results/
-          cp ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf /tmp/dynnav_g1_v2/results/
-          cp ros2_ws/src/dynnav_nav2_benchmark/models/g1_corridor_blocker.sdf /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf /tmp/dynnav_g1_v2/results/
           printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_g1_v2/results/source_revision.txt
           sha256sum \
-            G1_GAZEBO_V2_PROTOCOL.md \
-            ros2_ws/src/dynnav_nav2_benchmark/config/g1_parallel_corridor_correlated.yaml \
+            G1_CORRELATED_GAZEBO_V2_PROTOCOL.md \
+            ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml \
             ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml \
             ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm \
-            ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf \
-            ros2_ws/src/dynnav_nav2_benchmark/models/g1_corridor_blocker.sdf \
+            ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro \
+            ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf \
             > /tmp/dynnav_g1_v2/results/SHA256SUMS
 
       - name: Run canonical correlated Gazebo trials
