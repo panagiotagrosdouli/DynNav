@@ -69,6 +69,11 @@
         0,
         0,
         0
+      ],
+      "state_only_exact": [
+        0.512,
+        0.881,
+        0.992
       ]
     },
     "state_only_vs_shortest": {
@@ -106,7 +111,8 @@
           "state_only_single": 0.992,
           "history_exact": 0,
           "history_cut": 0,
-          "hard_return_0.9": 0
+          "hard_return_0.9": 0,
+          "state_only_exact": 0.992
         },
         "history_exact_vs_shortest_risk_difference": -0.992,
         "history_exact_vs_shortest_bootstrap_95": [
@@ -129,7 +135,8 @@
           "state_only_single": 0.998,
           "history_exact": 0,
           "history_cut": 0,
-          "hard_return_0.9": 0
+          "hard_return_0.9": 0,
+          "state_only_exact": 0.998
         },
         "history_exact_vs_shortest_risk_difference": -0.998,
         "history_exact_vs_shortest_bootstrap_95": [
@@ -153,7 +160,8 @@
           "state_only_single": 1,
           "history_exact": 0,
           "history_cut": 0,
-          "hard_return_0.9": 0.116
+          "hard_return_0.9": 0.116,
+          "state_only_exact": 1
         },
         "history_exact_vs_shortest_risk_difference": -1,
         "history_exact_vs_shortest_bootstrap_95": [
@@ -188,7 +196,9 @@
           -0.776
         ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.420369946780824e-122,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.81,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       },
       "l_room": {
         "shortest_failure_rate": 0.756,
@@ -204,7 +214,9 @@
           -0.718
         ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 3.248565551764031e-114,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.756,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       },
       "chamber_two_trigger": {
         "shortest_failure_rate": 0.89,
@@ -220,7 +232,9 @@
           -0.862
         ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.2013136429275836e-134,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.89,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       }
     },
     "scope": "three predeclared hand-built held-out topologies; stronger than repeated-series-only evidence but not arbitrary-map or real-world geometric generalization"
@@ -329,7 +343,7 @@
     }
   },
   "claim_scope": {
-    "supported": "mechanism-level evidence that executed action-triggered stochastic topology history can carry safe-return-connectivity information absent from an endpoint-only marginal hazard representation, including an endpoint-aliasing lower bound and replication across repeated procedural families and three predeclared hand-built held-out topologies",
+    "supported": "mechanism-level evidence that executed action-triggered stochastic topology history can carry safe-return-connectivity information absent from an endpoint-only fixed-field representation, including an elementary endpoint-aliasing bound, a same-exact-oracle state-only control, replication across controlled and hand-built worlds, and a frozen 24-scenario unavoidable-hazard suite in which every feasible route activates stochastic hazards",
     "not_claimed": [
       "first history-dependent risk planner",
       "first safe-return planner",
@@ -342,10 +356,18 @@
     ]
   },
   "reviewer_p0_protocol": {
-    "status": "frozen_pending_artifact",
+    "status": "retained_success",
+    "workflow_name": "Reviewer P0 evidence",
+    "run_id": 36122469824,
+    "source_branch_head_sha": "1246ce280bc92b3765f43915505e4dcdd4214830",
+    "pull_request_merge_checkout_sha": "b6551e46245e8b33ac7772f27d36dafc091c2a85",
+    "artifact_id": 10857728526,
+    "artifact_name": "dynnav-reviewer-p0-b6551e46245e8b33ac7772f27d36dafc091c2a85",
+    "downloaded_artifact_sha256": "e065873facb23770ad7f0d667a9b70638fa67f95f2163e5695af741c6d0d7175",
     "generator_seed": 20260925,
     "scenario_count": 24,
     "paired_execution_seeds_per_scenario": 500,
+    "trials_per_planner": 12000,
     "invariant": "every start-to-goal route activates at least one hazard per module",
     "planners": [
       "shortest",
@@ -353,7 +375,39 @@
       "state_only_exact",
       "history_exact"
     ],
-    "primary_control": "state_only_exact uses the same exact connectivity oracle as history_exact but a fixed hazard field without trigger conditioning",
-    "result_policy": "do not add publication-facing outcomes until a retained workflow artifact exists for the exact commit"
+    "primary_control": "state_only_exact uses the same exact connectivity oracle and additive fragility objective as history_exact but one fixed hazard field without trigger conditioning",
+    "aggregate": {
+      "shortest": {
+        "return_infeasible_rate": 0.7795833333333333,
+        "mean_final_exact_return_probability": 0.22423567708333333,
+        "mean_path_length": 12.708333333333334,
+        "mean_activated_closure_count": 2.5416666666666665
+      },
+      "state_only_exact": {
+        "return_infeasible_rate": 0.7795833333333333,
+        "mean_final_exact_return_probability": 0.22423567708333333,
+        "mean_path_length": 12.708333333333334,
+        "mean_activated_closure_count": 2.5416666666666665,
+        "different_hazard_choice_scenarios_vs_shortest": 0
+      },
+      "history_exact": {
+        "return_infeasible_rate": 0.6925833333333333,
+        "mean_final_exact_return_probability": 0.31048307291666666,
+        "mean_path_length": 14.291666666666666,
+        "mean_activated_closure_count": 2.5416666666666665,
+        "different_hazard_choice_scenarios_vs_shortest": 8,
+        "higher_exact_return_probability_scenarios_vs_shortest": 8
+      },
+      "history_vs_state_only_exact_scenario_risk_difference": {
+        "mean": -0.087,
+        "bootstrap_95": [
+          -0.16291666666666665,
+          -0.02466666666666666
+        ],
+        "sample_size": 24,
+        "improved_scenarios": 8,
+        "nonworse_scenarios": 24
+      }
+    }
   }
 }
