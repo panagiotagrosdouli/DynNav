@@ -202,6 +202,7 @@ void validateHistorySearchInputs(
     if (safe >= costs.size()) {throw std::out_of_range("safe cell is outside the grid");}
   }
   std::unordered_set<std::uint64_t> triggers;
+  std::unordered_map<std::size_t, double> closure_probabilities;
   for (const auto & hazard : hazards) {
     if (hazard.source_index >= costs.size() || hazard.target_index >= costs.size() ||
       hazard.closure_index >= costs.size())
@@ -222,6 +223,14 @@ void validateHistorySearchInputs(
     if (!triggers.insert(trigger_key).second) {
       throw std::invalid_argument("duplicate history hazard trigger");
     }
+    const auto existing = closure_probabilities.find(hazard.closure_index);
+    if (existing != closure_probabilities.end() &&
+      std::abs(existing->second - hazard.closure_probability) > kEpsilon)
+    {
+      throw std::invalid_argument(
+              "multiple triggers for one closure cell must share one probability");
+    }
+    closure_probabilities[hazard.closure_index] = hazard.closure_probability;
   }
 }
 
@@ -241,25 +250,34 @@ double exactHistoryReturnProbability(
     throw std::invalid_argument("active hazard mask references an unknown hazard");
   }
 
-  std::vector<std::size_t> active_indices;
+  // Multiple executed triggers may activate the same latent closure event.
+  // Collapse active trigger bits by closure cell so one physical event is never
+  // counted as multiple independent Bernoulli trials.
+  std::unordered_map<std::size_t, double> active_events_by_cell;
   for (std::size_t i = 0; i < hazards.size(); ++i) {
-    if ((active_mask & (1ULL << i)) != 0U) {active_indices.push_back(i);}
+    if ((active_mask & (1ULL << i)) == 0U) {continue;}
+    const auto & hazard = hazards[i];
+    active_events_by_cell[hazard.closure_index] = hazard.closure_probability;
   }
+  std::vector<std::pair<std::size_t, double>> active_events(
+    active_events_by_cell.begin(), active_events_by_cell.end());
+  std::sort(active_events.begin(), active_events.end());
+
   std::unordered_set<std::size_t> safe(safe_indices.begin(), safe_indices.end());
-  if (active_indices.empty()) {
+  if (active_events.empty()) {
     return reachesSafe(width, height, costs, current_index, safe, {}, config) ? 1.0 : 0.0;
   }
-  const std::uint64_t realization_count = 1ULL << active_indices.size();
+  const std::uint64_t realization_count = 1ULL << active_events.size();
   double probability = 0.0;
   for (std::uint64_t realization = 0; realization < realization_count; ++realization) {
     double mass = 1.0;
     std::unordered_set<std::size_t> closed;
-    for (std::size_t bit = 0; bit < active_indices.size(); ++bit) {
-      const auto & hazard = hazards[active_indices[bit]];
+    for (std::size_t bit = 0; bit < active_events.size(); ++bit) {
+      const auto & [closure_index, closure_probability] = active_events[bit];
       const bool closes = (realization & (1ULL << bit)) != 0U;
-      mass *= closes ? hazard.closure_probability : (1.0 - hazard.closure_probability);
-      if (closes && hazard.closure_index != current_index) {
-        closed.insert(hazard.closure_index);
+      mass *= closes ? closure_probability : (1.0 - closure_probability);
+      if (closes && closure_index != current_index) {
+        closed.insert(closure_index);
       }
     }
     if (mass <= 0.0) {continue;}
