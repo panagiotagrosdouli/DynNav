@@ -3,7 +3,7 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{microtype}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning}
@@ -50,26 +50,28 @@ The contributions are:
 \centering
 \begin{tikzpicture}[
   >=Latex,
-  node distance=5mm,
   state/.style={draw,circle,minimum size=5.2mm,inner sep=0pt,font=\scriptsize},
-  labelnode/.style={font=\scriptsize,align=center},
-  route/.style={->,line width=0.55pt},
-  hazard/.style={->,dashed,line width=0.55pt}
+  labelnode/.style={font=\scriptsize,align=left},
+  note/.style={font=\tiny,align=center},
+  route/.style={->,line width=0.55pt}
 ]
-  \node[state] (s1) at (0,1.45) {$S$};
-  \node[state] (a1) at (1.15,1.45) {};
-  \node[state] (x1) at (2.30,1.45) {$x$};
+  \node[state] (s1) at (0,1.35) {$S$};
+  \node[state] (a1) at (1.0,1.35) {};
+  \node[state] (x1) at (2.0,1.35) {$x$};
   \draw[route] (s1) -- (a1) -- (x1);
-  \node[labelnode,anchor=west] at (2.72,1.45) {trigger-free history\\$\Aset=\varnothing,\;\Rret=1$};
+  \node[labelnode,anchor=west] at (2.35,1.35)
+    {trigger-free history\\$\Aset=\varnothing,\;\Rret=1$};
 
   \node[state] (s2) at (0,0) {$S$};
-  \node[state] (b2) at (1.15,0) {};
-  \node[state] (x2) at (2.30,0) {$x$};
-  \draw[route] (s2) -- node[below,font=\scriptsize] {$e_i$} (b2) -- (x2);
-  \draw[hazard,bend left=28] (b2) to node[above,font=\scriptsize] {activates $c_i$ with $p$} (s2);
-  \node[labelnode,anchor=west] at (2.72,0) {trigger-taking history\\$\Aset=\{i\},\;\Rret=1-p$};
+  \node[state] (a2) at (1.0,0) {};
+  \node[state] (x2) at (2.0,0) {$x$};
+  \draw[route] (s2) -- node[above,font=\scriptsize] {$e_i$} (a2) -- (x2);
+  \node[labelnode,anchor=west] at (2.35,0)
+    {trigger-taking history\\$\Aset=\{i\},\;\Rret=1-p$};
+  \node[note,anchor=north] at (1.0,-0.38)
+    {execute $e_i$: activate hazard $i$;\\$c_i$ closes later with probability $p$};
 \end{tikzpicture}
-\caption{The same geometric endpoint $x$ is not necessarily the same planning state. In the lower history, traversing trigger $e_i$ activates a future closure of the critical return connection $c_i$. A state-only marginal model assigns one value to $x$ and cannot represent this distinction.}
+\caption{The same geometric endpoint $x$ is not necessarily the same planning state. Executing trigger $e_i$ activates a stochastic future closure of the critical return connection $c_i$; avoiding the trigger does not. A state-only marginal model assigns one value to $x$ and cannot represent this distinction.}
 \label{fig:history-gap}
 \end{figure}
 
@@ -84,6 +86,7 @@ Xiao \emph{et al.} explicitly reject a purely state-dependent risk model, classi
 Self-deleting graphs explicitly model traversal-dependent structure: processing a vertex can delete edges from the residual graph \cite{carmesin2023selfdeleting}. Shortest pathfinding on this model has been studied algorithmically and shown to be computationally hard in several restricted graph classes \cite{dvorak2025selfdeleting}. In robotics, Frenkel \emph{et al.} use self-deleting graphs to model coverage with self-induced obstacles \cite{frenkel2026selfinduced}. These works are direct novelty constraints because they already establish that the robot's previous traversal can alter future graph feasibility. DynNav differs in the modeled random variable and evaluation target: executing a trigger activates, but does not immediately realize, a stochastic future closure; the quantity of interest is the conditional probability that a safe set remains reachable. We therefore treat deterministic self-deletion as neighboring prior art rather than claiming the general history--topology connection as new.
 
 \subsection{Predictive commitment and dynamic topology}
+Classical Canadian-Traveller formulations study navigation with blocked or uncertain edges that are revealed online \cite{papadimitriou1991shortest}; this is an important uncertain-topology precedent, but the edge realization is exogenous rather than activated by the traveller's executed transitions.
 RCSP studies commands that are locally safe but commit a robot to a bottleneck that moving obstacles may soon close \cite{han2026rcsp}. Dynamic door-closing work has used POMDP belief-tree reasoning for self-protective manipulation behavior \cite{liu2021door}, while nondeterministic planning has long represented exogenous events and robust plans \cite{perret1996events}. These works motivate proactive reasoning about future changes; they do not by themselves establish that our action-triggered return-topology abstraction is novel.
 
 \subsection{Endogenous uncertainty and degradation}
