@@ -102,6 +102,46 @@ def _planner_server(payload: dict[str, Any]) -> dict[str, Any]:
     return planner_parameters
 
 
+def freeze_global_costmap_for_planner_comparison(
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Return Nav2 parameters with a static-map-only global planning costmap.
+
+    The local costmap is intentionally untouched so physical Gazebo blockers
+    remain visible to the controller/collision stack.  This helper exists to
+    make paired global-plan comparisons use the same map-derived cost surface
+    in every trial rather than a scan-history-dependent obstacle layer.
+    """
+
+    merged = copy.deepcopy(payload)
+    try:
+        global_costmap = merged["global_costmap"]["global_costmap"][
+            "ros__parameters"
+        ]
+    except (KeyError, TypeError) as exc:
+        raise ValueError(
+            "base Nav2 parameters do not define global_costmap.global_costmap"
+        ) from exc
+    if not isinstance(global_costmap, dict):
+        raise ValueError("global costmap ros__parameters must be a mapping")
+
+    global_costmap["plugins"] = ["static_layer", "inflation_layer"]
+    global_costmap.pop("obstacle_layer", None)
+    global_costmap.pop("voxel_layer", None)
+
+    static_layer = global_costmap.setdefault("static_layer", {})
+    if not isinstance(static_layer, dict):
+        raise ValueError("global static_layer parameters must be a mapping")
+    static_layer.setdefault("plugin", "nav2_costmap_2d::StaticLayer")
+    static_layer["map_subscribe_transient_local"] = True
+
+    inflation_layer = global_costmap.setdefault("inflation_layer", {})
+    if not isinstance(inflation_layer, dict):
+        raise ValueError("global inflation_layer parameters must be a mapping")
+    inflation_layer.setdefault("plugin", "nav2_costmap_2d::InflationLayer")
+    return merged
+
+
 def inject_planner_parameters(payload: dict[str, Any]) -> dict[str, Any]:
     """Copy base Nav2 parameters and replace only planner-server plugins."""
 
