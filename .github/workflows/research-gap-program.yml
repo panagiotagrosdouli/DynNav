@@ -10,6 +10,10 @@ on:
       - ".github/workflows/research-gap-program.yml"
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   g1-g5:
     runs-on: ubuntu-24.04
