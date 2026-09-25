@@ -138,3 +138,46 @@ def discover_trigger_closure_edges(
             continue
         estimates.append(estimate)
     return tuple(estimates)
+
+
+def binary_confounding_observational_difference(
+    *,
+    confounder_probability: float,
+    treatment_given_high: float,
+    treatment_given_low: float,
+    outcome_given_high: float,
+    outcome_given_low: float,
+) -> float:
+    """Observed treated-control difference under a binary common cause.
+
+    The outcome probabilities depend only on the confounder, so the true causal
+    treatment effect is zero. The returned observational difference quantifies
+    the spurious association induced by unequal treatment propensities.
+    """
+
+    values = (
+        confounder_probability,
+        treatment_given_high,
+        treatment_given_low,
+        outcome_given_high,
+        outcome_given_low,
+    )
+    if any(value < 0.0 or value > 1.0 for value in values):
+        raise ValueError("all probabilities must be in [0, 1]")
+
+    c = confounder_probability
+    p_t = c * treatment_given_high + (1.0 - c) * treatment_given_low
+    if p_t <= 0.0 or p_t >= 1.0:
+        raise ValueError("treatment probability must lie strictly between 0 and 1")
+
+    p_high_given_t = c * treatment_given_high / p_t
+    p_high_given_not_t = c * (1.0 - treatment_given_high) / (1.0 - p_t)
+    treated_outcome = (
+        p_high_given_t * outcome_given_high
+        + (1.0 - p_high_given_t) * outcome_given_low
+    )
+    control_outcome = (
+        p_high_given_not_t * outcome_given_high
+        + (1.0 - p_high_given_not_t) * outcome_given_low
+    )
+    return treated_outcome - control_outcome
