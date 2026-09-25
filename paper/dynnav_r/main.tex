@@ -292,6 +292,26 @@ The publication-facing empirical result is the frozen unavoidable-hazard suite, 
 
 Pooling the 96 scenarios equally, empirical return-infeasibility decreases from $0.7443$ for the exact state-only control to $0.6660$ with history conditioning, while mean exact final return reliability increases from $0.2535$ to $0.3314$. Mean path length increases from $11.77$ to $13.33$ steps. Both planners activate the same mean number of hazards (2.35), so the improvement does not come from avoiding stochastic commitments altogether; it comes from selecting different activated hazards. This is the main empirical evidence for the representation claim because every feasible route in the suite activates hazards.
 
+\begin{table}[t]
+\centering
+\caption{Primary 96-scenario result. Means pool scenarios equally; $\Delta$ is History minus State-only.}
+\label{tab:primary-unavoidable}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lrrr}
+\toprule
+Metric & State-only & History & $\Delta$ \\
+\midrule
+Return-infeasibility $\downarrow$ & 0.7443 & \textbf{0.6660} & \textbf{$-0.0782$} \\
+Exact return $\uparrow$ & 0.2535 & \textbf{0.3314} & \textbf{$+0.0779$} \\
+Path length & \textbf{11.77} & 13.33 & $+1.56$ \\
+Activated hazards & 2.35 & 2.35 & 0.00 \\
+\bottomrule
+\end{tabular}
+\vspace{1mm}
+
+\scriptsize 36/96 scenarios improve, 60/96 tie, and 0/96 worsen in empirical return-infeasibility; 95\% bootstrap CI for the scenario-level mean difference: $[-0.1090,-0.0498]$.
+\end{table}
+
 \subsection{Controlled mechanism checks}
 The earlier controlled, heterogeneous, and hand-authored geometric families are retained only as supporting mechanism checks. In the controlled three-module $p$-sweep, the exact state-only control matches shortest at $0.512$, $0.881$, and $0.992$ return-infeasibility, while history conditioning selects trigger-free alternatives and records no observed return-infeasible outcome. In the frozen heterogeneous 6/7/8-module family, state-only exact again matches shortest at $0.992$, $0.998$, and $1.000$; history exact records no observed return-infeasible outcome, whereas the eight-module hard-return baseline accepts one low-probability commitment and records $58/500=0.116$. Across the fork, L-room, and chamber, state-only exact matches shortest at $0.810$, $0.756$, and $0.890$, while history exact records no observed return-infeasible outcome at path-length changes of $+2$, $0$, and $+2$ steps, respectively. These intentionally simple families verify the modeled mechanism and broaden topology coverage; their zero-heavy outcomes are not treated as deployment-scale performance estimates.
 
