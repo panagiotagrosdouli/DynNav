@@ -153,11 +153,11 @@ class ResettableOdomLocalizer(Node):
     def _log_reset_alignment(self) -> None:
         assert self._map_to_odom is not None
         self.get_logger().info(
-            "Aligned map->odom reset=%d offset=(%.3f, %.3f, %.3f)",
-            self._reset_count,
-            self._map_to_odom.x,
-            self._map_to_odom.y,
-            self._map_to_odom.yaw,
+            "Aligned map->odom "
+            f"reset={self._reset_count} "
+            f"offset=({self._map_to_odom.x:.3f}, "
+            f"{self._map_to_odom.y:.3f}, "
+            f"{self._map_to_odom.yaw:.3f})"
         )
 
     def _broadcast(self, odometry: Odometry) -> None:
