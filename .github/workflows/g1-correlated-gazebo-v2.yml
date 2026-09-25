@@ -158,16 +158,43 @@ jobs:
           }
           assert len(trials) == reps * 3 * len(planners)
 
+          planner_audit = defaultdict(list)
           grouped = defaultdict(list)
           for row in trials:
-              assert row["valid_trial"], row
               assert row["planner_id"] in planners
               assert len(row["latent_closures"]) == 2
               assert len(row["hazards"]) == 2
               assert len(row["closures_applied"]) == 2
               assert "operational_irreversible_failure" in row
               assert "navigation_time_s" in row
+              initial = row["initial_plan"]
+              assert initial["success"], row
+              planner_audit[row["planner_id"]].append(
+                  {
+                      "dependence": row["dependence"],
+                      "repetition": row["repetition"],
+                      "path_length_m": initial["path_length_m"],
+                      "route_class": initial["route_class"],
+                      "trigger_gate_crossings": initial["trigger_gate_crossings"],
+                      "pose_count": initial["pose_count"],
+                  }
+              )
               grouped[(row["dependence"], row["repetition"])].append(row)
+
+          planner_audit_path = Path(
+              "/tmp/dynnav_g1_v2/results/planner_audit_summary.json"
+          )
+          planner_audit_path.write_text(
+              json.dumps(dict(planner_audit), indent=2, sort_keys=True)
+          )
+          print("PRE-EXECUTION PLANNER AUDIT")
+          print(json.dumps(dict(planner_audit), indent=2, sort_keys=True))
+
+          invalid = [row for row in trials if not row["valid_trial"]]
+          Path("/tmp/dynnav_g1_v2/results/invalid_trials.json").write_text(
+              json.dumps(invalid, indent=2, sort_keys=True)
+          )
+          assert not invalid, invalid
 
           assert len(grouped) == reps * 3
           for key, rows in grouped.items():
