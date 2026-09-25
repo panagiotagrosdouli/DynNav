@@ -200,6 +200,25 @@ jobs:
           print("PRE-EXECUTION PLANNER AUDIT")
           print(json.dumps(dict(planner_audit), indent=2, sort_keys=True))
 
+          expected_gate_crossings = {
+              "DynNavShortest": [True, True],
+              "DynNavHistory": [True, True],
+              "DynNavRobustHistory": [False, False],
+          }
+          expected_route_class = {
+              "DynNavShortest": "upper_direct",
+              "DynNavHistory": "upper_direct",
+              "DynNavRobustHistory": "lower_detour",
+          }
+          for planner, rows in planner_audit.items():
+              assert {
+                  tuple(row["trigger_gate_crossings"])
+                  for row in rows
+              } == {tuple(expected_gate_crossings[planner])}, rows
+              assert {
+                  row["route_class"] for row in rows
+              } == {expected_route_class[planner]}, rows
+
           invalid = [row for row in trials if not row["valid_trial"]]
           Path("/tmp/dynnav_g1_v2/results/invalid_trials.json").write_text(
               json.dumps(invalid, indent=2, sort_keys=True)
