@@ -1,0 +1,122 @@
+{
+  "artifact_scope": "Post-V1 exploratory G1/G3/G5 evidence; not part of frozen V1 confirmatory study and not deployment efficacy",
+  "generated_from_commit": "5765062f7811a69ed9deeb9d9a5205c7a6973fd7",
+  "workflow_run_id": 36106609249,
+  "artifact_id": 10851990586,
+  "artifact_digest": "sha256:89846729a9f3e29e4326810495848128cd395b8eeb8e24ba7494dd5a75c87e1e",
+  "configuration": {
+    "master_seed": 20260925,
+    "g3_opportunities_per_condition": 1000,
+    "exploratory_protocol": "EXPLORATORY_PROTOCOL_G1_G3_POST_V1.md"
+  },
+  "selected_results": {
+    "G1_topology_dependence_interaction": {
+      "parallel_redundant": {
+        "independent_return": 0.75,
+        "common_cause_return": 0.5,
+        "anti_correlated_return": 1,
+        "interaction_sign": "negative"
+      },
+      "serial_cut": {
+        "independent_return": 0.25,
+        "common_cause_return": 0.5,
+        "anti_correlated_return": 0,
+        "interaction_sign": "positive"
+      },
+      "interpretation": "At fixed 0.5 marginals, increasing joint closure probability has opposite effects in parallel-redundant and serial-cut return structures. The exact two-hazard interaction identity explains the sign reversal."
+    },
+    "G3_safe_learning_lockout": {
+      "strict_credible_gate_zero_exposure_conditions": "40/45 across p x threshold x confidence grid",
+      "note": "The strict gate can remain permanently uninformative when no passive update is available and the prior conservative return bound rejects exposure."
+    },
+    "G3_risk_budget_deadlock_breaker": {
+      "budgets": [
+        5,
+        20,
+        50
+      ],
+      "positive_budget_minimum_exposures_over_12_frozen_conditions": {
+        "risk_budget_5": 7,
+        "risk_budget_20": 26,
+        "risk_budget_50": 63
+      },
+      "exposure_monotonicity_across_budget_levels": true,
+      "conditions_with_lower_absolute_error_than_strict_credible_gate": {
+        "risk_budget_5": "10/12",
+        "risk_budget_20": "11/12",
+        "risk_budget_50": "12/12"
+      },
+      "illustrative_threshold_0_7": {
+        "true_p_0_3": {
+          "strict_credible_gate": {
+            "exposures": 0,
+            "absolute_error": 0.05,
+            "return_failures": 0
+          },
+          "risk_budget_5": {
+            "exposures": 25,
+            "absolute_error": 0.093103,
+            "return_failures": 5
+          },
+          "risk_budget_20": {
+            "exposures": 135,
+            "absolute_error": 0.019424,
+            "return_failures": 38
+          },
+          "risk_budget_50": {
+            "exposures": 222,
+            "absolute_error": 0.00531,
+            "return_failures": 68
+          }
+        },
+        "true_p_0_7": {
+          "strict_credible_gate": {
+            "exposures": 0,
+            "absolute_error": 0.45,
+            "return_failures": 0
+          },
+          "risk_budget_5": {
+            "exposures": 9,
+            "absolute_error": 0.161538,
+            "return_failures": 6
+          },
+          "risk_budget_20": {
+            "exposures": 30,
+            "absolute_error": 0.052941,
+            "return_failures": 21
+          },
+          "risk_budget_50": {
+            "exposures": 71,
+            "absolute_error": 0.073333,
+            "return_failures": 46
+          }
+        }
+      },
+      "interpretation": "A finite exploration budget breaks cold-start non-identification, but additional information is purchased with exposure and observed failures. The mechanism is a trade-off comparator, not a safety solution."
+    },
+    "G5_full_reachable_state_space": {
+      "module_6": {
+        "raw_hazard_count": 12,
+        "quotient_event_count": 6,
+        "raw_reachable_states": 33354,
+        "compressed_reachable_states": 126,
+        "compression_ratio": 264.7142857142857,
+        "reduction_fraction": 0.9962223421478683
+      },
+      "interpretation": "The exact quotient removes very large reachable history redundancy even though the frozen early-goal A* benchmark realized only modest search-time reduction."
+    }
+  },
+  "claim_gate_update": {
+    "G1": "STRENGTHENED: topology-dependent dependence sensitivity now has an exact two-hazard interaction characterization; still requires systematic literature review and realistic execution validation.",
+    "G3": "TRADEOFF ESTABLISHED, METHOD NOT SOLVED: risk budget breaks lockout but incurs explicit failure/exposure cost; next work should study topology-specific identifiability and better information sources.",
+    "G5": "STRENGTHENED AS COMPANION: full reachable-state compression is large, but primary online A* benefit remains workload-dependent."
+  },
+  "limitations": [
+    "exploratory post-V1 design",
+    "single retained seed for the risk-budget grid",
+    "risk-budget charge is a posterior model quantity, not a physical safety certificate",
+    "simplified single-critical-trigger G3 failure model",
+    "G5 exhaustive state-space diagnostic is not a runtime guarantee",
+    "no ROS/Gazebo or physical-robot validation in this artifact"
+  ]
+}
