@@ -343,7 +343,7 @@
     }
   },
   "claim_scope": {
-    "supported": "mechanism-level evidence that executed action-triggered stochastic topology history can carry safe-return-connectivity information absent from an endpoint-only fixed-field representation, including an elementary endpoint-aliasing bound, a same-exact-oracle state-only control, replication across controlled and hand-built worlds, and a frozen 24-scenario unavoidable-hazard suite in which every feasible route activates stochastic hazards",
+    "supported": "mechanism-level evidence that executed action-triggered stochastic topology history can carry safe-return-connectivity information absent from an endpoint-only fixed-field representation, including an elementary endpoint-aliasing bound, a same-exact-oracle state-only control, replication across controlled and hand-built worlds, and a frozen 96-scenario unavoidable-hazard suite in which every feasible route activates stochastic hazards",
     "not_claimed": [
       "first history-dependent risk planner",
       "first safe-return planner",
@@ -446,5 +446,85 @@
       "DynNavHistory": 1
     },
     "interpretation": "strict end-to-end ROS 2/Nav2/Gazebo integration and measurement evidence; one-trial DynNav exposure difference is insufficient for comparative efficacy"
+  },
+  "reviewer_measurement_expansion": {
+    "status": "retained_success",
+    "workflow_name": "Reviewer measurement expansion",
+    "run_id": 36138666091,
+    "source_branch_head_sha": "10d438ce6b7916d6d5ba0a70cf792d08c1af5014",
+    "pull_request_merge_checkout_sha": "0865bd9b22a57c939a04e31c02e88b20a0e43f58",
+    "artifact_id": 10865721001,
+    "artifact_name": "dynnav-reviewer-measurements-0865bd9b22a57c939a04e31c02e88b20a0e43f58",
+    "downloaded_artifact_sha256": "2893b2f14022cb48558606b67778d2bba85774710c0f24e1b7e9b234b85e2b35",
+    "generator_seed": 20260925,
+    "scenario_count": 96,
+    "paired_execution_seeds_per_scenario": 250,
+    "trials_per_planner": 24000,
+    "invariant": "every start-to-goal route activates at least one hazard per module",
+    "aggregate": {
+      "state_only_exact": {
+        "return_infeasible_rate": 0.74425,
+        "mean_final_exact_return_probability": 0.2535092447916667,
+        "mean_path_length": 11.770833333333334,
+        "mean_activated_closure_count": 2.3541666666666665
+      },
+      "history_exact": {
+        "return_infeasible_rate": 0.6660416666666666,
+        "mean_final_exact_return_probability": 0.3314013671875,
+        "mean_path_length": 13.333333333333334,
+        "mean_activated_closure_count": 2.3541666666666665
+      },
+      "history_vs_state_only_exact_scenario_risk_difference": {
+        "mean": -0.07820833333333332,
+        "bootstrap_95": [
+          -0.109,
+          -0.04983333333333333
+        ],
+        "sample_size": 96,
+        "improved_scenarios": 36,
+        "nonworse_scenarios": 96
+      }
+    },
+    "repeated_timing_distributions": {
+      "repetitions": 100,
+      "warmups": 10,
+      "scope": "descriptive GitHub Actions runner measurements using planner internal online-latency instrumentation; not hardware-independent runtime guarantees",
+      "oracle_12_hazards": {
+        "exact": {
+          "median_ms": 38.4682585,
+          "iqr_ms": 0.18104375000000061,
+          "p95_ms": 38.7513952
+        },
+        "critical_cut": {
+          "median_ms": 0.191685,
+          "iqr_ms": 0.006411250000000007,
+          "p95_ms": 0.20366155000000002
+        },
+        "median_speedup_exact_over_cut": 200.6847614575997
+      },
+      "planner_6_modules": {
+        "shortest_augmented": {
+          "median_ms": 0.1135170000168273,
+          "iqr_ms": 0.0036827499627634097,
+          "p95_ms": 0.12129765001702708,
+          "nodes_expanded": 25,
+          "path_length": 24
+        },
+        "history_cut": {
+          "median_ms": 4.060639499982699,
+          "iqr_ms": 0.03944624998553081,
+          "p95_ms": 4.127676050018181,
+          "nodes_expanded": 72,
+          "path_length": 36
+        },
+        "history_exact": {
+          "median_ms": 5.792564999978822,
+          "iqr_ms": 0.03995325002392747,
+          "p95_ms": 5.856277049966252,
+          "nodes_expanded": 72,
+          "path_length": 36
+        }
+      }
+    }
   }
 }
