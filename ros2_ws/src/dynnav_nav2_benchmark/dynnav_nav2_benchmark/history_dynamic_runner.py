@@ -109,6 +109,8 @@ def _trial(
     start_wall = time.monotonic()
     closure_applied = False
     injection_error = None
+    injection_clearance_m = None
+    maximum_pending_clearance_m = None
     last_feedback = None
     while not navigator.isTaskComplete():
         feedback = navigator.getFeedback()
@@ -129,9 +131,15 @@ def _trial(
                     float(pose.x) - scenario.blocker_pose.x,
                     float(pose.y) - scenario.blocker_pose.y,
                 )
-                if clearance < scenario.minimum_injection_clearance_m:
-                    injection_error = "unsafe_injection_clearance"
-                else:
+                maximum_pending_clearance_m = max(
+                    clearance,
+                    maximum_pending_clearance_m or 0.0,
+                )
+                # A realized closure is a future event.  The trigger requests
+                # it, but physical injection is delayed until the robot is
+                # safely clear of the blocker footprint.  The clearance gate
+                # is never weakened to make a trial pass.
+                if clearance >= scenario.minimum_injection_clearance_m:
                     try:
                         _set_entity_pose(
                             navigator,
@@ -146,6 +154,7 @@ def _trial(
                         )
                     else:
                         closure_applied = True
+                        injection_clearance_m = clearance
             nav_s = float(feedback.navigation_time.sec) + (
                 float(feedback.navigation_time.nanosec) / 1e9
             )
@@ -182,6 +191,12 @@ def _trial(
             budget_m=scenario.recovery_budget_m,
         ).to_dict()
     navigator.destroy_publisher(publisher)
+    if (
+        injection_error is None
+        and state.closure_requested
+        and not closure_applied
+    ):
+        injection_error = "closure_not_safely_applied"
     valid = state.observation_valid and injection_error is None
     recovery_feasible = (
         None if recovery is None else bool(recovery["within_budget"])
@@ -192,7 +207,11 @@ def _trial(
         "order_index": order_index,
         "valid_trial": valid,
         "invalid_reason": injection_error
-        or ("sampling_gap" if not state.observation_valid else None),
+        or (
+            "trigger_ambiguous_sampling_gap"
+            if not state.observation_valid
+            else None
+        ),
         "navigation_success": success,
         "result_error_code": error_code,
         "result_error_message": error_message,
@@ -201,9 +220,12 @@ def _trial(
         "trigger_observed": state.trigger_observed,
         "closure_realized": state.closure_realized,
         "closure_applied": closure_applied,
+        "injection_clearance_m": injection_clearance_m,
+        "maximum_pending_clearance_m": maximum_pending_clearance_m,
         "event_outcome": state.event_outcome,
         "accepted_transitions": state.accepted_transitions,
         "sampling_gaps": state.sampling_gaps,
+        "ambiguous_trigger_gaps": state.ambiguous_trigger_gaps,
         "recovery_assessment": recovery,
         "recovery_feasible": recovery_feasible,
         "operational_irreversible_failure": bool(
