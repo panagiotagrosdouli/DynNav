@@ -96,10 +96,27 @@ def _trial(
         "dynnav/reset_history",
         10,
     )
+    reset_deadline = time.monotonic() + 2.0
+    while (
+        reset_publisher.get_subscription_count() < 1
+        and time.monotonic() < reset_deadline
+    ):
+        rclpy.spin_once(navigator, timeout_sec=0.05)
+    if reset_publisher.get_subscription_count() < 1:
+        navigator.destroy_publisher(publisher)
+        navigator.destroy_publisher(reset_publisher)
+        return {
+            "planner_id": planner_id,
+            "repetition": repetition,
+            "order_index": order_index,
+            "valid_trial": False,
+            "invalid_reason": "history_reset_subscriber_unavailable",
+        }
     reset_publisher.publish(
         String(data=f"trial={repetition} planner={planner_id}")
     )
-    time.sleep(0.15)
+    rclpy.spin_once(navigator, timeout_sec=0.1)
+    time.sleep(0.1)
     navigator.feedback = None
     accepted = navigator.goToPose(
         _pose_message(navigator, scenario.goal, scenario.frame_id),
