@@ -1,0 +1,86 @@
+name: Reviewer measurement expansion
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/experiments/unavoidable_history_benchmark.py"
+      - "dynnav/experiments/repeated_timing_benchmark.py"
+      - "tests/test_unavoidable_history_benchmark.py"
+      - "tests/test_repeated_timing_benchmark.py"
+      - ".github/workflows/reviewer-measurement-expansion.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: reviewer-measurements-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  expanded-measurements:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Test measurement contracts
+        run: >-
+          python -m pytest -q --tb=short
+          tests/test_unavoidable_history_benchmark.py
+          tests/test_repeated_timing_benchmark.py
+
+      - name: Lint measurement code
+        run: >-
+          ruff check
+          dynnav/experiments/unavoidable_history_benchmark.py
+          dynnav/experiments/repeated_timing_benchmark.py
+          tests/test_unavoidable_history_benchmark.py
+          tests/test_repeated_timing_benchmark.py
+
+      - name: Run 96-scenario frozen topology expansion
+        run: >-
+          python -m dynnav.experiments.unavoidable_history_benchmark
+          --output-dir results/reviewer_measurements/unavoidable_96
+          --scenario-count 96
+          --seeds 250
+
+      - name: Run repeated timing distributions
+        run: >-
+          python -m dynnav.experiments.repeated_timing_benchmark
+          --output-dir results/reviewer_measurements/repeated_timings
+          --repetitions 100
+          --warmups 10
+
+      - name: Record protocol metadata
+        run: |
+          mkdir -p results/reviewer_measurements
+          printf '%s\n' "${GITHUB_SHA}" > results/reviewer_measurements/source_revision.txt
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          payload = {
+              "expanded_topology_scenarios": 96,
+              "paired_execution_seeds_per_scenario": 250,
+              "trials_per_planner": 24000,
+              "timing_repetitions": 100,
+              "timing_warmups": 10,
+              "timing_scope": "descriptive GitHub Actions runner measurements; not hardware-independent runtime guarantees",
+          }
+          Path("results/reviewer_measurements/protocol.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True) + "\n"
+          )
+          PY
+
+      - name: Upload expanded measurement evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-reviewer-measurements-${{ github.sha }}
+          path: results/reviewer_measurements
+          if-no-files-found: error
