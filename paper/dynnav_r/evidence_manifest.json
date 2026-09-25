@@ -558,5 +558,46 @@
       "DynNavHistory": 0
     },
     "interpretation": "exact-head rerun confirms end-to-end integration but does not reproduce a comparative DynNavHistory-vs-DynNavShortest exposure effect"
+  },
+  "gazebo_release_candidate_probe": {
+    "status": "retained_valid_integration_evidence_no_comparative_effect",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36145870641,
+    "branch_head_sha": "a8bfb5375a8f54bdf737fd10314ccd9c77f35a01",
+    "pull_request_merge_checkout_sha": "fa565443f3f92417e6116e758f829cb391adbb3c",
+    "artifact_id": 10870492158,
+    "artifact_name": "dynnav-action-triggered-gazebo-fa565443f3f92417e6116e758f829cb391adbb3c",
+    "downloaded_artifact_sha256": "e6dcb43fcbd725a3698d89bd5c6418099471c3321552123cfbadef894abef991",
+    "frozen_scenario_sha256": "60e43cf2f0015a8f625309be26d440615126bf8f8b88fd597cf45681f5cc1864",
+    "repetitions_per_planner": 8,
+    "total_trials": 24,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "shared_latent_closure_realizations_per_planner": 7,
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 7
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 7
+    },
+    "operational_irreversible_failures": {
+      "NavFn": 0,
+      "DynNavShortest": 0,
+      "DynNavHistory": 0
+    },
+    "recovery_feasible": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 6
+    },
+    "interpretation": "release-candidate end-to-end integration evidence; no stable comparative Gazebo efficacy effect across retained reruns"
   }
 }
