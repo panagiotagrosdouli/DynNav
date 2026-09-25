@@ -139,6 +139,35 @@ def test_correlated_history_parameter_injection_isolates_dependence_model() -> N
     )
 
 
+def test_correlated_history_encodes_multi_cell_closure_footprints() -> None:
+    base = {
+        "planner_server": {
+            "ros__parameters": {
+                "planner_plugins": ["GridBased"],
+                "GridBased": {"plugin": "default"},
+            }
+        }
+    }
+    merged = inject_correlated_history_planner_parameters(
+        base,
+        safe_cell=(1, 1),
+        hazards=(
+            (((2, 2), (3, 2)), ((4, 1), (4, 2), (4, 3)), 0.5),
+            (((3, 2), (4, 2)), ((5, 1), (5, 2), (5, 3)), 0.5),
+        ),
+        recoverability_weight=12.0,
+        pairwise_joint_lower=0.0,
+        pairwise_joint_upper=0.5,
+    )
+    encoded = merged["planner_server"]["ros__parameters"]["DynNavRobustHistory"][
+        "history_hazards"
+    ]
+    assert encoded == (
+        "2:2>3:2@4:1+4:2+4:3@0.5;"
+        "3:2>4:2@5:1+5:2+5:3@0.5"
+    )
+
+
 def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
     suite = load_dynamic_suite(PACKAGE_ROOT / "config" / "sandbox_dynamic_events.yaml")
     assert {planner.planner_id for planner in suite.planners} <= set(PLANNER_IDS)
