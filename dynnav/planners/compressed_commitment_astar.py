@@ -186,15 +186,17 @@ def compressed_commitment_astar(
                 active_events,
             )
             next_state: CompressedState = (neighbor, next_events)
-            probability = _return_probability(
-                grid,
-                neighbor,
-                safe,
-                quotient,
-                next_events,
-                cfg.max_hazard_cells,
-            )
-            transition = cfg.step_cost + cfg.recoverability_weight * (1.0 - probability)
+            transition = cfg.step_cost
+            if cfg.recoverability_weight > 0.0:
+                probability = _return_probability(
+                    grid,
+                    neighbor,
+                    safe,
+                    quotient,
+                    next_events,
+                    cfg.max_hazard_cells,
+                )
+                transition += cfg.recoverability_weight * (1.0 - probability)
             new_cost = costs[state] + transition
             if new_cost < costs.get(next_state, float("inf")):
                 costs[next_state] = new_cost
