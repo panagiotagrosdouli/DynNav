@@ -160,7 +160,7 @@ A retained reviewer-measurement workflow now adds two measurements that were pre
 The timing distributions are descriptive for the retained runner environment and must not be presented as hardware-independent real-time guarantees. The 96-scenario family remains a structured synthetic generator and does not establish arbitrary-map or deployment generalization.
 
 
-### Measurement artifact provenance (exact release-head rerun)
+### Measurement artifact provenance (pinned publication run)
 
 - workflow: `Reviewer measurement expansion`
 - run: `36139174706`
@@ -171,4 +171,4 @@ The timing distributions are descriptive for the retained runner environment and
 - embedded unavoidable-suite protocol: 96 scenarios, 250 seeds/scenario
 - embedded repeated-timing protocol: 100 measured repetitions after 10 warm-ups
 
-The manuscript timing values above are taken from this exact release-head artifact. Earlier retained timing runs are preserved as historical measurements but are not publication-facing because runner-specific timing values differ across CI executions.
+The manuscript timing values above are pinned to this retained publication artifact. Later documentation-only commits do not supersede the timing artifact because runner-specific values vary across CI executions. Any later change to planner, oracle, benchmark, or timing-instrumentation code requires a new timing freeze before submission.
