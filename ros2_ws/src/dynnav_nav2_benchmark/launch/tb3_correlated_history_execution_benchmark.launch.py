@@ -9,6 +9,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
 
 from dynnav_nav2_benchmark.configuration import (
+    freeze_global_costmap_for_planner_comparison,
     inject_correlated_history_planner_parameters,
 )
 from dynnav_nav2_benchmark.correlated_history_execution import (
@@ -95,6 +96,7 @@ def _launch_setup(context):
         pairwise_joint_lower=scenario.pairwise_joint_lower,
         pairwise_joint_upper=scenario.pairwise_joint_upper,
     )
+    payload = freeze_global_costmap_for_planner_comparison(payload)
     generated_params.parent.mkdir(parents=True, exist_ok=True)
     generated_params.write_text(
         yaml.safe_dump(payload, sort_keys=False),
