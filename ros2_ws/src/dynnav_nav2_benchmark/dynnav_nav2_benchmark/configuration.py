@@ -20,6 +20,12 @@ HISTORY_PLANNER_IDS = (
     "DynNavHistory",
 )
 
+CORRELATED_HISTORY_PLANNER_IDS = (
+    "DynNavShortest",
+    "DynNavHistory",
+    "DynNavRobustHistory",
+)
+
 
 def planner_parameter_overrides() -> dict[str, dict[str, Any]]:
     """Return the complete six-planner configuration used in every static trial."""
@@ -151,4 +157,79 @@ def inject_history_planner_parameters(
         }
     )
     planner_parameters["DynNavHistory"] = history
+    return merged
+
+
+def inject_correlated_history_planner_parameters(
+    payload: dict[str, Any],
+    *,
+    safe_cell: tuple[int, int],
+    hazards: tuple[
+        tuple[
+            tuple[tuple[int, int], tuple[int, int]],
+            tuple[int, int],
+            float,
+        ],
+        ...,
+    ],
+    recoverability_weight: float,
+    pairwise_joint_lower: float = 0.0,
+    pairwise_joint_upper: float = 1.0,
+) -> dict[str, Any]:
+    """Inject the bounded two-hazard dependence comparison.
+
+    The independence and robust planners share exactly the same trigger,
+    closure and marginal-probability model. The robust condition differs only
+    by allowing the joint closure probability to vary inside the configured
+    interval. The current C++ robust oracle intentionally supports at most two
+    hazards.
+    """
+
+    if len(hazards) != 2:
+        raise ValueError("correlated history benchmark requires exactly two hazards")
+    if recoverability_weight < 0.0:
+        raise ValueError("recoverability_weight must be non-negative")
+    if not 0.0 <= pairwise_joint_lower <= pairwise_joint_upper <= 1.0:
+        raise ValueError("pairwise joint bounds must satisfy 0 <= lower <= upper <= 1")
+
+    encoded: list[str] = []
+    for trigger, closure_cell, probability in hazards:
+        if not 0.0 <= probability <= 1.0:
+            raise ValueError("closure probability must be in [0, 1]")
+        (sx, sy), (tx, ty) = trigger
+        cx, cy = closure_cell
+        encoded.append(
+            f"{sx}:{sy}>{tx}:{ty}@{cx}:{cy}@{probability:.17g}"
+        )
+
+    merged = copy.deepcopy(payload)
+    planner_parameters = _planner_server(merged)
+    planner_parameters["planner_plugins"] = list(CORRELATED_HISTORY_PLANNER_IDS)
+    planner_parameters.pop("GridBased", None)
+
+    base = planner_parameter_overrides()
+    planner_parameters["DynNavShortest"] = base["DynNavShortest"]
+
+    safe_x, safe_y = safe_cell
+    common = dict(base["DynNavShortest"])
+    common.update(
+        {
+            "history_aware": True,
+            "history_safe_cells": f"{safe_x}:{safe_y}",
+            "history_hazards": ";".join(encoded),
+            "history_recoverability_weight": float(recoverability_weight),
+            "history_max_hazard_cells": 2,
+        }
+    )
+    planner_parameters["DynNavHistory"] = dict(common)
+
+    robust = dict(common)
+    robust.update(
+        {
+            "history_robust_pairwise_dependence": True,
+            "history_pairwise_joint_lower": float(pairwise_joint_lower),
+            "history_pairwise_joint_upper": float(pairwise_joint_upper),
+        }
+    )
+    planner_parameters["DynNavRobustHistory"] = robust
     return merged
