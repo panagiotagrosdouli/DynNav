@@ -65,7 +65,7 @@ def test_v4_launch_is_amcl_free_and_forces_resettable_odom_mode() -> None:
     launch_path = (
         __import__("pathlib").Path(__file__).resolve().parents[1]
         / "launch"
-        / "tb3_correlated_history_execution_v4_benchmark.launch.py"
+        / "tb3_correlated_history_odom_v4.launch.py"
     )
     text = launch_path.read_text(encoding="utf-8")
 
