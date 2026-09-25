@@ -123,3 +123,29 @@ The value is computational and explanatory. It becomes a stronger contribution o
 ## Claim rule
 
 Until a systematic literature review is completed, use formulations such as "we study" and "we evaluate" rather than "first", "novel class", "unexplored", or "no prior work." The current evidence can establish properties of the DynNav model and its experiments; it cannot establish absence of prior art.
+
+
+## Post-V1 stress-test update: topology interaction and safe-learning lockout
+
+### G1 topology/dependence interaction
+
+The post-V1 analysis strengthens the *mechanistic* framing but does not by itself create a new broad novelty claim. For two hazards with fixed marginals, DynNav now writes return reliability as an affine function of the joint closure probability. The slope is a discrete interaction of the four deterministic connectivity outcomes. This makes explicit why positive dependence can hurt parallel redundancy yet help a serial all-open event.
+
+This result should be presented as a specialized connectivity identity inside the action-triggered safe-return model, not as a new general theory of dependence or network reliability. Classical reliability and dependence analysis remain essential prior art.
+
+### G3 conservative-learning prior art
+
+A second literature pass found close safe/conservative learning frameworks that make the claim boundary sharper:
+
+- Khezeli & Bitar, *Safe Linear Stochastic Bandits*, AAAI 2020, assumes an initially known safe arm and safely expands the admissible action set (DOI: 10.1609/aaai.v34i06.6581).
+- Amani, Alizadeh & Thrampoulidis, *Linear Stochastic Bandits Under Safety Constraints*, studies unknown safety constraints but relies on a restricted safe exploration set before expansion (arXiv:1908.05814).
+- Wu et al., *Conservative Bandits*, ICML/PMLR 2016, uses a known/default baseline and a cumulative performance budget to permit exploration while maintaining a conservative constraint.
+- Wan et al., *Safe Exploration for Efficient Policy Evaluation and Comparison*, ICML 2022, explicitly studies safe data collection and notes that side information and risk budgets affect exploration efficiency.
+
+Therefore an exploration-risk budget is **not** standalone novelty. The surviving DynNav question is narrower:
+
+> What can be identified about an action-triggered topology hazard when the hazard outcome is observable only after the same exposure that the safe-return constraint may prohibit, and no informative safe baseline exposure or transferable side information is initially available?
+
+The current post-V1 credible-gate diagnostic demonstrates the cold-start version of this feedback: if the posterior is unchanged without exposure and the conservative gate rejects exposure at the prior, the learner remains locked forever. The risk-budget implementation is consequently treated only as an exploratory deadlock-breaking comparator.
+
+A future G3 paper needs a topology-specific identifiability/impossibility statement and then a method whose assumptions for breaking the deadlock are explicit (for example passive side information, transfer across related triggers, controlled cumulative risk, or a known safe calibration action).
