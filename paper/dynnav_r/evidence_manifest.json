@@ -448,7 +448,7 @@
     "interpretation": "strict end-to-end ROS 2/Nav2/Gazebo integration and measurement evidence; one-trial DynNav exposure difference is insufficient for comparative efficacy"
   },
   "reviewer_measurement_expansion": {
-    "status": "retained_success_exact_release_head",
+    "status": "retained_success_pinned_publication_artifact",
     "workflow_name": "Reviewer measurement expansion",
     "run_id": 36139174706,
     "source_branch_head_sha": "8ef50f9ec167c7e8cc29f112f5b04ce4a821f7df",
@@ -525,6 +525,7 @@
           "path_length": 36
         }
       }
-    }
+    },
+    "freeze_rule": "Publication timing values are pinned to this retained run; documentation-only commits do not supersede it. Any subsequent planner/oracle/benchmark/timing-code change requires a new timing artifact."
   }
 }
