@@ -159,17 +159,15 @@ Because multi-cell cutsets may disconnect the graph even when no individual cell
 \section{Experimental Design}
 All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. Irreversible failure is operationalized as post-closure inability to reach the safe set in the resulting grid. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
 
-We evaluate eight complementary questions.
+The evaluation is organized around four research questions.
 \begin{enumerate}
-  \item \emph{Information gap:} can identical geometric endpoints have different exact return reliability solely because of history?
-  \item \emph{Analytic route switching:} does the planner follow a predicted length--fragility boundary rather than a post-hoc tuned pattern?
-  \item \emph{Stochastic execution:} does history conditioning change irreversible-failure outcomes under sampled future closures?
-  \item \emph{State-only falsification:} does a probability-aware planner with the same marginals reproduce the history-aware behavior?
-  \item \emph{Parameter/horizon transfer:} does the result survive frozen heterogeneous probabilities and unseen module counts?
-  \item \emph{Geometric transfer:} does the state-only/history distinction survive three predeclared hand-built topologies outside the repeated-module geometry?
-  \item \emph{Objective sensitivity:} how does the soft history objective compare with hard safe-return constraints across a predeclared parameter grid?
-  \item \emph{Approximation/scaling boundary:} what does the critical-cut approximation save, and where does it become optimistic?
+  \item[\textbf{RQ1}] \emph{Representation:} can identical geometric endpoints have different return reliability, and what error is unavoidable when those histories are collapsed to one endpoint-only estimate?
+  \item[\textbf{RQ2}] \emph{Planning consequence:} does conditioning on activated hazards change route choice and post-closure return infeasibility across controlled, held-out probability/horizon, and distinct geometric settings?
+  \item[\textbf{RQ3}] \emph{Objective sensitivity:} is the observed benefit evidence for the history-conditioned representation, or for superiority of the particular soft recoverability cost over hard safe-return constraints?
+  \item[\textbf{RQ4}] \emph{Computation:} what is the cost of exact return-connectivity reasoning, when does a critical-cut approximation help, and where does that approximation fail?
 \end{enumerate}
+
+The analytic route-switch experiment supports RQ2 by checking a pre-derived decision boundary rather than only reporting sampled outcomes. The state-only marginal control isolates the representation effect in RQ1--RQ2, while the soft-versus-hard sweep and joint-cut counterexample are explicit falsification tests for RQ3--RQ4.
 
 The development sweeps use homogeneous closure probabilities. Before inspecting outcomes, a separate repeated-module evaluation family was frozen with heterogeneous per-trigger probabilities and unseen module counts: six modules with probabilities $(.15,.25,.35,.55,.75,.85)$, seven modules with $(.80,.20,.70,.30,.60,.40,.90)$, and eight modules with $(.10,.90,.20,.80,.35,.65,.45,.75)$. Each scenario uses 500 paired execution seeds. This tests probability-pattern and horizon transfer within the same procedural topology family.
 
