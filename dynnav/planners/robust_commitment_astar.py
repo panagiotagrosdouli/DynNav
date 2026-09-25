@@ -24,7 +24,9 @@ class RobustCommitmentAStarConfig:
     recoverability_weight: float = 4.0
     heuristic_weight: float = 1.0
     max_hazard_cells: int = 12
-    pairwise_constraints: tuple[PairwiseClosureConstraint, ...] = field(default_factory=tuple)
+    pairwise_constraints: tuple[PairwiseClosureConstraint, ...] = field(
+        default_factory=tuple
+    )
 
     def validate(self) -> None:
         if self.step_cost <= 0.0:
@@ -139,7 +141,11 @@ def robust_commitment_astar(
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
     initial_active = frozenset(initial_activated_closures or ())
-    invalid = sorted(index for index in initial_active if index < 0 or index >= len(model.closures))
+    invalid = sorted(
+        index
+        for index in initial_active
+        if index < 0 or index >= len(model.closures)
+    )
     if invalid:
         raise ValueError(f"initial activated hazard indices are out of range: {invalid}")
     if not grid.in_bounds(start) or not grid.in_bounds(goal):
