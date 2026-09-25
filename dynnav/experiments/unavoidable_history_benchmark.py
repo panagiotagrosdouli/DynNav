@@ -13,9 +13,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import heapq
 import json
 import random
-from collections import deque
 from dataclasses import asdict, dataclass
 from pathlib import Path
 
@@ -30,10 +30,6 @@ from dynnav.planners.commitment_aware_astar import (
     CommitmentAwareAStarConfig,
     CommitmentPlannerMode,
     commitment_aware_astar,
-)
-from dynnav.planners.commitment_safe_return_astar import (
-    SafeReturnConstraintConfig,
-    commitment_safe_return_astar,
 )
 from dynnav.planners.grid_map import GridCell, GridMap
 from dynnav.planners.hazard_reliability_astar import (
@@ -216,14 +212,20 @@ def frozen_unavoidable_scenarios(
 
 
 def minimum_activated_hazards_to_goal(scenario: UnavoidableScenario) -> int:
-    """Return the minimum number of trigger hazards on any start-to-goal path."""
+    """Return the minimum number of distinct trigger hazards on any path."""
     start_state = (scenario.start, frozenset())
-    queue = deque([start_state])
-    best: dict[GridCell, int] = {scenario.start: 0}
-    while queue:
-        cell, active = queue.popleft()
+    frontier: list[tuple[int, int, GridCell, frozenset[int]]] = [
+        (0, 0, scenario.start, frozenset())
+    ]
+    best: dict[tuple[GridCell, frozenset[int]], int] = {start_state: 0}
+    counter = 0
+    while frontier:
+        count, _, cell, active = heapq.heappop(frontier)
+        state = (cell, active)
+        if count != best.get(state):
+            continue
         if cell == scenario.goal:
-            return len(active)
+            return count
         for neighbor in scenario.grid.neighbors4(cell):
             additions = frozenset(
                 index
@@ -231,10 +233,15 @@ def minimum_activated_hazards_to_goal(scenario: UnavoidableScenario) -> int:
                 if closure.trigger == (cell, neighbor)
             )
             next_active = active | additions
-            count = len(next_active)
-            if count < best.get(neighbor, 10**9):
-                best[neighbor] = count
-                queue.append((neighbor, next_active))
+            next_state = (neighbor, next_active)
+            next_count = len(next_active)
+            if next_count < best.get(next_state, 10**9):
+                best[next_state] = next_count
+                counter += 1
+                heapq.heappush(
+                    frontier,
+                    (next_count, counter, neighbor, next_active),
+                )
     raise RuntimeError("generated scenario has no start-to-goal path")
 
 
@@ -242,7 +249,6 @@ def _plan_scenario(
     scenario: UnavoidableScenario,
     *,
     recoverability_weight: float,
-    safe_return_threshold: float,
 ) -> dict[str, object]:
     fixed_hazard = _state_only_marginal_hazard(scenario.model)
     exact_capacity = max(16, len(scenario.model.closures))
@@ -290,17 +296,6 @@ def _plan_scenario(
                 max_hazard_cells=exact_capacity,
             ),
         ),
-        f"hard_return_{safe_return_threshold:g}": commitment_safe_return_astar(
-            scenario.grid,
-            scenario.start,
-            scenario.goal,
-            safe_cells=scenario.safe,
-            hazard_model=scenario.model,
-            config=SafeReturnConstraintConfig(
-                minimum_return_probability=safe_return_threshold,
-                max_hazard_cells=exact_capacity,
-            ),
-        ),
     }
 
 
@@ -309,7 +304,6 @@ def run_unavoidable_history_benchmark(
     scenarios: tuple[UnavoidableScenario, ...] | None = None,
     seeds: tuple[int, ...] = FROZEN_EXECUTION_SEEDS,
     recoverability_weight: float = 8.0,
-    safe_return_threshold: float = 0.5,
 ) -> list[UnavoidableRecord]:
     """Run paired post-commitment closure realizations on the frozen suite."""
     if not seeds:
@@ -328,13 +322,9 @@ def run_unavoidable_history_benchmark(
         plans = _plan_scenario(
             scenario,
             recoverability_weight=recoverability_weight,
-            safe_return_threshold=safe_return_threshold,
         )
         for planner, result in plans.items():
             if not result.success:
-                # Hard constraints may be infeasible in an unavoidable-risk world.
-                if planner.startswith("hard_return_"):
-                    continue
                 raise RuntimeError(f"planner {planner} failed in {scenario.name}")
             path = tuple(result.path)
             active = _activated_indices(scenario.model, path)
