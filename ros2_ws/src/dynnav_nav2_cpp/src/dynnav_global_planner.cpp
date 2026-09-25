@@ -87,7 +87,19 @@ std::vector<HistoryHazard> parseHistoryHazards(
       throw std::invalid_argument(
               "history hazard must be trigger@closure@probability");
     }
-    const auto trigger = parseTransition(fields[0]);
+    const auto trigger_parts = split(fields[0], '+');
+    if (trigger_parts.empty()) {
+      throw std::invalid_argument("history hazard trigger gate cannot be empty");
+    }
+    std::vector<std::pair<std::size_t, std::size_t>> trigger_edges;
+    trigger_edges.reserve(trigger_parts.size());
+    for (const auto & trigger_part : trigger_parts) {
+      const auto transition = parseTransition(trigger_part);
+      trigger_edges.emplace_back(
+        checkedIndex(costmap, transition.first),
+        checkedIndex(costmap, transition.second));
+    }
+
     const auto closure_parts = split(fields[1], '+');
     if (closure_parts.empty()) {
       throw std::invalid_argument("history hazard closure footprint cannot be empty");
@@ -98,11 +110,12 @@ std::vector<HistoryHazard> parseHistoryHazards(
       closure_indices.push_back(checkedIndex(costmap, parseCell(closure_part)));
     }
     result.push_back({
-      checkedIndex(costmap, trigger.first),
-      checkedIndex(costmap, trigger.second),
+      trigger_edges.front().first,
+      trigger_edges.front().second,
       closure_indices.front(),
       std::stod(fields[2]),
-      std::move(closure_indices)});
+      std::move(closure_indices),
+      std::move(trigger_edges)});
   }
   return result;
 }
@@ -283,16 +296,19 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
     const auto target = checkedIndex(costmap_, transition.second);
     std::lock_guard<std::mutex> lock(history_mutex_);
     if (observed_cell_valid_ && source != observed_cell_) {
-      RCLCPP_ERROR(
+      RCLCPP_DEBUG(
         logger_,
-        "Rejected out-of-order executed transition %s: source index %zu != observed %zu",
-        message->data.c_str(), source, observed_cell_);
-      return;
+        "Executed-history source %zu differs from planner-synchronized cell %zu; "
+        "accepting authoritative executed event %s",
+        source, observed_cell_, message->data.c_str());
     }
     for (std::size_t i = 0; i < history_hazards_.size(); ++i) {
-      if (history_hazards_[i].source_index == source &&
-        history_hazards_[i].target_index == target)
-      {
+      const auto & hazard = history_hazards_[i];
+      bool matches = hazard.source_index == source && hazard.target_index == target;
+      for (const auto & edge : hazard.trigger_edges) {
+        matches = matches || (edge.first == source && edge.second == target);
+      }
+      if (matches) {
         active_history_mask_ |= (1ULL << i);
       }
     }
