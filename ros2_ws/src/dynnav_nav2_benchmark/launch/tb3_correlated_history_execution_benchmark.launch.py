@@ -172,7 +172,7 @@ def generate_launch_description() -> LaunchDescription:
                 default_value=str(
                     benchmark_share
                     / "config"
-                    / "sandbox_correlated_history_events.yaml"
+                    / "g1_parallel_corridor_correlated.yaml"
                 ),
             ),
             DeclareLaunchArgument(
@@ -184,13 +184,13 @@ def generate_launch_description() -> LaunchDescription:
             DeclareLaunchArgument(
                 "world_file",
                 default_value=str(
-                    benchmark_share / "worlds" / "g1_parallel_corridor.sdf.xacro"
+                    benchmark_share / "worlds" / "g1_parallel_corridor.sdf"
                 ),
             ),
             DeclareLaunchArgument(
                 "blocker_sdf",
                 default_value=str(
-                    benchmark_share / "models" / "g1_parallel_corridor_blocker.sdf"
+                    benchmark_share / "models" / "g1_corridor_blocker.sdf"
                 ),
             ),
             DeclareLaunchArgument(
