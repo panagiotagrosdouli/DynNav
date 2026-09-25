@@ -39,7 +39,9 @@ class HazardEventQuotient:
         return (2 ** self.hazard_count) - (2 ** self.event_count)
 
     def compress_active_indices(self, active: frozenset[int]) -> frozenset[int]:
-        invalid = sorted(index for index in active if index < 0 or index >= self.hazard_count)
+        invalid = sorted(
+            index for index in active if index < 0 or index >= self.hazard_count
+        )
         if invalid:
             raise ValueError(f"active hazard indices out of range: {invalid}")
         return frozenset(self.event_by_hazard_index[index] for index in active)
@@ -50,7 +52,11 @@ class HazardEventQuotient:
         *,
         current: GridCell | None = None,
     ) -> TopologyHazardBelief:
-        invalid = sorted(index for index in active_events if index < 0 or index >= self.event_count)
+        invalid = sorted(
+            index
+            for index in active_events
+            if index < 0 or index >= self.event_count
+        )
         if invalid:
             raise ValueError(f"active event indices out of range: {invalid}")
         probabilities = {
