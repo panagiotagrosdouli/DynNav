@@ -13,6 +13,7 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     EmitEvent,
+    ExecuteProcess,
     IncludeLaunchDescription,
     OpaqueFunction,
     RegisterEventHandler,
@@ -125,12 +126,10 @@ def _launch_setup(context):
         check=True,
     )
 
-    gazebo_server = Node(
-        package="ros_gz_sim",
-        executable="gz_sim",
+    gazebo_server = ExecuteProcess(
+        cmd=["gz", "sim", "-r", "-s", world_sdf],
         name="dynnav_g1_v4_gazebo",
         output="screen",
-        arguments=["-r", "-s", world_sdf],
     )
 
     spawn_robot = IncludeLaunchDescription(
