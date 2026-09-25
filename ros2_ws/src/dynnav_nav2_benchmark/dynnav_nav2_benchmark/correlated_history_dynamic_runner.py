@@ -15,6 +15,7 @@ from std_msgs.msg import String
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.correlated_history_execution import (
+    blocker_footprint_cells,
     load_correlated_history_execution_suite,
     quantized_hazard_transitions,
     quantized_hazard_trigger_gates,
@@ -326,10 +327,27 @@ def _trial(
         pose = last_feedback.current_pose.pose.position
         cm = navigator.getGlobalCostmap()
         md = cm.metadata
+        recovery_costs = list(cm.data)
+        width = int(md.size_x)
+        height = int(md.size_y)
+        for index, hazard in enumerate(scenario.hazards):
+            if not applied[index]:
+                continue
+            footprint = blocker_footprint_cells(
+                center=hazard.blocker_pose,
+                size_xy=(suite.blocker_size[0], suite.blocker_size[1]),
+                origin_x=float(md.origin.position.x),
+                origin_y=float(md.origin.position.y),
+                resolution=float(md.resolution),
+            )
+            for x, y in footprint:
+                if 0 <= x < width and 0 <= y < height:
+                    recovery_costs[y * width + x] = 254
+
         recovery = assess_recovery_reachability(
-            costs=cm.data,
-            width=int(md.size_x),
-            height=int(md.size_y),
+            costs=recovery_costs,
+            width=width,
+            height=height,
             resolution=float(md.resolution),
             origin_x=float(md.origin.position.x),
             origin_y=float(md.origin.position.y),
