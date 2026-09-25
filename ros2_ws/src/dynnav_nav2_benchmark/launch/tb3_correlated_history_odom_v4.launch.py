@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
+import subprocess
 import tempfile
 
 from ament_index_python.packages import get_package_share_directory
@@ -110,15 +111,15 @@ def _launch_setup(context):
     robot_urdf = sim_share / "urdf" / "turtlebot3_waffle.urdf"
 
     world_sdf = tempfile.mktemp(prefix="dynnav_g1_v4_", suffix=".sdf")
-    world_xacro = ExecuteProcess(
-        cmd=[
+    subprocess.run(
+        [
             "xacro",
             "-o",
             world_sdf,
             f"headless:={headless}",
             world_file,
         ],
-        output="screen",
+        check=True,
     )
     gazebo_server = ExecuteProcess(
         cmd=["gz", "sim", "-r", "-s", world_sdf],
@@ -249,7 +250,6 @@ def _launch_setup(context):
     )
 
     return [
-        world_xacro,
         cleanup_world,
         gazebo_server,
         spawn_robot,
