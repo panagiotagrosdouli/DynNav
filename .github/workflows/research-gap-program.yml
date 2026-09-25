@@ -32,6 +32,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -e ".[dev,researcher]"
 
+      - name: Show Ruff autofix diff
+        run: ruff check --fix --diff dynnav/experiments/research_gap_program.py dynnav/online_hazard_learning.py dynnav/risk_budget_learning.py || true
+
       - name: Run focused G1-G5 tests
         run: python -m pytest -q tests/test_research_gap_program.py tests/test_research_gap_runner.py tests/test_robust_commitment_astar.py tests/test_robust_dependence_route_choice.py tests/test_history_compression_exactness.py tests/test_compressed_commitment_astar.py tests/test_extended_research_benchmarks.py tests/test_research_theory_controls.py tests/test_post_full_study_diagnostics.py tests/test_topology_dependence_control.py tests/test_dependence_topology_theory.py tests/test_dependence_connectivity_interaction.py tests/test_risk_budget_learning.py tests/test_risk_budget_replication.py tests/test_topology_interaction_survey.py
 
