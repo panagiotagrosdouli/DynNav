@@ -59,3 +59,19 @@ def test_alignment_preserves_relative_odometry_motion() -> None:
     assert mapped.x == pytest.approx(1.0)
     assert mapped.y == pytest.approx(0.0)
     assert _angle_error(mapped.yaw, 0.0) == pytest.approx(0.0)
+
+
+def test_v4_launch_is_amcl_free_and_forces_resettable_odom_mode() -> None:
+    launch_path = (
+        __import__("pathlib").Path(__file__).resolve().parents[1]
+        / "launch"
+        / "tb3_correlated_history_execution_v4_benchmark.launch.py"
+    )
+    text = launch_path.read_text(encoding="utf-8")
+
+    assert '"use_localization": "False"' in text
+    assert '"serve_static_map": "True"' in text
+    assert '"--localization-mode",' in text
+    assert '"odom_reset",' in text
+    assert "tb3_simulation_launch.py" not in text
+    assert "resettable_odom_localizer" in text
