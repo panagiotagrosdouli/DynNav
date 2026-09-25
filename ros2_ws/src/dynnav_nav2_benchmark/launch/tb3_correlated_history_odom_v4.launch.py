@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-import os
-from pathlib import Path
 import tempfile
+from pathlib import Path
 
+import yaml
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import (
@@ -22,7 +22,6 @@ from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
-import yaml
 
 from dynnav_nav2_benchmark.configuration import (
     freeze_global_costmap_for_planner_comparison,
