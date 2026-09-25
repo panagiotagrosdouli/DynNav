@@ -105,7 +105,7 @@ def _launch_setup(context):
 
     nav2_share = Path(get_package_share_directory("nav2_bringup"))
     sim_share = Path(get_package_share_directory("nav2_minimal_tb3_sim"))
-    bringup_launch = nav2_share / "launch" / "bringup_launch.py"
+    navigation_launch = nav2_share / "launch" / "navigation_launch.py"
     spawn_launch = sim_share / "launch" / "spawn_tb3.launch.py"
     robot_sdf = sim_share / "urdf" / "gz_waffle.sdf.xacro"
     robot_urdf = sim_share / "urdf" / "turtlebot3_waffle.urdf"
@@ -164,24 +164,47 @@ def _launch_setup(context):
         }.items(),
     )
 
-    bringup = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(str(bringup_launch)),
+    map_server = Node(
+        package="nav2_map_server",
+        executable="map_server",
+        name="map_server",
+        output="screen",
+        parameters=[
+            str(generated_params),
+            {
+                "yaml_filename": str(map_file),
+                "use_sim_time": True,
+            },
+        ],
+        remappings=[("/tf", "tf"), ("/tf_static", "tf_static")],
+    )
+    map_lifecycle_manager = Node(
+        package="nav2_lifecycle_manager",
+        executable="lifecycle_manager",
+        name="lifecycle_manager_map",
+        output="screen",
+        parameters=[
+            {
+                "use_sim_time": True,
+                "autostart": True,
+                "node_names": ["map_server"],
+            }
+        ],
+    )
+
+    navigation = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(str(navigation_launch)),
         launch_arguments={
             "namespace": "",
-            "slam": "False",
-            "use_localization": "False",
-            "serve_static_map": "True",
-            "map": str(map_file),
             "use_sim_time": "True",
             "params_file": str(generated_params),
             "autostart": "True",
             "use_composition": "False",
             "use_respawn": "False",
-            "use_keepout_zones": "False",
-            "use_speed_zones": "False",
             "container_name": "nav2_container",
         }.items(),
     )
+    delayed_navigation = TimerAction(period=2.0, actions=[navigation])
 
     odom_localizer = Node(
         package="dynnav_nav2_benchmark",
@@ -254,7 +277,9 @@ def _launch_setup(context):
         gazebo_server,
         spawn_robot,
         robot_state_publisher,
-        bringup,
+        map_server,
+        map_lifecycle_manager,
+        delayed_navigation,
         odom_localizer,
         gazebo_services,
         delayed_runner,
