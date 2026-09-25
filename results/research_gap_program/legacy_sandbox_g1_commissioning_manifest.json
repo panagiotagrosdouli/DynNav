@@ -1,0 +1,43 @@
+{
+  "evidence_type": "legacy_sandbox_correlated_gazebo_commissioning",
+  "status": "negative_commissioning_result",
+  "source_commit": "ba13ea462fbe6d0b605de42f5d0e372af97410bc",
+  "workflow_run_id": 36111701321,
+  "artifact_id": 10853148544,
+  "artifact_digest": "sha256:fbf54b6407eaa3fcd0330a962b3aa8e39f84a7e0f627773b3ae54ac60f8e558e",
+  "retained_inputs": {
+    "baseline_rule": "cellwise_minimum_of_two_distinct_single-blocker_retained_snapshots",
+    "return_snapshot": "results/ros2_gazebo/dynamic_run_31488640894/costmap_return_gate_closure_NavFn_r0.json.gz",
+    "forward_snapshot": "results/ros2_gazebo/dynamic_run_31488640894/costmap_forward_closure_negative_control_NavFn_r0.json.gz",
+    "first_blocker_pose": [
+      -0.95,
+      -0.425
+    ],
+    "blocker_size": [
+      0.35,
+      1.2
+    ],
+    "query_world": [
+      1.75,
+      1
+    ],
+    "safe_center": [
+      -2,
+      -0.5
+    ],
+    "safe_radius_m": 0.35
+  },
+  "result": {
+    "candidate_count_nonzero_interaction": 0,
+    "negative_interaction_count": 0,
+    "positive_interaction_count": 0,
+    "preferred_parallel_redundant": null,
+    "fixed_first_blocker_truth": {
+      "f00": 1,
+      "f10": 1,
+      "negative_interaction_possible_under_monotone_closure": true
+    }
+  },
+  "decision": "Reject the retained TurtleBot3 sandbox for the two-hazard G1 dependence execution study. Do not tune a second blocker post hoc; use the preregistered canonical parallel-corridor V2 environment.",
+  "claim_boundary": "This is a geometry commissioning result, not planner efficacy evidence."
+}
