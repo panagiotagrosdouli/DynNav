@@ -192,12 +192,14 @@ Across 75 combinations of detour depth, closure probability, and weight, the exa
 \subsection{Primary generated challenge}
 The publication-facing empirical result is the frozen unavoidable-hazard suite, which removes the easiest trigger-avoidance regime: every feasible start-to-goal path activates at least one hazard per module. The expanded evaluation contains 96 generated scenarios with 250 paired execution seeds per scenario (24,000 trials per planner). The exact state-only control selects exactly the same paths and activated hazard identities as shortest in all 96 scenarios. History-conditioned planning changes the activated-hazard choice in 36 of 96 scenarios and has higher exact final return probability in those same 36, while remaining nonworse in empirical return-infeasibility in all 96.
 
-\begin{figure}[t]
+\begin{figure*}[t]
+\centering
+\begin{minipage}[t]{0.485\textwidth}
 \centering
 \begin{tikzpicture}
 \begin{axis}[
-  width=\columnwidth,
-  height=0.88\columnwidth,
+  width=\linewidth,
+  height=0.72\linewidth,
   xmin=0, xmax=1.02,
   ymin=0, ymax=1.02,
   axis equal image,
@@ -222,7 +224,7 @@ The publication-facing empirical result is the frozen unavoidable-hazard suite, 
 \addplot[
   only marks,
   mark=o,
-  mark size=1.45pt,
+  mark size=1.35pt,
   black
 ] table[
   x=state_only_fail,
@@ -236,52 +238,60 @@ The publication-facing empirical result is the frozen unavoidable-hazard suite, 
   mark size=2.8pt,
   black
 ] coordinates {(0.74425,0.66604)};
-\addlegendentry{pooled mean}
-\node[anchor=south east,font=\scriptsize,align=right]
-  at (rel axis cs:0.97,0.05) {36 improved\\60 unchanged};
+\addlegendentry{mean}
+\node[anchor=north east,font=\scriptsize\bfseries]
+  at (rel axis cs:0.98,0.98) {(a)};
 \end{axis}
 \end{tikzpicture}
-\caption{Scenario-level return-infeasibility in the 96-scenario unavoidable-hazard suite. Points below the diagonal favor history conditioning; no scenario lies above it. Each point summarizes 250 paired execution seeds. The diamond is the equally weighted scenario mean.}
-\label{fig:unavoidable-scatter}
-\end{figure}
-
-\begin{table}[t]
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.485\textwidth}
 \centering
-\caption{Primary unavoidable-hazard result. Means pool 96 equally weighted scenarios with 250 paired seeds each. Shortest is omitted because it is identical to the exact state-only control in all 96 scenarios.}
-\label{tab:unavoidable}
-\begin{tabular}{lrrrr}
-\toprule
-Planner & Fail $\downarrow$ & Return $\uparrow$ & Path $\downarrow$ & Hazards\\
-\midrule
-State-only exact & .744 & .254 & 11.77 & 2.35\\
-History exact & .666 & .331 & 13.33 & 2.35\\
-\midrule
-$\Delta$ (history--state) & $-.078$ & $+.078$ & $+1.56$ & $0.00$\\
-\bottomrule
-\end{tabular}
-\end{table}
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth,
+  height=0.72\linewidth,
+  xmin=-0.66, xmax=0.04,
+  ymin=0, ymax=97,
+  xlabel={History $-$ state-only failure rate},
+  ylabel={Scenario rank},
+  xtick={-0.6,-0.4,-0.2,0},
+  ytick={1,24,48,72,96},
+  tick label style={font=\scriptsize},
+  label style={font=\scriptsize},
+  xmajorgrids=true,
+  grid style={line width=.1pt,draw=black!12}
+]
+\addplot[densely dashed,black!60] coordinates {(0,1) (0,96)};
+\addplot[dotted,black!60] coordinates {(-0.078208,1) (-0.078208,96)};
+\addplot[
+  only marks,
+  mark=*,
+  mark size=1.15pt,
+  black
+] table[
+  x=risk_difference,
+  y=rank,
+  col sep=comma
+] {unavoidable_difference_ranked.csv};
+\node[anchor=north west,font=\scriptsize\bfseries]
+  at (rel axis cs:0.02,0.98) {(b)};
+\node[anchor=south west,font=\scriptsize,align=left]
+  at (rel axis cs:0.03,0.06)
+  {36 improved\\60 unchanged\\0 worse};
+\node[anchor=north west,font=\scriptsize]
+  at (axis cs:-0.074,94) {$\Delta=-0.078$};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{Primary 96-scenario unavoidable-hazard result. (a) Scenario-level empirical return-infeasibility for the exact state-only control and history-conditioned planner; points below the diagonal favor history conditioning. (b) The same scenarios ranked by paired risk difference. Each scenario summarizes 250 paired execution seeds. History conditioning improves 36 of 96 scenarios, ties 60, and is worse in none; the scenario-level mean difference is $-0.0782$ with 95\% bootstrap CI $[-0.1090,-0.0498]$.}
+\label{fig:unavoidable-primary}
+\end{figure*}
 
-The scenario-level history-minus-state-only exact risk difference has mean $-0.0782$ with a 95\% bootstrap interval $[-0.1090,-0.0498]$ across 96 scenario-level samples. Figure~\ref{fig:unavoidable-scatter} makes the distribution visible: 36 scenarios improve and 60 are unchanged. The mean activated-hazard count is identical (2.35), so the improvement does not come from avoiding stochastic commitments altogether but from selecting different hazards. The average geometric cost is 1.56 additional steps. This is the main empirical evidence for the representation claim because it operates in a nonzero-risk regime and does not permit a trigger-free escape route.
+Pooling the 96 scenarios equally, empirical return-infeasibility decreases from $0.7443$ for the exact state-only control to $0.6660$ with history conditioning, while mean exact final return reliability increases from $0.2535$ to $0.3314$. Mean path length increases from $11.77$ to $13.33$ steps. Both planners activate the same mean number of hazards (2.35), so the improvement does not come from avoiding stochastic commitments altogether; it comes from selecting different activated hazards. This is the main empirical evidence for the representation claim because every feasible route in the suite activates hazards.
 
 \subsection{Controlled mechanism checks}
-The earlier controlled, heterogeneous, and hand-authored geometric families are retained as supporting mechanism checks rather than as the primary performance result. Table~\ref{tab:mechanism-checks} compresses these intentionally simple worlds. In every family the exact state-only control is exactly paired with shortest despite using the same exact connectivity oracle as the history-conditioned planner. The history-conditioned planner instead selects trigger-free alternatives in these constructed settings; consequently, the observed zeros are mechanism checks, not evidence of universal zero risk.
-
-\begin{table}[t]
-\centering
-\caption{Supporting controlled checks. Middle columns are empirical post-closure return-infeasibility ranges. Zero observed outcomes occur on trigger-free routes under the declared model.}
-\label{tab:mechanism-checks}
-\begin{tabular}{lccc}
-\toprule
-Family & State-only & History & Key contrast\\
-\midrule
-$p$ sweep & .512--.992 & 0 obs. & 1000 seeds/$p$\\
-Heterogeneous & .992--1.000 & 0 obs. & hard $\tau=.9$: .116\\
-Geometric & .756--.890 & 0 obs. & path cost: $0$--$2$\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-In the controlled three-module family, the exact state-only control has zero risk difference and zero discordant pairs versus shortest at $p\in\{0.2,0.5,0.8\}$, whereas history conditioning changes the route. In the frozen heterogeneous 6/7/8-module family, the history-conditioned planner again selects trigger-free routes; the eight-module hard-return baseline instead accepts one low-probability commitment and records 58 return-infeasible outcomes in 500 trials (0.116), showing that objective choice can matter. In the three geometric worlds, history-exact versus shortest risk differences are $-0.810$, $-0.756$, and $-0.890$ for the fork, L-room, and chamber, respectively; avoiding the activated closures costs two additional steps in the fork and chamber and no additional geometric length in the L-room. These families therefore verify the intended mechanism and broaden topology coverage, but their large effects are deliberately not treated as deployment-scale estimates.
+The earlier controlled, heterogeneous, and hand-authored geometric families are retained only as supporting mechanism checks. In the controlled three-module $p$-sweep, the exact state-only control matches shortest at $0.512$, $0.881$, and $0.992$ return-infeasibility, while history conditioning selects trigger-free alternatives and records no observed return-infeasible outcome. In the frozen heterogeneous 6/7/8-module family, state-only exact again matches shortest at $0.992$, $0.998$, and $1.000$; history exact records no observed return-infeasible outcome, whereas the eight-module hard-return baseline accepts one low-probability commitment and records $58/500=0.116$. Across the fork, L-room, and chamber, state-only exact matches shortest at $0.810$, $0.756$, and $0.890$, while history exact records no observed return-infeasible outcome at path-length changes of $+2$, $0$, and $+2$ steps, respectively. These intentionally simple families verify the modeled mechanism and broaden topology coverage; their zero-heavy outcomes are not treated as deployment-scale performance estimates.
 
 \subsection{Soft versus hard objective sensitivity}
 The predeclared parameter sweep provides an important negative scope result. In the fork, soft $\lambda=0$ and $1$ select the risky length-6 route with failure rate 0.810, while $\lambda\ge2$ selects the length-8 zero-hazard route with zero observed post-closure return-infeasible outcomes. In the L-room and chamber, $\lambda=0$ retains the risky route, while every tested $\lambda\ge1$ selects a zero-hazard route. By contrast, every frozen hard threshold $\tau\in\{.50,.70,.80,.90,.95,.99\}$ selects a zero-hazard route with zero observed post-closure return-infeasible outcomes in all three worlds. All tested configurations are planner-feasible.
