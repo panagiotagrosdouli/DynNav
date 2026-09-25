@@ -50,9 +50,9 @@ Carmesin et al., Dvořák et al., and Frenkel et al. are now direct novelty cons
 
 ### 3. “The state-only baseline is artificially weak.”
 
-**Status: partially addressed by framing.**
+**Status: strongly addressed.**
 
-The baseline is deliberately restricted and should remain described as a representation ablation, not as a proxy for general MDP/POMDP planning. The endpoint-only lower bound is important because it applies to any deterministic scalar endpoint estimate under the same aliasing condition, not only the implemented marginal baseline.
+The publication-facing state-only exact control now uses the same exact connectivity oracle and the same additive fragility objective as the history-conditioned planner; only trigger-conditioned activation state is removed. In the retained reviewer-P0 artifact it reproduces shortest paths/outcomes in every controlled, heterogeneous, geometric, and generated unavoidable-hazard scenario. This is a clean representation ablation, while still not serving as a proxy for a general MDP/POMDP with a richer state.
 
 ### 4. “The proposed soft objective is cherry-picked.”
 
@@ -60,11 +60,11 @@ The baseline is deliberately restricted and should remain described as a represe
 
 The frozen soft-vs-hard sweep preserves the negative result that hard safe-return thresholds can match the zero-hazard route. This prevents an objective-superiority story and strengthens the representation claim.
 
-### 5. “The effect sizes are unrealistically large.”
+### 5. “The effect sizes are unrealistically large / the planner only wins by avoiding all hazards.”
 
-**Status: addressed in threats to validity.**
+**Status: materially addressed, with synthetic-scope caveat.**
 
-The large paired risk differences arise in constructed worlds designed to expose the mechanism. They are not estimates of deployment effect size. The manuscript now states this explicitly.
+The original large effects arise in constructed worlds where a trigger-free route exists. A frozen reviewer-targeted suite now removes that regime: 24 generated scenarios contain one to four modules and every feasible route activates at least one hazard per module. Across 500 paired seeds per scenario, history exact is nonworse than state-only exact in 24/24 scenarios, improves 8/24, and reduces mean return-infeasibility from 0.7796 to 0.6926; the scenario-level mean difference is -0.087 with 95% bootstrap CI [-0.1629,-0.0247]. The generator remains synthetic and structured, so this is not a deployment effect-size estimate.
 
 ### 6. “The exact method does not scale.”
 
@@ -95,7 +95,7 @@ Before submission:
 
 The highest-value additional experiment is a valid paired action-triggered ROS 2/Gazebo execution study using the already frozen protocol. It would not establish real-world safety, but it would close the largest gap between the graph-level mechanism and the integrated robotics stack.
 
-A second valuable extension is a broader automatically generated topology family that is frozen before outcomes are inspected. This would improve geometric diversity without pretending to provide real-world generalization.
+The broader automatically generated challenge family is now implemented and retained: 24 frozen scenarios vary module count, detour geometry, direction, and hazard probabilities while enforcing unavoidable stochastic commitments. Further random-map diversity remains useful but is no longer a prerequisite for the narrow representation claim.
 
 ## Reviewer-facing one-sentence claim
 
@@ -115,6 +115,6 @@ Do not write:
 
 ## Current recommendation
 
-**Strong candidate for a simulation-scoped planning/robotics submission after final CI, bibliography, and claim-to-evidence audit.**
+**Strong candidate for a simulation-scoped planning/robotics submission after final exact-head CI/paper-build and release freeze.**
 
 A valid Gazebo execution artifact would materially strengthen the submission, but physical-robot experiments are not required for the narrow mechanism claim if the paper stays explicit about its scope.
