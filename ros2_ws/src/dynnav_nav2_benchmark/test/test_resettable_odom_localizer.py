@@ -69,8 +69,11 @@ def test_v4_launch_is_amcl_free_and_forces_resettable_odom_mode() -> None:
     )
     text = launch_path.read_text(encoding="utf-8")
 
-    assert '"use_localization": "False"' in text
-    assert '"serve_static_map": "True"' in text
+    assert 'package="nav2_map_server"' in text
+    assert 'executable="map_server"' in text
+    assert "navigation_launch.py" in text
+    assert "localization_launch.py" not in text
+    assert "nav2_amcl" not in text
     assert '"--localization-mode",' in text
     assert '"odom_reset",' in text
     assert "tb3_simulation_launch.py" not in text
