@@ -15,6 +15,7 @@ struct HistoryHazard
   std::size_t target_index{0};
   std::size_t closure_index{0};
   double closure_probability{0.0};
+  std::vector<std::size_t> closure_indices{};
 };
 
 struct HistorySearchConfig
