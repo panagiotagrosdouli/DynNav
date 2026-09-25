@@ -35,7 +35,10 @@ from dynnav_nav2_benchmark.dynamic_runner import (
     _wait_for_service,
     _write_behavior_trees,
 )
-from dynnav_nav2_benchmark.history_execution import HISTORY_RESET_COMMAND
+from dynnav_nav2_benchmark.history_execution import (
+    HISTORY_RESET_COMMAND,
+    world_to_cell,
+)
 
 
 def _spawn_named_blocker(
@@ -53,6 +56,93 @@ def _spawn_named_blocker(
     request.entity_factory.pose = _gazebo_pose(parking_pose)
     request.entity_factory.relative_to = "world"
     _call_service(navigator, client, request, f"spawning {entity_name}")
+
+
+def _initial_plan_audit(
+    navigator,
+    *,
+    scenario,
+    planner_id: str,
+    trigger_gates,
+    metadata,
+) -> dict[str, object]:
+    """Record planner-server route choice before dynamic execution."""
+
+    try:
+        path = navigator.getPath(
+            _pose_message(navigator, scenario.start, scenario.frame_id),
+            _pose_message(navigator, scenario.goal, scenario.frame_id),
+            planner_id=planner_id,
+            use_start=True,
+        )
+    except Exception as exc:
+        return {
+            "success": False,
+            "error": f"{type(exc).__name__}: {exc}",
+            "path_length_m": None,
+            "pose_count": 0,
+            "route_class": None,
+            "trigger_gate_crossings": [False, False],
+            "path_cells": [],
+        }
+
+    if path is None or len(path.poses) < 2:
+        return {
+            "success": False,
+            "error": "planner returned no valid path",
+            "path_length_m": None,
+            "pose_count": 0 if path is None else len(path.poses),
+            "route_class": None,
+            "trigger_gate_crossings": [False, False],
+            "path_cells": [],
+        }
+
+    points = [
+        (
+            float(pose.pose.position.x),
+            float(pose.pose.position.y),
+        )
+        for pose in path.poses
+    ]
+    path_length_m = sum(
+        math.hypot(x1 - x0, y1 - y0)
+        for (x0, y0), (x1, y1) in zip(points, points[1:], strict=False)
+    )
+
+    cells: list[tuple[int, int]] = []
+    for x, y in points:
+        cell = world_to_cell(
+            Pose2D(x, y),
+            origin_x=float(metadata.origin.position.x),
+            origin_y=float(metadata.origin.position.y),
+            resolution=float(metadata.resolution),
+        )
+        if not cells or cells[-1] != cell:
+            cells.append(cell)
+
+    path_edges = set(zip(cells, cells[1:], strict=False))
+    gate_crossings = [
+        any(edge in path_edges for edge in gate)
+        for gate in trigger_gates
+    ]
+    blocker_mid_y = (
+        scenario.hazards[0].blocker_pose.y
+        + scenario.hazards[1].blocker_pose.y
+    ) / 2.0
+    route_class = (
+        "lower_detour"
+        if min(y for _x, y in points) < blocker_mid_y
+        else "upper_direct"
+    )
+    return {
+        "success": True,
+        "error": None,
+        "path_length_m": path_length_m,
+        "pose_count": len(points),
+        "route_class": route_class,
+        "trigger_gate_crossings": gate_crossings,
+        "path_cells": [list(cell) for cell in cells],
+    }
 
 
 def _trial(
@@ -133,6 +223,15 @@ def _trial(
     publisher.publish(String(data=HISTORY_RESET_COMMAND))
     rclpy.spin_once(navigator, timeout_sec=0.1)
     time.sleep(0.1)
+
+    initial_plan = _initial_plan_audit(
+        navigator,
+        scenario=scenario,
+        planner_id=planner_id,
+        trigger_gates=trigger_gates,
+        metadata=meta,
+    )
+
     # BasicNavigator keeps the previous task feedback object. Clear it before
     # starting a new trial so an earlier timeout cannot immediately cancel the
     # next goal via a stale navigation_time value.
@@ -150,6 +249,7 @@ def _trial(
             "order_index": order_index,
             "valid_trial": False,
             "invalid_reason": "navigation_goal_rejected",
+            "initial_plan": initial_plan,
         }
 
     applied = [False, False]
@@ -254,6 +354,7 @@ def _trial(
         or ("insufficient_motion" if not motion_valid else None),
         "navigation_success": success,
         "navigation_time_s": navigation_time_s,
+        "initial_plan": initial_plan,
         "max_start_displacement_m": max_start_displacement_m,
         "result_error_code": error_code,
         "result_error_message": error_message,
