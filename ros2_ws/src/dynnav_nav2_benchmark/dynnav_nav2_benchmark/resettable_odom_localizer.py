@@ -17,7 +17,7 @@ from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
 import rclpy
 from rclpy.node import Node
-from std_msgs.msg import String
+from std_msgs.msg import String, UInt64
 from tf2_ros import TransformBroadcaster
 
 from dynnav_nav2_benchmark.history_execution import HISTORY_RESET_COMMAND
@@ -96,6 +96,11 @@ class ResettableOdomLocalizer(Node):
         self._reset_pending = False
         self._reset_count = 0
         self._broadcaster = TransformBroadcaster(self)
+        self._ack_publisher = self.create_publisher(
+            UInt64,
+            "dynnav/localization_reset_epoch",
+            20,
+        )
 
         self.create_subscription(Odometry, odom_topic, self._on_odom, 50)
         self.create_subscription(String, reset_topic, self._on_reset, 20)
@@ -108,8 +113,11 @@ class ResettableOdomLocalizer(Node):
         )
         self._latest_odom = current
 
+        was_pending = self._reset_pending
         if self._map_to_odom is None or self._reset_pending:
             self._realign()
+        if was_pending and not self._reset_pending:
+            self._publish_reset_ack()
         if self._map_to_odom is not None:
             self._broadcast(message)
 
@@ -123,6 +131,10 @@ class ResettableOdomLocalizer(Node):
             )
             return
         self._realign()
+        self._publish_reset_ack()
+
+    def _publish_reset_ack(self) -> None:
+        self._ack_publisher.publish(UInt64(data=self._reset_count))
 
     def _realign(self) -> None:
         if self._latest_odom is None:
