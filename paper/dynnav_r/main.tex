@@ -157,7 +157,7 @@ R_{\mathrm{cut}}=\prod_{i\in K}(1-p_i).
 Because multi-cell cutsets may disconnect the graph even when no individual cell is critical, $R_{\mathrm{cut}}$ is an upper bound in general. We treat this approximation as scalability infrastructure, not as a novel graph-theoretic contribution.
 
 \section{Experimental Design}
-All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. Irreversible failure is operationalized as post-closure inability to reach the safe set in the resulting grid. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
+All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. The empirical failure metric is post-closure inability to reach the safe set in the resulting grid; we refer to this as post-closure return infeasibility. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
 
 The evaluation is organized around four research questions.
 \begin{enumerate}
@@ -189,7 +189,7 @@ Table~\ref{tab:execution} reports 1000 paired execution seeds at each closure pr
 
 \begin{table}[t]
 \centering
-\caption{Controlled stochastic execution, 1000 paired seeds per $p$. ``Fail'' is post-closure return infeasibility.}
+\caption{Controlled stochastic execution, 1000 paired seeds per $p$. Entries are empirical post-closure return-infeasibility rates.}
 \label{tab:execution}
 \begin{tabular}{lccc}
 \toprule
@@ -211,7 +211,7 @@ Table~\ref{tab:heldout} reports the frozen heterogeneous scenarios. The state-on
 
 \begin{table}[t]
 \centering
-\caption{Frozen heterogeneous-probability evaluation, 500 paired seeds per scenario. Entries are irreversible-failure rates.}
+\caption{Frozen heterogeneous-probability evaluation, 500 paired seeds per scenario. Entries are empirical post-closure return-infeasibility rates.}
 \label{tab:heldout}
 \begin{tabular}{lccc}
 \toprule
@@ -226,10 +226,10 @@ Hard return $\tau=.9$ & 0 & 0 & 0.116\\
 \end{tabular}
 \end{table}
 
-The eight-module case distinguishes the soft history-aware objective from the fixed hard threshold. The hard-return planner accepts one low-probability commitment, uses a path of length 46 rather than 48, and fails on 58 of 500 trials (0.116); exact-history planning activates no closure and has no failure. This is not a dominance claim over safe-return constraints: changing $\tau$ changes the hard baseline's policy.
+The eight-module case distinguishes the soft history-aware objective from the fixed hard threshold. The hard-return planner accepts one low-probability commitment, uses a path of length 46 rather than 48, and fails on 58 of 500 trials (0.116); exact-history planning activates no closure and records no observed return-infeasible outcome in those 500 trials. This is not a dominance claim over safe-return constraints: changing $\tau$ changes the hard baseline's policy.
 
 \subsection{Frozen geometric held-out topologies}
-A separate retained evaluation uses the three predeclared hand-built worlds. Table~\ref{tab:geometric} reports 500 paired seeds per topology. The state-only marginal planner is again exactly paired with shortest: zero discordant outcomes and zero risk difference in all three worlds. Exact-history planning activates no hazards and has zero post-closure irreversible failures.
+A separate retained evaluation uses the three predeclared hand-built worlds. Table~\ref{tab:geometric} reports 500 paired seeds per topology. The state-only marginal planner is again exactly paired with shortest: zero discordant outcomes and zero risk difference in all three worlds. Exact-history planning activates no hazards and records zero observed post-closure return-infeasible outcomes across the 500 trials in each topology.
 
 \begin{table}[t]
 \centering
@@ -249,7 +249,7 @@ History exact & 0 (8) & 0 (8) & 0 (9)\\
 The paired risk differences for history-exact versus shortest are $-0.810$, $-0.756$, and $-0.890$, with 95\% paired-bootstrap intervals $[-0.844,-0.776]$, $[-0.794,-0.718]$, and $[-0.916,-0.862]$. The corresponding exact McNemar $p$-values are below $3.3\times10^{-114}$. The fork and chamber require two additional steps to avoid their activated closures; the L-room reaches a trigger-free route at equal geometric length. These worlds broaden the mechanism evidence beyond the repeated-series topology, but they remain three deliberately constructed grid maps rather than evidence for arbitrary-map or real-world transfer.
 
 \subsection{Soft versus hard objective sensitivity}
-The predeclared parameter sweep provides an important negative scope result. In the fork, soft $\lambda=0$ and $1$ select the risky length-6 route with failure rate 0.810, while $\lambda\ge2$ selects the length-8 zero-hazard route with zero failure. In the L-room and chamber, $\lambda=0$ retains the risky route, while every tested $\lambda\ge1$ selects a zero-hazard route. By contrast, every frozen hard threshold $\tau\in\{.50,.70,.80,.90,.95,.99\}$ selects a zero-hazard, zero-failure route in all three worlds. All tested configurations are planner-feasible.
+The predeclared parameter sweep provides an important negative scope result. In the fork, soft $\lambda=0$ and $1$ select the risky length-6 route with failure rate 0.810, while $\lambda\ge2$ selects the length-8 zero-hazard route with zero failure. In the L-room and chamber, $\lambda=0$ retains the risky route, while every tested $\lambda\ge1$ selects a zero-hazard route. By contrast, every frozen hard threshold $\tau\in\{.50,.70,.80,.90,.95,.99\}$ selects a zero-hazard route with zero observed post-closure return-infeasible outcomes in all three worlds. All tested configurations are planner-feasible.
 
 This result prevents an objective-level overclaim. The geometric held-out experiments support the value of representing activated hazard history; they do not show that the soft cumulative penalty dominates a hard safe-return constraint. On these worlds the hard baseline is at least as effective and has lower retained single-run planning latency. The two objectives answer different operating questions, and neither is universally preferred by the present evidence.
 
