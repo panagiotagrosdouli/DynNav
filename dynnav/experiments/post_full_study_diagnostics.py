@@ -10,6 +10,9 @@ import json
 from dataclasses import asdict
 from pathlib import Path
 
+from dynnav.experiments.empirical_ambiguity_route_benchmark import (
+    run_empirical_ambiguity_route_benchmark,
+)
 from dynnav.experiments.history_compression_state_space import (
     run_reachable_state_space_scaling,
 )
@@ -44,6 +47,15 @@ def run_post_full_study_diagnostics(
             accepted_maps=40,
             obstacle_probability=0.30,
             seed=seed,
+        )
+    ]
+    g1_empirical = [
+        asdict(row)
+        for row in run_empirical_ambiguity_route_benchmark(
+            training_sizes=(20, 50, 100, 500),
+            repetitions=20,
+            family_confidence=0.95,
+            seed=seed + 20_000,
         )
     ]
 
@@ -95,6 +107,7 @@ def run_post_full_study_diagnostics(
         },
         "G1_topology_dependence_sign_reversal": g1,
         "G1_held_out_topology_interaction_survey": g1_survey,
+        "G1_finite_data_ambiguity_routes": g1_empirical,
         "G3_safe_learning_lockout": g3_lockout,
         "G3_risk_budget_deadlock_breaker": g3_budget,
         "G5_full_reachable_state_space": g5,
