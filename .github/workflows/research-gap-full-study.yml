@@ -1,6 +1,13 @@
 name: Research gap full study
 
 on:
+  pull_request:
+    paths:
+      - "dynnav/experiments/**"
+      - "dynnav/planners/**"
+      - "dynnav/*.py"
+      - "scripts/run_research_gap_full_study.py"
+      - ".github/workflows/research-gap-full-study.yml"
   workflow_dispatch:
     inputs:
       trials_per_condition:
@@ -29,7 +36,10 @@ jobs:
           python -m pip install -e ".[dev,researcher]"
 
       - name: Run full synthetic G1-G5 study
-        run: python scripts/run_research_gap_full_study.py --trials-per-condition ${{ inputs.trials_per_condition }} --repetitions ${{ inputs.repetitions }} --seed 20260925 --output results/research_gap_program/full_study.json
+        env:
+          TRIALS: ${{ inputs.trials_per_condition || '2000' }}
+          REPEATS: ${{ inputs.repetitions || '5' }}
+        run: python scripts/run_research_gap_full_study.py --trials-per-condition "$TRIALS" --repetitions "$REPEATS" --seed 20260925 --output results/research_gap_program/full_study.json
 
       - name: Upload full-study artifact
         if: always()
