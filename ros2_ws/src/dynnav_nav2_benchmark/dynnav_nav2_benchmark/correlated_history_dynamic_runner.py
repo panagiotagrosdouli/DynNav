@@ -158,6 +158,7 @@ def _trial(
     bt: Path,
     reset_s: float,
     publisher,
+    localization_mode: str,
 ):
     scenario = suite.scenario
     for hazard in scenario.hazards:
@@ -178,9 +179,10 @@ def _trial(
             scenario.start.yaw,
         ),
     )
-    navigator.setInitialPose(
-        _pose_message(navigator, scenario.start, scenario.frame_id)
-    )
+    if localization_mode == "amcl":
+        navigator.setInitialPose(
+            _pose_message(navigator, scenario.start, scenario.frame_id)
+        )
     navigator.clearAllCostmaps()
     time.sleep(reset_s)
 
@@ -406,6 +408,11 @@ def main(argv: list[str] | None = None) -> int:
         help="Run only selected frozen dependence condition(s).",
     )
     parser.add_argument("--reset-settle-s", type=float, default=2.0)
+    parser.add_argument(
+        "--localization-mode",
+        choices=("amcl", "odom_reset"),
+        default="amcl",
+    )
     args, ros_arguments = parser.parse_known_args(argv)
 
     suite = load_correlated_history_execution_suite(args.scenario)
@@ -435,7 +442,10 @@ def main(argv: list[str] | None = None) -> int:
             except RuntimeError:
                 pass
 
-        nav.waitUntilNav2Active()
+        if args.localization_mode == "odom_reset":
+            nav.waitUntilNav2Active(localizer="robot_localization")
+        else:
+            nav.waitUntilNav2Active()
         bts = _write_behavior_trees(args.output, suite.planner_ids)
         publisher = nav.create_publisher(String, "dynnav/executed_transition", 10)
         time.sleep(0.5)
@@ -468,6 +478,7 @@ def main(argv: list[str] | None = None) -> int:
                             bt=bts[planner_id],
                             reset_s=args.reset_settle_s,
                             publisher=publisher,
+                            localization_mode=args.localization_mode,
                         )
                     )
 
