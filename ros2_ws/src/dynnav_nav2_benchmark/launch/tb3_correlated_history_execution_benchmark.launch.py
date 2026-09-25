@@ -41,6 +41,7 @@ def _launch_setup(context):
     scenario_path = Path(LaunchConfiguration("scenario_file").perform(context))
     map_file = Path(LaunchConfiguration("map_file").perform(context))
     blocker_sdf = LaunchConfiguration("blocker_sdf").perform(context)
+    world_file = LaunchConfiguration("world_file").perform(context)
     output = LaunchConfiguration("output_dir").perform(context)
     repetitions = LaunchConfiguration("repetitions").perform(context)
     headless_requested = LaunchConfiguration("headless").perform(context)
@@ -107,7 +108,11 @@ def _launch_setup(context):
         launch_arguments={
             "params_file": str(generated_params),
             "map": str(map_file),
+            "world": world_file,
             "robot_name": suite.robot_entity,
+            "x_pose": str(scenario.start.x),
+            "y_pose": str(scenario.start.y),
+            "yaw": str(scenario.start.yaw),
             "headless": headless,
             "use_rviz": "False",
             "use_simulator": "True",
@@ -173,12 +178,20 @@ def generate_launch_description() -> LaunchDescription:
             ),
             DeclareLaunchArgument(
                 "map_file",
-                default_value=str(nav2_share / "maps" / "tb3_sandbox.yaml"),
+                default_value=str(
+                    benchmark_share / "maps" / "g1_parallel_corridor.yaml"
+                ),
+            ),
+            DeclareLaunchArgument(
+                "world_file",
+                default_value=str(
+                    benchmark_share / "worlds" / "g1_parallel_corridor.sdf.xacro"
+                ),
             ),
             DeclareLaunchArgument(
                 "blocker_sdf",
                 default_value=str(
-                    benchmark_share / "models" / "dynamic_blocker.sdf"
+                    benchmark_share / "models" / "g1_parallel_corridor_blocker.sdf"
                 ),
             ),
             DeclareLaunchArgument(
