@@ -105,6 +105,7 @@ jobs:
           set -o pipefail
           source /opt/ros/jazzy/setup.bash
           source /tmp/dynnav_g1_v4/install/setup.bash
+          set +e
           timeout --signal=INT --kill-after=30s 40m \
             ros2 launch dynnav_nav2_benchmark \
               tb3_correlated_history_odom_v4.launch.py \
@@ -112,7 +113,13 @@ jobs:
               repetitions:=1 \
               output_dir:=/tmp/dynnav_g1_v4/results \
             2>&1 | tee /tmp/dynnav_g1_v4/results/ros_launch.log
+          launch_status=${PIPESTATUS[0]}
+          set -e
+          printf '%s\n' "$launch_status" > /tmp/dynnav_g1_v4/results/launch_exit_status.txt
           test -s /tmp/dynnav_g1_v4/results/results.json
+          if [ "$launch_status" -ne 0 ] && [ "$launch_status" -ne 2 ]; then
+            exit "$launch_status"
+          fi
 
       - name: Validate strict V4 smoke contract
         run: |
