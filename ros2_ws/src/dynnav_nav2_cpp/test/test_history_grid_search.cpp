@@ -87,4 +87,45 @@ TEST(HistoryGridSearch, OnlineReplanRetainsActivatedMask)
   EXPECT_NEAR(result.minimum_return_probability, 0.2, 1.0e-12);
 }
 
+
+TEST(HistoryGridSearch, SharedClosureCellIsOneLatentEvent)
+{
+  // Two different executed triggers activate the same physical bridge closure.
+  // Activating both must not square the event probability.
+  const std::size_t width = 5;
+  const std::size_t height = 3;
+  std::vector<std::uint8_t> costs(width * height, 254U);
+  for (const auto index : std::vector<std::size_t>{5U, 6U, 7U, 8U, 9U, 2U, 3U}) {
+    costs[index] = 0U;
+  }
+  const std::vector<std::size_t> safe{5U};
+  const std::vector<HistoryHazard> hazards{
+    {7U, 2U, 6U, 0.5},
+    {2U, 3U, 6U, 0.5},
+  };
+  const HistorySearchConfig config{};
+
+  EXPECT_NEAR(
+    exactHistoryReturnProbability(width, height, costs, 9U, safe, hazards, 0b11U, config),
+    0.5,
+    1.0e-12);
+}
+
+TEST(HistoryGridSearch, SharedClosureCellRejectsConflictingProbabilities)
+{
+  const std::size_t width = 5;
+  const std::size_t height = 3;
+  const std::vector<std::uint8_t> costs(width * height, 0U);
+  const std::vector<std::size_t> safe{5U};
+  const std::vector<HistoryHazard> hazards{
+    {6U, 7U, 5U, 0.4},
+    {7U, 8U, 5U, 0.7},
+  };
+  const HistorySearchConfig config{};
+
+  EXPECT_THROW(
+    exactHistoryReturnProbability(width, height, costs, 9U, safe, hazards, 0b11U, config),
+    std::invalid_argument);
+}
+
 }  // namespace
