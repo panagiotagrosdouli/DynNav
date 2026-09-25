@@ -16,6 +16,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import Pose3D, SafeRegion
 GridCell = tuple[int, int]
 DirectedTransition = tuple[GridCell, GridCell]
 ObservationKind = Literal["same_cell", "adjacent_transition", "sampling_gap"]
+HISTORY_RESET_COMMAND = "__RESET__"
 
 
 @dataclass(frozen=True, slots=True)
