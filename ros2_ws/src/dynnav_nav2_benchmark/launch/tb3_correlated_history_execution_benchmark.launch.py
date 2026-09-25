@@ -13,6 +13,7 @@ from dynnav_nav2_benchmark.configuration import (
     inject_correlated_history_planner_parameters,
 )
 from dynnav_nav2_benchmark.correlated_history_execution import (
+    blocker_footprint_cells,
     load_correlated_history_execution_suite,
     quantized_hazard_transitions,
 )
@@ -71,12 +72,9 @@ def _launch_setup(context):
     hazards = tuple(
         (
             triggers[index],
-            world_to_cell(
-                Pose2D(
-                    hazard.blocker_pose.x,
-                    hazard.blocker_pose.y,
-                    hazard.blocker_pose.yaw,
-                ),
+            blocker_footprint_cells(
+                center=hazard.blocker_pose,
+                size_xy=(suite.blocker_size[0], suite.blocker_size[1]),
                 origin_x=origin_x,
                 origin_y=origin_y,
                 resolution=resolution,
