@@ -13,6 +13,9 @@ from pathlib import Path
 from dynnav.experiments.history_compression_state_space import (
     run_reachable_state_space_scaling,
 )
+from dynnav.experiments.risk_budget_learning_benchmark import (
+    run_risk_budget_learning_benchmark,
+)
 from dynnav.experiments.safe_learning_lockout_benchmark import (
     run_safe_learning_lockout_benchmark,
 )
@@ -26,14 +29,14 @@ def run_post_full_study_diagnostics(
     opportunities: int = 2_000,
     seed: int = 20260925,
 ) -> dict[str, object]:
-    """Run exploratory topology, lockout and full-state diagnostics."""
+    """Run exploratory topology, learning-lockout and state-space diagnostics."""
 
     if opportunities <= 0:
         raise ValueError("opportunities must be positive")
 
     g1 = [asdict(row) for row in run_topology_dependence_control()]
 
-    g3: list[dict[str, object]] = []
+    g3_lockout: list[dict[str, object]] = []
     condition = 0
     for true_probability in (0.1, 0.3, 0.5, 0.7, 0.9):
         for minimum_return in (0.5, 0.7, 0.9):
@@ -45,8 +48,23 @@ def run_post_full_study_diagnostics(
                     confidence=confidence,
                     seed=seed + 100 + condition,
                 )
-                g3.extend(asdict(row) for row in rows)
+                g3_lockout.extend(asdict(row) for row in rows)
                 condition += 1
+
+    g3_budget: list[dict[str, object]] = []
+    condition = 0
+    for true_probability in (0.1, 0.3, 0.5, 0.7):
+        for minimum_return in (0.5, 0.7, 0.9):
+            rows = run_risk_budget_learning_benchmark(
+                opportunities=opportunities,
+                true_closure_probability=true_probability,
+                minimum_return_probability=minimum_return,
+                confidence=0.90,
+                budgets=(5.0, 20.0, 50.0),
+                seed=seed + 5000 + condition,
+            )
+            g3_budget.extend(asdict(row) for row in rows)
+            condition += 1
 
     g5 = [
         asdict(row)
@@ -65,7 +83,8 @@ def run_post_full_study_diagnostics(
             ),
         },
         "G1_topology_dependence_sign_reversal": g1,
-        "G3_safe_learning_lockout": g3,
+        "G3_safe_learning_lockout": g3_lockout,
+        "G3_risk_budget_deadlock_breaker": g3_budget,
         "G5_full_reachable_state_space": g5,
     }
 
