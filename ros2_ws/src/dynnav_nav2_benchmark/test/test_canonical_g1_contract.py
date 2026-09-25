@@ -16,8 +16,9 @@ def test_canonical_g1_assets_realize_parallel_redundant_truth_table() -> None:
     assert (contract.f00, contract.f10, contract.f01, contract.f11) == (1, 1, 1, 0)
     assert contract.interaction == -1
     assert contract.trigger_cells == (
-        ((72, 81), (73, 81)),
-        ((92, 81), (93, 81)),
+        ((72, 104), (73, 104)),
+        ((92, 104), (93, 104)),
     )
-    assert contract.blocker_cell_counts[0] > 100
-    assert contract.blocker_cell_counts[1] > 100
+    assert contract.trigger_gate_edge_counts == (31, 31)
+    assert contract.blocker_cell_counts[0] > 300
+    assert contract.blocker_cell_counts[1] > 300
