@@ -183,8 +183,8 @@ TEST(HistoryGridSearch, MultiCellClosureFootprintCanSealWideCorridor)
   const std::size_t height = 5;
   const std::vector<std::uint8_t> costs(width * height, 0U);
   const std::vector<std::size_t> safe{10U, 15U, 20U};
-  HistoryHazard hazard{7U, 8U, 6U, 1.0};
-  hazard.closure_indices = {6U, 11U, 16U, 21U};
+  HistoryHazard hazard{7U, 8U, 1U, 1.0};
+  hazard.closure_indices = {1U, 6U, 11U, 16U, 21U};
   const std::vector<HistoryHazard> hazards{hazard};
   const HistorySearchConfig config{};
 
