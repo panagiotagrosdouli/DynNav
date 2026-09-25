@@ -1,3 +1,5 @@
+# ruff: noqa: I001
+
 from pathlib import Path
 
 from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
