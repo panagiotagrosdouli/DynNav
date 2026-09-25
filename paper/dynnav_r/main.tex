@@ -120,6 +120,16 @@ while any deterministic state-only marginal model returns the same $\widetilde R
 
 \emph{Proof.} Let one history traverse a trigger that activates closure of the unique bridge to the safe set with probability $p>0$, and let the other history reach the same endpoint without traversing that trigger. Then the triggered history has return reliability $1-p$ and the non-triggered history has reliability $1$. Since both end at the same $x$, a state-only function of $x$ and fixed marginals must return one common value. \hfill$\square$
 
+\textbf{Corollary 1 (endpoint-only approximation lower bound).}
+Let two executable histories terminate at the same geometric state $x$ with true return reliabilities $R_1$ and $R_2$. Any deterministic endpoint-only scalar estimator $g(x)$ satisfies
+\begin{equation}
+\max\{|g(x)-R_1|,|g(x)-R_2|\}\geq \frac{|R_1-R_2|}{2}.
+\label{eq:alias-lower-bound}
+\end{equation}
+\emph{Proof.} The triangle inequality gives $|R_1-R_2|\leq |R_1-g(x)|+|g(x)-R_2|$. If both errors were smaller than half the separation, this inequality would be violated. \hfill$\square$
+
+For the bridge construction above, $|R_1-R_2|=p$, so every deterministic endpoint-only estimate has worst-history error at least $p/2$. This bound concerns representation only; a planner that augments its state with the active hazard variable is not subject to it.
+
 \section{Planning Methods}
 \subsection{Exact history-aware A*}
 Search is performed over augmented states $(x,\Aset)$. For transition $z\rightarrow z'$, the soft-history objective uses
