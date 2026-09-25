@@ -143,6 +143,49 @@ Secondary outcomes include navigation duration. V2.3 additionally records a mand
 - **V2-H4:** under anti-correlated truth, at most one physical return gate closes per repetition; this is a negative control for joint-disconnection failure.
 - **V2-H5:** any sampling-gap, unsafe-injection-clearance, localization-jump, or no-motion trial is invalid rather than repaired or interpolated.
 
+## V3.1 confirmatory execution plan
+
+This section is frozen after inspection of the one-repetition V3.1 commissioning smoke and before any 10-repetition confirmatory execution.
+
+The confirmatory run uses:
+
+- 10 paired repetitions for each frozen dependence condition;
+- 3 planner conditions per repetition;
+- 30 attempted trials per dependence condition;
+- 90 attempted trials total;
+- one parallel GitHub Actions job per dependence condition;
+- the same master seed, scenario, planner parameters, topology, trigger gates and latent-draw function as the commissioning smoke.
+
+No invalid trial is replaced or rerun to fill a quota. Every attempted repetition remains in the retained artifact.
+
+The pre-execution planner audit is a hard gate on **every attempted trial**, including trials that later become execution-invalid:
+
+- `DynNavShortest`: direct route, both trigger gates crossed;
+- `DynNavHistory`: direct route, both trigger gates crossed;
+- `DynNavRobustHistory`: lower detour, neither trigger gate crossed.
+
+For primary paired execution inference in a dependence condition, at least **8 of 10 repetitions** must contain valid trials for both `DynNavHistory` and `DynNavRobustHistory`. If this threshold is not met, that dependence condition is reported as operationally incomplete and receives no confirmatory execution-effect claim.
+
+The deterministic frozen seed implies, before the confirmatory run is inspected, the following latent joint-closure counts across the 10 repetitions:
+
+- independent: 1 repetition with both closures, 2 with neither;
+- common-cause: 7 repetitions with both closures, 3 with neither;
+- anti-correlated: 0 repetitions with both closures and exactly one closure in every repetition.
+
+These counts are properties of the predeclared deterministic randomization and are not selected after observing navigation outcomes.
+
+Primary confirmatory contrast:
+
+- `DynNavRobustHistory` versus `DynNavHistory` on both-trigger exposure within paired valid repetitions.
+
+Secondary contrasts:
+
+- operational irreversible failure;
+- navigation success;
+- navigation duration;
+- `DynNavShortest` exposure baseline;
+- anti-correlated conservatism cost.
+
 ## Stop and integrity rules
 
 - V3 smoke results are retained but excluded from confirmatory use because the planner audit showed trial-order global-costmap contamination. V3.1 freezes a static-map-only global planning costmap as a new protocol version.
