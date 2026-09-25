@@ -75,6 +75,29 @@ These are real retained computational experiment results. They are not physical-
 
 The downloaded raw artifact verifies the negative result: every hard-return threshold in `{0.5,0.7,0.8,0.9,0.95,0.99}` selects a zero-activated-hazard route with zero observed irreversible failure in all three frozen worlds. The soft objective requires weight >=2 in Fork and >=1 in L-room/Chamber to select the zero-hazard route. Therefore universal soft-objective superiority is falsified and must not be claimed.
 
+## Reviewer-P0 retained artifact
+
+A dedicated same-oracle / unavoidable-hazard audit has now completed successfully.
+
+- workflow: `Reviewer P0 evidence`
+- run: `36122469824`
+- source branch head: `1246ce280bc92b3765f43915505e4dcdd4214830`
+- PR merge checkout: `b6551e46245e8b33ac7772f27d36dafc091c2a85`
+- artifact: `10857728526`
+- downloaded artifact SHA-256: `e065873facb23770ad7f0d667a9b70638fa67f95f2163e5695af741c6d0d7175`
+
+The exact state-only control uses the same exact connectivity oracle and additive fragility objective as the history-conditioned planner, while applying one fixed hazard field without trigger conditioning. It reproduces shortest-path choices and outcomes in all retained controlled, heterogeneous, geometric, and generated challenge scenarios.
+
+The frozen unavoidable-hazard suite contains 24 generated scenarios, one to four route-choice modules per scenario, and 500 paired seeds per scenario. Every feasible start-to-goal path activates at least one hazard per module. Aggregate retained outcomes:
+
+| Planner | Mean return-infeasibility | Mean exact return | Mean path length | Mean activated hazards |
+|---|---:|---:|---:|---:|
+| Shortest | 0.7796 | 0.2242 | 12.71 | 2.54 |
+| State-only exact | 0.7796 | 0.2242 | 12.71 | 2.54 |
+| History exact | 0.6926 | 0.3105 | 14.29 | 2.54 |
+
+History exact changes the activated-hazard choice and improves exact final return probability in 8/24 scenarios, is nonworse in empirical return-infeasibility in 24/24, and has scenario-level mean risk difference `-0.087` versus state-only exact with 95% bootstrap interval `[-0.1629,-0.0247]`. This directly addresses the reviewer concern that the original effects could arise only from selecting trigger-free routes.
+
 ## Statistical audit
 
 The publication-facing binary comparisons are paired by shared seed/scenario/event identity. `paired_binary_effect` computes proposed-minus-baseline risk difference, paired bootstrap intervals over pairwise differences, discordant-pair counts, and a two-sided exact McNemar conditional binomial p-value. State-only versus shortest correctly produces zero discordant pairs in the frozen history-trigger families.
@@ -112,16 +135,16 @@ No physical robot is connected to the current execution environment. Therefore p
 | Exact history-aware planner is implemented | Python planner + tests | source audited | deterministic regression evidence | bounded hazard enumeration | SUPPORTED |
 | History conditioning reduces irreversible failure in repeated-module family | 1000-seed homogeneous + 500-seed held-out | YES | paired risk differences, bootstrap, exact McNemar | synthetic procedural family | SUPPORTED |
 | Result appears in three frozen geometric worlds | Fork/L-room/Chamber | YES | paired bootstrap + exact McNemar | only three hand-built worlds | SUPPORTED |
-| State-only marginal baseline differs from shortest in frozen trigger family | control | YES | zero discordant pairs | baseline-specific | UNSUPPORTED; observed equality |
+| Exact state-only fixed-field control isolates representation from estimator quality | retained Reviewer-P0 artifact | YES | exact equality with shortest in all retained benchmark families | fixed-field representation ablation only | SUPPORTED |
 | Soft objective universally beats hard safe-return | Pareto sweep | YES | direct retained comparison | hard baseline matches safe routes | UNSUPPORTED / FALSIFIED |
 | Critical-cut is exact generally | joint-cut counterexample | YES | 9/9 disagreement | joint cutsets | UNSUPPORTED / FALSIFIED |
 | Critical-cut is faster in retained series-critical timing run | scaling artifact | YES | representative timing | environment-specific timing | PARTIALLY SUPPORTED |
 | ROS 2/Nav2 history integration exists | C++ plugin + benchmark contracts | source/tests audited | integration tests | not efficacy | SUPPORTED |
-| Action-triggered Gazebo efficacy | frozen execution workflow/protocol | NOT YET: valid completed artifact required | paired analysis required | simulation only | UNSUPPORTED / ACTIVE GATE |
+| Action-triggered Gazebo efficacy | frozen execution workflow/protocol | ACTIVE: exact-head workflow running | paired analysis required | simulation only | PENDING GATE |
 | Physical robot efficacy | none | NO | none | no connected hardware | UNSUPPORTED |
 
 ## Current decision
 
-**NO-GO FOR SUBMISSION** at this exact audit point.
+**CONDITIONAL GO FOR A SIMULATION-SCOPED SUBMISSION** once the final exact-head CI/paper build and release freeze are green.
 
-The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact if Gazebo efficacy is to appear in the paper; perform final manuscript-number consistency and bibliography review; execute final clean-environment CI/paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
+The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. The core representation claim now has retained same-oracle and unavoidable-hazard evidence. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact only if Gazebo efficacy is to appear in the paper; perform the final manuscript-number/citation consistency check; execute final exact-head CI and paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
