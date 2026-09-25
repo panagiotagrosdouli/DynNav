@@ -115,3 +115,43 @@ Reported outcomes:
 
 Interpretation rule:
 The survey is not used to estimate a population frequency for real environments. Its purpose is only to test whether both signs occur outside the two hand-constructed examples while the exact interaction identity remains unchanged.
+
+---
+
+## E3 — G1 finite-data dependence ambiguity
+
+The robust planner must not rely on oracle closure probabilities. E3 estimates simultaneous confidence intervals from finite matched closure observations using Clopper-Pearson intervals with Bonferroni family-wise correction.
+
+### Frozen truth conditions
+
+- `independent`: two Bernoulli(0.5) closures;
+- `common_cause`: both close together with probability 0.5;
+- `anti_correlated`: exactly one closes, preserving 0.5 marginals.
+
+### Frozen training sizes
+
+`{20, 50, 100, 500}` matched closure observations.
+
+### Frozen methods
+
+- `plugin_independence`: sample marginal point estimates with independence assumed;
+- `empirical_marginal_robust`: simultaneous marginal intervals, arbitrary dependence;
+- `empirical_pairwise_robust`: simultaneous marginal plus pairwise joint intervals.
+
+Family confidence is `0.95`. The frozen route construction and recoverability weight remain the same as V1 G1.
+
+### Primary outcomes
+
+- shortcut-selection frequency;
+- true expected return-failure probability of the selected route;
+- modeled final return probability;
+- path length.
+
+### Frozen hypotheses
+
+- **E3-H1:** under common-cause truth, plug-in independence remains vulnerable because correct marginals alone do not identify the joint failure probability.
+- **E3-H2:** marginal-only robust ambiguity is conservative across dependence conditions and may reject shortcuts even when anti-correlation makes them safe.
+- **E3-H3:** pairwise finite-sample information should reduce that conservatism as training size grows, especially under anti-correlation.
+- **E3-H4:** finite-data pairwise robust planning is not required to dominate at every small sample size; wide confidence intervals may preserve conservative detours.
+
+Any result contrary to these hypotheses is retained. No training-size or confidence-level retuning is allowed after the first E3 artifact is inspected without a protocol version change.
