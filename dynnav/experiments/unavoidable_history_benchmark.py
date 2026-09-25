@@ -25,7 +25,7 @@ from dynnav.experiments.commitment_execution_benchmark import (
     _realize_after_commitment,
     _state_only_marginal_hazard,
 )
-from dynnav.experiments.statistics import paired_binary_effect
+from dynnav.experiments.statistics import bootstrap_mean_interval, paired_binary_effect
 from dynnav.planners.commitment_aware_astar import (
     CommitmentAwareAStarConfig,
     CommitmentPlannerMode,
@@ -472,6 +472,34 @@ def summarize_unavoidable_history(
             "higher_exact_return_probability_scenarios": lower_risk,
             "scenario_count": len(scenario_names),
         }
+
+    def scenario_rate(scenario: str, planner: str) -> float:
+        rows = [
+            row
+            for row in records
+            if row.scenario == scenario and row.planner == planner
+        ]
+        return sum(row.return_infeasible for row in rows) / len(rows)
+
+    scenario_risk_differences = [
+        scenario_rate(scenario, "history_exact")
+        - scenario_rate(scenario, "state_only_exact")
+        for scenario in scenario_names
+    ]
+    aggregate["history_exact_vs_state_only_exact_scenario_effect"] = asdict(
+        bootstrap_mean_interval(
+            scenario_risk_differences,
+            confidence=0.95,
+            resamples=10000,
+            seed=FROZEN_GENERATOR_SEED,
+        )
+    )
+    aggregate["history_exact_vs_state_only_exact_nonworse_scenarios"] = sum(
+        difference <= 0.0 for difference in scenario_risk_differences
+    )
+    aggregate["history_exact_vs_state_only_exact_improved_scenarios"] = sum(
+        difference < 0.0 for difference in scenario_risk_differences
+    )
 
     result["aggregate"] = aggregate
     return result
