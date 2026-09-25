@@ -1,0 +1,60 @@
+schema_version: 1
+seed: 20260925
+
+gazebo:
+  world_name: default
+  robot_entity: turtlebot3_waffle
+  blocker:
+    parking_pose: {x: 100.0, y: 100.0, z: 0.5, yaw: 0.0}
+    size: {x: 0.40, y: 1.55, z: 1.00}
+
+planners:
+  - DynNavShortest
+  - DynNavHistory
+  - DynNavRobustHistory
+
+scenario:
+  name: g1_parallel_corridor_v2
+  frame_id: map
+  start: {x: 0.8, y: 4.075, yaw: 0.0}
+  goal: {x: 6.2, y: 4.075, yaw: 0.0}
+  safe_region:
+    center: {x: 0.8, y: 4.075, yaw: 0.0}
+    radius_m: 0.35
+
+  # Frozen before any v2 Gazebo outcomes. The first trigger activates the
+  # top return-gate hazard; the second activates the bottom return-gate hazard.
+  # Their physical closures are individually survivable but jointly disconnect
+  # the goal side from the safe region.
+  hazards:
+    - blocker_entity: dynnav_g1_blocker_top
+      action_trigger:
+        hazard_id: top_return_gate
+        source: {x: 3.625, y: 4.075, yaw: 0.0}
+        target: {x: 3.675, y: 4.075, yaw: 0.0}
+        closure_probability: 0.5
+      blocker_pose: {x: 1.8, y: 4.075, z: 0.5, yaw: 0.0}
+
+    - blocker_entity: dynnav_g1_blocker_bottom
+      action_trigger:
+        hazard_id: bottom_return_gate
+        source: {x: 4.625, y: 4.075, yaw: 0.0}
+        target: {x: 4.675, y: 4.075, yaw: 0.0}
+        closure_probability: 0.5
+      blocker_pose: {x: 1.8, y: 0.925, z: 0.5, yaw: 0.0}
+
+  dependence_conditions:
+    - independent
+    - common_cause
+    - anti_correlated
+
+  # p1=p2=0.5 implies Frechet q in [0, 0.5].
+  pairwise_joint_lower: 0.0
+  pairwise_joint_upper: 0.5
+  recoverability_weight: 12.0
+
+  minimum_injection_clearance_m: 0.9
+  recovery_budget_m: 20.0
+  reset_pose_tolerance_m: 0.35
+  execution_timeout_s: 75.0
+  wall_timeout_s: 150.0
