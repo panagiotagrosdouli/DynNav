@@ -41,10 +41,15 @@ jobs:
           REPEATS: ${{ inputs.repetitions || '5' }}
         run: python scripts/run_research_gap_full_study.py --trials-per-condition "$TRIALS" --repetitions "$REPEATS" --seed 20260925 --output results/research_gap_program/full_study.json
 
+      - name: Analyze full synthetic G1-G5 study
+        run: python scripts/analyze_research_gap_full_study.py --input results/research_gap_program/full_study.json --output results/research_gap_program/full_study_summary.json
+
       - name: Upload full-study artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: g1-g5-full-study
-          path: results/research_gap_program/full_study.json
+          path: |
+            results/research_gap_program/full_study.json
+            results/research_gap_program/full_study_summary.json
           if-no-files-found: error
