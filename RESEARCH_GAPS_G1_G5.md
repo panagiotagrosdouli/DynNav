@@ -34,11 +34,11 @@ For a fixed state and activated-hazard history, the robust return value is the m
 
 ### Implemented bounded evidence
 
-The CI runner sweeps 2–5 parallel return corridors and marginal closure probabilities 0.2, 0.5, and 0.8. It reports independent-model return probability, worst/best return over the marginal ambiguity set, and a common-cause reference. A pairwise-identified two-corridor case checks that adding the joint probability can collapse the ambiguity interval. A separate planner test freezes a route-choice case in which the independence planner accepts a two-hazard shortcut while the robust planner chooses a trigger-free detour.
+The CI runner sweeps 2–5 parallel return corridors and marginal closure probabilities 0.2, 0.5, and 0.8. It reports independent-model return probability, worst/best return over the marginal ambiguity set, and a common-cause reference. A pairwise-identified two-corridor case checks that adding the joint probability can collapse the ambiguity interval. A separate planner test freezes a route-choice case in which the independence planner accepts a two-hazard shortcut while the robust planner chooses a trigger-free detour. A paired execution benchmark now evaluates that same decision under independent, common-cause and anti-correlated latent closures.
 
 ### Remaining publication experiment
 
-Run paired executions under frozen independent, common-cause, and held-out dependence distributions. Report false-safe rate, irreversible-failure rate, path length, true-joint oracle return, robust lower return, LP/planning latency, and the conservative-cost regime.
+Extend the implemented paired execution study to held-out geometries, heterogeneous marginals, partial pairwise information and repeated independent seeds. Report false-safe rate, irreversible-failure rate, path length, true-joint oracle return, robust lower return, LP/planning latency, and the conservative-cost regime.
 
 ## G2 — uncertain trigger activation
 
@@ -70,7 +70,7 @@ The implementation uses a Beta-Bernoulli posterior and a transparent safe-probe 
 
 ### Implemented bounded evidence
 
-The unified runner compares always-avoid, always-probe, correctly logged half-exposure, and a deliberately incorrect half-exposure logger that records unexposed opportunities as open outcomes.
+The unified runner compares always-avoid, always-probe, correctly logged half-exposure, and a deliberately incorrect half-exposure logger that records unexposed opportunities as open outcomes. A second online-policy benchmark compares always-avoid, unconstrained probing, the safe-probe rule, and an oracle-known-probability policy on matched latent closure opportunities.
 
 ### Remaining publication experiment
 
@@ -92,7 +92,7 @@ The CI runner contains a randomized positive-effect condition, a randomized null
 
 ### Remaining publication experiment
 
-Inject a known multi-edge trigger/closure causal graph, randomize trigger opportunities with frozen propensities, and measure edge precision/recall and effect-estimation error. Do not make an arbitrary-SCM or hidden-confounder discovery claim without a substantially stronger method.
+A bounded multi-edge randomized graph-recovery benchmark is implemented and reports precision/recall against three injected positive edges and six null edges. The publication gate is to repeat this over effect sizes, propensities, sample sizes, graph sparsities and explicit confounding regimes. Do not make an arbitrary-SCM or hidden-confounder discovery claim without a substantially stronger method.
 
 ## G5 — exact activated-history compression
 
@@ -108,7 +108,7 @@ If `m` trigger identities collapse to `k` distinct closure events, the worst-cas
 
 ### Implemented bounded evidence
 
-Tests verify that distinct trigger histories mapping to the same closure event give the same return probability and that raw and compressed A* return the same path, objective value and return probability on a duplicate-trigger construction. The unified runner records theoretical subset-state counts for 2, 4, 8 and 12 trigger identities collapsed to two closure events.
+Tests verify that distinct trigger histories mapping to the same closure event give the same return probability and that raw and compressed A* return the same path, objective value and return probability on a duplicate-trigger construction. The unified runner records theoretical subset-state counts for 2, 4, 8 and 12 trigger identities collapsed to two closure events, and a diamond-chain benchmark compares raw and quotient search nodes and planning latency as duplicate-trigger modules increase.
 
 ### Remaining publication experiment
 
