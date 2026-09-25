@@ -340,5 +340,20 @@
       "universal superiority of a soft objective over hard safe-return constraints",
       "novelty of articulation or cut-set graph theory"
     ]
+  },
+  "reviewer_p0_protocol": {
+    "status": "frozen_pending_artifact",
+    "generator_seed": 20260925,
+    "scenario_count": 24,
+    "paired_execution_seeds_per_scenario": 500,
+    "invariant": "every start-to-goal route activates at least one hazard per module",
+    "planners": [
+      "shortest",
+      "state_only_single",
+      "state_only_exact",
+      "history_exact"
+    ],
+    "primary_control": "state_only_exact uses the same exact connectivity oracle as history_exact but a fixed hazard field without trigger conditioning",
+    "result_policy": "do not add publication-facing outcomes until a retained workflow artifact exists for the exact commit"
   }
 }
