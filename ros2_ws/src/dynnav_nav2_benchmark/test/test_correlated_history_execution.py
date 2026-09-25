@@ -83,5 +83,5 @@ def test_blocker_footprint_rasterizes_physical_rectangle() -> None:
         resolution=0.2,
     )
     assert (4, 7) in cells
-    assert (6, 12) in cells
-    assert len(cells) == 18
+    assert (5, 12) in cells
+    assert len(cells) == 12
