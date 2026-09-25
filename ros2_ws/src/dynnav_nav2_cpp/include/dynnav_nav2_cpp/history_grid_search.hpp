@@ -24,6 +24,9 @@ struct HistorySearchConfig
   std::uint8_t unknown_cost{255};
   double neutral_cost{1.0};
   double recoverability_weight{4.0};
+  bool robust_pairwise_dependence{false};
+  double pairwise_joint_lower{0.0};
+  double pairwise_joint_upper{1.0};
   std::size_t max_hazard_cells{16};
   std::size_t max_iterations{0};
 };
@@ -49,6 +52,16 @@ void validateHistorySearchInputs(
   const HistorySearchConfig & config);
 
 double exactHistoryReturnProbability(
+  std::size_t width,
+  std::size_t height,
+  const std::vector<std::uint8_t> & costs,
+  std::size_t current_index,
+  const std::vector<std::size_t> & safe_indices,
+  const std::vector<HistoryHazard> & hazards,
+  std::uint64_t active_mask,
+  const HistorySearchConfig & config);
+
+double robustPairwiseHistoryReturnProbability(
   std::size_t width,
   std::size_t height,
   const std::vector<std::uint8_t> & costs,
