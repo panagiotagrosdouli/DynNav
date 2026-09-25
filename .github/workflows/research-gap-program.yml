@@ -32,7 +32,7 @@ jobs:
           python -m pip install -e ".[dev,researcher]"
 
       - name: Run focused G1-G5 tests
-        run: python -m pytest -q tests/test_research_gap_program.py tests/test_research_gap_runner.py tests/test_robust_commitment_astar.py tests/test_robust_dependence_route_choice.py tests/test_history_compression_exactness.py tests/test_compressed_commitment_astar.py tests/test_extended_research_benchmarks.py tests/test_research_theory_controls.py tests/test_post_full_study_diagnostics.py tests/test_topology_dependence_control.py
+        run: python -m pytest -q tests/test_research_gap_program.py tests/test_research_gap_runner.py tests/test_robust_commitment_astar.py tests/test_robust_dependence_route_choice.py tests/test_history_compression_exactness.py tests/test_compressed_commitment_astar.py tests/test_extended_research_benchmarks.py tests/test_research_theory_controls.py tests/test_post_full_study_diagnostics.py tests/test_topology_dependence_control.py tests/test_dependence_topology_theory.py tests/test_dependence_connectivity_interaction.py tests/test_risk_budget_learning.py
 
       - name: Run bounded G1-G5 experiment
         run: python scripts/run_research_gap_program.py --trials 2000 --seed 20260925 --output results/research_gap_program/ci_summary.json
