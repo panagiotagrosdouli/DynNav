@@ -1,0 +1,26 @@
+{
+  "status": "rejected_for_correlated_g1_execution",
+  "decision_date": "2026-09-25",
+  "source_branch": "research/g1-g5-program",
+  "commissioning_workflow_run_id": 36111701321,
+  "commissioning_artifact_id": 10853148544,
+  "commissioning_artifact_digest": "sha256:fbf54b6407eaa3fcd0330a962b3aa8e39f84a7e0f627773b3ae54ac60f8e558e",
+  "commissioning_head_sha": "ba13ea462fbe6d0b605de42f5d0e372af97410bc",
+  "retained_sandbox_result": {
+    "candidate_count_nonzero_interaction": 0,
+    "negative_interaction_count": 0,
+    "positive_interaction_count": 0,
+    "preferred_parallel_redundant": null,
+    "fixed_first_blocker_truth": {
+      "f00": 1,
+      "f10": 1,
+      "negative_interaction_possible_under_monotone_closure": true
+    }
+  },
+  "decision": [
+    "Do not tune a second blocker in the retained tb3_sandbox after observing this result.",
+    "Do not claim correlated execution evidence from the retained sandbox.",
+    "Move execution validation to a separately preregistered canonical parallel-corridor environment derived from the analytic G1 construction."
+  ],
+  "evidence_boundary": "This is a commissioning decision, not a planner efficacy result."
+}
