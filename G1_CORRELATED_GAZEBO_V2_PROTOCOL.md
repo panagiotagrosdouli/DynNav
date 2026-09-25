@@ -1,4 +1,4 @@
-# G1 Correlated Gazebo V2.3 Protocol
+# G1 Correlated Gazebo V3 Protocol
 
 **Status:** V2.3 computational-validity amendment after two invalid integration smokes and before any valid comparative planner outcome.
 
@@ -11,6 +11,19 @@ V2 instantiates the already-defined analytic G1 parallel-corridor construction d
 ### V2.2 validity amendment
 
 The first V2 smoke completed the software path but all nine trials remained at the start and timed out because the simulator initially spawned the robot at `(0,0)` while the original canonical map occupied only positive coordinates. That smoke is retained as invalid integration evidence and is not used as an efficacy result. V2.2 applies one rigid translation to the map origin, Gazebo world and all scenario poses so that `(0,0)` is the frozen start pose. The occupancy pixels, grid-cell topology, trigger cells, blocker footprints, marginal probabilities, dependence conditions and recoverability weight are unchanged. The machine-checkable topology contract must remain identical after translation.
+
+### V3 full-corridor trigger-gate correction
+
+A static audit of the frozen V2.x occupancy map found that the 0.75 m trigger-gate half-width did **not** span the complete 2.0 m top corridor. Both history planners could therefore avoid trigger activation through a short local bypass around the gate, which violates the intended analytic construction where avoiding the two direct-route triggers requires taking the lower return corridor.
+
+V3 changes only the trigger-gate half-width from **0.75 m to 1.0 m** for both hazards. The trigger x-locations, map pixels, world geometry, blocker footprints, closure probabilities, dependence conditions, safe region and recoverability weight are unchanged.
+
+The correction is derived entirely from the static map geometry. At each trigger boundary, 1.0 m half-width covers the full free top-corridor edge set. On the raw 5 cm occupancy graph with the frozen weight 12, the pre-outcome augmented-state calculation is:
+
+- independence-history: direct route, 108 transitions, both triggers active, objective cost 204;
+- arbitrary-dependence robust-history: lower trigger-free detour, 230 transitions, objective cost 230.
+
+The V2.x execution outcomes are not used to tune these values and are not included in V3 efficacy denominators.
 
 ### V2.3 planner-route diagnostic amendment
 
@@ -95,7 +108,7 @@ The robust and independence planners use the same triggers, physical closure foo
 - robust pairwise joint interval: `[0.0, 0.5]`;
 - physical closure footprints are rasterized into all covered planning cells.
 
-The second trigger is frozen 31 map cells before the goal. On the uninflated canonical map, the direct path is approximately 108 cells and the trigger-free detour approximately 234 cells. With weight 12, the analytic history objective gives a broad route-choice margin: independence remains below the detour cost, while arbitrary-dependence robustness exceeds it. This calculation was made before v2 Gazebo outcomes.
+The second trigger location is unchanged. Under the corrected full-corridor gates on the uninflated canonical map, the direct route is 108 transitions and the trigger-free lower detour is 230 transitions. With weight 12, the exact augmented-state calculation gives independence-history cost 204 on the direct route and robust-history cost 230 on the detour. This V3 calculation is a static graph check made before any V3 Gazebo outcome.
 
 ## Primary outcomes
 
