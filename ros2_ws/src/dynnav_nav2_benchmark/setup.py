@@ -14,6 +14,8 @@ setup(
         (f"share/{package_name}/config", glob("config/*.yaml")),
         (f"share/{package_name}/launch", glob("launch/*.launch.py")),
         (f"share/{package_name}/models", glob("models/*.sdf")),
+        (f"share/{package_name}/maps", glob("maps/*")),
+        (f"share/{package_name}/worlds", glob("worlds/*")),
     ],
     install_requires=["setuptools", "PyYAML"],
     zip_safe=True,
