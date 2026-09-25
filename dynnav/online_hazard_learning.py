@@ -88,7 +88,10 @@ class SafeProbeCandidate:
     def validate(self) -> None:
         if self.hazard_index < 0:
             raise ValueError("hazard_index must be non-negative")
-        if not isfinite(self.predicted_return_probability) or not 0.0 <= self.predicted_return_probability <= 1.0:
+        if (
+            not isfinite(self.predicted_return_probability)
+            or not 0.0 <= self.predicted_return_probability <= 1.0
+        ):
             raise ValueError("predicted_return_probability must be in [0, 1]")
         if not isfinite(self.traversal_cost) or self.traversal_cost <= 0.0:
             raise ValueError("traversal_cost must be positive")
