@@ -404,6 +404,10 @@ def run_g1_v2_heldout_benchmark(
                     )
                     rng = random.Random(condition_seed)
                     failure_counts = {planner: 0 for planner in plans}
+                    failure_cache: dict[
+                        tuple[str, frozenset[int]],
+                        bool,
+                    ] = {}
 
                     for _ in range(trials_per_condition):
                         latent_closed = _latent_closed_indices(
@@ -412,16 +416,20 @@ def run_g1_v2_heldout_benchmark(
                             dependence,
                         )
                         for planner, (active, _) in plan_metadata.items():
-                            realized = _realized_grid(
-                                scenario,
-                                active,
-                                latent_closed,
-                            )
-                            failure = return_failure_probability(
-                                realized,
-                                scenario.goal,
-                                scenario.safe,
-                            ) >= 1.0
+                            cache_key = (planner, latent_closed)
+                            failure = failure_cache.get(cache_key)
+                            if failure is None:
+                                realized = _realized_grid(
+                                    scenario,
+                                    active,
+                                    latent_closed,
+                                )
+                                failure = return_failure_probability(
+                                    realized,
+                                    scenario.goal,
+                                    scenario.safe,
+                                ) >= 1.0
+                                failure_cache[cache_key] = failure
                             failure_counts[planner] += int(failure)
 
                     for planner, result in plans.items():
