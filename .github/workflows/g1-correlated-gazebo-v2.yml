@@ -1,4 +1,4 @@
-name: G1 correlated Gazebo V2
+name: G1 correlated Gazebo V3
 
 on:
   pull_request:
@@ -278,19 +278,22 @@ jobs:
           PY
 
       - name: Run preregistered paired statistical analysis
+        if: always()
         env:
           PYTHONPATH: .
         run: |
-          python3 scripts/analyze_g1_gazebo_v2.py \
-            --input /tmp/dynnav_g1_v2/results/results.json \
-            --output /tmp/dynnav_g1_v2/results/paired_analysis.json \
-            --bootstrap-resamples 5000 \
-            --seed 20260925
+          if [ -s /tmp/dynnav_g1_v2/results/results.json ]; then
+            python3 scripts/analyze_g1_gazebo_v2.py \
+              --input /tmp/dynnav_g1_v2/results/results.json \
+              --output /tmp/dynnav_g1_v2/results/paired_analysis.json \
+              --bootstrap-resamples 5000 \
+              --seed 20260925
+          fi
 
       - name: Upload canonical G1 V2 evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: g1-correlated-gazebo-v2-${{ github.sha }}
+          name: g1-correlated-gazebo-v3-${{ github.sha }}
           path: /tmp/dynnav_g1_v2/results
           if-no-files-found: warn
