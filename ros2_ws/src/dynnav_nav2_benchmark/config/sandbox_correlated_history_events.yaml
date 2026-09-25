@@ -22,12 +22,14 @@ scenario:
     center: {x: 0.0, y: 0.0, yaw: 0.0}
     radius_m: 0.35
 
-  # V2.1 validity amendment: each action trigger is a continuous vertical gate.
-  # The planner receives all forward grid edges intersecting the same gate and
-  # the runtime detects the corresponding executed geometric crossing.
+  # V3 mechanism correction: each action trigger is a full-corridor vertical
+  # gate. V2.x used 0.75 m half-width, leaving a deterministic bypass around
+  # the gate. The 1.0 m half-width exactly spans the 2.0 m free top corridor
+  # in the frozen occupancy map, so avoiding activation requires the intended
+  # lower return detour rather than a local gate-edge bypass.
   hazards:
     - blocker_entity: dynnav_g1_blocker_top
-      trigger_gate_half_width_m: 0.75
+      trigger_gate_half_width_m: 1.0
       action_trigger:
         hazard_id: top_return_gate
         source: {x: 2.825, y: 0.0, yaw: 0.0}
@@ -36,7 +38,7 @@ scenario:
       blocker_pose: {x: 1.0, y: 0.0, z: 0.5, yaw: 0.0}
 
     - blocker_entity: dynnav_g1_blocker_bottom
-      trigger_gate_half_width_m: 0.75
+      trigger_gate_half_width_m: 1.0
       action_trigger:
         hazard_id: bottom_return_gate
         source: {x: 3.825, y: 0.0, yaw: 0.0}
