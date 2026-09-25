@@ -189,6 +189,8 @@ In a controlled world with a direct path of length $4$ and a trigger-avoiding de
 \end{equation}
 Across 75 combinations of detour depth, closure probability, and weight, the exact history-aware planner matches the analytic route choice in all 75 cases. The shortest-path baseline never detours.
 
+\subsection{Primary unavoidable-hazard challenge}
+
 \begin{figure*}[t]
 \centering
 \begin{minipage}[t]{0.485\textwidth}
@@ -285,7 +287,6 @@ Across 75 combinations of detour depth, closure probability, and weight, the exa
 \label{fig:unavoidable-primary}
 \end{figure*}
 
-\subsection{Primary generated challenge}
 The publication-facing empirical result is the frozen unavoidable-hazard suite, which removes the easiest trigger-avoidance regime: every feasible start-to-goal path activates at least one hazard per module. The expanded evaluation contains 96 generated scenarios with 250 paired execution seeds per scenario (24,000 trials per planner). The exact state-only control selects exactly the same paths and activated hazard identities as shortest in all 96 scenarios. History-conditioned planning changes the activated-hazard choice in 36 of 96 scenarios and has higher exact final return probability in those same 36, while remaining nonworse in empirical return-infeasibility in all 96.
 
 
