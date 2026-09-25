@@ -227,3 +227,25 @@ def robust_safe_return_probability(
         ambiguity,
         max_hazard_cells=max_hazard_cells,
     ).lower
+
+
+def parallel_corridor_frechet_return_bounds(
+    corridor_count: int,
+    marginal_closure_probability: float,
+) -> tuple[float, float]:
+    """Closed-form return bounds for parallel corridors with equal marginals.
+
+    Return fails only if every corridor closes. With n events sharing marginal
+    closure probability p, Frechet-Hoeffding bounds give the feasible range for
+    the all-closed intersection, and therefore for return reliability.
+    """
+
+    if corridor_count <= 0:
+        raise ValueError("corridor_count must be positive")
+    p = float(marginal_closure_probability)
+    if not 0.0 <= p <= 1.0:
+        raise ValueError("marginal_closure_probability must be in [0, 1]")
+    lower_return = 1.0 - p
+    minimum_joint_closure = max(0.0, corridor_count * p - (corridor_count - 1))
+    upper_return = 1.0 - minimum_joint_closure
+    return lower_return, upper_return
