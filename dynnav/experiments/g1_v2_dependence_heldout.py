@@ -471,3 +471,133 @@ def run_g1_v2_heldout_benchmark(
                         )
                 condition_index += 1
     return records
+
+
+
+def summarize_g1_v2_heldout(
+    records: list[DependenceHeldoutRecord],
+) -> list[dict[str, object]]:
+    """Aggregate repetitions without selecting a post-hoc preferred weight."""
+
+    if not records:
+        raise ValueError("records cannot be empty")
+    groups: dict[
+        tuple[str, str, float, str],
+        list[DependenceHeldoutRecord],
+    ] = {}
+    for record in records:
+        key = (
+            record.scenario,
+            record.dependence,
+            record.recoverability_weight,
+            record.planner,
+        )
+        groups.setdefault(key, []).append(record)
+
+    summary: list[dict[str, object]] = []
+    for key, members in sorted(groups.items(), key=lambda item: str(item[0])):
+        scenario, dependence, weight, planner = key
+        total_trials = sum(row.trials for row in members)
+        total_failures = sum(row.failures for row in members)
+        predicted_values = {row.predicted_return_probability for row in members}
+        true_values = {row.true_joint_return_probability for row in members}
+        path_lengths = {row.path_length for row in members}
+        active_counts = {row.activated_hazard_count for row in members}
+        if (
+            len(predicted_values) != 1
+            or len(true_values) != 1
+            or len(path_lengths) != 1
+            or len(active_counts) != 1
+        ):
+            raise ValueError("deterministic plan metadata changed across repetitions")
+
+        predicted = next(iter(predicted_values))
+        true_return = next(iter(true_values))
+        failure_rate = total_failures / total_trials
+        summary.append(
+            {
+                "scenario": scenario,
+                "dependence": dependence,
+                "recoverability_weight": weight,
+                "planner": planner,
+                "repetitions": len(members),
+                "total_trials": total_trials,
+                "path_length": next(iter(path_lengths)),
+                "activated_hazard_count": next(iter(active_counts)),
+                "predicted_return_probability": predicted,
+                "true_joint_return_probability": true_return,
+                "return_prediction_error": predicted - true_return,
+                "failures": total_failures,
+                "failure_rate": failure_rate,
+                "safe_at_0_50": predicted >= 0.50,
+                "safe_at_0_70": predicted >= 0.70,
+                "safe_at_0_90": predicted >= 0.90,
+                "false_safe_rate_at_0_50": (
+                    failure_rate if predicted >= 0.50 else 0.0
+                ),
+                "false_safe_rate_at_0_70": (
+                    failure_rate if predicted >= 0.70 else 0.0
+                ),
+                "false_safe_rate_at_0_90": (
+                    failure_rate if predicted >= 0.90 else 0.0
+                ),
+                "mean_nodes_expanded": (
+                    sum(row.nodes_expanded for row in members) / len(members)
+                ),
+                "mean_planning_time_ms": (
+                    sum(row.planning_time_ms for row in members) / len(members)
+                ),
+            }
+        )
+    return summary
+
+
+def write_g1_v2_heldout_artifacts(
+    records: list[DependenceHeldoutRecord],
+    output_dir: str,
+) -> None:
+    """Write retained aggregate rows, summary, and run metadata."""
+
+    import csv
+    import json
+    from dataclasses import asdict
+    from pathlib import Path
+
+    if not records:
+        raise ValueError("records cannot be empty")
+    target = Path(output_dir)
+    target.mkdir(parents=True, exist_ok=True)
+
+    raw_rows = [asdict(record) for record in records]
+    with (target / "records.csv").open(
+        "w",
+        newline="",
+        encoding="utf-8",
+    ) as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(raw_rows[0]))
+        writer.writeheader()
+        writer.writerows(raw_rows)
+
+    with (target / "summary.json").open("w", encoding="utf-8") as handle:
+        json.dump(
+            summarize_g1_v2_heldout(records),
+            handle,
+            indent=2,
+            sort_keys=True,
+        )
+        handle.write("\n")
+
+    metadata = {
+        "protocol_issue": 188,
+        "scope": "G1 V2 synthetic topology x dependence heldout",
+        "weights": sorted({row.recoverability_weight for row in records}),
+        "thresholds": [0.50, 0.70, 0.90],
+        "repetitions": len({row.repetition for row in records}),
+        "trials_per_record": records[0].trials,
+        "scenarios": sorted({row.scenario for row in records}),
+        "dependence_modes": sorted({row.dependence for row in records}),
+        "planners": sorted({row.planner for row in records}),
+    }
+    with (target / "run_metadata.json").open("w", encoding="utf-8") as handle:
+        json.dump(metadata, handle, indent=2, sort_keys=True)
+        handle.write("\n")
