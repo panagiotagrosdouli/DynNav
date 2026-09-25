@@ -16,6 +16,7 @@ from std_msgs.msg import String
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.correlated_history_execution import (
     load_correlated_history_execution_suite,
+    quantized_hazard_trigger_gates,
     quantized_hazard_transitions,
 )
 from dynnav_nav2_benchmark.correlated_history_runtime import (
@@ -34,10 +35,7 @@ from dynnav_nav2_benchmark.dynamic_runner import (
     _wait_for_service,
     _write_behavior_trees,
 )
-from dynnav_nav2_benchmark.history_execution import (
-    HISTORY_RESET_COMMAND,
-    world_to_cell,
-)
+from dynnav_nav2_benchmark.history_execution import HISTORY_RESET_COMMAND
 
 
 def _spawn_named_blocker(
@@ -103,6 +101,12 @@ def _trial(
         origin_y=float(meta.origin.position.y),
         resolution=float(meta.resolution),
     )
+    trigger_gates = quantized_hazard_trigger_gates(
+        suite,
+        origin_x=float(meta.origin.position.x),
+        origin_y=float(meta.origin.position.y),
+        resolution=float(meta.resolution),
+    )
     p = scenario.hazards[0].trigger.closure_probability
     latent = paired_closure_outcomes(
         seed=suite.seed,
@@ -111,17 +115,19 @@ def _trial(
         dependence=dependence,
         closure_probability=p,
     )
-    runtime_specs = (
+    runtime_specs = tuple(
         CorrelatedHazardRuntimeSpec(
-            scenario.hazards[0].trigger.hazard_id,
-            transitions[0],
+            hazard.trigger.hazard_id,
+            transitions[index],
             p,
-        ),
-        CorrelatedHazardRuntimeSpec(
-            scenario.hazards[1].trigger.hazard_id,
-            transitions[1],
-            p,
-        ),
+            trigger_edges=trigger_gates[index],
+            gate_x=(hazard.trigger.source.x + hazard.trigger.target.x) / 2.0,
+            gate_center_y=(hazard.trigger.source.y + hazard.trigger.target.y) / 2.0,
+            gate_half_width_m=hazard.trigger_gate_half_width_m,
+            origin_y=float(meta.origin.position.y),
+            resolution=float(meta.resolution),
+        )
+        for index, hazard in enumerate(scenario.hazards)
     )
     state = CorrelatedHistoryRuntimeState(runtime_specs, latent)
     publisher.publish(String(data=HISTORY_RESET_COMMAND))
@@ -152,14 +158,8 @@ def _trial(
         if feedback is not None:
             last_feedback = feedback
             pose = feedback.current_pose.pose.position
-            cell = world_to_cell(
-                Pose2D(float(pose.x), float(pose.y)),
-                origin_x=float(meta.origin.position.x),
-                origin_y=float(meta.origin.position.y),
-                resolution=float(meta.resolution),
-            )
-            text = state.observe(cell)
-            if text is not None:
+            emitted = state.observe_world(float(pose.x), float(pose.y))
+            for text in emitted:
                 publisher.publish(String(data=text))
 
             for index, hazard in enumerate(scenario.hazards):
@@ -237,7 +237,7 @@ def _trial(
         "order_index": order_index,
         "valid_trial": valid,
         "invalid_reason": injection_error
-        or ("sampling_gap" if not state.observation_valid else None),
+        or ("localization_jump" if not state.observation_valid else None),
         "navigation_success": success,
         "navigation_time_s": navigation_time_s,
         "result_error_code": error_code,
@@ -247,6 +247,7 @@ def _trial(
         "closures_applied": applied,
         "accepted_transitions": state.accepted_transitions,
         "sampling_gaps": state.sampling_gaps,
+        "localization_jumps": state.localization_jumps,
         "recovery_assessment": recovery,
         "recovery_feasible": recovery_feasible,
         "operational_irreversible_failure": bool(
