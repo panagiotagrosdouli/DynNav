@@ -31,6 +31,7 @@ class CanonicalG1TopologyContract:
     ]
     blocker_cell_counts: tuple[int, int]
     trigger_gate_edge_counts: tuple[int, int]
+    trigger_gate_full_corridor_cuts: tuple[bool, bool]
     goal_cell: tuple[int, int]
     safe_cell_count: int
 
@@ -135,6 +136,33 @@ def _reachable(
     return False
 
 
+def _corridor_edges_containing_trigger(
+    grid: _Map,
+    trigger: tuple[tuple[int, int], tuple[int, int]],
+) -> frozenset[tuple[tuple[int, int], tuple[int, int]]]:
+    """Return the full contiguous free x-boundary corridor around a trigger."""
+
+    (sx, sy), (tx, ty) = trigger
+    if sy != ty or abs(tx - sx) != 1:
+        raise ValueError("canonical trigger must be one horizontal grid edge")
+
+    free_rows = {
+        y
+        for y in range(grid.height)
+        if (sx, y) not in grid.occupied and (tx, y) not in grid.occupied
+    }
+    if sy not in free_rows:
+        raise ValueError("canonical trigger is not inside a free corridor")
+
+    low = sy
+    while low - 1 in free_rows:
+        low -= 1
+    high = sy
+    while high + 1 in free_rows:
+        high += 1
+    return frozenset(((sx, y), (tx, y)) for y in range(low, high + 1))
+
+
 def evaluate_canonical_g1_topology(
     *,
     map_yaml: str | Path,
@@ -197,6 +225,15 @@ def evaluate_canonical_g1_topology(
     if goal in blocker_sets[0] or goal in blocker_sets[1]:
         raise ValueError("goal intersects a dynamic blocker footprint")
 
+    expected_gate_edges = tuple(
+        _corridor_edges_containing_trigger(grid, trigger)
+        for trigger in triggers
+    )
+    gate_full_corridor = tuple(
+        frozenset(gate) == expected
+        for gate, expected in zip(trigger_gates, expected_gate_edges, strict=True)
+    )
+
     f00 = int(_reachable(grid, goal, safe, frozenset()))
     f10 = int(_reachable(grid, goal, safe, blocker_sets[0]))
     f01 = int(_reachable(grid, goal, safe, blocker_sets[1]))
@@ -210,6 +247,10 @@ def evaluate_canonical_g1_topology(
         trigger_cells=triggers,
         blocker_cell_counts=(len(blocker_sets[0]), len(blocker_sets[1])),
         trigger_gate_edge_counts=(len(trigger_gates[0]), len(trigger_gates[1])),
+        trigger_gate_full_corridor_cuts=(
+            bool(gate_full_corridor[0]),
+            bool(gate_full_corridor[1]),
+        ),
         goal_cell=goal,
         safe_cell_count=len(safe),
     )
