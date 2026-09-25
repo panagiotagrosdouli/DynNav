@@ -5,6 +5,7 @@ on:
     paths:
       - "dynnav/**"
       - "scripts/run_research_gap_program.py"
+      - "scripts/run_post_full_study_diagnostics.py"
       - "tests/**"
       - "RESEARCH_GAPS_G1_G5.md"
       - ".github/workflows/research-gap-program.yml"
@@ -36,10 +37,15 @@ jobs:
       - name: Run bounded G1-G5 experiment
         run: python scripts/run_research_gap_program.py --trials 2000 --seed 20260925 --output results/research_gap_program/ci_summary.json
 
+      - name: Run exploratory post-full-study diagnostics
+        run: python scripts/run_post_full_study_diagnostics.py --opportunities 1000 --seed 20260925 --output results/research_gap_program/post_full_study_diagnostics.json
+
       - name: Upload G1-G5 evidence artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: g1-g5-research-gap-evidence
-          path: results/research_gap_program/ci_summary.json
+          path: |
+            results/research_gap_program/ci_summary.json
+            results/research_gap_program/post_full_study_diagnostics.json
           if-no-files-found: warn
