@@ -1,6 +1,7 @@
 name: Action-triggered Gazebo evidence
 
 # Publication gate: this workflow must produce a real results.json before any Gazebo efficacy claim is promoted.
+# Reviewer P1 rerun: validate the frozen execution protocol on the paper-hardening branch.
 
 on:
   push:
