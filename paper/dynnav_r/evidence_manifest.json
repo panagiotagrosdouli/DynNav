@@ -527,5 +527,36 @@
       }
     },
     "freeze_rule": "Publication timing values are pinned to this retained run; documentation-only commits do not supersede it. Any subsequent planner/oracle/benchmark/timing-code change requires a new timing artifact."
+  },
+  "gazebo_exact_head_rerun": {
+    "status": "retained_valid_integration_evidence_no_comparative_effect",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36141182575,
+    "branch_head_sha": "89961541703fa55730ba2dd2973131812520d593",
+    "artifact_id": 10867597132,
+    "artifact_name": "dynnav-action-triggered-gazebo-04d218be037455399bea329286e743d127afdce1",
+    "repetitions_per_planner": 8,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 7
+    },
+    "irreversible_failures": {
+      "NavFn": 0,
+      "DynNavShortest": 0,
+      "DynNavHistory": 0
+    },
+    "interpretation": "exact-head rerun confirms end-to-end integration but does not reproduce a comparative DynNavHistory-vs-DynNavShortest exposure effect"
   }
 }
