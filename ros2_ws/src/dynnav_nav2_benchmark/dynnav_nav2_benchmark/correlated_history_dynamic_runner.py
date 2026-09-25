@@ -5,19 +5,19 @@ from __future__ import annotations
 import argparse
 import json
 import math
-from pathlib import Path
 import time
+from pathlib import Path
 
-from nav2_simple_commander.robot_navigator import BasicNavigator
 import rclpy
+from nav2_simple_commander.robot_navigator import BasicNavigator
 from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 from std_msgs.msg import String
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.correlated_history_execution import (
     load_correlated_history_execution_suite,
-    quantized_hazard_trigger_gates,
     quantized_hazard_transitions,
+    quantized_hazard_trigger_gates,
 )
 from dynnav_nav2_benchmark.correlated_history_runtime import (
     CorrelatedHazardRuntimeSpec,
