@@ -94,3 +94,24 @@ This mechanism is not promoted to a G3 paper method merely because it breaks loc
 4. literature review against safe active learning, constrained bandits and risk-budget exploration.
 
 If those conditions are not met, the result remains an impossibility/trade-off study.
+
+
+### E1 held-out topology survey
+
+This survey is exploratory and supplements the deterministic identity.
+
+Frozen generator:
+- 40 accepted connected random grids;
+- grid size: 6 x 5;
+- fixed start at the right-middle cell and safe cell at the left-middle cell;
+- independent obstacle generation probability: 0.30, excluding start/safe;
+- master seed: 20260925;
+- disconnected generated maps are rejected before hazard-pair evaluation;
+- every unordered pair of free nonterminal cells is evaluated as a candidate two-hazard pair.
+
+Reported outcomes:
+- total evaluated hazard pairs;
+- count of negative, zero and positive connectivity interactions per map and in aggregate.
+
+Interpretation rule:
+The survey is not used to estimate a population frequency for real environments. Its purpose is only to test whether both signs occur outside the two hand-constructed examples while the exact interaction identity remains unchanged.
