@@ -190,7 +190,7 @@ Because multi-cell cutsets may disconnect the graph even when no individual cell
 \section{Experimental Design}
 All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. Irreversible failure is operationalized as post-closure inability to reach the safe set in the resulting grid. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
 
-We evaluate eight complementary questions.
+We evaluate twelve complementary questions.
 \begin{enumerate}
   \item \emph{Information gap:} can identical geometric endpoints have different exact return reliability solely because of history?
   \item \emph{Analytic route switching:} does the planner follow a predicted length--fragility boundary rather than a post-hoc tuned pattern?
@@ -200,12 +200,20 @@ We evaluate eight complementary questions.
   \item \emph{Geometric transfer:} does the state-only/history distinction survive three predeclared hand-built topologies outside the repeated-module geometry?
   \item \emph{Objective sensitivity:} how does the soft history objective compare with hard safe-return constraints across a predeclared parameter grid?
   \item \emph{Approximation/scaling boundary:} what does the critical-cut approximation save, and where does it become optimistic?
+  \item \emph{Dependence shift:} with fixed marginals, how do independent, common-cause, and anti-correlated closures change the risk of the same activated route?
+  \item \emph{Finite-data ambiguity:} can pairwise observations reduce marginal-only conservatism without reverting to an independence assumption?
+  \item \emph{Controlled Nav2/Gazebo execution:} does dependence robustness change the executed route, trigger exposure, and realized return feasibility when physical blockers are injected only after observed trigger crossings?
+  \item \emph{Exact history compression:} how much complete reachable trigger-history state can be removed by quotienting redundant event identities, and how much of that reduction is visible to early-goal A*?
 \end{enumerate}
 
 The development sweeps use homogeneous closure probabilities. Before inspecting outcomes, a separate repeated-module evaluation family was frozen with heterogeneous per-trigger probabilities and unseen module counts: six modules with probabilities $(.15,.25,.35,.55,.75,.85)$, seven modules with $(.80,.20,.70,.30,.60,.40,.90)$, and eight modules with $(.10,.90,.20,.80,.35,.65,.45,.75)$. Each scenario uses 500 paired execution seeds. This tests probability-pattern and horizon transfer within the same procedural topology family.
 
 A second held-out family was frozen with three different hand-built grid topologies: a fork, an L-shaped room, and a two-trigger chamber. Starts, goals, safe sets, trigger transitions, closure cells, and probabilities were fixed before the 500-seed outcomes were inspected. After those worlds were frozen, a separate objective-sensitivity protocol was committed before its outcomes were inspected: soft weights $\lambda\in\{0,1,2,4,8,16\}$ and hard thresholds $\tau\in\{.50,.70,.80,.90,.95,.99\}$, again with 500 common-random-number seeds per configuration. Planning infeasibility is reported separately from post-closure irreversible failure.
 
+
+For dependence ambiguity, the frozen synthetic route-choice construction uses two return corridors with marginal closure probability 0.5 under independent, common-cause, and exactly anti-correlated joint laws. A held-out random-grid survey evaluates the interaction coefficient in Eq.~\eqref{eq:kappa} for every admissible two-hazard pair on 40 connected $6\times5$ grids. The finite-data experiment uses matched closure samples with training sizes $N\in\{20,50,100,500\}$ and compares plug-in independence, marginal-only robust ambiguity, and marginal-plus-pairwise robust ambiguity over 20 repetitions per condition.
+
+The execution study uses a preregistered canonical two-corridor Gazebo world whose committed map and blocker footprints satisfy $(f_{00},f_{10},f_{01},f_{11})=(1,1,1,0)$. Three planners---shortest, independence-history, and dependence-robust history---share the same ROS~2/Nav2 plugin and differ only in return reasoning. Each dependence condition uses 10 paired repetitions. The final V4 protocol uses resettable simulator odometry localization after an earlier AMCL-based V3.1 protocol failed its preregistered paired-valid gate because of multi-metre localization jumps; those failed artifacts are retained. The global planning costmap is static-map-only for comparability, while the local controller costmap remains sensor-driven and physical blockers are injected only after observed executed trigger gates. Primary execution quantities are initial route, trigger exposure, realized recovery feasibility, navigation completion, and navigation time.
 \section{Results}
 \subsection{Same state, different history}
 The counterfactual benchmark sweeps $p\in\{0.1,0.3,0.5,0.7,0.9\}$. The safe history has exact return reliability $1$, while the trigger-taking history has reliability $1-p$. A state-only marginal model assigns $1-p$ to both because it cannot condition on whether the trigger was traversed. Across the five cases, the mean history separation is $0.5$ and the maximum is $0.9$; the triggered-history invariant is matched with zero numerical error.
@@ -217,6 +225,33 @@ In a controlled world with a direct path of length $4$ and a trigger-avoiding de
 \end{equation}
 Across 75 combinations of detour depth, closure probability, and weight, the exact history-aware planner matches the analytic route choice in all 75 cases. The shortest-path baseline never detours.
 
+\subsection{Dependence shift and topology interaction}
+In the frozen two-corridor dependence construction, the independence-history shortcut has empirical return-failure rates 0.2473 under independent closures, 0.5074 under common-cause closures, and 0 under exact anti-correlation across 10,000 retained trials per condition. The marginal-dependence-robust planner selects the trigger-free detour and has zero observed return failures in all three conditions. Anti-correlation is therefore a mandatory no-benefit regime: the shortcut is already safe while the robust route still pays extra distance.
+
+Equation~\eqref{eq:kappa} is not limited to the hand construction. Across 40 held-out connected random $6\times5$ grids, 7,881 admissible hazard pairs contain 254 negative-interaction pairs, 252 positive-interaction pairs, and 7,375 zero-interaction pairs. Thirty-seven maps contain at least one negative interaction, 25 contain at least one positive interaction, and 23 contain both signs. These counts are not prevalence estimates; they show that both directions of dependence sensitivity occur beyond the serial/parallel examples.
+
+\subsection{Finite-data dependence ambiguity}
+The finite-data experiment exposes the value of joint information. Under common-cause truth, the plug-in independence planner selects the risky shortcut in 70\%, 70\%, 95\%, and 100\% of repetitions for $N=20,50,100,500$, respectively, even as its marginal estimates become more accurate. Both marginal-robust and pairwise-robust planners retain the detour in all common-cause repetitions. Under exact anti-correlation, marginal-only robustness always detours, while the pairwise-robust planner selects the truly safe shortcut in all 20 repetitions at every training size. Under independent truth, pairwise robustness gradually recovers the shortcut as uncertainty shrinks, reaching 85\% at $N=500$. Thus pairwise information can reduce conservatism without assuming a favorable dependence law.
+
+\subsection{Controlled Nav2/Gazebo dependence execution}
+Table~\ref{tab:gazebo-g1} reports the preregistered V4 study. All 90 attempted trials are valid, with 10/10 paired-valid History--Robust repetitions in every dependence slice. The mandatory initial-plan audit is invariant: shortest and independence-history use the 5.40~m direct route and cross both trigger gates, while the robust planner uses an 11.88~m trigger-free detour.
+
+\begin{table}[t]
+\centering
+\caption{G1 V4 controlled Gazebo execution, 10 paired repetitions per dependence condition. Return infeasible denotes realized post-execution recovery infeasibility. $\Delta t$ is Robust minus History mean navigation time.}
+\label{tab:gazebo-g1}
+\begin{tabular}{lrrrrr}
+\toprule
+Truth & H both & R both & H infeas. & R infeas. & $\Delta t$ (s)\\
+\midrule
+Independent & 10/10 & 0/10 & 1/10 & 0/10 & +37.42\\
+Common cause & 10/10 & 0/10 & 7/10 & 0/10 & +44.33\\
+Anti-correlated & 10/10 & 0/10 & 0/10 & 0/10 & +34.66\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+For both-trigger exposure, the paired risk difference is $-1.0$ in every slice, with bootstrap 95\% interval $[-1,-1]$ and exact McNemar $p=0.001953125$. Under common-cause truth, return infeasibility falls from 7/10 to 0/10 (paired risk difference $-0.70$, bootstrap 95\% interval $[-1.00,-0.40]$, exact McNemar $p=0.015625$). The anti-correlated condition correctly shows no return-feasibility benefit. The robust detour is costly: navigation time increases by 35--44~s, and common-cause navigation completion is 7/10 for Robust versus 10/10 for History. These outcomes support a safety--efficiency tradeoff, not planner dominance.
 \subsection{Stochastic execution and state-only baseline}
 Table~\ref{tab:execution} reports 1000 paired execution seeds at each closure probability for a three-module series family. The shortest and state-only probability-aware planners select the same trigger-taking path and consequently have identical binary outcomes. The exact-history, critical-cut, and hard $\tau=0.9$ planners avoid all triggers for the high recoverability weight used in this controlled experiment.
 
@@ -306,6 +341,10 @@ History exact & 72 & 36 & 12.50\\
 \end{tabular}
 \end{table}
 
+\subsection{Exact history-state compression}
+The closure-event quotient is exact on the duplicated-trigger family: raw and compressed search preserve path, objective value, and return probability. Complete reachable-state enumeration reveals a much larger representation effect than the early-goal A* benchmark. At six duplicated-trigger modules the raw augmented graph has 33,354 reachable position-history states versus 126 quotient states (264.7$\times$). At seven modules the ratio is 116,460 versus 164 (710.1$\times$), and at eight modules it is 398,583 versus 207 (1,925.5$\times$, 99.948\% reduction). On the retained workflow runner, the eight-module enumeration takes 5598~ms raw versus 1.61~ms compressed, with peak BFS frontiers 30,045 versus 14. These wall-clock values are descriptive and machine-dependent.
+
+The complete-state result must be read together with the frozen early-goal A* negative result: at eight modules, goal-directed search realizes only a modest node/time reduction because it terminates long before visiting most reachable histories. Exact representation compression therefore does not imply a universal online speedup.
 \subsection{Joint-cut adversarial case}
 The critical-cut approximation is exact on the series family because each relevant closure cell is individually critical. We therefore construct a different topology with two parallel return corridors. Neither closure cell alone disconnects the safe set, but closing both does. The lattice has two equal-length goal routes (length 6), so route choice isolates the recoverability estimate rather than a distance tradeoff.
 
