@@ -254,3 +254,68 @@ G1 has now crossed the main mechanism-evidence gate:
 7. explicit beneficial, null and harmful/cost regimes.
 
 The remaining G1 publication work is manuscript integration, literature/bibliography verification, final evidence-manifest reconciliation, and release freeze. Claims must remain scoped to the canonical controlled execution environment; V4 is not evidence of AMCL robustness or physical-robot safety.
+
+
+## G3/G4/G5 retained post-V1 stress evidence — 2026-09-26
+
+**Workflow:** `36223128961`  
+**Artifact:** `10899837124`  
+**Digest:** `sha256:b36c20614fbbc0b56f1cac4917acae91bb022ad9f8f4edd6dbea5ef5491428e4`  
+**Head SHA:** `41a5c25d185214bdf519c493c6641911e51b7d7a`
+
+### G3 — the deadlock can be broken, but the assumption used to break it matters
+
+The strict target-only credible gate remains in cold-start lockout across the frozen side-information grid: mean target exposures are zero and mean absolute probability error is 0.225.
+
+A safe sentinel with an exactly shared closure parameter changes the identifiability picture. Across the 12 target-probability / minimum-return conditions:
+
+- mean absolute target-probability error falls to **0.00938**;
+- across truly admissible target conditions, mean target exposures are **535.8 / 1000**;
+- the target is exposed in **76.7%** of safe condition × repetition cells on average;
+- across truly inadmissible target conditions, mean false-safe exposure is only **0.067 / 1000**, but is not mathematically zero because the Bayesian credible rule remains a finite-sample model quantity.
+
+The transfer assumption is the critical boundary. When the sentinel is artificially 0.4 safer than the target, the transferred posterior becomes badly optimistic: mean absolute error is **0.301** and truly unsafe conditions average **527.8 false-safe target exposures / 1000**. When the sentinel is 0.4 riskier, false-safe exposure disappears but safe-target exposure collapses to **21.8 / 1000** on average, effectively recreating conservative lockout.
+
+**Decision:** G3 is now a strong identifiability/assumption result, not a solved safe-learning algorithm. The scientific statement is that target-only conservative learning can be structurally locked; breaking the lockout requires either explicitly admitted exploration risk or side information whose transfer assumptions must themselves be justified and stress-tested.
+
+### G4 — randomized interventional validation has a measurable sample-support boundary
+
+The randomized graph-recovery stress grid varies per-pair samples `{100,250,500,1000}`, trigger propensities `{0.2,0.5,0.8}`, and effect scales `{0.5,1.0,1.5}` over 10 repetitions.
+
+At 100 samples per trigger/closure pair, the weakest retained conditions are unreliable:
+
+- minimum mean recall: **0.10**;
+- minimum mean precision: **0.30**.
+
+At 500 samples:
+
+- minimum mean recall: **0.833**;
+- minimum mean precision: **0.91**.
+
+At 1000 samples:
+
+- minimum mean recall: **0.933**;
+- minimum mean precision: **0.96**;
+- positive-edge mean absolute effect-estimation error ranges from about **0.0185 to 0.0455** across the frozen propensity/effect grid.
+
+The separate hidden-confounding negative control still stands and is not repaired by this randomized study.
+
+**Decision:** G4 is useful as a randomized trigger-attribution / validation primitive with explicit sample-support requirements. It is not currently a standalone general causal-discovery contribution.
+
+### G5 — exact quotienting removes large reachable history redundancy
+
+The exhaustive duplicated-trigger diamond benchmark now extends to 8 modules and records the complete reachable augmented-state graph rather than stopping A* at the first goal.
+
+At 8 modules:
+
+- raw trigger-history states: **398,583**;
+- exact quotient states: **207**;
+- state-count ratio: **1,925.5×**;
+- reduction: **99.948%**;
+- raw peak BFS frontier: **30,045**;
+- quotient peak frontier: **14**;
+- retained enumeration time: **5598 ms raw vs 1.61 ms quotient** on the workflow runner.
+
+The scaling is already strong at 6 modules (33,354 vs 126, 264.7×) and grows to 710.1× at 7 modules.
+
+**Decision:** G5 is promoted from a merely modest timing companion to a strong exact state-representation result. The early-goal A* benchmark remains an important negative/control result: exact quotienting does not imply that every online search will realize the full-state reduction. Timing remains machine-dependent and no universal real-time speedup is claimed.
