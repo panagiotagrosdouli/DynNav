@@ -85,6 +85,8 @@ RCSP studies commands that are locally safe but commit a robot to a bottleneck t
 \subsection{Endogenous uncertainty and degradation}
 Optimization under endogenous uncertainty explicitly models probability distributions that depend on decisions \cite{doan2022endogenous}. Baldes \emph{et al.} model utilization-driven, state-action-dependent actuator failures and their long-term effect on future control capability \cite{baldes2024fallible}. Consequently, neither ``history matters'' nor ``actions can reduce future capabilities'' is a contribution here. We instead focus on a falsifiable robotics question: whether history contains return-connectivity information that is discarded when environmental closure probabilities are represented only as state-only marginals.
 
+\subsection{Distributional ambiguity and correlated obstacle uncertainty}
+Distributionally robust motion planning already addresses uncertainty about probability laws. Wasserstein-robust planning and control have provided out-of-sample or finite-sample risk guarantees for uncertain obstacle motion and collision avoidance \cite{hakobyan2020wasserstein,lathrop2022wasserstein}. Correlation-aware navigation has also been studied directly, including Bayesian updating in spatially correlated obstacle fields \cite{zhou2025correlated}. These works preclude any claim that ambiguity sets, finite-sample robustness, or correlation-aware navigation are new in isolation. Our narrower question is how unknown closure dependence interacts with \emph{executed-history activation of future return topology}: the ambiguity set is conditioned on which hazards the robot has activated, and the objective is connectivity back to a safe set rather than collision risk or traversal cost alone.
 \section{Problem Formulation}
 Let $G=(V,E)$ be a traversable grid graph, $x_t\in V$ the robot position, and $\Ssafe\subseteq V$ a safe set. A topology hazard
 \begin{equation}
@@ -96,14 +98,48 @@ contains a directed trigger transition $e_i\in E$, a currently traversable closu
 \end{equation}
 The augmented planning state is $z_t=(x_t,\Aset(H_t))$. Figure~\ref{fig:history-gap} illustrates the minimal same-endpoint distinction.
 
-For a fixed augmented state, each distinct active closure cell denotes one latent Bernoulli closure event with a fixed probability, and these events are independent across cells. Multiple triggers mapped to the same cell activate that same event; they do not create independent repeated trials. The model has no within-mission closure realization or observation update: the future closure sample is drawn for the return-connectivity evaluation, and the robot cell is conditioned traversable at that instant. Under these assumptions, the active trigger set determines the active-cell probability map, so $(x,\Aset)$ is a sufficient Markov state for the modeled return query. It need not be minimal: trigger identifiers that induce identical active-cell maps can be merged. Correlated closures, changing probabilities, partial observations of realized events, or time-dependent closures require additional state (for example, a joint belief or event-time state), and are outside this model. Let $C$ denote the random set of realized closures. We define exact safe-return reliability
+For a fixed augmented state, each distinct active closure cell denotes one latent binary closure event. Multiple triggers mapped to the same physical closure event do not create independent repeated trials. Let $C$ denote the random set of realized closures. For any declared joint closure law, exact safe-return reliability is
 \begin{equation}
 \Rret(x,\Aset)=
 \Pr\!\left[\exists\text{ path in }G\setminus C\text{ from }x\text{ to }\Ssafe\right].
 \label{eq:return}
 \end{equation}
-For small active sets, Eq.~\eqref{eq:return} is computed exactly by enumerating closure realizations and testing connectivity.
+The original nominal model treats distinct active closure events as independent Bernoulli variables with probabilities $p_i$. For small active sets, Eq.~\eqref{eq:return} is computed exactly by enumerating closure realizations and testing connectivity.
 
+G1 relaxes the independence assumption. Let $\Omega(\Aset)$ be the finite set of active closure realizations and $q_\omega$ the unknown probability of realization $\omega$. An ambiguity set $\mathcal P(\Aset)$ requires $q_\omega\ge0$, $\sum_\omega q_\omega=1$, marginal probabilities inside declared intervals, and optionally pairwise joint-closure probabilities inside declared intervals. We define the robust lower return value
+\begin{equation}
+\underline{\Rret}(x,\Aset)=
+\min_{q\in\mathcal P(\Aset)}
+\sum_{\omega\in\Omega(\Aset)}
+q_\omega\,
+\mathbf 1\!\left[x\leftrightarrow\Ssafe\text{ under }\omega\right].
+\label{eq:robust-return}
+\end{equation}
+This is a finite linear program in the bounded reference implementation. The active-hazard set remains a sufficient planning state when the ambiguity set itself is determined by the activated hazards. If dependence is governed by an unobserved evolving common cause, closures are revealed online, or event probabilities change with time, an additional belief/event state is required.
+
+\subsection{Topology controls the sign of dependence sensitivity}
+For two active closure events, write $p_1$, $p_2$, and $q=\Pr(C_1=1,C_2=1)$. Let $f_{ab}\in\{0,1\}$ denote whether return remains feasible when closure states are $(a,b)$. Then
+\begin{align}
+\Rret(q)
+&=f_{00}(1-p_1-p_2+q)+f_{10}(p_1-q)\nonumber\\
+&\quad+f_{01}(p_2-q)+f_{11}q,
+\end{align}
+so
+\begin{equation}
+\frac{d\Rret}{dq}=\kappa
+=f_{00}-f_{10}-f_{01}+f_{11}.
+\label{eq:kappa}
+\end{equation}
+Thus positive dependence is not intrinsically harmful. Two redundant parallel return corridors have $(f_{00},f_{10},f_{01},f_{11})=(1,1,1,0)$ and $\kappa=-1$, whereas two serial cells that must both remain open have $(1,0,0,0)$ and $\kappa=+1$.
+
+\subsection{Finite-data ambiguity}
+When matched closure observations are available, we form simultaneous Clopper--Pearson intervals for each retained marginal and optional pairwise Bernoulli moment, using a Bonferroni correction for a declared family confidence $1-\alpha$. On the simultaneous-coverage event the true joint law is feasible in $\mathcal P(\Aset)$, hence
+\begin{equation}
+\underline{\Rret}(x,\Aset)
+\le \Rret^{\star}(x,\Aset)
+\le \overline{\Rret}(x,\Aset).
+\end{equation}
+This is a finite-sample certificate inside the declared stationary closure model, not a physical-world safety guarantee. It is conceptually related to data-driven distributionally robust planning \cite{hakobyan2020wasserstein,lathrop2022wasserstein}, but here the uncertain law is over action-triggered future return-topology events.
 \subsection{Why geometric state alone is insufficient}
 A state-only marginal model maps position $x$ and a fixed marginal hazard field to a single return estimate $\widetilde R(x)$. It therefore cannot assign distinct values to two histories that end at the same $x$.
 
@@ -125,6 +161,13 @@ c(z,z')=1+\lambda\left(1-\Rret(z')\right),
 \end{equation}
 with nonnegative recoverability weight $\lambda$. The online return-oracle calls used to select the route are included in measured planning latency; post-hoc diagnostics are excluded.
 
+\subsection{Dependence-robust history-aware A*}
+The robust planner uses the same augmented transition semantics but replaces the nominal return value by Eq.~\eqref{eq:robust-return}:
+\begin{equation}
+c_{\rm rob}(z,z')=
+1+\lambda\left(1-\underline{\Rret}(z')\right).
+\end{equation}
+The Python reference planner solves the finite ambiguity LP exactly for bounded hazard sets. The ROS~2/Nav2 implementation includes an exact two-hazard pairwise-dependence oracle using Fr\'echet bounds and Eq.~\eqref{eq:kappa}; it is deliberately bounded rather than presented as a scalable general correlated-hazard solver.
 \subsection{State-only probability-aware baseline}
 The state-only baseline receives the same closure cells and marginal probabilities $p_i$ but drops trigger history. It plans using return-path reliability under this fixed marginal field. Thus it is not an uninformed shortest-path baseline: it knows where future closures may occur and with what marginal probability, but it cannot know whether a particular path actually activates them.
 
@@ -135,6 +178,8 @@ A strong constraint baseline accepts a successor only when
 \end{equation}
 for a threshold $\tau$. This abstracts safe-return and contingency methods that enforce backup feasibility rather than optimize a soft penalty.
 
+\subsection{Exact closure-event quotient}
+Raw augmented search distinguishes trigger identities even when multiple triggers activate the same future closure event. Under the declared independent-closure semantics, hazards are quotient-equivalent when they induce the same closure cell with the same probability. Search can therefore replace the activated-trigger subset by activated closure-event classes without changing any future closure distribution or return query. This quotient is exact for the declared semantics; distinct closure cells are never merged merely because they share a probability or happen to have the same return value in one map.
 \subsection{Critical-cut approximation}
 Exact enumeration scales exponentially in the number of active hazards. We therefore evaluate a structural approximation that removes each active hazard cell individually and identifies those whose single removal disconnects the robot from $\Ssafe$. Multiplying the survival probabilities of these individually critical cells gives
 \begin{equation}
