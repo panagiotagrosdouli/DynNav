@@ -17,6 +17,35 @@ namespace
 
 constexpr double kEpsilon = 1.0e-12;
 
+std::vector<std::pair<std::size_t, std::size_t>> triggerEdges(
+  const HistoryHazard & hazard)
+{
+  if (!hazard.trigger_edges.empty()) {
+    return hazard.trigger_edges;
+  }
+  return {{hazard.source_index, hazard.target_index}};
+}
+
+std::vector<std::size_t> closureCells(const HistoryHazard & hazard)
+{
+  if (!hazard.closure_indices.empty()) {
+    return hazard.closure_indices;
+  }
+  return {hazard.closure_index};
+}
+
+void addClosedCells(
+  std::unordered_set<std::size_t> & closed,
+  const HistoryHazard & hazard,
+  const std::size_t current_index)
+{
+  for (const auto cell : closureCells(hazard)) {
+    if (cell != current_index) {
+      closed.insert(cell);
+    }
+  }
+}
+
 bool traversable(const std::uint8_t cost, const HistorySearchConfig & config)
 {
   if (cost == config.unknown_cost) {
@@ -104,6 +133,191 @@ bool reachesSafe(
   return false;
 }
 
+struct ScenarioReachability
+{
+  std::vector<bool> closed;
+  std::vector<bool> reachable;
+};
+
+class CachedHistoryReturnOracle
+{
+public:
+  CachedHistoryReturnOracle(
+    const std::size_t width,
+    const std::size_t height,
+    const std::vector<std::uint8_t> & costs,
+    const std::vector<std::size_t> & safe_indices,
+    const std::vector<HistoryHazard> & hazards,
+    const HistorySearchConfig & config)
+  : width_(width),
+    height_(height),
+    costs_(costs),
+    safe_indices_(safe_indices),
+    hazards_(hazards),
+    config_(config),
+    safe_(safe_indices.begin(), safe_indices.end())
+  {}
+
+  double exact(const std::size_t current, const std::uint64_t active_mask)
+  {
+    if (active_mask == 0U) {
+      return 1.0;
+    }
+
+    std::vector<std::size_t> active_indices;
+    for (std::size_t i = 0; i < hazards_.size(); ++i) {
+      if ((active_mask & (1ULL << i)) != 0U) {
+        active_indices.push_back(i);
+      }
+    }
+
+    const std::uint64_t realization_count = 1ULL << active_indices.size();
+    double probability = 0.0;
+    for (std::uint64_t realization = 0; realization < realization_count; ++realization) {
+      double mass = 1.0;
+      std::uint64_t scenario_mask = 0U;
+      for (std::size_t bit = 0; bit < active_indices.size(); ++bit) {
+        const auto hazard_index = active_indices[bit];
+        const auto & hazard = hazards_[hazard_index];
+        const bool closes = (realization & (1ULL << bit)) != 0U;
+        mass *= closes ? hazard.closure_probability : (1.0 - hazard.closure_probability);
+        if (closes) {
+          scenario_mask |= (1ULL << hazard_index);
+        }
+      }
+      if (mass > 0.0 && connected(current, scenario_mask)) {
+        probability += mass;
+      }
+    }
+    return probability;
+  }
+
+  double robust(const std::size_t current, const std::uint64_t active_mask)
+  {
+    if (!config_.robust_pairwise_dependence) {
+      return exact(current, active_mask);
+    }
+
+    std::vector<std::size_t> active_indices;
+    for (std::size_t i = 0; i < hazards_.size(); ++i) {
+      if ((active_mask & (1ULL << i)) != 0U) {
+        active_indices.push_back(i);
+      }
+    }
+    if (active_indices.size() <= 1U) {
+      return exact(current, active_mask);
+    }
+    if (active_indices.size() != 2U) {
+      throw std::invalid_argument(
+              "robust pairwise return probability requires at most two active hazards");
+    }
+
+    const auto first_index = active_indices[0];
+    const auto second_index = active_indices[1];
+    const auto & first = hazards_[first_index];
+    const auto & second = hazards_[second_index];
+    const double p_first = first.closure_probability;
+    const double p_second = second.closure_probability;
+    const double frechet_lower = std::max(0.0, p_first + p_second - 1.0);
+    const double frechet_upper = std::min(p_first, p_second);
+    const double q_lower = std::max(frechet_lower, config_.pairwise_joint_lower);
+    const double q_upper = std::min(frechet_upper, config_.pairwise_joint_upper);
+    if (q_lower > q_upper + kEpsilon) {
+      throw std::invalid_argument("active pairwise ambiguity set is infeasible");
+    }
+
+    const std::uint64_t first_mask = 1ULL << first_index;
+    const std::uint64_t second_mask = 1ULL << second_index;
+    const double f00 = connected(current, 0U) ? 1.0 : 0.0;
+    const double f10 = connected(current, first_mask) ? 1.0 : 0.0;
+    const double f01 = connected(current, second_mask) ? 1.0 : 0.0;
+    const double f11 = connected(current, first_mask | second_mask) ? 1.0 : 0.0;
+    const double interaction = f00 - f10 - f01 + f11;
+    const double q = interaction < 0.0 ? q_upper : q_lower;
+    const double p00 = 1.0 - p_first - p_second + q;
+    const double p10 = p_first - q;
+    const double p01 = p_second - q;
+    const double p11 = q;
+    return std::clamp(f00 * p00 + f10 * p10 + f01 * p01 + f11 * p11, 0.0, 1.0);
+  }
+
+private:
+  const ScenarioReachability & scenario(const std::uint64_t scenario_mask)
+  {
+    const auto existing = scenario_cache_.find(scenario_mask);
+    if (existing != scenario_cache_.end()) {
+      return existing->second;
+    }
+
+    ScenarioReachability data;
+    data.closed.assign(costs_.size(), false);
+    data.reachable.assign(costs_.size(), false);
+    for (std::size_t i = 0; i < hazards_.size(); ++i) {
+      if ((scenario_mask & (1ULL << i)) == 0U) {
+        continue;
+      }
+      for (const auto cell : closureCells(hazards_[i])) {
+        data.closed[cell] = true;
+      }
+    }
+
+    std::queue<std::size_t> frontier;
+    for (const auto safe_cell : safe_indices_) {
+      if (data.closed[safe_cell] || !traversable(costs_[safe_cell], config_)) {
+        continue;
+      }
+      if (!data.reachable[safe_cell]) {
+        data.reachable[safe_cell] = true;
+        frontier.push(safe_cell);
+      }
+    }
+
+    while (!frontier.empty()) {
+      const auto cell = frontier.front();
+      frontier.pop();
+      for (const auto next : neighbours4(cell, width_, height_)) {
+        if (data.reachable[next] || data.closed[next] || !traversable(costs_[next], config_)) {
+          continue;
+        }
+        data.reachable[next] = true;
+        frontier.push(next);
+      }
+    }
+
+    return scenario_cache_.emplace(scenario_mask, std::move(data)).first->second;
+  }
+
+  bool connected(const std::size_t current, const std::uint64_t scenario_mask)
+  {
+    if (safe_.count(current) > 0U) {
+      return true;
+    }
+    const auto & data = scenario(scenario_mask);
+    if (!data.closed[current]) {
+      return data.reachable[current];
+    }
+
+    // Match the public oracle convention: a closure at the robot's current
+    // cell is conditioned usable at the decision instant. All other cells in
+    // the same closure footprint remain blocked.
+    for (const auto next : neighbours4(current, width_, height_)) {
+      if (data.reachable[next]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  std::size_t width_;
+  std::size_t height_;
+  const std::vector<std::uint8_t> & costs_;
+  const std::vector<std::size_t> & safe_indices_;
+  const std::vector<HistoryHazard> & hazards_;
+  const HistorySearchConfig & config_;
+  std::unordered_set<std::size_t> safe_;
+  std::unordered_map<std::uint64_t, ScenarioReachability> scenario_cache_;
+};
+
 std::uint64_t activatedAfter(
   const std::size_t source,
   const std::size_t target,
@@ -111,8 +325,11 @@ std::uint64_t activatedAfter(
   std::uint64_t mask)
 {
   for (std::size_t i = 0; i < hazards.size(); ++i) {
-    if (hazards[i].source_index == source && hazards[i].target_index == target) {
-      mask |= (1ULL << i);
+    for (const auto & edge : triggerEdges(hazards[i])) {
+      if (edge.first == source && edge.second == target) {
+        mask |= (1ULL << i);
+        break;
+      }
     }
   }
   return mask;
@@ -159,6 +376,18 @@ void validateHistorySearchInputs(
   if (!std::isfinite(config.recoverability_weight) || config.recoverability_weight < 0.0) {
     throw std::invalid_argument("recoverability_weight must be finite and non-negative");
   }
+  if (!std::isfinite(config.pairwise_joint_lower) ||
+    !std::isfinite(config.pairwise_joint_upper) ||
+    config.pairwise_joint_lower < 0.0 ||
+    config.pairwise_joint_upper > 1.0 ||
+    config.pairwise_joint_lower > config.pairwise_joint_upper)
+  {
+    throw std::invalid_argument("pairwise joint bounds must satisfy 0 <= lower <= upper <= 1");
+  }
+  if (config.robust_pairwise_dependence && hazards.size() > 2U) {
+    throw std::invalid_argument(
+            "robust pairwise history mode currently supports at most two hazards");
+  }
   if (hazards.size() > config.max_hazard_cells || hazards.size() > 31U) {
     throw std::invalid_argument("history hazard count exceeds configured exact-search limit");
   }
@@ -175,19 +404,41 @@ void validateHistorySearchInputs(
     {
       throw std::out_of_range("history hazard index is outside the grid");
     }
-    if (manhattan(hazard.source_index, hazard.target_index, width) != 1U) {
-      throw std::invalid_argument("history hazard trigger must be a 4-connected edge");
+    for (const auto closure_index : closureCells(hazard)) {
+      if (closure_index >= costs.size()) {
+        throw std::out_of_range("history hazard closure footprint is outside the grid");
+      }
+    }
+    for (const auto & edge : triggerEdges(hazard)) {
+      if (edge.first >= costs.size() || edge.second >= costs.size()) {
+        throw std::out_of_range("history hazard trigger edge is outside the grid");
+      }
+      if (manhattan(edge.first, edge.second, width) != 1U) {
+        throw std::invalid_argument("history hazard trigger must be a 4-connected edge");
+      }
+      const auto trigger_key =
+        (static_cast<std::uint64_t>(edge.first) << 32U) |
+        static_cast<std::uint64_t>(edge.second);
+      if (!triggers.insert(trigger_key).second) {
+        throw std::invalid_argument("duplicate history hazard trigger edge");
+      }
     }
     if (!std::isfinite(hazard.closure_probability) || hazard.closure_probability < 0.0 ||
       hazard.closure_probability > 1.0)
     {
       throw std::invalid_argument("closure probability must be in [0, 1]");
     }
-    const auto trigger_key =
-      (static_cast<std::uint64_t>(hazard.source_index) << 32U) |
-      static_cast<std::uint64_t>(hazard.target_index);
-    if (!triggers.insert(trigger_key).second) {
-      throw std::invalid_argument("duplicate history hazard trigger");
+  }
+  if (config.robust_pairwise_dependence && hazards.size() == 2U) {
+    const double p0 = hazards[0].closure_probability;
+    const double p1 = hazards[1].closure_probability;
+    const double frechet_lower = std::max(0.0, p0 + p1 - 1.0);
+    const double frechet_upper = std::min(p0, p1);
+    const double feasible_lower = std::max(frechet_lower, config.pairwise_joint_lower);
+    const double feasible_upper = std::min(frechet_upper, config.pairwise_joint_upper);
+    if (feasible_lower > feasible_upper + kEpsilon) {
+      throw std::invalid_argument(
+              "pairwise joint bounds are infeasible for configured hazard marginals");
     }
   }
 }
@@ -224,8 +475,8 @@ double exactHistoryReturnProbability(
       const auto & hazard = hazards[active_indices[bit]];
       const bool closes = (realization & (1ULL << bit)) != 0U;
       mass *= closes ? hazard.closure_probability : (1.0 - hazard.closure_probability);
-      if (closes && hazard.closure_index != current_index) {
-        closed.insert(hazard.closure_index);
+      if (closes) {
+        addClosedCells(closed, hazard, current_index);
       }
     }
     if (mass <= 0.0) {continue;}
@@ -234,6 +485,83 @@ double exactHistoryReturnProbability(
     }
   }
   return probability;
+}
+
+double robustPairwiseHistoryReturnProbability(
+  const std::size_t width,
+  const std::size_t height,
+  const std::vector<std::uint8_t> & costs,
+  const std::size_t current_index,
+  const std::vector<std::size_t> & safe_indices,
+  const std::vector<HistoryHazard> & hazards,
+  const std::uint64_t active_mask,
+  const HistorySearchConfig & config)
+{
+  validateHistorySearchInputs(width, height, costs, safe_indices, hazards, config);
+  if (!config.robust_pairwise_dependence) {
+    return exactHistoryReturnProbability(
+      width, height, costs, current_index, safe_indices, hazards, active_mask, config);
+  }
+  if (current_index >= costs.size()) {
+    throw std::out_of_range("current cell is outside the grid");
+  }
+  if (active_mask >> hazards.size()) {
+    throw std::invalid_argument("active hazard mask references an unknown hazard");
+  }
+
+  std::vector<std::size_t> active_indices;
+  for (std::size_t i = 0; i < hazards.size(); ++i) {
+    if ((active_mask & (1ULL << i)) != 0U) {
+      active_indices.push_back(i);
+    }
+  }
+  if (active_indices.size() <= 1U) {
+    return exactHistoryReturnProbability(
+      width, height, costs, current_index, safe_indices, hazards, active_mask, config);
+  }
+  if (active_indices.size() != 2U) {
+    throw std::invalid_argument(
+            "robust pairwise return probability requires at most two active hazards");
+  }
+
+  const auto first_index = active_indices[0];
+  const auto second_index = active_indices[1];
+  const auto & first = hazards[first_index];
+  const auto & second = hazards[second_index];
+  const double p_first = first.closure_probability;
+  const double p_second = second.closure_probability;
+  const double frechet_lower = std::max(0.0, p_first + p_second - 1.0);
+  const double frechet_upper = std::min(p_first, p_second);
+  const double q_lower = std::max(frechet_lower, config.pairwise_joint_lower);
+  const double q_upper = std::min(frechet_upper, config.pairwise_joint_upper);
+  if (q_lower > q_upper + kEpsilon) {
+    throw std::invalid_argument("active pairwise ambiguity set is infeasible");
+  }
+
+  std::unordered_set<std::size_t> safe(safe_indices.begin(), safe_indices.end());
+  const auto connected = [&](const bool first_closed, const bool second_closed) {
+      std::unordered_set<std::size_t> closed;
+      if (first_closed) {
+        addClosedCells(closed, first, current_index);
+      }
+      if (second_closed) {
+        addClosedCells(closed, second, current_index);
+      }
+      return reachesSafe(width, height, costs, current_index, safe, closed, config) ? 1.0 : 0.0;
+    };
+
+  const double f00 = connected(false, false);
+  const double f10 = connected(true, false);
+  const double f01 = connected(false, true);
+  const double f11 = connected(true, true);
+  const double interaction = f00 - f10 - f01 + f11;
+  const double q = interaction < 0.0 ? q_upper : q_lower;
+  const double p00 = 1.0 - p_first - p_second + q;
+  const double p10 = p_first - q;
+  const double p01 = p_second - q;
+  const double p11 = q;
+  const double probability = f00 * p00 + f10 * p10 + f01 * p01 + f11 * p11;
+  return std::clamp(probability, 0.0, 1.0);
 }
 
 HistorySearchResult planHistoryGridPath(
@@ -257,6 +585,16 @@ HistorySearchResult planHistoryGridPath(
   }
 
   HistorySearchResult result;
+  CachedHistoryReturnOracle return_oracle(
+    width, height, costs, safe_indices, hazards, config);
+  const auto returnProbability = [&](
+    const std::size_t cell,
+    const std::uint64_t mask)
+    {
+      return config.robust_pairwise_dependence ?
+             return_oracle.robust(cell, mask) :
+             return_oracle.exact(cell, mask);
+    };
   if (!traversable(costs[start_index], config) || !traversable(costs[goal_index], config)) {
     return result;
   }
@@ -302,20 +640,17 @@ HistorySearchResult planHistoryGridPath(
       result.minimum_return_probability = 1.0;
       for (const auto state : states) {
         result.path.push_back(keyIndex(state));
-        const double r = exactHistoryReturnProbability(
-          width, height, costs, keyIndex(state), safe_indices, hazards, keyMask(state), config);
+        const double r = returnProbability(keyIndex(state), keyMask(state));
         result.minimum_return_probability = std::min(result.minimum_return_probability, r);
       }
-      result.final_return_probability = exactHistoryReturnProbability(
-        width, height, costs, goal_index, safe_indices, hazards, mask, config);
+      result.final_return_probability = returnProbability(goal_index, mask);
       return result;
     }
 
     for (const auto next : neighbours4(cell, width, height)) {
       if (!traversable(costs[next], config)) {continue;}
       const auto next_mask = activatedAfter(cell, next, hazards, mask);
-      const double return_probability = exactHistoryReturnProbability(
-        width, height, costs, next, safe_indices, hazards, next_mask, config);
+      const double return_probability = returnProbability(next, next_mask);
       const double transition_cost =
         config.neutral_cost + config.recoverability_weight * (1.0 - return_probability);
       const double candidate = known->second + transition_cost;

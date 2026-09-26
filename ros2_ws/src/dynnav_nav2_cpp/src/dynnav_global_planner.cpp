@@ -87,12 +87,35 @@ std::vector<HistoryHazard> parseHistoryHazards(
       throw std::invalid_argument(
               "history hazard must be trigger@closure@probability");
     }
-    const auto trigger = parseTransition(fields[0]);
+    const auto trigger_parts = split(fields[0], '+');
+    if (trigger_parts.empty()) {
+      throw std::invalid_argument("history hazard trigger gate cannot be empty");
+    }
+    std::vector<std::pair<std::size_t, std::size_t>> trigger_edges;
+    trigger_edges.reserve(trigger_parts.size());
+    for (const auto & trigger_part : trigger_parts) {
+      const auto transition = parseTransition(trigger_part);
+      trigger_edges.emplace_back(
+        checkedIndex(costmap, transition.first),
+        checkedIndex(costmap, transition.second));
+    }
+
+    const auto closure_parts = split(fields[1], '+');
+    if (closure_parts.empty()) {
+      throw std::invalid_argument("history hazard closure footprint cannot be empty");
+    }
+    std::vector<std::size_t> closure_indices;
+    closure_indices.reserve(closure_parts.size());
+    for (const auto & closure_part : closure_parts) {
+      closure_indices.push_back(checkedIndex(costmap, parseCell(closure_part)));
+    }
     result.push_back({
-      checkedIndex(costmap, trigger.first),
-      checkedIndex(costmap, trigger.second),
-      checkedIndex(costmap, parseCell(fields[1])),
-      std::stod(fields[2])});
+      trigger_edges.front().first,
+      trigger_edges.front().second,
+      closure_indices.front(),
+      std::stod(fields[2]),
+      std::move(closure_indices),
+      std::move(trigger_edges)});
   }
   return result;
 }
@@ -143,6 +166,12 @@ void DynNavGlobalPlanner::configure(
   nav2_util::declare_parameter_if_not_declared(
     node, name_ + ".history_recoverability_weight", rclcpp::ParameterValue(4.0));
   nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_robust_pairwise_dependence", rclcpp::ParameterValue(false));
+  nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_pairwise_joint_lower", rclcpp::ParameterValue(0.0));
+  nav2_util::declare_parameter_if_not_declared(
+    node, name_ + ".history_pairwise_joint_upper", rclcpp::ParameterValue(1.0));
+  nav2_util::declare_parameter_if_not_declared(
     node, name_ + ".history_max_hazard_cells", rclcpp::ParameterValue(16));
 
   int lethal_cost_threshold = 253;
@@ -174,6 +203,13 @@ void DynNavGlobalPlanner::configure(
     node->get_parameter(name_ + ".history_hazards", hazards_raw);
     node->get_parameter(
       name_ + ".history_recoverability_weight", history_config_.recoverability_weight);
+    node->get_parameter(
+      name_ + ".history_robust_pairwise_dependence",
+      history_config_.robust_pairwise_dependence);
+    node->get_parameter(
+      name_ + ".history_pairwise_joint_lower", history_config_.pairwise_joint_lower);
+    node->get_parameter(
+      name_ + ".history_pairwise_joint_upper", history_config_.pairwise_joint_upper);
     node->get_parameter(name_ + ".history_max_hazard_cells", history_max_hazard_cells);
     if (history_max_hazard_cells < 0) {
       throw nav2_core::PlannerException("history_max_hazard_cells must be non-negative");
@@ -208,10 +244,12 @@ void DynNavGlobalPlanner::configure(
 
   RCLCPP_INFO(
     logger_,
-    "Configured %s: risk_weight=%.3f irreversibility_weight=%.3f allow_unknown=%s history_aware=%s",
+    "Configured %s: risk_weight=%.3f irreversibility_weight=%.3f allow_unknown=%s "
+    "history_aware=%s robust_pairwise=%s",
     name_.c_str(), search_config_.risk_weight, search_config_.irreversibility_weight,
     search_config_.allow_unknown ? "true" : "false",
-    history_aware_ ? "true" : "false");
+    history_aware_ ? "true" : "false",
+    history_config_.robust_pairwise_dependence ? "true" : "false");
 }
 
 void DynNavGlobalPlanner::cleanup()
@@ -244,22 +282,33 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
   if (!history_aware_ || costmap_ == nullptr) {
     return;
   }
+  if (message->data == "__RESET__") {
+    std::lock_guard<std::mutex> lock(history_mutex_);
+    active_history_mask_ = 0U;
+    observed_cell_valid_ = false;
+    observed_cell_ = 0U;
+    RCLCPP_DEBUG(logger_, "Reset executed-history state for %s", name_.c_str());
+    return;
+  }
   try {
     const auto transition = parseTransition(message->data);
     const auto source = checkedIndex(costmap_, transition.first);
     const auto target = checkedIndex(costmap_, transition.second);
     std::lock_guard<std::mutex> lock(history_mutex_);
     if (observed_cell_valid_ && source != observed_cell_) {
-      RCLCPP_ERROR(
+      RCLCPP_DEBUG(
         logger_,
-        "Rejected out-of-order executed transition %s: source index %zu != observed %zu",
-        message->data.c_str(), source, observed_cell_);
-      return;
+        "Executed-history source %zu differs from planner-synchronized cell %zu; "
+        "accepting authoritative executed event %s",
+        source, observed_cell_, message->data.c_str());
     }
     for (std::size_t i = 0; i < history_hazards_.size(); ++i) {
-      if (history_hazards_[i].source_index == source &&
-        history_hazards_[i].target_index == target)
-      {
+      const auto & hazard = history_hazards_[i];
+      bool matches = hazard.source_index == source && hazard.target_index == target;
+      for (const auto & edge : hazard.trigger_edges) {
+        matches = matches || (edge.first == source && edge.second == target);
+      }
+      if (matches) {
         active_history_mask_ |= (1ULL << i);
       }
     }

@@ -1,0 +1,33 @@
+{
+  "evidence_type": "g1_correlated_gazebo_v2_0_smoke",
+  "status": "commissioning_validity_failure_no_efficacy_outcome",
+  "workflow_run_id": 36123397718,
+  "artifact_id": 10859721351,
+  "artifact_digest": "sha256:7b957f0a2c0deae5f69323fb8734c171dcb9588a1d5f19ba2bbd9f53eb610b09",
+  "source_commit": "e5995e1775977400f8b74de1ead5ab6280619250",
+  "preregistered_topology_contract": {
+    "f00": 1,
+    "f10": 1,
+    "f01": 1,
+    "f11": 0,
+    "interaction": -1
+  },
+  "trial_count": 9,
+  "observed_mechanism": {
+    "trials_with_hazard_0_trigger": 0,
+    "trials_with_hazard_1_trigger": 0,
+    "trials_with_any_closure_applied": 0
+  },
+  "validity_summary": {
+    "valid_trials": 2,
+    "invalid_trials": 7,
+    "dominant_invalid_reason": "sampling_gap",
+    "efficacy_interpretation_authorized": false
+  },
+  "integration_findings": [
+    "Exact adjacent-cell trigger observation at 10 Hz is too brittle for a 0.05 m costmap and classified normal multi-cell motion as sampling gaps.",
+    "Concurrent Nav2 replanning can synchronize the planner's observed position ahead of queued executed-transition messages, causing valid event messages to be rejected by strict source ordering.",
+    "The 1.55 m physical corridors are not robust to the default Nav2 robot/inflation clearance once live obstacle layers update, causing path-loss before any dynamic closure is applied."
+  ],
+  "decision": "No planner efficacy conclusion is drawn. Proceed only with a protocol-versioned V2.1 commissioning amendment that changes observation plumbing and physical clearance, while preserving hazard probabilities, dependence conditions, ambiguity interval, recoverability weight, and hypotheses."
+}

@@ -3,8 +3,11 @@ from xml.etree import ElementTree
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order, load_suite
 from dynnav_nav2_benchmark.configuration import (
+    CORRELATED_HISTORY_PLANNER_IDS,
     HISTORY_PLANNER_IDS,
     PLANNER_IDS,
+    freeze_global_costmap_for_planner_comparison,
+    inject_correlated_history_planner_parameters,
     inject_history_planner_parameters,
     inject_planner_parameters,
     planner_parameter_overrides,
@@ -93,6 +96,125 @@ def test_history_parameter_injection_isolates_history_representation() -> None:
     assert history["history_hazards"] == "174:189>175:189@181:191@0.80000000000000004"
     assert history["history_recoverability_weight"] == 4.0
     assert parameters["expected_planner_frequency"] == 20.0
+
+
+
+def test_frozen_global_costmap_removes_scan_history_from_planner_comparison() -> None:
+    base = {
+        "global_costmap": {
+            "global_costmap": {
+                "ros__parameters": {
+                    "plugins": [
+                        "static_layer",
+                        "obstacle_layer",
+                        "inflation_layer",
+                    ],
+                    "static_layer": {
+                        "plugin": "nav2_costmap_2d::StaticLayer",
+                    },
+                    "obstacle_layer": {
+                        "plugin": "nav2_costmap_2d::ObstacleLayer",
+                    },
+                    "inflation_layer": {
+                        "plugin": "nav2_costmap_2d::InflationLayer",
+                    },
+                    "resolution": 0.05,
+                }
+            }
+        },
+        "local_costmap": {
+            "local_costmap": {
+                "ros__parameters": {
+                    "plugins": ["voxel_layer", "inflation_layer"],
+                }
+            }
+        },
+    }
+
+    frozen = freeze_global_costmap_for_planner_comparison(base)
+    global_params = frozen["global_costmap"]["global_costmap"]["ros__parameters"]
+    assert global_params["plugins"] == ["static_layer", "inflation_layer"]
+    assert "obstacle_layer" not in global_params
+    assert "voxel_layer" not in global_params
+    assert global_params["resolution"] == 0.05
+    assert global_params["static_layer"]["map_subscribe_transient_local"] is True
+
+    assert frozen["local_costmap"] == base["local_costmap"]
+    assert base["global_costmap"]["global_costmap"]["ros__parameters"]["plugins"] == [
+        "static_layer",
+        "obstacle_layer",
+        "inflation_layer",
+    ]
+
+
+def test_correlated_history_parameter_injection_isolates_dependence_model() -> None:
+    base = {
+        "planner_server": {
+            "ros__parameters": {
+                "expected_planner_frequency": 20.0,
+                "planner_plugins": ["GridBased"],
+                "GridBased": {"plugin": "default"},
+            }
+        }
+    }
+    merged = inject_correlated_history_planner_parameters(
+        base,
+        safe_cell=(160, 190),
+        hazards=(
+            (((174, 189), (175, 189)), (181, 191), 0.5),
+            (((175, 189), (176, 189)), (181, 187), 0.5),
+        ),
+        recoverability_weight=12.0,
+        pairwise_joint_lower=0.0,
+        pairwise_joint_upper=0.5,
+    )
+    parameters = merged["planner_server"]["ros__parameters"]
+    assert parameters["planner_plugins"] == list(CORRELATED_HISTORY_PLANNER_IDS)
+
+    shortest = parameters["DynNavShortest"]
+    history = parameters["DynNavHistory"]
+    robust = parameters["DynNavRobustHistory"]
+    assert shortest["plugin"] == history["plugin"] == robust["plugin"]
+    assert not shortest.get("history_aware", False)
+    assert history["history_aware"] is True
+    assert not history.get("history_robust_pairwise_dependence", False)
+    assert robust["history_aware"] is True
+    assert robust["history_robust_pairwise_dependence"] is True
+    assert robust["history_pairwise_joint_lower"] == 0.0
+    assert robust["history_pairwise_joint_upper"] == 0.5
+    assert robust["history_hazards"] == (
+        "174:189>175:189@181:191@0.5;"
+        "175:189>176:189@181:187@0.5"
+    )
+
+
+def test_correlated_history_encodes_multi_cell_closure_footprints() -> None:
+    base = {
+        "planner_server": {
+            "ros__parameters": {
+                "planner_plugins": ["GridBased"],
+                "GridBased": {"plugin": "default"},
+            }
+        }
+    }
+    merged = inject_correlated_history_planner_parameters(
+        base,
+        safe_cell=(1, 1),
+        hazards=(
+            (((2, 2), (3, 2)), ((4, 1), (4, 2), (4, 3)), 0.5),
+            (((3, 2), (4, 2)), ((5, 1), (5, 2), (5, 3)), 0.5),
+        ),
+        recoverability_weight=12.0,
+        pairwise_joint_lower=0.0,
+        pairwise_joint_upper=0.5,
+    )
+    encoded = merged["planner_server"]["ros__parameters"]["DynNavRobustHistory"][
+        "history_hazards"
+    ]
+    assert encoded == (
+        "2:2>3:2@4:1+4:2+4:3@0.5;"
+        "3:2>4:2@5:1+5:2+5:3@0.5"
+    )
 
 
 def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:

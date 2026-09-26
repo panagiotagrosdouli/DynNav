@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<sdf version="1.6" xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:arg name="headless" default="true"/>
+  <world name="default">
+    <plugin filename="gz-sim-physics-system" name="gz::sim::systems::Physics"/>
+    <plugin filename="gz-sim-user-commands-system" name="gz::sim::systems::UserCommands"/>
+    <xacro:unless value="$(arg headless)">
+      <plugin filename="gz-sim-scene-broadcaster-system" name="gz::sim::systems::SceneBroadcaster"/>
+    </xacro:unless>
+    <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+      <render_engine>ogre2</render_engine>
+    </plugin>
+    <plugin filename="gz-sim-imu-system" name="gz::sim::systems::Imu"/>
+
+    <light name="sun" type="directional">
+      <cast_shadows>0</cast_shadows>
+      <pose>0 0 10 0 0 0</pose>
+      <diffuse>0.8 0.8 0.8 1</diffuse>
+      <specular>0.8 0.8 0.8 1</specular>
+      <direction>-0.5 0.1 -0.9</direction>
+    </light>
+
+    <model name="ground_plane">
+      <static>1</static>
+      <link name="link">
+        <collision name="collision">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+        </collision>
+        <visual name="visual">
+          <geometry><plane><normal>0 0 1</normal><size>20 20</size></plane></geometry>
+          <material><ambient>0.8 0.8 0.8 1</ambient><diffuse>0.8 0.8 0.8 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <model name="boundary_left">
+      <static>1</static><pose>-0.725 -2.025 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></visual>
+      </link>
+    </model>
+    <model name="boundary_right">
+      <static>1</static><pose>6.125 -2.025 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>0.15 6.4 1.0</size></box></geometry></visual>
+      </link>
+    </model>
+    <model name="boundary_bottom">
+      <static>1</static><pose>2.7 -5.15 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></visual>
+      </link>
+    </model>
+    <model name="boundary_top">
+      <static>1</static><pose>2.7 1.1 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></collision>
+        <visual name="visual"><geometry><box><size>7.0 0.15 1.0</size></box></geometry></visual>
+      </link>
+    </model>
+
+    <model name="central_island">
+      <static>1</static><pose>2.7 -2.025 0.5 0 0 0</pose>
+      <link name="link">
+        <collision name="collision"><geometry><box><size>4.0 2.0 1.0</size></box></geometry></collision>
+        <visual name="visual">
+          <geometry><box><size>4.0 2.0 1.0</size></box></geometry>
+          <material><ambient>0.35 0.35 0.35 1</ambient><diffuse>0.35 0.35 0.35 1</diffuse></material>
+        </visual>
+      </link>
+    </model>
+
+    <scene><shadows>0</shadows></scene>
+    <physics name="3ms" type="ode">
+      <max_step_size>0.003</max_step_size>
+      <real_time_factor>1</real_time_factor>
+    </physics>
+  </world>
+</sdf>

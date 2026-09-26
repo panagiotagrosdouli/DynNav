@@ -1,0 +1,112 @@
+{
+  "artifact_scope": "Post-V1 finite-data G1 ambiguity evidence; synthetic planning model only",
+  "generated_from_commit": "96eed3b9caf8ad919a19547390416853deb2cf70",
+  "workflow_run_id": 36109713508,
+  "artifact_id": 10852289851,
+  "artifact_digest": "sha256:869ab475f9548b4bc3e11790f1a42a1108b209da7528f86cd65b9eed0c98e5fa",
+  "configuration": {
+    "family_confidence": 0.95,
+    "training_sizes": [
+      20,
+      50,
+      100,
+      500
+    ],
+    "repetitions_per_condition": 20,
+    "dependence_conditions": [
+      "independent",
+      "common_cause",
+      "anti_correlated"
+    ],
+    "recoverability_weight": 12
+  },
+  "selected_results": {
+    "anti_correlated": {
+      "empirical_marginal_robust_shortcut_rate": {
+        "20": 0,
+        "50": 0,
+        "100": 0,
+        "500": 0
+      },
+      "empirical_pairwise_robust_shortcut_rate": {
+        "20": 1,
+        "50": 1,
+        "100": 1,
+        "500": 1
+      },
+      "plugin_independence_shortcut_rate": {
+        "20": 1,
+        "50": 1,
+        "100": 1,
+        "500": 1
+      },
+      "true_failure_probability_when_shortcut_selected": 0
+    },
+    "common_cause": {
+      "empirical_marginal_robust_shortcut_rate": {
+        "20": 0,
+        "50": 0,
+        "100": 0,
+        "500": 0
+      },
+      "empirical_pairwise_robust_shortcut_rate": {
+        "20": 0,
+        "50": 0,
+        "100": 0,
+        "500": 0
+      },
+      "plugin_independence_shortcut_rate": {
+        "20": 0.7,
+        "50": 0.7,
+        "100": 0.95,
+        "500": 1
+      },
+      "plugin_independence_mean_true_failure_probability": {
+        "20": 0.35,
+        "50": 0.35,
+        "100": 0.475,
+        "500": 0.5
+      }
+    },
+    "independent": {
+      "empirical_marginal_robust_shortcut_rate": {
+        "20": 0,
+        "50": 0,
+        "100": 0,
+        "500": 0
+      },
+      "empirical_pairwise_robust_shortcut_rate": {
+        "20": 0.1,
+        "50": 0.2,
+        "100": 0.15,
+        "500": 0.85
+      },
+      "plugin_independence_shortcut_rate": {
+        "20": 0.85,
+        "50": 1,
+        "100": 1,
+        "500": 1
+      },
+      "empirical_pairwise_robust_mean_true_failure_probability": {
+        "20": 0.025,
+        "50": 0.05,
+        "100": 0.0375,
+        "500": 0.2125
+      }
+    }
+  },
+  "interpretation": [
+    "Marginal-only ambiguity remains conservative because equal marginals do not identify dependence.",
+    "Pairwise finite-sample information removes conservatism immediately in the anti-correlated construction while preserving the detour under common-cause dependence.",
+    "Under independent truth, pairwise robust planning gradually recovers the shortcut as pairwise uncertainty shrinks.",
+    "Plug-in independence becomes more confidently wrong under common-cause truth as sample marginals converge to 0.5."
+  ],
+  "limitations": [
+    "single route-choice construction",
+    "synthetic matched closure samples",
+    "20 repetitions per truth/training-size cell",
+    "no distribution shift between calibration and test truth",
+    "no noisy closure labels",
+    "soft recoverability objective rather than a deployment safety certificate"
+  ]
+}

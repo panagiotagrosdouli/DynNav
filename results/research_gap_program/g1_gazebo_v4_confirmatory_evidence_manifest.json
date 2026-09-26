@@ -1,0 +1,208 @@
+{
+  "artifact_scope": "G1 Gazebo V4 localization-controlled confirmatory evidence",
+  "status": "confirmatory execution-validity gate passed in all three dependence slices",
+  "protocol": "G1_CORRELATED_GAZEBO_V4_PROTOCOL.md",
+  "workflow_run_id": 36176610216,
+  "pull_request_head_sha": "0c656ce26745dc6a8be335ebdf9ae9590c46a3c5",
+  "checked_out_merge_revision": "f1a2b04cb0cdb54dd58fa5673c0f27492ed56e53",
+  "smoke": {
+    "artifact_id": 10882798336,
+    "digest": "sha256:faf60dd093a72788dccf51647e8bee497fd3958a53efc6d38d21afd652e8fcf9",
+    "result": "PASS",
+    "contract": "9/9 valid trials with frozen route audit"
+  },
+  "confirmatory": {
+    "independent": {
+      "artifact_id": 10883138448,
+      "digest": "sha256:79912912b558417d4d77237bf791b29a5b2b5da360ab644e902eaefe8d4131a3",
+      "attempted_trials": 30,
+      "valid_trials_by_planner": {
+        "DynNavShortest": 10,
+        "DynNavHistory": 10,
+        "DynNavRobustHistory": 10
+      },
+      "paired_valid_history_robust": 10,
+      "route_audit_passed": true,
+      "latent_outcome_counts": {
+        "10": 2,
+        "11": 1,
+        "00": 2,
+        "01": 5
+      },
+      "DynNavHistory": {
+        "both_trigger_rate": 1,
+        "return_infeasibility_rate": 0.1,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 1,
+        "mean_navigation_time_s": 11.9955,
+        "initial_plan_length_m": 5.400000000000162
+      },
+      "DynNavRobustHistory": {
+        "both_trigger_rate": 0,
+        "return_infeasibility_rate": 0,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 0.9,
+        "mean_navigation_time_s": 49.4121,
+        "initial_plan_length_m": 11.880901777442165
+      },
+      "paired_effects_robust_minus_history": {
+        "both_trigger_exposure": {
+          "risk_difference": -1,
+          "bootstrap_95_interval": [
+            -1,
+            -1
+          ],
+          "mcnemar_exact_pvalue": 0.001953125
+        },
+        "return_infeasibility": {
+          "risk_difference": -0.1,
+          "bootstrap_95_interval": [
+            -0.3,
+            0
+          ],
+          "mcnemar_exact_pvalue": 1
+        },
+        "navigation_time_s": {
+          "mean_difference": 37.4166,
+          "bootstrap_95_interval": [
+            32.9091,
+            43.8048
+          ]
+        }
+      }
+    },
+    "common_cause": {
+      "artifact_id": 10883188519,
+      "digest": "sha256:b60ea8d5b69b32cbebc695ed2f79ec83e5cf35fc23cb7594862eec5443c84e49",
+      "attempted_trials": 30,
+      "valid_trials_by_planner": {
+        "DynNavShortest": 10,
+        "DynNavHistory": 10,
+        "DynNavRobustHistory": 10
+      },
+      "paired_valid_history_robust": 10,
+      "route_audit_passed": true,
+      "latent_outcome_counts": {
+        "11": 7,
+        "00": 3
+      },
+      "DynNavHistory": {
+        "both_trigger_rate": 1,
+        "return_infeasibility_rate": 0.7,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 1,
+        "mean_navigation_time_s": 11.9787,
+        "initial_plan_length_m": 5.400000000000162
+      },
+      "DynNavRobustHistory": {
+        "both_trigger_rate": 0,
+        "return_infeasibility_rate": 0,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 0.7,
+        "mean_navigation_time_s": 56.3115,
+        "initial_plan_length_m": 11.880901777442165
+      },
+      "paired_effects_robust_minus_history": {
+        "both_trigger_exposure": {
+          "risk_difference": -1,
+          "bootstrap_95_interval": [
+            -1,
+            -1
+          ],
+          "mcnemar_exact_pvalue": 0.001953125
+        },
+        "return_infeasibility": {
+          "risk_difference": -0.7,
+          "bootstrap_95_interval": [
+            -1,
+            -0.4
+          ],
+          "mcnemar_exact_pvalue": 0.015625
+        },
+        "navigation_time_s": {
+          "mean_difference": 44.3328,
+          "bootstrap_95_interval": [
+            36.3447,
+            52.7496
+          ]
+        }
+      }
+    },
+    "anti_correlated": {
+      "artifact_id": 10883203283,
+      "digest": "sha256:6de9d28d718e1895b6e4e933ed358101443c7b97effa6e3d503b130ba1dd6926",
+      "attempted_trials": 30,
+      "valid_trials_by_planner": {
+        "DynNavShortest": 10,
+        "DynNavHistory": 10,
+        "DynNavRobustHistory": 10
+      },
+      "paired_valid_history_robust": 10,
+      "route_audit_passed": true,
+      "latent_outcome_counts": {
+        "10": 7,
+        "01": 3
+      },
+      "DynNavHistory": {
+        "both_trigger_rate": 1,
+        "return_infeasibility_rate": 0,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 1,
+        "mean_navigation_time_s": 11.9955,
+        "initial_plan_length_m": 5.400000000000162
+      },
+      "DynNavRobustHistory": {
+        "both_trigger_rate": 0,
+        "return_infeasibility_rate": 0,
+        "irreversible_failure_rate": 0,
+        "navigation_success_rate": 1,
+        "mean_navigation_time_s": 46.6584,
+        "initial_plan_length_m": 11.880901777442165
+      },
+      "paired_effects_robust_minus_history": {
+        "both_trigger_exposure": {
+          "risk_difference": -1,
+          "bootstrap_95_interval": [
+            -1,
+            -1
+          ],
+          "mcnemar_exact_pvalue": 0.001953125
+        },
+        "return_infeasibility": {
+          "risk_difference": 0,
+          "bootstrap_95_interval": [
+            0,
+            0
+          ],
+          "mcnemar_exact_pvalue": 1
+        },
+        "navigation_time_s": {
+          "mean_difference": 34.6629,
+          "bootstrap_95_interval": [
+            31.5057,
+            38.0787
+          ]
+        }
+      }
+    }
+  },
+  "outcome_semantics": {
+    "return_infeasibility": "recovery_feasible == false on the realized post-execution topology",
+    "irreversible_failure": "navigation mission failed AND recovery_feasible == false",
+    "note": "Return infeasibility is analyzed separately because successful goal completion can coexist with loss of safe return. Recovery feasibility was a frozen protocol outcome; the paired statistical summary is a transparent post-run derivation from retained raw trials."
+  },
+  "interpretation": [
+    "The robust dependence planner eliminated both-trigger exposure in every paired V4 trial while History and Shortest exposed both triggers in every trial.",
+    "Under common-cause dependence, History lost safe-return feasibility in 7/10 trials and Robust in 0/10; exact McNemar p=0.015625.",
+    "Under independent dependence, only the single 11 latent realization caused return infeasibility for History (1/10); Robust remained 0/10.",
+    "Under anti-correlation, neither planner lost return feasibility, so robust avoidance produced no safety benefit in this condition.",
+    "Robust avoidance incurred large navigation-time cost and, under common-cause, lower navigation completion (0.7 vs 1.0), demonstrating a safety-efficiency/mission-completion trade-off."
+  ],
+  "claim_boundary": [
+    "controlled canonical Gazebo/Nav2 mechanism evidence with resettable simulator-odometry localization",
+    "not evidence of robustness to AMCL/localization uncertainty",
+    "not a physical-robot safety guarantee",
+    "not universal superiority of robust dependence planning",
+    "not evidence that correlation is always harmful; topology controls the sign of dependence sensitivity"
+  ]
+}

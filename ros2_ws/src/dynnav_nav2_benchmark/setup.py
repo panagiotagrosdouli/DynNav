@@ -14,6 +14,8 @@ setup(
         (f"share/{package_name}/config", glob("config/*.yaml")),
         (f"share/{package_name}/launch", glob("launch/*.launch.py")),
         (f"share/{package_name}/models", glob("models/*.sdf")),
+        (f"share/{package_name}/maps", glob("maps/*")),
+        (f"share/{package_name}/worlds", glob("worlds/*")),
     ],
     install_requires=["setuptools", "PyYAML"],
     zip_safe=True,
@@ -27,6 +29,14 @@ setup(
             "static_planner_benchmark = dynnav_nav2_benchmark.benchmark_runner:main",
             "dynamic_execution_benchmark = dynnav_nav2_benchmark.dynamic_runner:main",
             "history_dynamic_execution_benchmark = dynnav_nav2_benchmark.history_dynamic_runner:main",
+            (
+                "correlated_history_dynamic_execution_benchmark = "
+                "dynnav_nav2_benchmark.correlated_history_dynamic_runner:main"
+            ),
+            (
+                "resettable_odom_localizer = "
+                "dynnav_nav2_benchmark.resettable_odom_localizer:main"
+            ),
         ],
     },
 )

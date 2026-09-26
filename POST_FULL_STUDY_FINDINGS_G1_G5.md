@@ -1,0 +1,321 @@
+# Post-Full-Study Findings and Research Decisions
+
+**Date:** 2026-09-25  
+**Frozen V1 artifact:** workflow run `36101578097`, artifact `10850230790`, digest `sha256:c3eafc891e8c78a8abcb666f1c751ca14ee945f7a6adb649db3f8509d10a7cd3`  
+**Confirmatory protocol:** `EXPERIMENT_PROTOCOL_G1_G5_V1.md`
+
+This document records decisions made **after** inspecting the frozen V1 full-study artifact. Any experiment introduced here is exploratory unless a later protocol version explicitly promotes it to a confirmatory test.
+
+## Overall decision
+
+The five tracks do not support one equally strong paper claim.
+
+| Track | V1 result | Decision |
+|---|---|---|
+| **G1 dependence ambiguity** | strong, clean safety-efficiency separation with retained negative regime | **primary extension candidate** |
+| G2 uncertain activation | strong robustness/calibration boundary, weak novelty as standalone method | supporting study |
+| **G3 policy-dependent calibration** | exposes a real learning/safety feedback lockout; current probe rule is not a satisfactory solution | **continue research, do not claim solved** |
+| G4 interventional trigger effects | clean randomized recovery; known hidden-confounding failure | measurement/validation tool |
+| **G5 exact history compression** | exactness holds; early-goal A* search reduction is modest | computational companion; continue scaling diagnostics |
+
+## G1 — result survives the frozen study
+
+The independence-history planner takes the four-step trigger-activating shortcut. Across 10,000 retained trials per dependence condition (five repetitions x 2,000):
+
+- independent closures: failure rate **0.2473**;
+- common-cause closures: failure rate **0.5074**;
+- anti-correlated closures: failure rate **0.0000**.
+
+The marginal-dependence-robust planner takes the eight-step trigger-free detour and has **0 observed return failures** in each of the three retained dependence conditions.
+
+This is not a universal superiority result. Anti-correlation is the mandatory harm regime: the shortcut has zero failures while the robust planner still pays the doubled path length.
+
+### G1 claim that is currently supported
+
+Within the frozen synthetic construction, equal marginal closure probabilities do not determine return risk; dependence shift changes the failure rate of an independence-assuming action-triggered route, and a marginal-dependence-robust planner avoids that exposure at a path-cost penalty.
+
+### G1 next gates
+
+1. broader held-out graph/topology families;
+2. ambiguity sets learned from finite data rather than declared exactly;
+3. ROS/Gazebo execution in which common-cause topology changes are injected after observed trigger execution;
+4. systematic literature review before any first-of-kind wording.
+
+## G2 — useful robustness result, not standalone novelty
+
+Across the frozen (q,p) grid, the Bayesian activation posterior has lower Brier score than the prior-only estimate in all 9 strong-calibrated conditions and all 9 weak-calibrated conditions.
+
+Mean Brier scores across the nine (q,p) combinations:
+
+| Sensor profile | Bayesian | Prior only | Detector as truth | Activation oracle |
+|---|---:|---:|---:|---:|
+| strong calibrated | 0.1088 | 0.1534 | 0.1106 | 0.0953 |
+| weak calibrated | 0.1493 | 0.1537 | 0.2032 | 0.0942 |
+| sensitivity miscalibrated | 0.1549 | 0.1530 | 0.1712 | 0.0940 |
+
+The negative result is scientifically important: under sensitivity misspecification the Bayesian model no longer beats the prior on average. At threshold 0.20, the (q=0.8,p=0.8) misspecified case calls about 49.7% of decisions safe, and about **51.2% of those accepted decisions fail**.
+
+G2 therefore remains a robustness boundary around observation/model calibration, not a generic belief-state novelty claim.
+
+## G3 — the full study exposes a feedback-lockout problem
+
+The V1 posterior-mean gate behaves well only when the current model permits enough exposure. In more conservative or higher-risk regimes it stops collecting data, so posterior error remains substantial.
+
+Selected five-repetition means:
+
+| True closure p | Minimum return | Safe-probe exposures / 2000 | Mean absolute error |
+|---:|---:|---:|---:|
+| 0.1 | 0.5 | 2000.0 | 0.0063 |
+| 0.3 | 0.7 | 128.6 | 0.0668 |
+| 0.5 | 0.7 | 1.8 | 0.1533 |
+| 0.7 | 0.5 | 7.0 | 0.1476 |
+
+The separate logging negative control also remains important: with true (p=0.7), correctly excluding non-exposures produced a posterior mean about 0.674 in the initial retained mechanism run, whereas incorrectly coding unexposed opportunities as open outcomes produced about 0.338.
+
+### G3 research interpretation
+
+The current data support the existence of a policy/data feedback problem, not the claim that the current safe-probe heuristic solves it.
+
+### New exploratory diagnostic
+
+After inspecting V1, the branch adds a one-sided posterior lower bound on return probability and compares:
+
+- posterior-mean exposure gate;
+- credible-lower-bound exposure gate;
+- oracle gate.
+
+This diagnostic is intentionally expected to reveal a **safe-learning deadlock**: if the uncertainty-aware lower bound is already below the minimum allowed return probability, a strictly conservative policy cannot obtain the trigger-conditioned samples required to tighten that bound without additional information or tolerated exploration risk.
+
+A later G3 paper needs either:
+1. an identifiability/impossibility result plus conditions that break the deadlock, or
+2. a stronger method using side information, contextual transfer, an explicit exploration-risk budget, or another defensible source of information.
+
+## G4 — keep as an interventional validation primitive
+
+The frozen randomized sparse graph benchmark achieved precision = recall = 1.0 at all retained per-pair sample sizes ({250,500,1000,2000}).
+
+This does **not** authorize a generic causal-discovery claim. The hidden-confounding negative control has true ATE 0 but produces a spurious effect around 0.426 when the estimator is supplied the wrong constant propensity.
+
+Current role: validate whether deliberately randomized candidate trigger transitions have a measurable effect on later topology events.
+
+## G5 — exact but current planner-level speedup is modest
+
+The event quotient preserves final safe-return probability and path length in every frozen module count.
+
+At 8 modules:
+
+- raw hazard identities: 16;
+- quotient closure events: 8;
+- raw nodes expanded: 50;
+- quotient nodes expanded: 43;
+- realized node reduction: **14%**;
+- raw/compressed planning-time ratio in the retained run: about **1.16x**.
+
+The theoretical subset-history difference is much larger than the observed early-goal A* difference. Therefore the V1 evidence supports exactness and a modest practical reduction, not a dramatic speedup claim.
+
+### New exploratory diagnostic
+
+The branch now enumerates the **complete reachable augmented state graph** for the duplicated-trigger diamond family, independently of A* stopping at the first goal. This directly tests whether the quotient removes substantial reachable history redundancy even when the primary route search does not need to visit it.
+
+This new diagnostic is post-V1 and must remain separate from the frozen primary result.
+
+## Publication direction after V1
+
+The strongest coherent paper extension is:
+
+> **History-conditioned safe-return planning under action-triggered topology hazards with uncertain closure dependence.**
+
+G5 can accompany G1 as an exact representation/computation result if the full reachable-state diagnostic shows substantial redundancy reduction.
+
+G2 belongs naturally as a robustness section or follow-up.
+
+G3 is scientifically promising but currently contains an unresolved exploration-identification tradeoff; that unresolved result should drive the next method rather than be hidden.
+
+G4 is currently infrastructure for causal validation, not the headline method.
+
+## Evidence discipline
+
+- The raw V1 full-study artifact is not rewritten after inspection.
+- New G3/G5 diagnostics are explicitly post-full-study exploratory.
+- Null, harmful and failure regimes remain retained.
+- No ROS/Gazebo, physical-robot, certification or universal-safety conclusion follows from the synthetic studies.
+
+
+## Expanded post-V1 exploratory evidence
+
+A later retained exploratory artifact extends the post-V1 diagnostics without changing the frozen V1 claims.
+
+**Source commit:** `562d2c01567188094c77fd433a7dccf3fbf40df4`  
+**Workflow:** `36107200128`  
+**Artifact:** `10851712188`  
+**Digest:** `sha256:ff7985ee0e807351f0c0b63e5520ef535658957ffbc2fb1f3be468ca341c0df6`
+
+### G1 — topology-dependent dependence is not a hand-built artifact
+
+Across 40 held-out connected random 6x5 grids, every unordered pair of free nonterminal cells was evaluated as a two-hazard candidate. The survey covered 7,881 hazard pairs:
+
+- negative interaction: 254 pairs;
+- zero interaction: 7,375 pairs;
+- positive interaction: 252 pairs;
+- 37/40 maps contained at least one negative interaction;
+- 25/40 maps contained at least one positive interaction;
+- 23/40 maps contained both signs.
+
+These counts are not estimates of real-world prevalence. Their role is narrower: both dependence-sensitivity directions occur beyond the serial/parallel hand constructions, while the exact two-hazard interaction identity predicts the sign.
+
+### G3 — risk-budget deadlock breaking replicates as an information/risk frontier
+
+The exploratory risk-budget benchmark was repeated over 10 independent seeds for all 12 combinations of true closure probability `{0.1,0.3,0.5,0.7}` and minimum-return threshold `{0.5,0.7,0.9}`.
+
+Across all 12 conditions:
+
+- mean exposures were nondecreasing from budget 5 -> 20 -> 50;
+- mean observed failures were also nondecreasing from budget 5 -> 20 -> 50;
+- budget 5 had lower mean absolute estimation error than the strict credible gate in 10/12 conditions;
+- budget 20 did so in 10/12;
+- budget 50 did so in 12/12.
+
+A representative unsafe regime is true closure probability 0.7 with minimum return 0.7. The strict credible gate takes zero exposures and remains at mean absolute error 0.45. Budget 5 averages 7.4 exposures, 5.1 failures and error 0.159; budget 20 averages 28.6 exposures, 19.0 failures and error 0.101; budget 50 averages 70.4 exposures, 48.6 failures and error 0.048.
+
+This does not make the risk-budget method a safety solution. It establishes the trade-off: trigger-conditioned identification can be purchased with explicitly admitted exposure risk. The next G3 method must obtain information more efficiently or introduce defensible side information / transfer assumptions.
+
+### G5 — full reachable-state redundancy is large
+
+The post-V1 exhaustive state-space diagnostic clarifies why the frozen early-goal A* timing result looked modest. At 6 duplicated-trigger modules, the raw augmented graph has 33,354 reachable position-history states, while the exact closure-event quotient has 126, a 264.7x ratio (99.62% reduction).
+
+This strengthens G5 as an exact representation/computation companion, but does not convert the result into a universal online speedup claim.
+
+
+## G1 V4 localization-controlled Nav2/Gazebo confirmatory evidence
+
+The post-V1 G1 programme has now passed a controlled execution gate.
+
+**Workflow:** `36176610216`  
+**Checked-out evidence revision:** `f1a2b04cb0cdb54dd58fa5673c0f27492ed56e53`  
+**Protocol:** `G1_CORRELATED_GAZEBO_V4_PROTOCOL.md`  
+**Retained manifest:** `results/research_gap_program/g1_gazebo_v4_confirmatory_evidence_manifest.json`
+
+The V4 study preserves the frozen canonical two-return-corridor topology and uses resettable simulator odometry instead of AMCL. This localization intervention was introduced only after the V3.1 confirmatory attempt failed its preregistered paired-valid gate because of localization jumps; the failed V3.1 artifacts remain retained.
+
+Each V4 dependence slice contains 10 paired repetitions x 3 planners = 30 valid trials. In every slice:
+
+- `DynNavShortest` and `DynNavHistory` select the 5.40 m direct plan and cross both action-trigger gates;
+- `DynNavRobustHistory` selects the 11.88 m trigger-free detour;
+- History↔Robust paired-valid count is 10/10.
+
+### Exposure mechanism
+
+For independent, common-cause and anti-correlated closure truth alike:
+
+- History both-trigger exposure = 10/10;
+- Robust both-trigger exposure = 0/10;
+- paired risk difference = **-1.0**;
+- bootstrap 95% interval = **[-1.0,-1.0]**;
+- exact McNemar p = **0.001953125**.
+
+This is the clean execution-level mechanism result: uncertainty about joint closure dependence changes the route selected before the dynamic events occur.
+
+### Realized safe-return feasibility
+
+The protocol records recovery feasibility on the realized post-execution topology. This outcome is more directly aligned with the safe-return claim than the older composite `mission_failure AND recovery_infeasible`, because a robot may successfully reach the outward goal after having destroyed its route home.
+
+History versus Robust:
+
+| Dependence truth | History return-infeasible | Robust return-infeasible | Paired risk difference | Bootstrap 95% interval | Exact McNemar p |
+|---|---:|---:|---:|---:|---:|
+| independent | 1/10 | 0/10 | -0.10 | [-0.30,0.00] | 1.0 |
+| common cause | 7/10 | 0/10 | **-0.70** | **[-1.00,-0.40]** | **0.015625** |
+| anti-correlated | 0/10 | 0/10 | 0.00 | [0.00,0.00] | 1.0 |
+
+The common-cause condition therefore supplies the retained execution consequence expected from the G1 mechanism. The anti-correlated condition remains the required no-benefit control.
+
+### Retained cost / harm boundary
+
+Robust planning is not universally preferable.
+
+Mean navigation-time difference, Robust minus History:
+
+- independent: **+37.42 s**, bootstrap 95% interval [32.91,43.80];
+- common cause: **+44.33 s**, interval [36.34,52.75];
+- anti-correlated: **+34.66 s**, interval [31.51,38.08].
+
+Navigation success in the common-cause slice was 10/10 for History and 7/10 for Robust, despite Robust preserving return feasibility. This is retained as a mission-completion/safety trade-off rather than hidden as an implementation nuisance.
+
+### G1 publication decision after V4
+
+G1 has now crossed the main mechanism-evidence gate:
+
+1. exact dependence ambiguity model;
+2. topology-dependent dependence interaction theory;
+3. held-out random-topology sign survey;
+4. finite-data ambiguity study;
+5. Python and C++/Nav2 robust planners;
+6. controlled 90-trial Gazebo confirmatory execution;
+7. explicit beneficial, null and harmful/cost regimes.
+
+The remaining G1 publication work is manuscript integration, literature/bibliography verification, final evidence-manifest reconciliation, and release freeze. Claims must remain scoped to the canonical controlled execution environment; V4 is not evidence of AMCL robustness or physical-robot safety.
+
+
+## G3/G4/G5 retained post-V1 stress evidence — 2026-09-26
+
+**Workflow:** `36223128961`  
+**Artifact:** `10899837124`  
+**Digest:** `sha256:b36c20614fbbc0b56f1cac4917acae91bb022ad9f8f4edd6dbea5ef5491428e4`  
+**Head SHA:** `41a5c25d185214bdf519c493c6641911e51b7d7a`
+
+### G3 — the deadlock can be broken, but the assumption used to break it matters
+
+The strict target-only credible gate remains in cold-start lockout across the frozen side-information grid: mean target exposures are zero and mean absolute probability error is 0.225.
+
+A safe sentinel with an exactly shared closure parameter changes the identifiability picture. Across the 12 target-probability / minimum-return conditions:
+
+- mean absolute target-probability error falls to **0.00938**;
+- across truly admissible target conditions, mean target exposures are **535.8 / 1000**;
+- the target is exposed in **76.7%** of safe condition × repetition cells on average;
+- across truly inadmissible target conditions, mean false-safe exposure is only **0.067 / 1000**, but is not mathematically zero because the Bayesian credible rule remains a finite-sample model quantity.
+
+The transfer assumption is the critical boundary. When the sentinel is artificially 0.4 safer than the target, the transferred posterior becomes badly optimistic: mean absolute error is **0.301** and truly unsafe conditions average **527.8 false-safe target exposures / 1000**. When the sentinel is 0.4 riskier, false-safe exposure disappears but safe-target exposure collapses to **21.8 / 1000** on average, effectively recreating conservative lockout.
+
+**Decision:** G3 is now a strong identifiability/assumption result, not a solved safe-learning algorithm. The scientific statement is that target-only conservative learning can be structurally locked; breaking the lockout requires either explicitly admitted exploration risk or side information whose transfer assumptions must themselves be justified and stress-tested.
+
+### G4 — randomized interventional validation has a measurable sample-support boundary
+
+The randomized graph-recovery stress grid varies per-pair samples `{100,250,500,1000}`, trigger propensities `{0.2,0.5,0.8}`, and effect scales `{0.5,1.0,1.5}` over 10 repetitions.
+
+At 100 samples per trigger/closure pair, the weakest retained conditions are unreliable:
+
+- minimum mean recall: **0.10**;
+- minimum mean precision: **0.30**.
+
+At 500 samples:
+
+- minimum mean recall: **0.833**;
+- minimum mean precision: **0.91**.
+
+At 1000 samples:
+
+- minimum mean recall: **0.933**;
+- minimum mean precision: **0.96**;
+- positive-edge mean absolute effect-estimation error ranges from about **0.0185 to 0.0455** across the frozen propensity/effect grid.
+
+The separate hidden-confounding negative control still stands and is not repaired by this randomized study.
+
+**Decision:** G4 is useful as a randomized trigger-attribution / validation primitive with explicit sample-support requirements. It is not currently a standalone general causal-discovery contribution.
+
+### G5 — exact quotienting removes large reachable history redundancy
+
+The exhaustive duplicated-trigger diamond benchmark now extends to 8 modules and records the complete reachable augmented-state graph rather than stopping A* at the first goal.
+
+At 8 modules:
+
+- raw trigger-history states: **398,583**;
+- exact quotient states: **207**;
+- state-count ratio: **1,925.5×**;
+- reduction: **99.948%**;
+- raw peak BFS frontier: **30,045**;
+- quotient peak frontier: **14**;
+- retained enumeration time: **5598 ms raw vs 1.61 ms quotient** on the workflow runner.
+
+The scaling is already strong at 6 modules (33,354 vs 126, 264.7×) and grows to 710.1× at 7 modules.
+
+**Decision:** G5 is promoted from a merely modest timing companion to a strong exact state-representation result. The early-goal A* benchmark remains an important negative/control result: exact quotienting does not imply that every online search will realize the full-state reduction. Timing remains machine-dependent and no universal real-time speedup is claimed.

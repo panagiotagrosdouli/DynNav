@@ -1,0 +1,62 @@
+name: Correlated Gazebo commissioning
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/experiments/correlated_gazebo_commissioning.py"
+      - "scripts/commission_correlated_gazebo_geometry.py"
+      - "results/ros2_gazebo/dynamic_run_31488640894/**"
+      - ".github/workflows/correlated-gazebo-commissioning.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  commission:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install DynNav
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Commission geometry
+        env:
+          PYTHONPATH: .
+        run: |
+          python scripts/commission_correlated_gazebo_geometry.py \
+            --return-snapshot results/ros2_gazebo/dynamic_run_31488640894/costmap_return_gate_closure_NavFn_r0.json.gz \
+            --forward-snapshot results/ros2_gazebo/dynamic_run_31488640894/costmap_forward_closure_negative_control_NavFn_r0.json.gz \
+            --output results/research_gap_program/correlated_gazebo_commissioning.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(
+              Path("results/research_gap_program/correlated_gazebo_commissioning.json").read_text()
+          )
+          print(json.dumps(data, indent=2, sort_keys=True))
+          preferred = data["preferred_parallel_redundant"]
+          if preferred is None:
+              print("No kappa=-1 parallel-redundant candidate found; execution protocol remains blocked.")
+          else:
+              assert preferred["interaction"] == -1
+              assert [
+                  preferred["f00"],
+                  preferred["f10"],
+                  preferred["f01"],
+                  preferred["f11"],
+              ] == [1, 1, 1, 0]
+          PY
+      - name: Upload commissioning evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: correlated-gazebo-commissioning
+          path: results/research_gap_program/correlated_gazebo_commissioning.json
+          if-no-files-found: error

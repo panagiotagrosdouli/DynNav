@@ -1,0 +1,54 @@
+{
+  "scope": "Invalid G1 correlated Gazebo integration smokes retained before any admissible comparative outcome",
+  "protocol_current": "G1_CORRELATED_GAZEBO_V2_PROTOCOL.md (V2.3)",
+  "runs": [
+    {
+      "label": "V2 initial canonical smoke",
+      "workflow_run_id": 36125826581,
+      "artifact_id": 10859174019,
+      "artifact_digest": "sha256:f1855f308f4ab826c46437a2a645529db511069b12d90b45e91e6d7dbe1ad202",
+      "valid_for_efficacy": false,
+      "failure_class": "integration_localization_no_motion",
+      "observations": {
+        "trials": 9,
+        "all_navigation_success": false,
+        "all_trigger_exposure": false,
+        "displacement": "effectively zero",
+        "primary_issue": "robot/default spawn and map-frame initialization produced localization/costmap instability before motion"
+      },
+      "methodological_action": "Rigidly translate the entire canonical map/world/scenario without changing grid topology, relative geometry, hazards, probabilities, weight, or hypotheses."
+    },
+    {
+      "label": "V2.2 translated canonical smoke",
+      "workflow_run_id": 36128122212,
+      "artifact_id": 10860931882,
+      "artifact_digest": "sha256:97c264f4aadd761ea6de955701d3ff05208b4f9a562ed22e495d8042438969e8",
+      "source_revision_recorded_in_artifact": "20c7accbeb7b1ea804ddc5f8673947d194ac48f9",
+      "pr_head_sha": "627e739ff27ee03d2dc5ecc351a55073b8cb1161",
+      "topology_contract": {
+        "f00": 1,
+        "f10": 1,
+        "f01": 1,
+        "f11": 0,
+        "interaction": -1,
+        "trigger_gate_edge_counts": [
+          31,
+          31
+        ]
+      },
+      "valid_for_efficacy": false,
+      "failure_class": "exact_planner_runtime_stall_and_stale_trial_feedback",
+      "observations": {
+        "trials": 9,
+        "all_valid_trial": false,
+        "invalid_reason": "insufficient_motion",
+        "first_history_planning_request": "compute_path_to_pose remained active until 75 s timeout",
+        "subsequent_trial_contamination": "stale BasicNavigator feedback could carry the prior timeout navigation_time into the next trial",
+        "trigger_exposure": 0,
+        "closures_applied": 0
+      },
+      "methodological_action": "V2.3 caches exact closure-scenario reachability inside each planning call and clears navigator.feedback before each trial; no research-model parameter changes."
+    }
+  ],
+  "claim_boundary": "Neither invalid smoke is included in planner-efficacy statistics. They are retained as integration/falsification evidence."
+}

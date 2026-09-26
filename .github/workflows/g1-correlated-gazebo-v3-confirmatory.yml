@@ -1,0 +1,162 @@
+name: G1 correlated Gazebo V3.1 confirmatory
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  dependence-slice:
+    name: ${{ matrix.dependence }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container: ros:jazzy-ros-base-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        dependence:
+          - independent
+          - common_cause
+          - anti_correlated
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      QT_QPA_PLATFORM: offscreen
+      REPS: "10"
+      MIN_PAIRED_VALID: "8"
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS and Gazebo dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            python3-pip \
+            python3-rosdep
+          rosdep init 2>/dev/null || true
+          rosdep update
+          rosdep install \
+            --from-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --ignore-src \
+            --rosdistro jazzy \
+            -r -y
+
+      - name: Build and test frozen implementation
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon --log-base /tmp/dynnav_g1_confirm/log build \
+            --base-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --build-base /tmp/dynnav_g1_confirm/build \
+            --install-base /tmp/dynnav_g1_confirm/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          source /tmp/dynnav_g1_confirm/install/setup.bash
+          colcon --log-base /tmp/dynnav_g1_confirm/test-log test \
+            --build-base /tmp/dynnav_g1_confirm/build \
+            --install-base /tmp/dynnav_g1_confirm/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          colcon test-result \
+            --test-result-base /tmp/dynnav_g1_confirm/build \
+            --verbose
+
+      - name: Reconfirm frozen topology contract
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_confirm/install/setup.bash
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
+
+          root = Path("ros2_ws/src/dynnav_nav2_benchmark")
+          contract = evaluate_canonical_g1_topology(
+              map_yaml=root / "maps" / "g1_parallel_corridor.yaml",
+              scenario_yaml=root / "config" / "sandbox_correlated_history_events.yaml",
+          )
+          payload = contract.to_dict()
+          assert [payload["f00"], payload["f10"], payload["f01"], payload["f11"]] == [1, 1, 1, 0]
+          assert payload["interaction"] == -1
+          assert payload["trigger_gate_full_corridor_cuts"] == (True, True)
+          assert payload["independence_route"]["steps"] == 108
+          assert payload["independence_route"]["final_active_mask"] == 3
+          assert payload["independence_route"]["trigger_crossings"] == (True, True)
+          assert payload["robust_route"]["steps"] == 230
+          assert payload["robust_route"]["final_active_mask"] == 0
+          assert payload["robust_route"]["trigger_crossings"] == (False, False)
+
+          out = Path("/tmp/dynnav_g1_confirm/topology_contract.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(payload, indent=2, sort_keys=True))
+          PY
+
+      - name: Record frozen inputs
+        run: |
+          OUT="/tmp/dynnav_g1_confirm/results/${{ matrix.dependence }}"
+          mkdir -p "$OUT"
+          cp /tmp/dynnav_g1_confirm/topology_contract.json "$OUT/"
+          cp G1_CORRELATED_GAZEBO_V2_PROTOCOL.md "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml "$OUT/frozen_scenario.yaml"
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf "$OUT/"
+          printf '%s\n' "${GITHUB_SHA}" > "$OUT/source_revision.txt"
+          printf '%s\n' "${{ matrix.dependence }}" > "$OUT/dependence_slice.txt"
+
+      - name: Run 10 paired repetitions
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_confirm/install/setup.bash
+          OUT="/tmp/dynnav_g1_confirm/results/${{ matrix.dependence }}"
+          timeout --signal=INT --kill-after=30s 50m \
+            ros2 launch dynnav_nav2_benchmark \
+              tb3_correlated_history_execution_benchmark.launch.py \
+              headless:=true \
+              repetitions:="$REPS" \
+              dependence:="${{ matrix.dependence }}" \
+              output_dir:="$OUT" \
+            2>&1 | tee "$OUT/ros_launch.log"
+          test -s "$OUT/results.json"
+
+      - name: Validate confirmatory slice
+        run: |
+          OUT="/tmp/dynnav_g1_confirm/results/${{ matrix.dependence }}"
+          python3 scripts/validate_g1_gazebo_confirmatory.py \
+            --input "$OUT/results.json" \
+            --dependence "${{ matrix.dependence }}" \
+            --repetitions "$REPS" \
+            --minimum-paired-valid "$MIN_PAIRED_VALID" \
+            --output "$OUT/confirmatory_validation.json"
+
+      - name: Run paired statistical analysis
+        if: always()
+        env:
+          PYTHONPATH: .
+        run: |
+          OUT="/tmp/dynnav_g1_confirm/results/${{ matrix.dependence }}"
+          if [ -s "$OUT/results.json" ]; then
+            python3 scripts/analyze_g1_gazebo_v2.py \
+              --input "$OUT/results.json" \
+              --output "$OUT/paired_analysis.json" \
+              --bootstrap-resamples 10000 \
+              --seed 20260925
+          fi
+
+      - name: Upload retained confirmatory slice
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-v3-1-confirmatory-${{ matrix.dependence }}-${{ github.sha }}
+          path: /tmp/dynnav_g1_confirm/results/${{ matrix.dependence }}
+          if-no-files-found: warn

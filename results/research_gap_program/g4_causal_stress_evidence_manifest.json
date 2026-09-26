@@ -1,0 +1,58 @@
+{
+  "artifact_scope": "G4 randomized trigger-to-closure graph-recovery stress evidence",
+  "workflow_run_id": 36223128961,
+  "artifact_id": 10899837124,
+  "artifact_digest": "sha256:b36c20614fbbc0b56f1cac4917acae91bb022ad9f8f4edd6dbea5ef5491428e4",
+  "head_sha": "41a5c25d185214bdf519c493c6641911e51b7d7a",
+  "source_file": "g4_causal_graph_stress.json",
+  "configuration": {
+    "trials_per_pair": [
+      100,
+      250,
+      500,
+      1000
+    ],
+    "propensities": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "effect_scales": [
+      0.5,
+      1,
+      1.5
+    ],
+    "repetitions": 10,
+    "known_assignment_propensity": true
+  },
+  "retained_findings": {
+    "n100": {
+      "minimum_recall": 0.1,
+      "minimum_precision": 0.3,
+      "maximum_mean_false_positives": 0.9,
+      "maximum_mean_false_negatives": 2.7
+    },
+    "n500": {
+      "minimum_recall": 0.8333333333333333,
+      "minimum_precision": 0.91,
+      "maximum_mean_false_positives": 0.4,
+      "maximum_mean_false_negatives": 0.5
+    },
+    "n1000": {
+      "minimum_recall": 0.9333333333333333,
+      "minimum_precision": 0.96,
+      "maximum_mean_false_positives": 0.2,
+      "maximum_mean_false_negatives": 0.2,
+      "positive_edge_absolute_error_range": [
+        0.018533333333333332,
+        0.045458333333333316
+      ]
+    }
+  },
+  "decision": "G4 works as a randomized interventional validation primitive when sample support is adequate, but weak/small-sample regimes fail and hidden confounding remains outside identification.",
+  "claim_boundary": [
+    "known randomized/ignorable assignment only",
+    "no arbitrary observational causal discovery",
+    "no hidden-confounder identification"
+  ]
+}

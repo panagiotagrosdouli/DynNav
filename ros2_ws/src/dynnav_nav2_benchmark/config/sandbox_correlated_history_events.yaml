@@ -1,0 +1,63 @@
+schema_version: 1
+seed: 20260925
+
+gazebo:
+  world_name: default
+  robot_entity: turtlebot3_waffle
+  blocker:
+    parking_pose: {x: 100.0, y: 100.0, z: 0.5, yaw: 0.0}
+    size: {x: 0.40, y: 2.05, z: 1.00}
+
+planners:
+  - DynNavShortest
+  - DynNavHistory
+  - DynNavRobustHistory
+
+scenario:
+  name: g1_parallel_corridor_v2_1
+  frame_id: map
+  start: {x: 0.0, y: 0.0, yaw: 0.0}
+  goal: {x: 5.4, y: 0.0, yaw: 0.0}
+  safe_region:
+    center: {x: 0.0, y: 0.0, yaw: 0.0}
+    radius_m: 0.35
+
+  # V3 mechanism correction: each action trigger is a full-corridor vertical
+  # gate. V2.x used 0.75 m half-width, leaving a deterministic bypass around
+  # the gate. The 1.0 m half-width exactly spans the 2.0 m free top corridor
+  # in the frozen occupancy map, so avoiding activation requires the intended
+  # lower return detour rather than a local gate-edge bypass.
+  hazards:
+    - blocker_entity: dynnav_g1_blocker_top
+      trigger_gate_half_width_m: 1.0
+      action_trigger:
+        hazard_id: top_return_gate
+        source: {x: 2.825, y: 0.0, yaw: 0.0}
+        target: {x: 2.875, y: 0.0, yaw: 0.0}
+        closure_probability: 0.5
+      blocker_pose: {x: 1.0, y: 0.0, z: 0.5, yaw: 0.0}
+
+    - blocker_entity: dynnav_g1_blocker_bottom
+      trigger_gate_half_width_m: 1.0
+      action_trigger:
+        hazard_id: bottom_return_gate
+        source: {x: 3.825, y: 0.0, yaw: 0.0}
+        target: {x: 3.875, y: 0.0, yaw: 0.0}
+        closure_probability: 0.5
+      blocker_pose: {x: 1.0, y: -4.05, z: 0.5, yaw: 0.0}
+
+  dependence_conditions:
+    - independent
+    - common_cause
+    - anti_correlated
+
+  # Scientific quantities unchanged from V2.0.
+  pairwise_joint_lower: 0.0
+  pairwise_joint_upper: 0.5
+  recoverability_weight: 12.0
+
+  minimum_injection_clearance_m: 0.9
+  recovery_budget_m: 20.0
+  reset_pose_tolerance_m: 0.35
+  execution_timeout_s: 75.0
+  wall_timeout_s: 150.0

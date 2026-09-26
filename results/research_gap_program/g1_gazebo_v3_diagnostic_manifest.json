@@ -1,0 +1,31 @@
+{
+  "artifact_scope": "G1 Gazebo V3 diagnostic smoke; retained but excluded from confirmatory efficacy",
+  "source_revision": "ae19b76c0cad773e3f5b54856b1cf0521b8497b6",
+  "workflow_run_id": 36132805281,
+  "artifact_id": 10862098051,
+  "artifact_digest": "sha256:d4945d8ffcc69391ce3aa0b6d66b3a5d46815729631896724fc15c0ded95e529",
+  "trial_count": 9,
+  "all_trials_had_motion": true,
+  "exclusion_reason": "pre-execution planner audit showed trial-order global-costmap contamination; even DynNavShortest changed between direct and detour routes across dependence/order blocks",
+  "route_audit": {
+    "independent": {
+      "DynNavShortest": "lower_detour",
+      "DynNavHistory": "upper_direct",
+      "DynNavRobustHistory": "lower_detour"
+    },
+    "common_cause": {
+      "DynNavShortest": "lower_detour",
+      "DynNavHistory": "lower_detour",
+      "DynNavRobustHistory": "upper_direct"
+    },
+    "anti_correlated": {
+      "DynNavShortest": "upper_direct",
+      "DynNavHistory": "lower_detour",
+      "DynNavRobustHistory": "upper_direct"
+    }
+  },
+  "key_observation": "dependence truth is sampled only after route choice, so dependence-block changes in the initial route cannot be interpreted causally and reveal a changing planning cost surface",
+  "retained_positive_signal": "the pre-execution audit demonstrated that the direct and detour routes are both physically/planner reachable and that the history/robust objectives can separate under at least one frozen costmap realization",
+  "next_protocol": "V3.1 freezes the global planning costmap to static map plus inflation for all planners while leaving the local sensor costmap unchanged; recovery overlays actually applied blocker footprints on the static global costmap",
+  "claim_boundary": "V3 must not be used for confirmatory planner superiority, dependence-effect, or irreversible-failure claims"
+}

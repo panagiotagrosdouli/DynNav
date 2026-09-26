@@ -1,0 +1,293 @@
+name: G1 correlated Gazebo V3.1
+
+on:
+  workflow_dispatch:
+    inputs:
+      repetitions:
+        description: Paired repetitions per dependence condition
+        required: true
+        default: "10"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  g1-correlated-gazebo:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    container: ros:jazzy-ros-base-noble
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      QT_QPA_PLATFORM: offscreen
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS and Gazebo dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            python3-pip \
+            python3-rosdep
+          rosdep init 2>/dev/null || true
+          rosdep update
+          rosdep install \
+            --from-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --ignore-src \
+            --rosdistro jazzy \
+            -r -y
+
+      - name: Build and test robust planner plus canonical assets
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v2/log build \
+            --base-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --build-base /tmp/dynnav_g1_v2/build \
+            --install-base /tmp/dynnav_g1_v2/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          source /tmp/dynnav_g1_v2/install/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v2/test-log test \
+            --build-base /tmp/dynnav_g1_v2/build \
+            --install-base /tmp/dynnav_g1_v2/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          colcon test-result \
+            --test-result-base /tmp/dynnav_g1_v2/build \
+            --verbose
+
+      - name: Reconfirm canonical topology contract
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v2/install/setup.bash
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
+
+          root = Path("ros2_ws/src/dynnav_nav2_benchmark")
+          contract = evaluate_canonical_g1_topology(
+              map_yaml=root / "maps" / "g1_parallel_corridor.yaml",
+              scenario_yaml=root / "config" / "sandbox_correlated_history_events.yaml",
+          )
+          payload = contract.to_dict()
+          assert [payload["f00"], payload["f10"], payload["f01"], payload["f11"]] == [1, 1, 1, 0]
+          assert payload["interaction"] == -1
+          assert payload["trigger_gate_full_corridor_cuts"] == (True, True)
+          assert payload["trigger_gate_edge_counts"] == (41, 41)
+          assert payload["independence_route"]["steps"] == 108
+          assert payload["independence_route"]["total_cost"] == 204.0
+          assert payload["independence_route"]["final_active_mask"] == 3
+          assert payload["independence_route"]["trigger_crossings"] == (True, True)
+          assert payload["robust_route"]["steps"] == 230
+          assert payload["robust_route"]["total_cost"] == 230.0
+          assert payload["robust_route"]["final_active_mask"] == 0
+          assert payload["robust_route"]["trigger_crossings"] == (False, False)
+          Path("/tmp/dynnav_g1_v2_topology_contract.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True)
+          )
+          print(json.dumps(payload, indent=2, sort_keys=True))
+          PY
+
+      - name: Record frozen V3.1 inputs
+        run: |
+          mkdir -p /tmp/dynnav_g1_v2/results
+          cp /tmp/dynnav_g1_v2_topology_contract.json /tmp/dynnav_g1_v2/results/topology_contract.json
+          cp G1_CORRELATED_GAZEBO_V2_PROTOCOL.md /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml /tmp/dynnav_g1_v2/results/frozen_scenario.yaml
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro /tmp/dynnav_g1_v2/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf /tmp/dynnav_g1_v2/results/
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_g1_v2/results/source_revision.txt
+          sha256sum \
+            G1_CORRELATED_GAZEBO_V2_PROTOCOL.md \
+            ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml \
+            ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml \
+            ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm \
+            ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro \
+            ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf \
+            > /tmp/dynnav_g1_v2/results/SHA256SUMS
+
+      - name: Run canonical correlated Gazebo trials
+        env:
+          REPS: ${{ inputs.repetitions || '1' }}
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v2/install/setup.bash
+          timeout --signal=INT --kill-after=30s 40m \
+            ros2 launch dynnav_nav2_benchmark \
+              tb3_correlated_history_execution_benchmark.launch.py \
+              headless:=true \
+              repetitions:="$REPS" \
+              output_dir:=/tmp/dynnav_g1_v2/results \
+            2>&1 | tee /tmp/dynnav_g1_v2/results/ros_launch.log
+          test -s /tmp/dynnav_g1_v2/results/results.json
+
+      - name: Validate paired V3.1 contract and summarize
+        env:
+          REPS: ${{ inputs.repetitions || '1' }}
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+          from collections import defaultdict
+          from pathlib import Path
+
+          path = Path("/tmp/dynnav_g1_v2/results/results.json")
+          data = json.loads(path.read_text())
+          assert data["schema_version"] == 1
+          assert data["benchmark_type"] == "correlated_action_triggered_history"
+          assert data["dependence_conditions"] == [
+              "independent",
+              "common_cause",
+              "anti_correlated",
+          ]
+          reps = int(os.environ["REPS"])
+          trials = data["trials"]
+          planners = {
+              "DynNavShortest",
+              "DynNavHistory",
+              "DynNavRobustHistory",
+          }
+          assert len(trials) == reps * 3 * len(planners)
+
+          planner_audit = defaultdict(list)
+          grouped = defaultdict(list)
+          for row in trials:
+              assert row["planner_id"] in planners
+              assert len(row["latent_closures"]) == 2
+              assert len(row["hazards"]) == 2
+              assert len(row["closures_applied"]) == 2
+              assert "operational_irreversible_failure" in row
+              assert "navigation_time_s" in row
+              initial = row["initial_plan"]
+              assert initial["success"], row
+              planner_audit[row["planner_id"]].append(
+                  {
+                      "dependence": row["dependence"],
+                      "repetition": row["repetition"],
+                      "path_length_m": initial["path_length_m"],
+                      "route_class": initial["route_class"],
+                      "trigger_gate_crossings": initial["trigger_gate_crossings"],
+                      "pose_count": initial["pose_count"],
+                  }
+              )
+              grouped[(row["dependence"], row["repetition"])].append(row)
+
+          planner_audit_path = Path(
+              "/tmp/dynnav_g1_v2/results/planner_audit_summary.json"
+          )
+          planner_audit_path.write_text(
+              json.dumps(dict(planner_audit), indent=2, sort_keys=True)
+          )
+          print("PRE-EXECUTION PLANNER AUDIT")
+          print(json.dumps(dict(planner_audit), indent=2, sort_keys=True))
+
+          expected_gate_crossings = {
+              "DynNavShortest": [True, True],
+              "DynNavHistory": [True, True],
+              "DynNavRobustHistory": [False, False],
+          }
+          expected_route_class = {
+              "DynNavShortest": "upper_direct",
+              "DynNavHistory": "upper_direct",
+              "DynNavRobustHistory": "lower_detour",
+          }
+          for planner, rows in planner_audit.items():
+              assert {
+                  tuple(row["trigger_gate_crossings"])
+                  for row in rows
+              } == {tuple(expected_gate_crossings[planner])}, rows
+              assert {
+                  row["route_class"] for row in rows
+              } == {expected_route_class[planner]}, rows
+
+          invalid = [row for row in trials if not row["valid_trial"]]
+          Path("/tmp/dynnav_g1_v2/results/invalid_trials.json").write_text(
+              json.dumps(invalid, indent=2, sort_keys=True)
+          )
+
+          assert len(grouped) == reps * 3
+          for key, rows in grouped.items():
+              assert {row["planner_id"] for row in rows} == planners
+              assert len({tuple(row["latent_closures"]) for row in rows}) == 1, key
+              valid_count = sum(bool(row["valid_trial"]) for row in rows)
+              assert valid_count >= 2, (key, valid_count, rows)
+
+          summary = {}
+          for dependence in data["dependence_conditions"]:
+              summary[dependence] = {}
+              for planner in sorted(planners):
+                  rows = [
+                      row for row in trials
+                      if row["dependence"] == dependence
+                      and row["planner_id"] == planner
+                  ]
+                  summary[dependence][planner] = {
+                      "valid_trials": len(rows),
+                      "both_triggers": sum(
+                          all(h["trigger_observed"] for h in row["hazards"])
+                          for row in rows
+                      ),
+                      "closures_applied": sum(
+                          sum(bool(v) for v in row["closures_applied"])
+                          for row in rows
+                      ),
+                      "navigation_success": sum(
+                          bool(row["navigation_success"]) for row in rows
+                      ),
+                      "irreversible_failures": sum(
+                          bool(row["operational_irreversible_failure"])
+                          for row in rows
+                      ),
+                      "mean_navigation_time_s": (
+                          sum(
+                              row["navigation_time_s"]
+                              for row in rows
+                              if row["navigation_time_s"] is not None
+                          )
+                          / max(
+                              1,
+                              sum(
+                                  row["navigation_time_s"] is not None
+                                  for row in rows
+                              ),
+                          )
+                      ),
+                  }
+
+          out = Path("/tmp/dynnav_g1_v2/results/audit_summary.json")
+          out.write_text(json.dumps(summary, indent=2, sort_keys=True))
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Run preregistered paired statistical analysis
+        if: always()
+        env:
+          PYTHONPATH: .
+        run: |
+          if [ -s /tmp/dynnav_g1_v2/results/results.json ]; then
+            python3 scripts/analyze_g1_gazebo_v2.py \
+              --input /tmp/dynnav_g1_v2/results/results.json \
+              --output /tmp/dynnav_g1_v2/results/paired_analysis.json \
+              --bootstrap-resamples 5000 \
+              --seed 20260925
+          fi
+
+      - name: Upload canonical G1 V3.1 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-correlated-gazebo-v3-1-${{ github.sha }}
+          path: /tmp/dynnav_g1_v2/results
+          if-no-files-found: warn

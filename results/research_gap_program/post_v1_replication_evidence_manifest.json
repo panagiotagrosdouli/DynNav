@@ -1,0 +1,154 @@
+{
+  "artifact_scope": "Expanded post-V1 exploratory evidence with held-out G1 topology survey and 10-seed G3 risk-budget replication",
+  "generated_from_commit": "562d2c01567188094c77fd433a7dccf3fbf40df4",
+  "workflow_run_id": 36107200128,
+  "artifact_id": 10851712188,
+  "artifact_digest": "sha256:ff7985ee0e807351f0c0b63e5520ef535658957ffbc2fb1f3be468ca341c0df6",
+  "configuration": {
+    "master_seed": 20260925,
+    "g1_survey": {
+      "accepted_maps": 40,
+      "width": 6,
+      "height": 5,
+      "obstacle_probability": 0.3,
+      "hazard_pair_policy": "all unordered free nonterminal cell pairs"
+    },
+    "g3_replication": {
+      "repetitions": 10,
+      "opportunities_per_condition": 1000,
+      "true_closure_probabilities": [
+        0.1,
+        0.3,
+        0.5,
+        0.7
+      ],
+      "minimum_return_thresholds": [
+        0.5,
+        0.7,
+        0.9
+      ],
+      "confidence": 0.9,
+      "risk_budgets": [
+        5,
+        20,
+        50
+      ]
+    }
+  },
+  "selected_results": {
+    "G1_held_out_topology_interaction_survey": {
+      "evaluated_hazard_pairs": 7881,
+      "negative_interactions": 254,
+      "zero_interactions": 7375,
+      "positive_interactions": 252,
+      "maps_with_negative_interaction": 37,
+      "maps_with_positive_interaction": 25,
+      "maps_with_both_signs": 23,
+      "interpretation": "Both dependence-sensitivity signs occur beyond the hand-built controls. The counts are a held-out mechanism survey, not an estimate of real-environment prevalence."
+    },
+    "G3_risk_budget_replication": {
+      "budget_exposure_ordering": "mean exposures are nondecreasing from budget 5 to 20 to 50 in all 12 frozen p/threshold conditions",
+      "budget_failure_ordering": "mean observed failures are nondecreasing from budget 5 to 20 to 50 in all 12 frozen p/threshold conditions",
+      "lower_mean_absolute_error_than_strict_credible_gate": {
+        "risk_budget_5": "10/12 conditions",
+        "risk_budget_20": "10/12 conditions",
+        "risk_budget_50": "12/12 conditions"
+      },
+      "examples": {
+        "p=0.3, min_return=0.7": {
+          "credible_gate": {
+            "mean_exposures": 0,
+            "mean_failures": 0,
+            "mean_absolute_error": 0.05
+          },
+          "risk_budget_5": {
+            "mean_exposures": 12.9,
+            "sd_exposures": 6.190495,
+            "mean_failures": 4.1,
+            "mean_absolute_error": 0.055273
+          },
+          "risk_budget_20": {
+            "mean_exposures": 50,
+            "sd_exposures": 11.135529,
+            "mean_failures": 16.2,
+            "mean_absolute_error": 0.0534
+          },
+          "risk_budget_50": {
+            "mean_exposures": 129.7,
+            "sd_exposures": 21.061022,
+            "mean_failures": 40.7,
+            "mean_absolute_error": 0.023294
+          }
+        },
+        "p=0.7, min_return=0.7": {
+          "credible_gate": {
+            "mean_exposures": 0,
+            "mean_failures": 0,
+            "mean_absolute_error": 0.45
+          },
+          "risk_budget_5": {
+            "mean_exposures": 7.4,
+            "sd_exposures": 0.966092,
+            "mean_failures": 5.1,
+            "mean_absolute_error": 0.159452
+          },
+          "risk_budget_20": {
+            "mean_exposures": 28.6,
+            "sd_exposures": 3.949684,
+            "mean_failures": 19,
+            "mean_absolute_error": 0.101306
+          },
+          "risk_budget_50": {
+            "mean_exposures": 70.4,
+            "sd_exposures": 7.662318,
+            "mean_failures": 48.6,
+            "mean_absolute_error": 0.047895
+          }
+        },
+        "p=0.1, min_return=0.9": {
+          "credible_gate": {
+            "mean_exposures": 0,
+            "mean_failures": 0,
+            "mean_absolute_error": 0.15
+          },
+          "risk_budget_5": {
+            "mean_exposures": 17.5,
+            "mean_failures": 1.7,
+            "mean_absolute_error": 0.044758
+          },
+          "risk_budget_20": {
+            "mean_exposures": 121.1,
+            "mean_failures": 12.2,
+            "mean_absolute_error": 0.018498
+          },
+          "risk_budget_50": {
+            "mean_exposures": 351.5,
+            "mean_failures": 35.4,
+            "mean_absolute_error": 0.012723
+          }
+        }
+      },
+      "interpretation": "The multi-seed replication confirms a stable information-risk frontier: larger explicit budgets produce more exposure and failures, and the largest tested budget improves mean estimation error in every frozen condition. Smaller budgets can fail to improve over a lucky prior in some conditions, so the result is not monotone superiority."
+    },
+    "G5_full_reachable_state_space": {
+      "module_6": {
+        "raw_reachable_states": 33354,
+        "compressed_reachable_states": 126,
+        "compression_ratio": 264.7142857142857,
+        "reduction_fraction": 0.9962223421478683
+      }
+    }
+  },
+  "claim_gate_update": {
+    "G1": "ADVANCES FURTHER: exact two-hazard interaction identity plus held-out random-grid evidence that both signs occur. Main remaining gates are realistic execution validation and systematic literature review.",
+    "G3": "TRADEOFF REPLICATED: explicit budgets break non-identification and improve estimation with increasing exposure/failure cost. Not a safe-learning solution and not standalone risk-budget novelty.",
+    "G5": "STRONG COMPUTATIONAL COMPANION: exact quotient removes substantial reachable-state redundancy, while online A* speedup remains workload-dependent."
+  },
+  "limitations": [
+    "G1 random-grid counts are not population prevalence estimates",
+    "G3 remains a simplified single-critical-trigger model",
+    "G3 risk-budget charge is posterior/model-based and not a physical safety certificate",
+    "10 repetitions are exploratory replication rather than a preregistered confirmatory trial",
+    "no ROS/Gazebo or physical-robot evidence in this artifact"
+  ]
+}

@@ -1,0 +1,323 @@
+name: G1 correlated Gazebo V4 smoke
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - ".github/workflows/g1-correlated-gazebo-v4-smoke.yml"
+      - "G1_CORRELATED_GAZEBO_V4_PROTOCOL.md"
+      - "ros2_ws/src/dynnav_nav2_cpp/**"
+      - "ros2_ws/src/dynnav_nav2_benchmark/**"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 50
+    container: ros:jazzy-ros-base-noble
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      QT_QPA_PLATFORM: offscreen
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS and Gazebo dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            python3-rosdep
+          rosdep init 2>/dev/null || true
+          rosdep update
+          rosdep install \
+            --from-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --ignore-src \
+            --rosdistro jazzy \
+            -r -y
+
+      - name: Build and test V4 implementation
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v4/log build \
+            --base-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --build-base /tmp/dynnav_g1_v4/build \
+            --install-base /tmp/dynnav_g1_v4/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          source /tmp/dynnav_g1_v4/install/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v4/test-log test \
+            --build-base /tmp/dynnav_g1_v4/build \
+            --install-base /tmp/dynnav_g1_v4/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          colcon test-result \
+            --test-result-base /tmp/dynnav_g1_v4/build \
+            --verbose
+
+      - name: Reconfirm frozen topology contract
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v4/install/setup.bash
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from dynnav_nav2_benchmark.canonical_g1_contract import evaluate_canonical_g1_topology
+
+          root = Path("ros2_ws/src/dynnav_nav2_benchmark")
+          contract = evaluate_canonical_g1_topology(
+              map_yaml=root / "maps" / "g1_parallel_corridor.yaml",
+              scenario_yaml=root / "config" / "sandbox_correlated_history_events.yaml",
+          )
+          payload = contract.to_dict()
+          assert [payload["f00"], payload["f10"], payload["f01"], payload["f11"]] == [1, 1, 1, 0]
+          assert payload["interaction"] == -1
+          assert payload["independence_route"]["steps"] == 108
+          assert payload["independence_route"]["trigger_crossings"] == (True, True)
+          assert payload["robust_route"]["steps"] == 230
+          assert payload["robust_route"]["trigger_crossings"] == (False, False)
+          Path("/tmp/dynnav_g1_v4_topology.json").write_text(
+              json.dumps(payload, indent=2, sort_keys=True)
+          )
+          PY
+
+      - name: Record V4 frozen inputs
+        run: |
+          mkdir -p /tmp/dynnav_g1_v4/results
+          cp /tmp/dynnav_g1_v4_topology.json /tmp/dynnav_g1_v4/results/topology_contract.json
+          cp G1_CORRELATED_GAZEBO_V4_PROTOCOL.md /tmp/dynnav_g1_v4/results/
+          cp results/research_gap_program/g1_gazebo_v3_1_confirmatory_failure_manifest.json /tmp/dynnav_g1_v4/results/
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml /tmp/dynnav_g1_v4/results/frozen_scenario.yaml
+          printf '%s\n' "${GITHUB_SHA}" > /tmp/dynnav_g1_v4/results/source_revision.txt
+
+      - name: Run V4 localization-controlled smoke
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v4/install/setup.bash
+          set +e
+          timeout --signal=INT --kill-after=30s 40m \
+            ros2 launch dynnav_nav2_benchmark \
+              tb3_correlated_history_odom_v4.launch.py \
+              headless:=true \
+              repetitions:=1 \
+              output_dir:=/tmp/dynnav_g1_v4/results \
+            2>&1 | tee /tmp/dynnav_g1_v4/results/ros_launch.log
+          launch_status=${PIPESTATUS[0]}
+          set -e
+          printf '%s\n' "$launch_status" > /tmp/dynnav_g1_v4/results/launch_exit_status.txt
+          test -s /tmp/dynnav_g1_v4/results/results.json
+          if [ "$launch_status" -ne 0 ] && [ "$launch_status" -ne 2 ]; then
+            exit "$launch_status"
+          fi
+
+      - name: Validate strict V4 smoke contract
+        run: |
+          python3 - <<'PY'
+          import json
+          from collections import defaultdict
+          from pathlib import Path
+
+          path = Path("/tmp/dynnav_g1_v4/results/results.json")
+          data = json.loads(path.read_text())
+          assert data["schema_version"] == 1
+          assert data["benchmark_type"] == "correlated_action_triggered_history"
+          assert data["localization_mode"] == "odom_reset"
+          assert data["dependence_conditions"] == [
+              "independent",
+              "common_cause",
+              "anti_correlated",
+          ]
+
+          expected = {
+              "DynNavShortest": ("upper_direct", [True, True]),
+              "DynNavHistory": ("upper_direct", [True, True]),
+              "DynNavRobustHistory": ("lower_detour", [False, False]),
+          }
+          trials = data["trials"]
+          assert len(trials) == 9
+          grouped = defaultdict(list)
+          for row in trials:
+              assert row["valid_trial"], row
+              planner = row["planner_id"]
+              assert planner in expected
+              initial = row["initial_plan"]
+              assert initial["success"], row
+              route, gates = expected[planner]
+              assert initial["route_class"] == route, row
+              assert initial["trigger_gate_crossings"] == gates, row
+              assert not row["localization_jumps"], row
+              grouped[(row["dependence"], row["repetition"])].append(row)
+
+          assert len(grouped) == 3
+          for key, rows in grouped.items():
+              assert len(rows) == 3, key
+              assert len({tuple(row["latent_closures"]) for row in rows}) == 1, key
+
+          log = Path("/tmp/dynnav_g1_v4/results/ros_launch.log").read_text(
+              encoding="utf-8", errors="replace"
+          )
+          reset_lines = [
+              line for line in log.splitlines()
+              if "Aligned map->odom reset=" in line
+          ]
+          assert len(reset_lines) >= 9, len(reset_lines)
+
+          summary = {
+              "attempted_trials": 9,
+              "valid_trials": 9,
+              "route_audit_passed": True,
+              "localization_jump_count": 0,
+              "observed_localization_alignment_events": len(reset_lines),
+          }
+          Path("/tmp/dynnav_g1_v4/results/smoke_validation.json").write_text(
+              json.dumps(summary, indent=2, sort_keys=True) + "\n"
+          )
+          print(json.dumps(summary, indent=2, sort_keys=True))
+          PY
+
+      - name: Upload V4 smoke evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-v4-localization-controlled-smoke-${{ github.sha }}
+          path: /tmp/dynnav_g1_v4/results
+          if-no-files-found: warn
+
+
+  confirmatory:
+    needs: smoke
+    if: ${{ needs.smoke.result == 'success' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    container: ros:jazzy-ros-base-noble
+    strategy:
+      fail-fast: false
+      matrix:
+        dependence:
+          - independent
+          - common_cause
+          - anti_correlated
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+      QT_QPA_PLATFORM: offscreen
+      REPS: "10"
+      MIN_PAIRED_VALID: "8"
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ROS and Gazebo dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-colcon-common-extensions \
+            python3-rosdep
+          rosdep init 2>/dev/null || true
+          rosdep update
+          rosdep install \
+            --from-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --ignore-src \
+            --rosdistro jazzy \
+            -r -y
+
+      - name: Build and test frozen V4 implementation
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v4_confirm/log build \
+            --base-paths ros2_ws/src/dynnav_nav2_cpp ros2_ws/src/dynnav_nav2_benchmark \
+            --build-base /tmp/dynnav_g1_v4_confirm/build \
+            --install-base /tmp/dynnav_g1_v4_confirm/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          source /tmp/dynnav_g1_v4_confirm/install/setup.bash
+          colcon --log-base /tmp/dynnav_g1_v4_confirm/test-log test \
+            --build-base /tmp/dynnav_g1_v4_confirm/build \
+            --install-base /tmp/dynnav_g1_v4_confirm/install \
+            --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark \
+            --event-handlers console_direct+
+          colcon test-result \
+            --test-result-base /tmp/dynnav_g1_v4_confirm/build \
+            --verbose
+
+      - name: Record frozen confirmatory inputs
+        run: |
+          OUT="/tmp/dynnav_g1_v4_confirm/results/${{ matrix.dependence }}"
+          mkdir -p "$OUT"
+          cp G1_CORRELATED_GAZEBO_V4_PROTOCOL.md "$OUT/"
+          cp results/research_gap_program/g1_gazebo_v3_1_confirmatory_failure_manifest.json "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_correlated_history_events.yaml "$OUT/frozen_scenario.yaml"
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.yaml "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/maps/g1_parallel_corridor.pgm "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/worlds/g1_parallel_corridor.sdf.xacro "$OUT/"
+          cp ros2_ws/src/dynnav_nav2_benchmark/models/g1_parallel_corridor_blocker.sdf "$OUT/"
+          printf '%s\n' "${GITHUB_SHA}" > "$OUT/source_revision.txt"
+          printf '%s\n' "${{ matrix.dependence }}" > "$OUT/dependence_slice.txt"
+
+      - name: Run frozen V4 confirmatory slice
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_g1_v4_confirm/install/setup.bash
+          OUT="/tmp/dynnav_g1_v4_confirm/results/${{ matrix.dependence }}"
+          set +e
+          timeout --signal=INT --kill-after=30s 50m \
+            ros2 launch dynnav_nav2_benchmark \
+              tb3_correlated_history_odom_v4.launch.py \
+              headless:=true \
+              repetitions:="$REPS" \
+              dependence:="${{ matrix.dependence }}" \
+              output_dir:="$OUT" \
+            2>&1 | tee "$OUT/ros_launch.log"
+          launch_status=${PIPESTATUS[0]}
+          set -e
+          printf '%s\n' "$launch_status" > "$OUT/launch_exit_status.txt"
+          test -s "$OUT/results.json"
+          if [ "$launch_status" -ne 0 ] && [ "$launch_status" -ne 2 ]; then
+            exit "$launch_status"
+          fi
+
+      - name: Validate V4 confirmatory slice
+        run: |
+          OUT="/tmp/dynnav_g1_v4_confirm/results/${{ matrix.dependence }}"
+          python3 scripts/validate_g1_gazebo_confirmatory.py \
+            --input "$OUT/results.json" \
+            --dependence "${{ matrix.dependence }}" \
+            --repetitions "$REPS" \
+            --minimum-paired-valid "$MIN_PAIRED_VALID" \
+            --output "$OUT/confirmatory_validation.json"
+
+      - name: Run paired statistical analysis
+        if: always()
+        env:
+          PYTHONPATH: .
+        run: |
+          OUT="/tmp/dynnav_g1_v4_confirm/results/${{ matrix.dependence }}"
+          if [ -s "$OUT/results.json" ]; then
+            python3 scripts/analyze_g1_gazebo_v2.py \
+              --input "$OUT/results.json" \
+              --output "$OUT/paired_analysis.json" \
+              --bootstrap-resamples 10000 \
+              --seed 20260925
+          fi
+
+      - name: Upload V4 confirmatory slice
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-v4-confirmatory-${{ matrix.dependence }}-${{ github.sha }}
+          path: /tmp/dynnav_g1_v4_confirm/results/${{ matrix.dependence }}
+          if-no-files-found: warn

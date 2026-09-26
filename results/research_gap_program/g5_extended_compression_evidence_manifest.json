@@ -1,0 +1,69 @@
+{
+  "artifact_scope": "G5 exact activated-history quotient full reachable-state evidence",
+  "workflow_run_id": 36223128961,
+  "artifact_id": 10899837124,
+  "artifact_digest": "sha256:b36c20614fbbc0b56f1cac4917acae91bb022ad9f8f4edd6dbea5ef5491428e4",
+  "head_sha": "41a5c25d185214bdf519c493c6641911e51b7d7a",
+  "source_file": "post_full_study_diagnostics.json:G5_full_reachable_state_space",
+  "retained_scaling": [
+    {
+      "modules": 1,
+      "raw_states": 27,
+      "quotient_states": 11,
+      "ratio": 2.454545
+    },
+    {
+      "modules": 2,
+      "raw_states": 144,
+      "quotient_states": 24,
+      "ratio": 6
+    },
+    {
+      "modules": 3,
+      "raw_states": 630,
+      "quotient_states": 42,
+      "ratio": 15
+    },
+    {
+      "modules": 4,
+      "raw_states": 2493,
+      "quotient_states": 65,
+      "ratio": 38.353846
+    },
+    {
+      "modules": 5,
+      "raw_states": 9297,
+      "quotient_states": 93,
+      "ratio": 99.967742
+    },
+    {
+      "modules": 6,
+      "raw_states": 33354,
+      "quotient_states": 126,
+      "ratio": 264.714286
+    },
+    {
+      "modules": 7,
+      "raw_states": 116460,
+      "quotient_states": 164,
+      "ratio": 710.121951
+    },
+    {
+      "modules": 8,
+      "raw_states": 398583,
+      "quotient_states": 207,
+      "ratio": 1925.521739,
+      "reduction_fraction": 0.999481,
+      "raw_peak_frontier": 30045,
+      "quotient_peak_frontier": 14,
+      "raw_enumeration_ms": 5598.324675,
+      "quotient_enumeration_ms": 1.614506
+    }
+  ],
+  "decision": "G5 is a strong exact representation/computation companion: duplicate trigger identity can create enormous reachable history redundancy even when early-goal A* shows only modest savings.",
+  "claim_boundary": [
+    "timings are machine-dependent descriptive measurements",
+    "full-state enumeration reduction is not a universal online A* speedup",
+    "quotient exactness assumes identical future closure-event semantics under the declared independent-closure model"
+  ]
+}
