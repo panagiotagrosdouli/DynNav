@@ -130,6 +130,11 @@ def analyze_g1_gazebo_v2(
                     / len(rows)
                     if rows else None
                 ),
+                "return_infeasibility_rate": (
+                    sum(row.get("recovery_feasible") is False for row in rows)
+                    / len(rows)
+                    if rows else None
+                ),
                 "navigation_success_rate": (
                     sum(bool(row["navigation_success"]) for row in rows) / len(rows)
                     if rows else None
@@ -164,6 +169,7 @@ def analyze_g1_gazebo_v2(
                     "paired_valid_trials": 0,
                     "both_trigger_exposure": None,
                     "irreversible_failure": None,
+                    "return_infeasibility": None,
                     "navigation_time": None,
                 }
                 continue
@@ -185,6 +191,18 @@ def analyze_g1_gazebo_v2(
                 ],
                 resamples=bootstrap_resamples,
                 seed=seed + 1000 + 100 * condition_index + comparison_index,
+            )
+            return_infeasibility_effect = paired_binary_effect(
+                [
+                    row.get("recovery_feasible") is False
+                    for row in baseline_rows
+                ],
+                [
+                    row.get("recovery_feasible") is False
+                    for row in proposed_rows
+                ],
+                resamples=bootstrap_resamples,
+                seed=seed + 1500 + 100 * condition_index + comparison_index,
             )
 
             paired_times = [
@@ -211,6 +229,7 @@ def analyze_g1_gazebo_v2(
                 "paired_valid_trials": len(baseline_rows),
                 "both_trigger_exposure": asdict(exposure_effect),
                 "irreversible_failure": asdict(failure_effect),
+                "return_infeasibility": asdict(return_infeasibility_effect),
                 "navigation_time": time_effect,
             }
 
