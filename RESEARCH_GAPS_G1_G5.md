@@ -11,9 +11,9 @@ How much additional safe-return information and planning value can DynNav obtain
 |---|---|---|---|
 | G1 | What if action-triggered closures have uncertain joint dependence? | finite ambiguity sets, exact LP return bounds, robust Python/C++ history planners, finite-data ambiguity, V4 Gazebo execution | **main mechanism gate passed**; remaining gate is manuscript/literature/release freeze |
 | G2 | What if trigger execution/activation is only noisily observed? | exact activation belief + threshold safety/coverage frontier | repeated-seed parameter sweep + explicit belief/POMDP baseline |
-| G3 | What if trigger-to-closure probabilities must be learned while the policy controls exposure? | exposure-aware Beta calibration + safe information probe rule | online safety/learning frontier with policy baselines |
-| G4 | Which executed actions causally affect later closures? | logged-propensity IPW effect estimator + null/confounding controls | randomized/interventional graph-recovery study |
-| G5 | How much activated-history state is redundant? | exact closure-event quotient + compressed augmented-state A* | scaling study showing equivalence and computational benefit |
+| G3 | What if trigger-to-closure probabilities must be learned while the policy controls exposure? | lockout theorem, risk-budget frontier, safe-sentinel transfer with misspecification controls | **identifiability boundary established**; new method would need justified information source/transfer assumptions |
+| G4 | Which executed actions causally affect later closures? | logged-propensity IPW estimator, randomized graph recovery, sample/propensity/effect stress grid, confounding control | **validation primitive characterized**; not a generic causal-discovery contribution |
+| G5 | How much activated-history state is redundant? | exact closure-event quotient, compressed A*, exhaustive reachable-state scaling to 8 modules | **exact representation gate passed**; use as computational companion, not universal online speedup |
 
 ## Evidence rule
 
@@ -82,9 +82,14 @@ The implementation uses a Beta-Bernoulli posterior and a transparent safe-probe 
 
 The unified runner compares always-avoid, always-probe, correctly logged half-exposure, and a deliberately incorrect half-exposure logger that records unexposed opportunities as open outcomes. A second online-policy benchmark compares always-avoid, unconstrained probing, the safe-probe rule, and an oracle-known-probability policy on matched latent closure opportunities.
 
-### Remaining publication experiment
+### Status after risk-budget and side-information stress tests
 
-Compare always-avoid, unconstrained information probing, safe information probing, and an oracle-known-probability policy across hazard probabilities and route costs. Report calibration, credible-interval coverage, exposures, false-safe decisions, irreversible failures, mission cost, and learning speed.
+The target-only credible gate has an absorbing cold-start lockout under the exposure-only update semantics. Two explicit deadlock breakers have now been evaluated:
+
+1. **finite exploration-risk budget:** improves identification by buying target exposure, but failures increase with the admitted budget;
+2. **safe sentinel side information:** can recover the target closure parameter without target-conditioned data under an exact shared-parameter assumption, but optimistic misspecification can create hundreds of false-safe target exposures while pessimistic misspecification recreates lockout.
+
+This is sufficient to support the identifiability/assumption boundary. A future G3 method should not simply add another probe heuristic; it must specify where information comes from and prove or empirically stress the assumptions that transfer that information to the target hazard.
 
 ## G4 — interventional trigger-to-closure effects
 
@@ -100,9 +105,11 @@ G4 is intentionally narrower than generic causal discovery. Given randomized or 
 
 The CI runner contains a randomized positive-effect condition, a randomized null condition, and an intentionally confounded observational condition with a misspecified propensity. The third condition is expected to fail and demonstrates the method boundary.
 
-### Remaining publication experiment
+### Status after randomized stress grid
 
-A bounded multi-edge randomized graph-recovery benchmark is implemented and reports precision/recall against three injected positive edges and six null edges. The publication gate is to repeat this over effect sizes, propensities, sample sizes, graph sparsities and explicit confounding regimes. Do not make an arbitrary-SCM or hidden-confounder discovery claim without a substantially stronger method.
+The multi-edge recovery benchmark has now been repeated over effect strength, treatment propensity and per-pair sample size. Weak 100-sample conditions can have mean recall as low as 0.10; by 1000 samples the frozen grid has minimum mean recall 0.933 and minimum mean precision 0.96. This quantifies the support requirement of the narrow randomized estimator.
+
+The hidden-confounding failure remains a hard boundary. Do not make an arbitrary-SCM, passive-log, or hidden-confounder discovery claim without a substantially stronger method.
 
 ## G5 — exact activated-history compression
 
@@ -120,9 +127,11 @@ If `m` trigger identities collapse to `k` distinct closure events, the worst-cas
 
 Tests verify that distinct trigger histories mapping to the same closure event give the same return probability and that raw and compressed A* return the same path, objective value and return probability on a duplicate-trigger construction. The unified runner records theoretical subset-state counts for 2, 4, 8 and 12 trigger identities collapsed to two closure events, and a diamond-chain benchmark compares raw and quotient search nodes and planning latency as duplicate-trigger modules increase.
 
-### Remaining publication experiment
+### Status after exhaustive reachable-state scaling
 
-Generate branching map families with controlled trigger/event duplication and compare raw versus quotient search for path, objective value, return probability, expanded states, peak memory and runtime. Include adversarial cases where unsafe over-compression would merge distinct events.
+The exact quotient now has retained complete-state scaling through 8 duplicated-trigger modules. At 8 modules the raw augmented graph has 398,583 reachable states and the quotient has 207, a 1,925.5x ratio with 99.948% state reduction. Peak BFS frontier is 30,045 versus 14.
+
+The frozen early-goal A* result remains deliberately alongside this strong full-state result: a planner that reaches its goal early may realize only modest node/time savings. G5 therefore supports an exact representation-compression claim and a potential computational benefit, not a universal online speedup guarantee.
 
 ## Reproducible bounded runner
 
