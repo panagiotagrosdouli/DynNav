@@ -92,7 +92,7 @@ def run_post_full_study_diagnostics(
     g5 = [
         asdict(row)
         for row in run_reachable_state_space_scaling(
-            module_counts=(1, 2, 3, 4, 5, 6)
+            module_counts=(1, 2, 3, 4, 5, 6, 7, 8)
         )
     ]
 
