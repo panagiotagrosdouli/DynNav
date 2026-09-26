@@ -6,6 +6,20 @@
 
 This is a representation/mechanism claim. It is not universal planner superiority, certified safety, arbitrary-map generalization, real-world probability calibration, or physical-robot efficacy.
 
+## September 25, 2026 paper-hardening pass
+
+The submission branch now strengthens the manuscript in four ways:
+
+- adds a formal endpoint-aliasing lower bound: for same-endpoint histories with reliabilities (R_1,R_2), every deterministic endpoint-only scalar estimate has worst-history absolute error at least (|R_1-R_2|/2);
+- expands direct novelty constraints to include returnability-based safe exploration, uncertain-MDP safe-return planning, traversal-dependent edge deletion, shortest pathfinding on self-deleting graphs, and coverage with self-induced obstacles;
+- reorganizes the evaluation around four research questions: representation, planning consequence, objective sensitivity, and computational/approximation boundary;
+- distinguishes empirical zero observed failures from formal zero-risk or safety guarantees.
+
+Citation-key integrity on the branch is clean: every manuscript citation key resolves to exactly one bibliography entry, with no unused entries. The closest new bibliography records were checked against venue/DOI or authoritative archive metadata.
+
+The surviving paper claim is intentionally narrower than any of the individual prior-art categories: **executed transitions activate stochastic future closures; activation and realization are distinct; the resulting activation history can change safe-return connectivity at the same geometric endpoint.**
+
+
 ## Raw-artifact verification completed
 
 The publication-facing retained evidence has now been checked below the README/manuscript layer by downloading the actual GitHub Actions artifacts.
@@ -61,6 +75,29 @@ These are real retained computational experiment results. They are not physical-
 
 The downloaded raw artifact verifies the negative result: every hard-return threshold in `{0.5,0.7,0.8,0.9,0.95,0.99}` selects a zero-activated-hazard route with zero observed irreversible failure in all three frozen worlds. The soft objective requires weight >=2 in Fork and >=1 in L-room/Chamber to select the zero-hazard route. Therefore universal soft-objective superiority is falsified and must not be claimed.
 
+## Reviewer-P0 retained artifact
+
+A dedicated same-oracle / unavoidable-hazard audit has now completed successfully.
+
+- workflow: `Reviewer P0 evidence`
+- run: `36122469824`
+- source branch head: `1246ce280bc92b3765f43915505e4dcdd4214830`
+- PR merge checkout: `b6551e46245e8b33ac7772f27d36dafc091c2a85`
+- artifact: `10857728526`
+- downloaded artifact SHA-256: `e065873facb23770ad7f0d667a9b70638fa67f95f2163e5695af741c6d0d7175`
+
+The exact state-only control uses the same exact connectivity oracle and additive fragility objective as the history-conditioned planner, while applying one fixed hazard field without trigger conditioning. It reproduces shortest-path choices and outcomes in all retained controlled, heterogeneous, geometric, and generated challenge scenarios.
+
+The frozen unavoidable-hazard suite contains 24 generated scenarios, one to four route-choice modules per scenario, and 500 paired seeds per scenario. Every feasible start-to-goal path activates at least one hazard per module. Aggregate retained outcomes:
+
+| Planner | Mean return-infeasibility | Mean exact return | Mean path length | Mean activated hazards |
+|---|---:|---:|---:|---:|
+| Shortest | 0.7796 | 0.2242 | 12.71 | 2.54 |
+| State-only exact | 0.7796 | 0.2242 | 12.71 | 2.54 |
+| History exact | 0.6926 | 0.3105 | 14.29 | 2.54 |
+
+History exact changes the activated-hazard choice and improves exact final return probability in 8/24 scenarios, is nonworse in empirical return-infeasibility in 24/24, and has scenario-level mean risk difference `-0.087` versus state-only exact with 95% bootstrap interval `[-0.1629,-0.0247]`. This directly addresses the reviewer concern that the original effects could arise only from selecting trigger-free routes.
+
 ## Statistical audit
 
 The publication-facing binary comparisons are paired by shared seed/scenario/event identity. `paired_binary_effect` computes proposed-minus-baseline risk difference, paired bootstrap intervals over pairwise differences, discordant-pair counts, and a two-sided exact McNemar conditional binomial p-value. State-only versus shortest correctly produces zero discordant pairs in the frozen history-trigger families.
@@ -98,16 +135,40 @@ No physical robot is connected to the current execution environment. Therefore p
 | Exact history-aware planner is implemented | Python planner + tests | source audited | deterministic regression evidence | bounded hazard enumeration | SUPPORTED |
 | History conditioning reduces irreversible failure in repeated-module family | 1000-seed homogeneous + 500-seed held-out | YES | paired risk differences, bootstrap, exact McNemar | synthetic procedural family | SUPPORTED |
 | Result appears in three frozen geometric worlds | Fork/L-room/Chamber | YES | paired bootstrap + exact McNemar | only three hand-built worlds | SUPPORTED |
-| State-only marginal baseline differs from shortest in frozen trigger family | control | YES | zero discordant pairs | baseline-specific | UNSUPPORTED; observed equality |
+| Exact state-only fixed-field control isolates representation from estimator quality | retained Reviewer-P0 artifact | YES | exact equality with shortest in all retained benchmark families | fixed-field representation ablation only | SUPPORTED |
 | Soft objective universally beats hard safe-return | Pareto sweep | YES | direct retained comparison | hard baseline matches safe routes | UNSUPPORTED / FALSIFIED |
 | Critical-cut is exact generally | joint-cut counterexample | YES | 9/9 disagreement | joint cutsets | UNSUPPORTED / FALSIFIED |
 | Critical-cut is faster in retained series-critical timing run | scaling artifact | YES | representative timing | environment-specific timing | PARTIALLY SUPPORTED |
 | ROS 2/Nav2 history integration exists | C++ plugin + benchmark contracts | source/tests audited | integration tests | not efficacy | SUPPORTED |
-| Action-triggered Gazebo efficacy | frozen execution workflow/protocol | NOT YET: valid completed artifact required | paired analysis required | simulation only | UNSUPPORTED / ACTIVE GATE |
+| Action-triggered Gazebo efficacy | frozen execution workflow/protocol | ACTIVE: exact-head workflow running | paired analysis required | simulation only | PENDING GATE |
 | Physical robot efficacy | none | NO | none | no connected hardware | UNSUPPORTED |
 
 ## Current decision
 
-**NO-GO FOR SUBMISSION** at this exact audit point.
+**CONDITIONAL GO FOR A SIMULATION-SCOPED SUBMISSION** once the final exact-head CI/paper build and release freeze are green.
 
-The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact if Gazebo efficacy is to appear in the paper; perform final manuscript-number consistency and bibliography review; execute final clean-environment CI/paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
+The core representation paper is supported by traceable retained computational evidence, and the principal publication numbers listed above have now been checked against downloaded raw artifacts rather than trusted from documentation. The core representation claim now has retained same-oracle and unavoidable-hazard evidence. Remaining gates are: obtain and audit a valid completed action-triggered Gazebo artifact only if Gazebo efficacy is to appear in the paper; perform the final manuscript-number/citation consistency check; execute final exact-head CI and paper build; and freeze the release/tag. Physical-robot evidence is optional for a simulation-scoped paper but cannot be claimed without real hardware trials.
+
+
+## Expanded measurement gate
+
+A retained reviewer-measurement workflow now adds two measurements that were previously weak or single-shot:
+
+- **96 frozen unavoidable-hazard scenarios**, 250 paired execution seeds per scenario (24,000 trials per planner). State-only exact return-infeasibility is 0.74425 and history exact is 0.66604. The scenario-level history-minus-state-only mean difference is -0.07821 with 95% bootstrap CI [-0.1090, -0.04983]. History exact improves 36/96 scenarios and is nonworse in 96/96.
+- **Repeated timing distributions**, 100 measured repetitions after 10 warm-ups. On the retained GitHub Actions runner, the 12-hazard exact oracle has median 34.51 ms (IQR 0.337 ms, p95 37.01 ms) and critical-cut has median 0.170 ms (IQR 0.0055 ms, p95 0.188 ms), a median ratio of 202.8x. At six modules, median online planning latency is 0.102 ms for shortest augmented, 3.65 ms for history-cut, and 5.16 ms for history-exact.
+
+The timing distributions are descriptive for the retained runner environment and must not be presented as hardware-independent real-time guarantees. The 96-scenario family remains a structured synthetic generator and does not establish arbitrary-map or deployment generalization.
+
+
+### Measurement artifact provenance (pinned publication run)
+
+- workflow: `Reviewer measurement expansion`
+- run: `36139174706`
+- source branch head: `8ef50f9ec167c7e8cc29f112f5b04ce4a821f7df`
+- PR merge checkout recorded inside artifact: `d8625dc1032da07ec26eaeeb8766a76f07f08cfe`
+- artifact: `10865996586`
+- downloaded artifact SHA-256: `0c9c9cf46f4fd81034f6e91381cd298b1ff0071d5658c50cada4a22afc624958`
+- embedded unavoidable-suite protocol: 96 scenarios, 250 seeds/scenario
+- embedded repeated-timing protocol: 100 measured repetitions after 10 warm-ups
+
+The manuscript timing values above are pinned to this retained publication artifact. Later documentation-only commits do not supersede the timing artifact because runner-specific values vary across CI executions. Any later change to planner, oracle, benchmark, or timing-instrumentation code requires a new timing freeze before submission.

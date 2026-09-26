@@ -3,9 +3,11 @@
 \usepackage{amsmath,amssymb}
 \usepackage{booktabs}
 \usepackage{graphicx}
-\usepackage{hyperref}
+\usepackage[hidelinks]{hyperref}
 \usepackage{microtype}
 \usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
 \usetikzlibrary{arrows.meta,positioning}
 
 \newcommand{\Rret}{R_{\mathrm{return}}}
@@ -21,11 +23,11 @@
 \maketitle
 
 \begin{abstract}
-A mobile robot can reach the same geometric location through two paths while retaining different future return options if its earlier actions alter the probability of later environmental closures. A position-only marginal model cannot represent this distinction. We study action-triggered topology hazards: traversing selected directed transitions activates stochastic future closures of cells that may be critical for returning to a designated safe set. We formulate safe-return reliability on an augmented state consisting of robot position and activated hazards, give an exact small-world oracle under independent Bernoulli closures, and plan with A* using a soft recoverability cost. This augmentation is the standard Markov-state construction for the model, not a novel MDP/POMDP principle; our contribution is the explicit hazard semantics and controlled characterization of what a position-only marginal ablation loses. A counterfactual benchmark shows that histories ending at the same cell can differ in return reliability by as much as 0.9 while a state-only marginal-risk model necessarily assigns them the same value. Controlled stochastic execution and a frozen heterogeneous-probability evaluation preserve this state-only null result. We further freeze three geometrically distinct held-out worlds: shortest-path and state-only marginal planning have irreversible-failure rates of 0.810, 0.756, and 0.890, while exact history-aware planning activates no hazards and has zero failure in all three. A predeclared soft-versus-hard parameter sweep shows that this geometric result is evidence for the history-conditioned state representation, not for universal superiority of the soft objective: every tested hard safe-return threshold also selects a zero-hazard route in these worlds. A structural critical-cut approximation substantially reduces oracle latency on a series-critical family, but a joint-cut counterexample exposes its optimism. The results isolate a specific information advantage of history conditioning while explicitly delimiting objective, topology, and validation scope.
+A robot can reach the same geometric location through different executed paths while retaining different future return options when its actions activate topology hazards. We study action-triggered stochastic closures: selected executed transitions activate future closure events that may disconnect the robot from a designated safe set. Safe-return reliability is defined on the augmented state consisting of robot position and activated hazards. We give an elementary endpoint-aliasing bound and implement a history-conditioned A* planner with an exact small-hazard connectivity oracle. A primary state-only control uses the same exact oracle and additive objective but applies one fixed marginal hazard field, isolating activation history from estimator quality. In a frozen 96-scenario generated challenge suite where every start-to-goal route activates hazards, the history-conditioned planner is nonworse than the exact state-only control in all 96 scenarios and improves 36; mean post-closure return-infeasibility decreases from 0.744 to 0.666, with a scenario-level mean difference of $-0.078$ (95\% bootstrap CI $[-0.109,-0.050]$). Controlled and geometric tests, a hard safe-return comparison, and an adversarial cutset case further delimit the mechanism. The evidence supports a narrow representation claim---executed hazard-activation history can be necessary for estimating future return-connectivity---rather than universal superiority of a particular planner or objective.
 \end{abstract}
 
 \section{Introduction}
-Planning for collision avoidance or low expected traversal risk is not equivalent to preserving the ability to recover. A robot may enter a corridor safely under the current map and still make a commitment that leaves no return route after a later closure. Recent work has formalized safe-return policies, contingency feasibility, returnability, backup-plan safety, and predictive commitment in uncertain environments \cite{guo2023safereturn,stephens2024safeexploration,jung2025contingency,srirangam2026scramppi,tao2024backup,han2026rcsp}. These results rule out any broad novelty claim for ``planning while keeping a way back.''
+Planning for collision avoidance or low expected traversal risk is not equivalent to preserving the ability to recover. A robot may enter a corridor safely under the current map and still make a commitment that leaves no return route after a later closure. Returnability has long appeared in safe exploration \cite{moldovan2012safe}, and later work formalizes safe-return policies, online uncertain-MDP planning with return constraints, contingency feasibility, backup-plan safety, and predictive commitment \cite{zhang2022online,guo2023safereturn,stephens2024safeexploration,jung2025contingency,srirangam2026scramppi,tao2024backup,han2026rcsp}. These results rule out any broad novelty claim for ``planning while keeping a way back.''
 
 History-dependent robot risk is also established prior art. Xiao, Dufek, and Murphy formalize locale-, action-, and traverse-dependent motion risk and develop a directional planner that retains history needed to evaluate non-Markovian risk \cite{xiao2020risk}. Therefore, neither history-dependent planning nor probabilistic history-dependent risk is new in itself.
 
@@ -33,53 +35,60 @@ This paper asks a narrower question: \emph{what if the robot's own path history 
 
 Decision-dependent uncertainty is a mature topic beyond robotics \cite{doan2022endogenous}, and robot planning has considered utilization-driven component degradation \cite{baldes2024fallible}, dynamic door-closing workspaces \cite{liu2021door}, and nondeterministic environmental events \cite{perret1996events}. Our contribution is not the generic idea that actions influence future uncertainty. Instead, we isolate and experimentally test the information lost when an action-triggered stochastic process changes the \emph{environment's future return-connectivity} but a planner retains only state-only marginal closure probabilities.
 
-Stochastically changing navigation topology has also been studied in AFADA, where an active modular environment manages topology and distributes routing instructions to robots \cite{kameyama2021active}. DynNav shares the setting of stochastic topology change but uses a different causal model: selected transitions executed by the robot activate future closure hazards, and the evaluation quantity is return-connectivity conditioned on those activations. The augmented state is a conventional finite-MDP construction; the paper does not claim novelty for memory, history augmentation, or Markovization. The state-only marginal planner below is therefore interpreted as a deliberately restricted representation ablation, not as a proxy for all MDP/POMDP methods.
+Stochastically changing navigation topology has also been studied in AFADA, where an active modular environment manages topology and distributes routing instructions to robots \cite{kameyama2021active}. DynNav shares the setting of stochastic topology change but uses a different causal model: selected transitions executed by the robot activate future closure hazards, and the evaluation quantity is return-connectivity conditioned on those activations. The augmented state is a conventional finite-MDP construction; the paper does not claim novelty for memory, history augmentation, or Markovization. The state-only fixed-field controls below are deliberately restricted representation ablations, not proxies for all MDP/POMDP methods.
+
+Traversal-dependent topology is itself established. Carmesin \emph{et al.} formalize self-deleting graphs in which visiting vertices can delete future edges \cite{carmesin2023selfdeleting}; Dvo\v{r}\'ak \emph{et al.} study shortest-path finding directly on such traversal-dependent graphs \cite{dvorak2025selfdeleting}; and Frenkel \emph{et al.} apply the model to coverage with self-induced obstacles, where the robot's own traversal changes future feasible successors \cite{frenkel2026selfinduced}. We therefore do not claim novelty for action-induced topology change, self-deleting graph structure, path-history-dependent traversability, or history-sensitive graph search. Those works use deterministic deletion semantics. The model here instead separates an executed trigger from a stochastic future closure realization and evaluates the probability that the resulting environment remains connected to a designated safe set. Our empirical question is correspondingly narrower: what safe-return-reliability information is lost when activated stochastic hazards are marginalized away from the planning state?
 
 The contributions are:
 \begin{itemize}
-  \item a compact model of action-triggered topology hazards and an augmented planning state $(x,\Aset)$ that retains which future closures have been activated;
-  \item an exact safe-return reliability oracle for independent future closures and an A* objective that trades path length against history-conditioned return fragility;
-  \item a counterfactual same-state/different-history test showing an information gap that a state-only marginal model cannot represent;
-  \item controlled, frozen heterogeneous, and three predeclared geometrically distinct held-out evaluations against shortest-path and state-only probability-aware baselines;
-  \item a predeclared soft-history versus hard safe-return sweep that separates representation evidence from objective-function superiority claims;
-  \item scaling and adversarial tests that expose both the computational value and the joint-cut failure boundary of a critical-cut approximation.
+  \item an explicit action-triggered stochastic topology model in which executed transitions activate future closure events and safe-return reliability is conditioned on the resulting activation state;
+  \item a same-position/different-history construction and an elementary endpoint-aliasing bound that quantifies information loss when the activated-hazard variable is removed;
+  \item a history-conditioned A* reference planner with an exact small-hazard return-connectivity oracle, together with a same-oracle state-only fixed-field control that isolates representation from estimator quality;
+  \item a frozen 96-scenario generated challenge suite in which every feasible route activates hazards, plus controlled, heterogeneous, and hand-authored geometric evaluations and a hard safe-return objective-sensitivity study;
+  \item a structural critical-cut approximation with both a measured scaling regime and an adversarial multi-cell-cut counterexample that exposes its failure boundary.
 \end{itemize}
 
 \begin{figure}[t]
 \centering
 \begin{tikzpicture}[
   >=Latex,
-  node distance=5mm,
   state/.style={draw,circle,minimum size=5.2mm,inner sep=0pt,font=\scriptsize},
-  labelnode/.style={font=\scriptsize,align=center},
-  route/.style={->,line width=0.55pt},
-  hazard/.style={->,dashed,line width=0.55pt}
+  labelnode/.style={font=\scriptsize,align=left},
+  note/.style={font=\tiny,align=center},
+  route/.style={->,line width=0.55pt}
 ]
-  \node[state] (s1) at (0,1.45) {$S$};
-  \node[state] (a1) at (1.15,1.45) {};
-  \node[state] (x1) at (2.30,1.45) {$x$};
+  \node[state] (s1) at (0,1.35) {$S$};
+  \node[state] (a1) at (1.0,1.35) {};
+  \node[state] (x1) at (2.0,1.35) {$x$};
   \draw[route] (s1) -- (a1) -- (x1);
-  \node[labelnode,anchor=west] at (2.72,1.45) {trigger-free history\\$\Aset=\varnothing,\;\Rret=1$};
+  \node[labelnode,anchor=west] at (2.35,1.35)
+    {trigger-free history\\$\Aset=\varnothing,\;\Rret=1$};
 
   \node[state] (s2) at (0,0) {$S$};
-  \node[state] (b2) at (1.15,0) {};
-  \node[state] (x2) at (2.30,0) {$x$};
-  \draw[route] (s2) -- node[below,font=\scriptsize] {$e_i$} (b2) -- (x2);
-  \draw[hazard,bend left=28] (b2) to node[above,font=\scriptsize] {activates $c_i$ with $p$} (s2);
-  \node[labelnode,anchor=west] at (2.72,0) {trigger-taking history\\$\Aset=\{i\},\;\Rret=1-p$};
+  \node[state] (a2) at (1.0,0) {};
+  \node[state] (x2) at (2.0,0) {$x$};
+  \draw[route] (s2) -- node[above,font=\scriptsize] {$e_i$} (a2) -- (x2);
+  \node[labelnode,anchor=west] at (2.35,0)
+    {trigger-taking history\\$\Aset=\{i\},\;\Rret=1-p$};
+  \node[note,anchor=north] at (1.0,-0.38)
+    {execute $e_i$: activate hazard $i$;\\$c_i$ closes later with probability $p$};
 \end{tikzpicture}
-\caption{The same geometric endpoint $x$ is not necessarily the same planning state. In the lower history, traversing trigger $e_i$ activates a future closure of the critical return connection $c_i$. A state-only marginal model assigns one value to $x$ and cannot represent this distinction.}
+\caption{The same geometric endpoint $x$ is not necessarily the same planning state. Executing trigger $e_i$ activates a stochastic future closure of the critical return connection $c_i$; avoiding the trigger does not. A state-only marginal model assigns one value to $x$ and cannot represent this distinction.}
 \label{fig:history-gap}
 \end{figure}
 
 \section{Related Work}
 \subsection{Safe return and contingency feasibility}
-Guo \emph{et al.} require the existence of a policy that returns an MDP to safe states with high probability and jointly synthesize outbound and return behavior \cite{guo2023safereturn}. Safe exploration methods likewise evaluate reachability and returnability probabilities before visiting uncertain regions \cite{stephens2024safeexploration}. Backup Plan Constrained MPC optimizes primary and alternative mission feasibility \cite{tao2024backup}. Contingency-MPPI embeds contingency generation inside nominal planning, and SCRAMPPI uses Hamilton--Jacobi reachability to certify that a safe-set trajectory exists from every state on the nominal plan \cite{jung2025contingency,srirangam2026scramppi}. These methods are stronger than our grid abstraction as general safety or control frameworks. Our distinction is representational: the environment hazard set itself depends on the executed transition history.
+Moldovan and Abbeel make returnability central to safe exploration in non-ergodic MDPs \cite{moldovan2012safe}. SafeMDP likewise combines safe reachability with returnability so exploration does not enter states with no safe way out \cite{turchetta2016safemdp}. Zhang and Guo enforce high-probability return to home states while learning an uncertain MDP online \cite{zhang2022online}, and Guo \emph{et al.} jointly synthesize outbound and safe-return behavior under probabilistic temporal tasks \cite{guo2023safereturn}. Safe exploration methods also evaluate multi-step reachability and returnability probabilities before visiting uncertain regions \cite{stephens2024safeexploration}. Backup Plan Constrained MPC optimizes primary and alternative mission feasibility \cite{tao2024backup}. Contingency-MPPI embeds contingency generation inside nominal planning, and SCRAMPPI uses Hamilton--Jacobi reachability to certify that a safe-set trajectory exists from every state on the nominal plan \cite{jung2025contingency,srirangam2026scramppi}. These methods are broader and, in several cases, provide stronger safety or dynamics guarantees than our grid abstraction. Our distinction is not the safe-return objective itself, but the representation of future return-connectivity when the set of active environmental hazards is caused by executed robot transitions.
 
 \subsection{History-dependent motion risk}
 Xiao \emph{et al.} explicitly reject a purely state-dependent risk model, classify action- and traverse-dependent risks, and plan with directional history information \cite{xiao2020risk}. Their framework is close to ours in the reason memory is required: two arrivals at a geometric location need not have the same path risk. Our problem variable differs. We condition on a set of action-triggered \emph{future environmental closures} and evaluate the induced probability that the current state remains connected to a safe set. Thus the object being propagated is future return-connectivity under a changed environmental hazard state, rather than accumulated locomotion risk alone. We treat the 2020 result as a direct novelty constraint, not as a weak baseline.
 
+\subsection{Traversal-dependent topology}
+Self-deleting graphs explicitly model traversal-dependent structure: processing a vertex can delete edges from the residual graph \cite{carmesin2023selfdeleting}. Shortest pathfinding on this model has been studied algorithmically and shown to be computationally hard in several restricted graph classes \cite{dvorak2025selfdeleting}. In robotics, Frenkel \emph{et al.} use self-deleting graphs to model coverage with self-induced obstacles \cite{frenkel2026selfinduced}. These works are direct novelty constraints because they already establish that the robot's previous traversal can alter future graph feasibility. DynNav differs in the modeled random variable and evaluation target: executing a trigger activates, but does not immediately realize, a stochastic future closure; the quantity of interest is the conditional probability that a safe set remains reachable. We therefore treat deterministic self-deletion as neighboring prior art rather than claiming the general history--topology connection as new.
+
 \subsection{Predictive commitment and dynamic topology}
+Classical Canadian-Traveller formulations study navigation with blocked or uncertain edges that are revealed online \cite{papadimitriou1991shortest}; this is an important uncertain-topology precedent, but the edge realization is exogenous rather than activated by the traveller's executed transitions.
 RCSP studies commands that are locally safe but commit a robot to a bottleneck that moving obstacles may soon close \cite{han2026rcsp}. Dynamic door-closing work has used POMDP belief-tree reasoning for self-protective manipulation behavior \cite{liu2021door}, while nondeterministic planning has long represented exogenous events and robust plans \cite{perret1996events}. These works motivate proactive reasoning about future changes; they do not by themselves establish that our action-triggered return-topology abstraction is novel.
 
 \subsection{Endogenous uncertainty and degradation}
@@ -107,7 +116,7 @@ For small active sets, Eq.~\eqref{eq:return} is computed exactly by enumerating 
 \subsection{Why geometric state alone is insufficient}
 A state-only marginal model maps position $x$ and a fixed marginal hazard field to a single return estimate $\widetilde R(x)$. It therefore cannot assign distinct values to two histories that end at the same $x$.
 
-\textbf{Proposition 1 (history information gap).}
+\textbf{Lemma 1 (history information gap).}
 There exists a grid, safe set, trigger hazard, and histories $H^a,H^b$ with the same endpoint $x$ such that
 \begin{equation}
 \Rret(x,\Aset(H^a))\neq\Rret(x,\Aset(H^b)),
@@ -116,17 +125,27 @@ while any deterministic state-only marginal model returns the same $\widetilde R
 
 \emph{Proof.} Let one history traverse a trigger that activates closure of the unique bridge to the safe set with probability $p>0$, and let the other history reach the same endpoint without traversing that trigger. Then the triggered history has return reliability $1-p$ and the non-triggered history has reliability $1$. Since both end at the same $x$, a state-only function of $x$ and fixed marginals must return one common value. \hfill$\square$
 
+\textbf{Corollary 1 (endpoint-only approximation lower bound).}
+Let two executable histories terminate at the same geometric state $x$ with true return reliabilities $R_1$ and $R_2$. Any deterministic endpoint-only scalar estimator $g(x)$ satisfies
+\begin{equation}
+\max\{|g(x)-R_1|,|g(x)-R_2|\}\geq \frac{|R_1-R_2|}{2}.
+\label{eq:alias-lower-bound}
+\end{equation}
+\emph{Proof.} The triangle inequality gives $|R_1-R_2|\leq |R_1-g(x)|+|g(x)-R_2|$. If both errors were smaller than half the separation, this inequality would be violated. \hfill$\square$
+
+For the bridge construction above, $|R_1-R_2|=p$, so every deterministic endpoint-only estimate has worst-history error at least $p/2$. This is an elementary representation lemma, not a claim of new state-abstraction theory: state aggregation and abstraction in MDPs have long studied the consequences of discarding decision-relevant state information \cite{li2006stateabstraction}. The bound only formalizes the specific aliasing induced by removing the activated-hazard variable in our model.
+
 \section{Planning Methods}
-\subsection{Exact history-aware A*}
+\subsection{History-conditioned A* with exact return oracle}
 Search is performed over augmented states $(x,\Aset)$. For transition $z\rightarrow z'$, the soft-history objective uses
 \begin{equation}
 c(z,z')=1+\lambda\left(1-\Rret(z')\right),
 \label{eq:cost}
 \end{equation}
-with nonnegative recoverability weight $\lambda$. The online return-oracle calls used to select the route are included in measured planning latency; post-hoc diagnostics are excluded.
+with nonnegative recoverability weight $\lambda$. Publication-facing runs use heuristic weight 1.0, so Manhattan distance scaled by the positive unit step cost is admissible and consistent for this additive objective; no optimality claim is made for configurations using heuristic weight greater than 1. The online return-oracle calls used to select the route are included in measured planning latency; post-hoc diagnostics are excluded.
 
-\subsection{State-only probability-aware baseline}
-The state-only baseline receives the same closure cells and marginal probabilities $p_i$ but drops trigger history. It plans using return-path reliability under this fixed marginal field. Thus it is not an uninformed shortest-path baseline: it knows where future closures may occur and with what marginal probability, but it cannot know whether a particular path actually activates them.
+\subsection{State-only fixed-field baselines}
+The state-only controls receive the same closure cells and conditional closure probabilities $p_i$ but drop the activation variable. They therefore apply one fixed hazard field at a geometric state regardless of which triggers were actually executed. We retain the original single-best-return-path estimator as an engineering baseline and add a stronger \emph{state-only exact} baseline that uses the same exact connectivity oracle and the same additive fragility objective as the history-conditioned planner. The latter is the primary representation ablation: estimator and objective are matched, while conditioning on activated hazards is removed.
 
 \subsection{Hard safe-return baseline}
 A strong constraint baseline accepts a successor only when
@@ -140,30 +159,28 @@ Exact enumeration scales exponentially in the number of active hazards. We there
 \begin{equation}
 R_{\mathrm{cut}}=\prod_{i\in K}(1-p_i).
 \end{equation}
-Because multi-cell cutsets may disconnect the graph even when no individual cell is critical, $R_{\mathrm{cut}}$ is an upper bound in general. We treat this approximation as scalability infrastructure, not as a novel graph-theoretic contribution.
+Because multi-cell cutsets may disconnect the graph even when no individual cell is critical, $R_{\mathrm{cut}}$ is an upper bound in general. This sits within classical stochastic-network reliability, where exact connectivity computation is hard in general and cut-based bounds are well established \cite{provan1983reliability,ball1983networkreliability}. We therefore treat the approximation as scalability infrastructure, not as a novel graph-theoretic contribution.
 
 \section{Experimental Design}
-All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. Irreversible failure is operationalized as post-closure inability to reach the safe set in the resulting grid. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
+All stochastic comparisons use common random numbers: a seed generates one latent draw for every declared closure event, and a planner realizes only the events it activated. This preserves paired event-index outcomes even when planners activate different subsets. The empirical failure metric is post-closure inability to reach the safe set in the resulting grid; we refer to this as post-closure return infeasibility. Failed trials remain in binary denominators; undefined continuous metrics are counted explicitly rather than silently removed.
 
-We evaluate eight complementary questions.
+The evaluation is organized around four research questions.
 \begin{enumerate}
-  \item \emph{Information gap:} can identical geometric endpoints have different exact return reliability solely because of history?
-  \item \emph{Analytic route switching:} does the planner follow a predicted length--fragility boundary rather than a post-hoc tuned pattern?
-  \item \emph{Stochastic execution:} does history conditioning change irreversible-failure outcomes under sampled future closures?
-  \item \emph{State-only falsification:} does a probability-aware planner with the same marginals reproduce the history-aware behavior?
-  \item \emph{Parameter/horizon transfer:} does the result survive frozen heterogeneous probabilities and unseen module counts?
-  \item \emph{Geometric transfer:} does the state-only/history distinction survive three predeclared hand-built topologies outside the repeated-module geometry?
-  \item \emph{Objective sensitivity:} how does the soft history objective compare with hard safe-return constraints across a predeclared parameter grid?
-  \item \emph{Approximation/scaling boundary:} what does the critical-cut approximation save, and where does it become optimistic?
+  \item[\textbf{RQ1}] \emph{Representation:} can identical geometric endpoints have different return reliability, and what error is unavoidable when those histories are collapsed to one endpoint-only estimate?
+  \item[\textbf{RQ2}] \emph{Planning consequence:} does conditioning on activated hazards change route choice and post-closure return infeasibility when compared with both approximate and exact state-only fixed-field controls, including worlds where every feasible route activates hazards?
+  \item[\textbf{RQ3}] \emph{Objective sensitivity:} is the observed benefit evidence for the history-conditioned representation, or for superiority of the particular soft recoverability cost over hard safe-return constraints?
+  \item[\textbf{RQ4}] \emph{Computation:} what is the cost of exact return-connectivity reasoning, when does a critical-cut approximation help, and where does that approximation fail?
 \end{enumerate}
+
+The analytic route-switch experiment supports RQ2 by checking a pre-derived decision boundary rather than only reporting sampled outcomes. The same-oracle state-only exact control isolates the representation effect in RQ1--RQ2, while the soft-versus-hard sweep and joint-cut counterexample are explicit falsification tests for RQ3--RQ4.
 
 The development sweeps use homogeneous closure probabilities. Before inspecting outcomes, a separate repeated-module evaluation family was frozen with heterogeneous per-trigger probabilities and unseen module counts: six modules with probabilities $(.15,.25,.35,.55,.75,.85)$, seven modules with $(.80,.20,.70,.30,.60,.40,.90)$, and eight modules with $(.10,.90,.20,.80,.35,.65,.45,.75)$. Each scenario uses 500 paired execution seeds. This tests probability-pattern and horizon transfer within the same procedural topology family.
 
-A second held-out family was frozen with three different hand-built grid topologies: a fork, an L-shaped room, and a two-trigger chamber. Starts, goals, safe sets, trigger transitions, closure cells, and probabilities were fixed before the 500-seed outcomes were inspected. After those worlds were frozen, a separate objective-sensitivity protocol was committed before its outcomes were inspected: soft weights $\lambda\in\{0,1,2,4,8,16\}$ and hard thresholds $\tau\in\{.50,.70,.80,.90,.95,.99\}$, again with 500 common-random-number seeds per configuration. Planning infeasibility is reported separately from post-closure irreversible failure.
+A second held-out family was frozen with three different hand-built grid topologies: a fork, an L-shaped room, and a two-trigger chamber. Starts, goals, safe sets, trigger transitions, closure cells, and probabilities were fixed before the 500-seed outcomes were inspected. Following reviewer audit, a generated challenge suite was frozen before its expanded outcomes were inspected with seed 20260925: 96 scenarios contain one to four serial route-choice modules, and every start-to-goal path must activate at least one hazard per module. Direct and detour hazard probabilities are drawn from a committed discrete set, detour depth and direction vary by module, and each scenario uses 250 paired execution seeds (24,000 trials per planner). Thus no planner can obtain zero modeled risk merely by selecting a trigger-free path. A separate objective-sensitivity protocol was committed before its outcomes were inspected: soft weights $\lambda\in\{0,1,2,4,8,16\}$ and hard thresholds $\tau\in\{.50,.70,.80,.90,.95,.99\}$, with 500 common-random-number seeds per configuration. Planning infeasibility is reported separately from empirical post-closure return infeasibility.
 
 \section{Results}
 \subsection{Same state, different history}
-The counterfactual benchmark sweeps $p\in\{0.1,0.3,0.5,0.7,0.9\}$. The safe history has exact return reliability $1$, while the trigger-taking history has reliability $1-p$. A state-only marginal model assigns $1-p$ to both because it cannot condition on whether the trigger was traversed. Across the five cases, the mean history separation is $0.5$ and the maximum is $0.9$; the triggered-history invariant is matched with zero numerical error.
+The counterfactual benchmark sweeps $p\in\{0.1,0.3,0.5,0.7,0.9\}$. The safe history has exact return reliability $1$, while the trigger-taking history has reliability $1-p$. A state-only marginal model assigns $1-p$ to both because it cannot condition on whether the trigger was traversed. Across the five cases, the mean history separation is $0.5$ and the maximum is $0.9$; the triggered-history invariant is matched with zero numerical error. By Eq.~\eqref{eq:alias-lower-bound}, a separation of $p$ implies that every deterministic endpoint-only scalar estimate incurs worst-history error of at least $p/2$. The particular marginal baseline used here assigns $1-p$ to both histories, giving zero error on the triggered history but error $p$ on the trigger-free history. Thus the experiment illustrates a representation lower bound rather than only the behavior of one chosen baseline.
 
 \subsection{Analytic phase boundary}
 In a controlled world with a direct path of length $4$ and a trigger-avoiding detour of length $4+2d$, exactly one direct transition incurs fragility $\lambda p$. The predicted route switch is therefore
@@ -172,91 +189,165 @@ In a controlled world with a direct path of length $4$ and a trigger-avoiding de
 \end{equation}
 Across 75 combinations of detour depth, closure probability, and weight, the exact history-aware planner matches the analytic route choice in all 75 cases. The shortest-path baseline never detours.
 
-\subsection{Stochastic execution and state-only baseline}
-Table~\ref{tab:execution} reports 1000 paired execution seeds at each closure probability for a three-module series family. The shortest and state-only probability-aware planners select the same trigger-taking path and consequently have identical binary outcomes. The exact-history, critical-cut, and hard $\tau=0.9$ planners avoid all triggers for the high recoverability weight used in this controlled experiment.
+\subsection{Primary unavoidable-hazard challenge}
+
+\begin{figure*}[t]
+\centering
+\begin{minipage}[t]{0.485\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth,
+  height=0.72\linewidth,
+  xmin=0, xmax=1.02,
+  ymin=0, ymax=1.02,
+  axis equal image,
+  xlabel={State-only return-infeasibility},
+  ylabel={History-conditioned return-infeasibility},
+  tick label style={font=\scriptsize},
+  label style={font=\scriptsize},
+  legend style={
+    font=\scriptsize,
+    draw=none,
+    fill=none,
+    at={(0.03,0.97)},
+    anchor=north west,
+    row sep=-1pt
+  },
+  grid=major,
+  grid style={line width=.1pt,draw=black!12},
+  major grid style={line width=.15pt,draw=black!18}
+]
+\addplot[densely dashed,black!55,domain=0:1,samples=2] {x};
+\addlegendentry{$y=x$}
+\addplot[
+  only marks,
+  mark=o,
+  mark size=1.35pt,
+  black!55
+] table[
+  x=state_only_fail,
+  y=history_fail,
+  col sep=comma
+] {unavoidable_scenario_tied.csv};
+\addlegendentry{tie}
+\addplot[
+  only marks,
+  mark=*,
+  mark size=1.35pt,
+  black
+] table[
+  x=state_only_fail,
+  y=history_fail,
+  col sep=comma
+] {unavoidable_scenario_improved.csv};
+\addlegendentry{improved}
+\addplot[
+  only marks,
+  mark=diamond*,
+  mark size=2.8pt,
+  black
+] coordinates {(0.74425,0.66604)};
+\addlegendentry{mean}
+\node[anchor=north east,font=\scriptsize\bfseries]
+  at (rel axis cs:0.98,0.98) {(a)};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.485\textwidth}
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width=\linewidth,
+  height=0.72\linewidth,
+  xmin=-0.66, xmax=0.04,
+  ymin=0, ymax=97,
+  xlabel={History $-$ state-only failure rate},
+  ylabel={Scenario rank},
+  xtick={-0.6,-0.4,-0.2,0},
+  ytick={1,24,48,72,96},
+  tick label style={font=\scriptsize},
+  label style={font=\scriptsize},
+  xmajorgrids=true,
+  grid style={line width=.1pt,draw=black!12}
+]
+\addplot[densely dashed,black!60] coordinates {(0,1) (0,96)};
+\addplot[dotted,black!60] coordinates {(-0.078208,1) (-0.078208,96)};
+\addplot[
+  only marks,
+  mark=*,
+  mark size=1.15pt,
+  black
+] table[
+  x=risk_difference,
+  y=rank,
+  col sep=comma
+] {unavoidable_difference_ranked.csv};
+\node[anchor=north west,font=\scriptsize\bfseries]
+  at (rel axis cs:0.02,0.98) {(b)};
+\node[anchor=south west,font=\scriptsize,align=left]
+  at (rel axis cs:0.03,0.06)
+  {36 improved\\60 unchanged\\0 worse};
+\node[anchor=north east,font=\scriptsize]
+  at (rel axis cs:0.96,0.96) {mean $\Delta=-0.078$};
+\end{axis}
+\end{tikzpicture}
+\end{minipage}
+\caption{Primary 96-scenario unavoidable-hazard result. (a) Scenario-level empirical return-infeasibility for the exact state-only control and history-conditioned planner; points below the diagonal favor history conditioning. (b) The same scenarios ranked by paired risk difference. Each scenario summarizes 250 paired execution seeds. History conditioning improves 36 of 96 scenarios, ties 60, and is worse in none; the scenario-level mean difference is $-0.0782$ with 95\% bootstrap CI $[-0.1090,-0.0498]$.}
+\label{fig:unavoidable-primary}
+\end{figure*}
+
+The publication-facing empirical result is the frozen unavoidable-hazard suite, which removes the easiest trigger-avoidance regime: every feasible start-to-goal path activates at least one hazard per module. The expanded evaluation contains 96 generated scenarios with 250 paired execution seeds per scenario (24,000 trials per planner). The exact state-only control selects exactly the same paths and activated hazard identities as shortest in all 96 scenarios. History-conditioned planning changes the activated-hazard choice in 36 of 96 scenarios and has higher exact final return probability in those same 36, while remaining nonworse in empirical return-infeasibility in all 96.
+
+
+
+Pooling the 96 scenarios equally, empirical return-infeasibility decreases from $0.7443$ for the exact state-only control to $0.6660$ with history conditioning, while mean exact final return reliability increases from $0.2535$ to $0.3314$. Mean path length increases from $11.77$ to $13.33$ steps. Both planners activate the same mean number of hazards (2.35), so the improvement does not come from avoiding stochastic commitments altogether; it comes from selecting different activated hazards. This is the main empirical evidence for the representation claim because every feasible route in the suite activates hazards.
 
 \begin{table}[t]
 \centering
-\caption{Controlled stochastic execution, 1000 paired seeds per $p$. ``Fail'' is post-closure return infeasibility.}
-\label{tab:execution}
-\begin{tabular}{lccc}
+\caption{Primary 96-scenario result. Means pool scenarios equally; $\Delta$ is History minus State-only.}
+\label{tab:primary-unavoidable}
+\setlength{\tabcolsep}{4.5pt}
+\begin{tabular}{lrrr}
 \toprule
-Planner & $p=0.2$ & $p=0.5$ & $p=0.8$\\
+Metric & State-only & History & $\Delta$ \\
 \midrule
-Shortest & 0.512 & 0.881 & 0.992\\
-State-only marginal & 0.512 & 0.881 & 0.992\\
-History exact & 0 & 0 & 0\\
-History cut & 0 & 0 & 0\\
-Hard return $\tau=.9$ & 0 & 0 & 0\\
+Return-infeasibility $\downarrow$ & 0.7443 & \textbf{0.6660} & \textbf{$-0.0782$} \\
+Exact return $\uparrow$ & 0.2535 & \textbf{0.3314} & \textbf{$+0.0779$} \\
+Path length & \textbf{11.77} & 13.33 & $+1.56$ \\
+Activated hazards & 2.35 & 2.35 & 0.00 \\
 \bottomrule
 \end{tabular}
+\vspace{1mm}
+
+\scriptsize 36/96 scenarios improve, 60/96 tie, and 0/96 worsen in empirical return-infeasibility; 95\% bootstrap CI for the scenario-level mean difference: $[-0.1090,-0.0498]$.
 \end{table}
 
-For the history-exact comparison against shortest, paired risk differences are $-0.512$, $-0.881$, and $-0.992$. Exact McNemar tests are extremely small because all discordant outcomes favor history-aware planning in this controlled family. In contrast, the state-only marginal baseline has zero discordant pairs and McNemar $p=1$ at every probability. This null comparison is central: marginal probability awareness alone does not explain the history-aware route choice.
-
-\subsection{Frozen heterogeneous-probability evaluation}
-Table~\ref{tab:heldout} reports the frozen heterogeneous scenarios. The state-only marginal planner remains identical to shortest in every scenario: the two planners activate every trigger and share every binary failure outcome. Exact-history and history-cut planning activate no hazards in all three scenarios. Their paired risk differences versus shortest are $-0.992$, $-0.998$, and $-1.000$ for the 6-, 7-, and 8-module scenarios, respectively; the corresponding 95\% paired-bootstrap intervals are $[-0.998,-0.984]$, $[-1.000,-0.994]$, and $[-1.000,-1.000]$. There are no proposed-only failures.
-
-\begin{table}[t]
-\centering
-\caption{Frozen heterogeneous-probability evaluation, 500 paired seeds per scenario. Entries are irreversible-failure rates.}
-\label{tab:heldout}
-\begin{tabular}{lccc}
-\toprule
-Planner & 6 modules & 7 modules & 8 modules\\
-\midrule
-Shortest & 0.992 & 0.998 & 1.000\\
-State-only marginal & 0.992 & 0.998 & 1.000\\
-History exact & 0 & 0 & 0\\
-History cut & 0 & 0 & 0\\
-Hard return $\tau=.9$ & 0 & 0 & 0.116\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The eight-module case distinguishes the soft history-aware objective from the fixed hard threshold. The hard-return planner accepts one low-probability commitment, uses a path of length 46 rather than 48, and fails on 58 of 500 trials (0.116); exact-history planning activates no closure and has no failure. This is not a dominance claim over safe-return constraints: changing $\tau$ changes the hard baseline's policy.
-
-\subsection{Frozen geometric held-out topologies}
-A separate retained evaluation uses the three predeclared hand-built worlds. Table~\ref{tab:geometric} reports 500 paired seeds per topology. The state-only marginal planner is again exactly paired with shortest: zero discordant outcomes and zero risk difference in all three worlds. Exact-history planning activates no hazards and has zero post-closure irreversible failures.
-
-\begin{table}[t]
-\centering
-\caption{Frozen geometric held-out evaluation, 500 paired seeds per topology. Parentheses give path length.}
-\label{tab:geometric}
-\begin{tabular}{lccc}
-\toprule
-Planner & Fork & L-room & Chamber\\
-\midrule
-Shortest & .810 (6) & .756 (8) & .890 (7)\\
-State-only marginal & .810 (6) & .756 (8) & .890 (7)\\
-History exact & 0 (8) & 0 (8) & 0 (9)\\
-\bottomrule
-\end{tabular}
-\end{table}
-
-The paired risk differences for history-exact versus shortest are $-0.810$, $-0.756$, and $-0.890$, with 95\% paired-bootstrap intervals $[-0.844,-0.776]$, $[-0.794,-0.718]$, and $[-0.916,-0.862]$. The corresponding exact McNemar $p$-values are below $3.3\times10^{-114}$. The fork and chamber require two additional steps to avoid their activated closures; the L-room reaches a trigger-free route at equal geometric length. These worlds broaden the mechanism evidence beyond the repeated-series topology, but they remain three deliberately constructed grid maps rather than evidence for arbitrary-map or real-world transfer.
+\subsection{Controlled mechanism checks}
+The earlier controlled, heterogeneous, and hand-authored geometric families are retained only as supporting mechanism checks. In the controlled three-module $p$-sweep, the exact state-only control matches shortest at $0.512$, $0.881$, and $0.992$ return-infeasibility, while history conditioning selects trigger-free alternatives and records no observed return-infeasible outcome. In the frozen heterogeneous 6/7/8-module family, state-only exact again matches shortest at $0.992$, $0.998$, and $1.000$; history exact records no observed return-infeasible outcome, whereas the eight-module hard-return baseline accepts one low-probability commitment and records $58/500=0.116$. Across the fork, L-room, and chamber, state-only exact matches shortest at $0.810$, $0.756$, and $0.890$, while history exact records no observed return-infeasible outcome at path-length changes of $+2$, $0$, and $+2$ steps, respectively. These intentionally simple families verify the modeled mechanism and broaden topology coverage; their zero-heavy outcomes are not treated as deployment-scale performance estimates.
 
 \subsection{Soft versus hard objective sensitivity}
-The predeclared parameter sweep provides an important negative scope result. In the fork, soft $\lambda=0$ and $1$ select the risky length-6 route with failure rate 0.810, while $\lambda\ge2$ selects the length-8 zero-hazard route with zero failure. In the L-room and chamber, $\lambda=0$ retains the risky route, while every tested $\lambda\ge1$ selects a zero-hazard route. By contrast, every frozen hard threshold $\tau\in\{.50,.70,.80,.90,.95,.99\}$ selects a zero-hazard, zero-failure route in all three worlds. All tested configurations are planner-feasible.
+The predeclared parameter sweep provides an important negative scope result. In the fork, soft $\lambda=0$ and $1$ select the risky length-6 route with failure rate 0.810, while $\lambda\ge2$ selects the length-8 zero-hazard route with zero observed post-closure return-infeasible outcomes. In the L-room and chamber, $\lambda=0$ retains the risky route, while every tested $\lambda\ge1$ selects a zero-hazard route. By contrast, every frozen hard threshold $\tau\in\{.50,.70,.80,.90,.95,.99\}$ selects a zero-hazard route with zero observed post-closure return-infeasible outcomes in all three worlds. All tested configurations are planner-feasible.
 
 This result prevents an objective-level overclaim. The geometric held-out experiments support the value of representing activated hazard history; they do not show that the soft cumulative penalty dominates a hard safe-return constraint. On these worlds the hard baseline is at least as effective and has lower retained single-run planning latency. The two objectives answer different operating questions, and neither is universally preferred by the present evidence.
 
 \subsection{Approximation and scaling}
-On a series-critical family, the critical-cut estimate is exact by construction. In the retained evidence-producing CI artifact, the 12-hazard oracle call takes 49.54~ms for exact enumeration and 0.262~ms for the critical-cut estimate, a ratio of approximately 188.8$\times$. These are representative wall-clock values from one retained CI run rather than a statistically characterized performance distribution, and the zero cut error applies only to this controlled series-critical family.
+On a series-critical family, the critical-cut estimate is exact by construction. We replace the earlier single-shot timing with 100 retained repetitions after 10 warm-up calls. At 12 hazards, exact enumeration has median latency 34.51~ms (IQR 0.337~ms, p95 37.01~ms), while the critical-cut estimate has median latency 0.170~ms (IQR 0.0055~ms, p95 0.188~ms), corresponding to a median ratio of approximately 202.8$\times$. Both methods return the same probability in this controlled series-critical family. These timings are descriptive measurements on one GitHub Actions runner environment, not hardware-independent runtime guarantees.
 
-Search-level timing after excluding post-hoc diagnostic profiling is shown in Table~\ref{tab:scaling}. At six repeated commitment modules in the same retained CI run, shortest augmented search takes 0.178~ms, history-cut search 5.54~ms, and exact-history search 12.50~ms. The measurement includes online return queries that affect route choice but should be interpreted as an instrumentation sanity check and relative computational indication, not a hardware-independent runtime guarantee.
+Search-level timing uses each planner's internal online-latency instrumentation, which excludes post-hoc diagnostic profiling while retaining return-oracle work that affects route choice. Table~\ref{tab:scaling} reports 100 repetitions at six modules. The distributions are tight on the retained runner, but remain environment-specific computational measurements rather than general real-time guarantees.
 
 \begin{table}[t]
 \centering
-\caption{Augmented-state search at six modules in the retained CI run.}
+\caption{Repeated augmented-state search timing at six modules ($n=100$).}
 \label{tab:scaling}
-\begin{tabular}{lrrr}
+\begin{tabular}{lrrrr}
 \toprule
-Planner & Nodes & Path length & Planning ms\\
+Planner & Nodes & Path & Median ms & p95 ms\\
 \midrule
-Shortest augmented & 25 & 24 & 0.178\\
-History cut & 72 & 36 & 5.54\\
-History exact & 72 & 36 & 12.50\\
+Shortest augmented & 25 & 24 & 0.102 & 0.113\\
+History cut & 72 & 36 & 3.65 & 3.88\\
+History exact & 72 & 36 & 5.16 & 5.74\\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -269,7 +360,7 @@ Across all nine combinations $p\in\{0.2,0.5,0.8\}$ and $\lambda\in\{2,4,8\}$, ex
 \section{Discussion}
 The experiments support a narrow claim. When actions activate future topology hazards, path history can contain information about safe-return connectivity that is absent from a state-only marginal hazard map. This is not equivalent to claiming that history-aware planning is universally safer, that soft recoverability costs dominate hard contingency constraints, or that the proposed model subsumes general dynamic navigation.
 
-The state-only null result is more informative than comparison only against shortest path. Both planners know the same closure locations and marginal probabilities. Their divergence arises because one conditions on the executed trigger set and the other does not. This distinction survives both the frozen heterogeneous repeated-module family and three separately frozen hand-built topologies. The latter broaden the evidence beyond one procedural geometry, but three constructed grids remain far from arbitrary-map or physical-environment generalization.
+The same-oracle state-only null result is more informative than comparison only against shortest path. The exact state-only control and the history-conditioned planner use the same connectivity oracle and additive fragility objective; they differ in whether return probability is conditioned on executed trigger activations. The fixed-field control reproduces shortest behavior in the controlled, heterogeneous, geometric, and 96-scenario generated challenge evaluations. In the unavoidable suite the history-conditioned planner cannot escape stochastic commitments: it instead changes which hazards become active, improving 36 scenarios while remaining nonworse across all 96. This strengthens the representation interpretation without implying arbitrary-map or physical-environment generalization.
 
 The hard safe-return results sharpen this interpretation. A fixed $\tau=0.9$ differs from the soft objective in the eight-module heterogeneous case, but the complete frozen threshold sweep on the three geometric worlds selects the same zero-hazard behavior for every tested threshold. Thus the strongest conclusion concerns the state representation---activated environmental hazard history---rather than superiority of a particular soft objective. The soft formulation remains useful when one wants an explicit path-length/fragility tradeoff, whereas hard constraints encode an admissibility requirement.
 
@@ -277,23 +368,25 @@ The exact oracle is useful for small controlled worlds and for validating approx
 
 The closest history-dependent risk work also narrows the interpretation. Xiao \emph{et al.} already establish that robot risk can depend on action and traversal history and that planning may need a history-sensitive state representation \cite{xiao2020risk}. Our evidence does not supersede that result. It isolates a different state variable: which future environmental topology changes have been activated and what that implies for safe-set connectivity.
 
-\section{Threats to Validity}
-The homogeneous and heterogeneous series families contain critical return bridges and were designed to expose the mechanism, so a trigger-avoiding policy has a structural advantage when closure probabilities are appreciable. The three geometric held-out worlds reduce dependence on that single repeated topology but are still hand-built to contain action-triggered return-critical closures. The state-only baseline is intentionally given the same marginal closure probabilities but an incorrect conditional model; its failure demonstrates information loss under that modeling choice, not weakness of every possible Markov representation. A sufficiently rich Markov state could include the activated-hazard set, which is exactly our augmented state.
+Self-deleting graph work provides an equally important topology-side boundary \cite{carmesin2023selfdeleting,dvorak2025selfdeleting,frenkel2026selfinduced}. In those formulations, traversal deterministically changes the residual graph. DynNav should therefore be read as a stochastic return-connectivity specialization, not as the first history-dependent topology model: trigger execution changes the distribution over future residual graphs, and the planner reasons about the probability of retaining a return path.
 
-Parameter selection remains a concern for any weighted objective. The principal soft-planner execution results use $\lambda=8$, but the predeclared geometric sweep spans $\lambda\in\{0,1,2,4,8,16\}$ and hard thresholds from 0.50 to 0.99. That sweep shows both where the soft route switches and where hard constraints match the zero-hazard behavior; it therefore reduces, but does not eliminate, parameter-selection concerns. Monte Carlo uncertainty remains in empirical failure rates; paired binary effects and exact McNemar tests are used because seeds are shared across planners.
+\section{Threats to Validity}
+The homogeneous and heterogeneous series families contain critical return bridges and were designed to expose the mechanism, so a trigger-avoiding policy has a structural advantage when closure probabilities are appreciable. The three geometric held-out worlds reduce dependence on that single repeated topology but are still hand-built to contain action-triggered return-critical closures. The expanded frozen generated challenge reduces this specific concern because every feasible route activates hazards and evaluates 96 generated scenarios, but its serial choice-module generator is still a structured synthetic family rather than a distribution of natural environments. Consequently, the large observed risk differences are mechanism-demonstration effect sizes for these constructed worlds; they should not be interpreted as estimates of the effect size expected in natural or deployed environments. The state-only baselines intentionally apply the same fixed closure field regardless of executed triggers; their failure demonstrates information loss under that modeling choice, not weakness of every possible Markov representation. The exact fixed-field variant uses the same connectivity oracle as the history-conditioned planner specifically to remove estimator quality as a confound. A sufficiently rich Markov state could include the activated-hazard set, which is exactly our augmented state.
+
+Parameter selection remains a concern for any weighted objective. The principal soft-planner execution results use $\lambda=8$, but the predeclared geometric sweep spans $\lambda\in\{0,1,2,4,8,16\}$ and hard thresholds from 0.50 to 0.99. That sweep shows both where the soft route switches and where hard constraints match the zero-hazard behavior; it therefore reduces, but does not eliminate, parameter-selection concerns. Monte Carlo uncertainty remains in empirical failure rates. Paired risk differences and bootstrap intervals are the primary inferential summaries because seeds are shared across planners; exact McNemar tests are retained only as secondary diagnostics.
 
 \section{Limitations}
 The current study uses discrete grid connectivity, known trigger locations, known closure probabilities, and mostly independent Bernoulli future closures. A scenario-based oracle demonstrates that equal marginals can be optimistic under correlated closures, but correlated uncertainty is not yet integrated into the online planner. The stochastic execution experiments sample topology events after commitment; they do not model continuous robot dynamics, perception delay, collision, or contact.
 
-The repository contains a ROS~2 Jazzy/Nav2 C++ implementation of the history-conditioned planner and a frozen Gazebo action-trigger protocol. The C++ plugin retains activated hazards from externally observed executed transitions rather than from planned paths, and its search and plugin contracts are covered by software tests. No retained comparative action-triggered Gazebo outcome artifact is currently available, however. We therefore treat this as implementation and protocol evidence only and make no simulation-efficacy, hardware, collision-avoidance, kinodynamic-safety, or formal runtime-guarantee claim. The three geometric held-out worlds are evidence of mechanism replication across distinct hand-built topologies, not arbitrary-map or real-world geometric generalization.
+The repository contains a ROS~2 Jazzy/Nav2 C++ implementation of the history-conditioned planner and a frozen Gazebo action-trigger protocol. The C++ plugin retains activated hazards from externally observed executed transitions rather than from planned paths, and its search and plugin contracts are covered by software tests. Strict retained Gazebo mechanism probes contain eight paired repetitions per planner (24 total trials per run); all trials are valid and all outbound navigations succeed. The paired latent closure realizes in seven of eight repetitions. Trigger exposure for DynNavHistory varies by one trial across retained reruns relative to DynNavShortest, while the release-candidate probe again records no operational irreversible failures for either DynNav condition. Because this small execution-level difference is not stable across reruns, the Gazebo evidence does not support comparative efficacy. We therefore treat Gazebo as end-to-end integration and measurement evidence only and make no simulation-efficacy, hardware, collision-avoidance, kinodynamic-safety, or formal runtime-guarantee claim. The three geometric held-out worlds and the 96-scenario generated unavoidable-hazard suite provide broader mechanism replication, but neither establishes arbitrary-map or real-world geometric generalization.
 
-Finally, literature search cannot prove novelty. Safe return, contingency planning, predictive commitment, history-dependent risk, action reversibility, endogenous uncertainty, dynamic doors, and utilization-driven degradation all have substantial prior art \cite{guo2023safereturn,xiao2020risk,jung2025contingency,srirangam2026scramppi,han2026rcsp,baldes2024fallible,liu2021door,doan2022endogenous}. The defensible contribution is the explicit action-triggered environmental return-topology formulation and its state-only information-gap evaluation, subject to continued prior-art review.
+Finally, literature search cannot prove novelty. Safe exploration and returnability, safe-return constraints, contingency planning, predictive commitment, history-dependent risk, self-deleting graphs, self-induced obstacles, endogenous uncertainty, dynamic doors, and utilization-driven degradation all have substantial prior art \cite{moldovan2012safe,zhang2022online,guo2023safereturn,xiao2020risk,carmesin2023selfdeleting,dvorak2025selfdeleting,frenkel2026selfinduced,jung2025contingency,srirangam2026scramppi,han2026rcsp,baldes2024fallible,liu2021door,doan2022endogenous}. The defensible contribution is the explicit stochastic trigger--activation--realization model for environmental return-connectivity, the endpoint-aliasing lower bound, and its controlled evaluation, subject to continued prior-art review.
 
 \section{Reproducibility}
-The implementation records raw per-trial CSV files and machine-readable JSON summaries for every benchmark family. Focused continuous integration runs regression tests before executing the benchmark suite, then uploads all raw artifacts under the exact commit SHA. Planning-time instrumentation excludes post-hoc diagnostic profiling while retaining oracle work used online for route selection. Stochastic comparisons use fixed paired seeds and event-index common random numbers. The heterogeneous, geometric held-out, and soft-versus-hard parameter protocols were frozen before their respective outcomes were inspected. A machine-readable paper evidence manifest records the evidence-producing workflow runs, artifact identities and digests, metric values, and claim scope.
+The implementation records raw per-trial CSV files and machine-readable JSON summaries for every benchmark family. Focused continuous integration runs regression tests before executing the benchmark suite, then uploads all raw artifacts under the exact commit SHA. Planning-time instrumentation excludes post-hoc diagnostic profiling while retaining oracle work used online for route selection. Stochastic comparisons use fixed paired seeds and event-index common random numbers. The heterogeneous, geometric held-out, generated unavoidable-hazard, and soft-versus-hard protocols were frozen before their respective outcomes were inspected. A machine-readable paper evidence manifest records the evidence-producing workflow runs, artifact identities and digests, metric values, and claim scope.
 
 \section{Conclusion}
-We studied navigation in which the robot's own transition history activates stochastic future closures that can destroy return connectivity. In this setting, the same geometric cell can correspond to different recoverability because the environment's future topology depends on how the robot arrived. Augmenting search with the activated hazard set captures this distinction; a state-only marginal-risk baseline cannot. The mechanism reproduces across repeated procedural families and three predeclared hand-built held-out topologies. A frozen objective sweep also shows that hard safe-return constraints can match the zero-hazard behavior, so the evidence supports the history-conditioned representation rather than universal superiority of the soft cost. A critical-cut approximation reduces computation in series-critical cases but fails on joint cutsets. These results establish a reproducible mechanism-level case for history-conditioned safe-return reasoning while clearly delimiting the additional evidence required for broader robotics claims.
+We studied navigation in which the robot's own transition history activates stochastic future closures that can destroy return connectivity. In this setting, the same geometric cell can correspond to different recoverability because the environment's future topology depends on how the robot arrived. An exact state-only fixed-field control uses the same connectivity oracle and objective yet cannot condition on this activation variable. In a frozen 96-scenario suite where every feasible route activates hazards, history-conditioned planning improves 36 scenarios, is nonworse in all 96, and reduces mean post-closure return-infeasibility from 0.744 to 0.666 at a modest path-length cost. A frozen objective sweep also shows that hard safe-return constraints can match the soft objective in trigger-avoidable worlds, so the evidence supports the history-conditioned representation rather than universal superiority of a particular cost. A critical-cut approximation reduces computation in series-critical cases but fails on joint cutsets. These results establish a reproducible mechanism-level case for history-conditioned safe-return reasoning while delimiting the additional evidence required for broader robotics claims.
 
 \bibliographystyle{IEEEtran}
 \bibliography{references}

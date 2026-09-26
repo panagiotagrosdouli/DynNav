@@ -7,12 +7,20 @@ This file records the claims that the manuscript must **not** make and the narro
 | Broad claim | Prior art that already covers it | Status for this paper |
 |---|---|---|
 | Safe-return planning is new | Guo et al., *IEEE TAC* 2023, DOI 10.1109/TAC.2023.3244884; Zhang & Guo, *Online Planning of Uncertain MDPs under Temporal Tasks and Safe-Return Constraints* | **Excluded** |
+| Returnability in safe exploration is new | Moldovan & Abbeel, *ICML* 2012; Stephens et al., *Autonomous Robots* 2024 | **Excluded** |
+| Safe reachability plus returnability is new | Turchetta, Berkenkamp & Krause, *NeurIPS* 2016 (SafeMDP) | **Excluded** |
+| State abstraction / aggregation and aliasing consequences are new | Li, Walsh & Littman, *ISAIM* 2006 and broader MDP abstraction literature | **Excluded** |
+| Uncertain-topology / blocked-edge navigation is new | Papadimitriou & Yannakakis, *Theoretical Computer Science* 1991 (Canadian Traveller / shortest paths without a map) and extensive subsequent CTP literature | **Excluded** |
 | History-dependent probabilistic robot risk is new | Xiao, Dufek, Murphy, *IEEE RA-L* 2020, DOI 10.1109/LRA.2020.2974434 | **Excluded** |
 | Decision-dependent/endogenous uncertainty is new | Mature stochastic/robust optimization literature; decision-dependent network reliability formulations predate this work | **Excluded** |
 | Actions changing future robot capability is new | Baldes et al., *A Model for Optimal Resilient Planning Subject to Fallible Actuators*, 2024 | **Excluded** |
 | Predicting near-miss commitment / future bottleneck closure is new | RCSP and related predictive-commitment work | **Excluded** |
 | Contingency or backup feasibility is new | Backup-plan MPC, contingency MPPI, safe-return and reachability methods | **Excluded** |
 | Action-dependent environmental evolution is new | Existing robotics work models action-dependent environmental transition fields, including 2026 sequential cleanup/risk-field work | **Excluded** |
+| Traversal-dependent edge deletion / self-deleting graphs are new | Carmesin et al., *Journal of Computational Science* 2023, DOI 10.1016/j.jocs.2023.102156: visited vertices can delete future edges, so the residual graph depends on path history | **Excluded** |
+| Traversal-dependent pathfinding / self-deleting shortest paths are new | Dvořák et al., *ISAAC* 2025, DOI 10.4230/LIPIcs.ISAAC.2025.28: shortest pathfinding is studied directly on traversal-dependent self-deleting graphs | **Excluded** |
+| Network reliability / cut-set connectivity analysis is new | Provan & Ball, *SIAM J. Comput.* 1983; Ball & Provan, *Networks* 1983 | **Excluded** |
+| Self-induced environmental obstacles / history-dependent traversability are new | Frenkel, Parker, Mansouri, *IEEE RA-L* 2026, DOI 10.1109/LRA.2026.3656776: robot traversal creates future obstacles and feasible successors depend on path history | **Excluded** |
 | Graph articulation / cut concepts are new | Classical graph theory and prior robotics/network applications | **Excluded** |
 
 ## Surviving research hypothesis
@@ -27,7 +35,7 @@ This is a representational/information claim, not a universal planning-superiori
 
 The augmented state `(x, A)` is a standard Markovization for the stated finite model; it is not itself a novel planning principle. A conventional MDP can represent this process exactly when its state includes the active hazard state (and any other variables required by the event model). The state-only marginal planner in this repository is a deliberately restricted ablation that omits that variable, not a general MDP/POMDP baseline. Its null result isolates information loss under that restriction and does not demonstrate superiority over general history-aware planning.
 
-The closest environmental-topology precedent located in this audit is Kameyama et al.'s AFADA, which demonstrates robot navigation in an environment whose topology changes stochastically. AFADA assigns routing and topology management to an active modular environment; the DynNav model instead makes future closure hazards conditional on the robot's own executed directed transitions and evaluates safe-return connectivity. This is a difference in modeled mechanism, not evidence that either work subsumes the other.
+Two especially close novelty constraints are Frenkel et al.'s self-induced-obstacle coverage model and Kameyama et al.'s AFADA. Frenkel et al. explicitly model obstacles created by the robot's own traversal, so future feasible successors depend on path history; their formulation is deterministic coverage planning with self-deleting graph structure rather than stochastic safe-return reliability. AFADA demonstrates robot navigation in an environment whose topology changes stochastically, but routing and topology management are assigned to an active modular environment rather than conditioned on the robot's executed trigger history. DynNav therefore does not claim novelty for action-induced topology change, path-history dependence, or stochastic topology change individually. The narrower object under test is the combination in which executed transitions activate stochastic future closures and safe-return connectivity is evaluated conditional on that activation history.
 
 ## What the current evidence supports
 

@@ -9,7 +9,10 @@ from enum import Enum
 
 from dynnav.planners.astar import AStarResult, _reconstruct_path
 from dynnav.planners.grid_map import GridCell, GridMap, manhattan
-from dynnav.recoverability_belief import TopologyHazardBelief
+from dynnav.recoverability_belief import (
+    TopologyHazardBelief,
+    exact_safe_return_probability,
+)
 from dynnav.recoverability_estimation import (
     most_reliable_return_path,
     two_hazard_disjoint_return_paths,
@@ -20,6 +23,7 @@ class HazardReliabilityMode(str, Enum):
     SHORTEST = "shortest"
     SINGLE_RETURN = "single_return"
     REDUNDANT_RETURN = "redundant_return"
+    EXACT_RETURN = "exact_return"
 
 
 @dataclass(frozen=True)
@@ -27,6 +31,7 @@ class HazardReliabilityAStarConfig:
     step_cost: float = 1.0
     reliability_weight: float = 4.0
     heuristic_weight: float = 1.0
+    max_hazard_cells: int = 16
 
     def validate(self) -> None:
         if self.step_cost <= 0.0:
@@ -35,6 +40,8 @@ class HazardReliabilityAStarConfig:
             raise ValueError("reliability_weight must be non-negative")
         if self.heuristic_weight < 0.0:
             raise ValueError("heuristic_weight must be non-negative")
+        if self.max_hazard_cells < 0:
+            raise ValueError("max_hazard_cells must be non-negative")
 
 
 @dataclass(frozen=True)
@@ -64,6 +71,7 @@ def _return_probability(
     cell: GridCell,
     safe_cells: set[GridCell],
     hazard: TopologyHazardBelief,
+    max_hazard_cells: int,
 ) -> float:
     if mode is HazardReliabilityMode.SHORTEST:
         return 1.0
@@ -72,6 +80,14 @@ def _return_probability(
         return most_reliable_return_path(
             grid, cell, safe_cells, conditioned_hazard
         ).probability
+    if mode is HazardReliabilityMode.EXACT_RETURN:
+        return exact_safe_return_probability(
+            grid,
+            cell,
+            safe_cells,
+            conditioned_hazard,
+            max_hazard_cells=max_hazard_cells,
+        )
     return two_hazard_disjoint_return_paths(
         grid, cell, safe_cells, conditioned_hazard
     ).probability
@@ -96,8 +112,10 @@ def hazard_reliability_astar(
     ``reliability_weight * (1 - return_probability)``.
 
     This is deliberately a transparent baseline objective. It is not presented
-    as a novel formulation; its purpose is to test whether belief-conditioned
-    return reliability adds information beyond geometry/structural heuristics.
+    as a novel formulation. EXACT_RETURN uses the same exact connectivity
+    oracle as the history-conditioned planner but applies it to one fixed
+    state-only hazard field; this is the publication-facing representation
+    ablation because it removes history without changing the return estimator.
     """
 
     grid.validate()
@@ -128,7 +146,7 @@ def hazard_reliability_astar(
     def reliability(cell: GridCell) -> float:
         if cell not in reliability_cache:
             reliability_cache[cell] = _return_probability(
-                mode, grid, cell, safe, topology_hazard
+                mode, grid, cell, safe, topology_hazard, cfg.max_hazard_cells
             )
         return reliability_cache[cell]
 

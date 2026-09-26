@@ -169,6 +169,18 @@ def run_geometric_heldout_benchmark(
                 reliability_weight=recoverability_weight
             ),
         )
+        state_only_exact = hazard_reliability_astar(
+            scenario.grid,
+            scenario.start,
+            scenario.goal,
+            safe_cells=scenario.safe,
+            hazard=_state_only_marginal_hazard(scenario.model),
+            mode=HazardReliabilityMode.EXACT_RETURN,
+            config=HazardReliabilityAStarConfig(
+                reliability_weight=recoverability_weight,
+                max_hazard_cells=max(16, len(scenario.model.closures)),
+            ),
+        )
         history = commitment_aware_astar(
             scenario.grid,
             scenario.start,
@@ -184,6 +196,7 @@ def run_geometric_heldout_benchmark(
         plans = {
             "shortest": shortest,
             "state_only_single": state_only,
+            "state_only_exact": state_only_exact,
             "history_exact": history,
         }
         for planner, result in plans.items():
@@ -246,7 +259,7 @@ def summarize_geometric_heldout(
             if row.planner == "shortest"
         }
         effects: dict[str, object] = {}
-        for planner in ("state_only_single", "history_exact"):
+        for planner in ("state_only_single", "state_only_exact", "history_exact"):
             candidate = {
                 row.seed: row
                 for row in scenario_rows

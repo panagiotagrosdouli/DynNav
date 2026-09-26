@@ -43,11 +43,19 @@ class CommitmentHazardModel:
 
     def validate(self, grid: GridMap) -> None:
         seen: set[DirectedTransition] = set()
+        cell_probabilities: dict[GridCell, float] = {}
         for closure in self.closures:
             closure.validate(grid)
             if closure.trigger in seen:
                 raise ValueError(f"duplicate trigger: {closure.trigger}")
             seen.add(closure.trigger)
+            existing = cell_probabilities.get(closure.closure_cell)
+            if existing is not None and existing != closure.closure_probability:
+                raise ValueError(
+                    "triggers mapped to the same closure cell must use one "
+                    f"probability: {closure.closure_cell}"
+                )
+            cell_probabilities[closure.closure_cell] = closure.closure_probability
 
     def activated_hazard_for_path(
         self,

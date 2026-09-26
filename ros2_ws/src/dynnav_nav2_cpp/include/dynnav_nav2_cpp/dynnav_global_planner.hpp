@@ -45,6 +45,7 @@ public:
 
 private:
   void onExecutedTransition(const std_msgs::msg::String::SharedPtr message);
+  void onHistoryReset(const std_msgs::msg::String::SharedPtr message);
 
   rclcpp_lifecycle::LifecycleNode::WeakPtr node_;
   std::string name_;
@@ -65,6 +66,7 @@ private:
   std::size_t observed_cell_{0};
   std::mutex history_mutex_;
   rclcpp::Subscription<std_msgs::msg::String>::SharedPtr transition_subscription_;
+  rclcpp::Subscription<std_msgs::msg::String>::SharedPtr history_reset_subscription_;
 };
 
 }  // namespace dynnav_nav2_cpp
