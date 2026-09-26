@@ -224,13 +224,24 @@ Across 75 combinations of detour depth, closure probability, and weight, the exa
   only marks,
   mark=o,
   mark size=1.35pt,
+  black!55
+] table[
+  x=state_only_fail,
+  y=history_fail,
+  col sep=comma
+] {unavoidable_scenario_tied.csv};
+\addlegendentry{tie}
+\addplot[
+  only marks,
+  mark=*,
+  mark size=1.35pt,
   black
 ] table[
   x=state_only_fail,
   y=history_fail,
   col sep=comma
-] {unavoidable_scenario_scatter.csv};
-\addlegendentry{scenario}
+] {unavoidable_scenario_improved.csv};
+\addlegendentry{improved}
 \addplot[
   only marks,
   mark=diamond*,
