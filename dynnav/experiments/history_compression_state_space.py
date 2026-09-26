@@ -3,14 +3,16 @@
 The frozen V1 search benchmark stops when A* reaches the goal, so it may expose
 only a small fraction of the raw augmented state space. This module separately
 enumerates every reachable augmented state under the same monotone trigger
-semantics. It is an exploratory post-full-study diagnostic, not a replacement
-for the frozen primary benchmark.
+semantics and records both state-count and traversal-cost proxies.
+
+The quotient remains exact; timing is descriptive and machine-dependent.
 """
 
 from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass
+import time
 
 from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
 from dynnav.history_compression import build_hazard_event_quotient
@@ -29,6 +31,10 @@ class ReachableStateSpaceRecord:
     compressed_reachable_states: int
     reduction_fraction: float
     compression_ratio: float
+    raw_peak_frontier: int
+    compressed_peak_frontier: int
+    raw_enumeration_ms: float
+    compressed_enumeration_ms: float
 
 
 def diamond_chain_problem(
@@ -88,17 +94,16 @@ def _raw_next_active(
     return active | additions
 
 
-def enumerate_raw_reachable_states(
+def _enumerate_raw_reachable_state_stats(
     grid: GridMap,
     start: GridCell,
     model: CommitmentHazardModel,
-) -> frozenset[RawState]:
-    """Enumerate the complete finite raw position x trigger-history graph."""
-
+) -> tuple[frozenset[RawState], int]:
     model.validate(grid)
     initial: RawState = (start, frozenset())
     queue: deque[RawState] = deque([initial])
     reached: set[RawState] = {initial}
+    peak_frontier = len(queue)
     while queue:
         cell, active = queue.popleft()
         for neighbor in grid.neighbors4(cell):
@@ -109,21 +114,32 @@ def enumerate_raw_reachable_states(
             if state not in reached:
                 reached.add(state)
                 queue.append(state)
-    return frozenset(reached)
+        peak_frontier = max(peak_frontier, len(queue))
+    return frozenset(reached), peak_frontier
 
 
-def enumerate_compressed_reachable_states(
+def enumerate_raw_reachable_states(
     grid: GridMap,
     start: GridCell,
     model: CommitmentHazardModel,
-) -> frozenset[CompressedState]:
-    """Enumerate the exact quotient position x closure-event history graph."""
+) -> frozenset[RawState]:
+    """Enumerate the complete finite raw position x trigger-history graph."""
 
+    reached, _ = _enumerate_raw_reachable_state_stats(grid, start, model)
+    return reached
+
+
+def _enumerate_compressed_reachable_state_stats(
+    grid: GridMap,
+    start: GridCell,
+    model: CommitmentHazardModel,
+) -> tuple[frozenset[CompressedState], int]:
     model.validate(grid)
     quotient = build_hazard_event_quotient(model)
     initial: CompressedState = (start, frozenset())
     queue: deque[CompressedState] = deque([initial])
     reached: set[CompressedState] = {initial}
+    peak_frontier = len(queue)
 
     while queue:
         cell, active_events = queue.popleft()
@@ -137,20 +153,51 @@ def enumerate_compressed_reachable_states(
             if state not in reached:
                 reached.add(state)
                 queue.append(state)
-    return frozenset(reached)
+        peak_frontier = max(peak_frontier, len(queue))
+    return frozenset(reached), peak_frontier
+
+
+def enumerate_compressed_reachable_states(
+    grid: GridMap,
+    start: GridCell,
+    model: CommitmentHazardModel,
+) -> frozenset[CompressedState]:
+    """Enumerate the exact quotient position x closure-event history graph."""
+
+    reached, _ = _enumerate_compressed_reachable_state_stats(
+        grid,
+        start,
+        model,
+    )
+    return reached
 
 
 def run_reachable_state_space_scaling(
     *,
-    module_counts: tuple[int, ...] = (1, 2, 3, 4, 5, 6),
+    module_counts: tuple[int, ...] = (1, 2, 3, 4, 5, 6, 7, 8),
 ) -> list[ReachableStateSpaceRecord]:
     """Measure exact reachable-state reduction independently of goal stopping."""
 
     records: list[ReachableStateSpaceRecord] = []
     for modules in module_counts:
         grid, start, model = diamond_chain_problem(modules)
-        raw = enumerate_raw_reachable_states(grid, start, model)
-        compressed = enumerate_compressed_reachable_states(grid, start, model)
+
+        raw_start = time.perf_counter()
+        raw, raw_peak = _enumerate_raw_reachable_state_stats(
+            grid,
+            start,
+            model,
+        )
+        raw_ms = (time.perf_counter() - raw_start) * 1000.0
+
+        compressed_start = time.perf_counter()
+        compressed, compressed_peak = _enumerate_compressed_reachable_state_stats(
+            grid,
+            start,
+            model,
+        )
+        compressed_ms = (time.perf_counter() - compressed_start) * 1000.0
+
         raw_count = len(raw)
         compressed_count = len(compressed)
         if compressed_count > raw_count:
@@ -172,6 +219,10 @@ def run_reachable_state_space_scaling(
                     if compressed_count
                     else float("inf")
                 ),
+                raw_peak_frontier=raw_peak,
+                compressed_peak_frontier=compressed_peak,
+                raw_enumeration_ms=raw_ms,
+                compressed_enumeration_ms=compressed_ms,
             )
         )
     return records
