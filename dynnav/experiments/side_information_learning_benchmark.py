@@ -1,1 +1,204 @@
-"""G3 side-information benchmark for breaking target-exposure lockout.\n\nA target trigger may be too risky to expose under a strict credible-return\ngate. This module studies whether a separate safe sentinel trigger can provide\ninformation without exposing the target.\n\nThe sentinel-transfer policy assumes the sentinel and target share one\nBernoulli closure parameter. That exchangeability assumption is explicit and\nis stress-tested with misspecified sentinel probabilities.\n\nThis is an identifiability/assumption study, not a deployment-safety claim.\n"""\n\nfrom __future__ import annotations\n\nimport random\nfrom dataclasses import dataclass\n\nfrom dynnav.online_hazard_learning import (\n    BetaClosurePosterior,\n    credible_safe_probe_allowed,\n)\n\n\n@dataclass(frozen=True)\nclass SideInformationLearningRecord:\n    policy: str\n    true_target_probability: float\n    true_sentinel_probability: float\n    minimum_return_probability: float\n    confidence: float\n    opportunities: int\n    sentinel_observations: int\n    target_exposures: int\n    target_failures: int\n    false_safe_exposures: int\n    posterior_mean: float\n    absolute_error: float\n    first_target_exposure_step: int | None\n\n\ndef _target_is_truly_safe(\n    true_target_probability: float,\n    minimum_return_probability: float,\n) -> bool:\n    return 1.0 - true_target_probability >= minimum_return_probability\n\n\ndef run_side_information_learning_benchmark(\n    *,\n    opportunities: int = 2_000,\n    true_target_probability: float = 0.3,\n    true_sentinel_probability: float | None = None,\n    minimum_return_probability: float = 0.7,\n    confidence: float = 0.90,\n    seed: int = 0,\n) -> list[SideInformationLearningRecord]:\n    """Compare target-only gating, sentinel transfer and a target oracle.\n\n    The sentinel is observed every opportunity and is operationally safe for\n    the simplified return model. Under the shared-parameter model, each\n    sentinel outcome updates the posterior used to gate target exposure.\n\n    If the sentinel and target probabilities differ, that is a deliberate\n    transfer-model misspecification control.\n    """\n\n    if opportunities <= 0:\n        raise ValueError("opportunities must be positive")\n    if not 0.0 <= true_target_probability <= 1.0:\n        raise ValueError("true_target_probability must be in [0, 1]")\n    sentinel_probability = (\n        true_target_probability\n        if true_sentinel_probability is None\n        else true_sentinel_probability\n    )\n    if not 0.0 <= sentinel_probability <= 1.0:\n        raise ValueError("true_sentinel_probability must be in [0, 1]")\n    if not 0.0 <= minimum_return_probability <= 1.0:\n        raise ValueError("minimum_return_probability must be in [0, 1]")\n    if not 0.0 < confidence < 1.0:\n        raise ValueError("confidence must be in (0, 1)")\n\n    rng = random.Random(seed)\n    target_latent = [\n        rng.random() < true_target_probability for _ in range(opportunities)\n    ]\n    sentinel_latent = [\n        rng.random() < sentinel_probability for _ in range(opportunities)\n    ]\n\n    target_only = BetaClosurePosterior(1.0, 3.0)\n    transfer = BetaClosurePosterior(1.0, 3.0)\n\n    counters = {\n        "target_only_credible": {\n            "target_exposures": 0,\n            "target_failures": 0,\n            "false_safe_exposures": 0,\n            "first_target_exposure_step": None,\n        },\n        "shared_sentinel_transfer": {\n            "target_exposures": 0,\n            "target_failures": 0,\n            "false_safe_exposures": 0,\n            "first_target_exposure_step": None,\n        },\n        "oracle_gate": {\n            "target_exposures": 0,\n            "target_failures": 0,\n            "false_safe_exposures": 0,\n            "first_target_exposure_step": None,\n        },\n    }\n    truly_safe = _target_is_truly_safe(\n        true_target_probability,\n        minimum_return_probability,\n    )\n\n    for step, (target_closed, sentinel_closed) in enumerate(\n        zip(target_latent, sentinel_latent, strict=True),\n        start=1,\n    ):\n        target_allowed = credible_safe_probe_allowed(\n            target_only,\n            minimum_return_probability=minimum_return_probability,\n            confidence=confidence,\n        )\n        if target_allowed:\n            item = counters["target_only_credible"]\n            item["target_exposures"] += 1\n            item["target_failures"] += int(target_closed)\n            item["false_safe_exposures"] += int(not truly_safe)\n            if item["first_target_exposure_step"] is None:\n                item["first_target_exposure_step"] = step\n        target_only = target_only.update(\n            exposed=target_allowed,\n            closure_observed=target_closed if target_allowed else False,\n        )\n\n        transfer = transfer.update(\n            exposed=True,\n            closure_observed=sentinel_closed,\n        )\n        transfer_allowed = credible_safe_probe_allowed(\n            transfer,\n            minimum_return_probability=minimum_return_probability,\n            confidence=confidence,\n        )\n        if transfer_allowed:\n            item = counters["shared_sentinel_transfer"]\n            item["target_exposures"] += 1\n            item["target_failures"] += int(target_closed)\n            item["false_safe_exposures"] += int(not truly_safe)\n            if item["first_target_exposure_step"] is None:\n                item["first_target_exposure_step"] = step\n\n        if truly_safe:\n            item = counters["oracle_gate"]\n            item["target_exposures"] += 1\n            item["target_failures"] += int(target_closed)\n            if item["first_target_exposure_step"] is None:\n                item["first_target_exposure_step"] = step\n\n    records: list[SideInformationLearningRecord] = []\n    for name in (\n        "target_only_credible",\n        "shared_sentinel_transfer",\n        "oracle_gate",\n    ):\n        if name == "target_only_credible":\n            posterior_mean = target_only.mean\n            sentinel_observations = 0\n        elif name == "shared_sentinel_transfer":\n            posterior_mean = transfer.mean\n            sentinel_observations = opportunities\n        else:\n            posterior_mean = true_target_probability\n            sentinel_observations = 0\n        item = counters[name]\n        records.append(\n            SideInformationLearningRecord(\n                policy=name,\n                true_target_probability=true_target_probability,\n                true_sentinel_probability=sentinel_probability,\n                minimum_return_probability=minimum_return_probability,\n                confidence=confidence,\n                opportunities=opportunities,\n                sentinel_observations=sentinel_observations,\n                target_exposures=int(item["target_exposures"]),\n                target_failures=int(item["target_failures"]),\n                false_safe_exposures=int(item["false_safe_exposures"]),\n                posterior_mean=posterior_mean,\n                absolute_error=abs(\n                    posterior_mean - true_target_probability\n                ),\n                first_target_exposure_step=(\n                    None\n                    if item["first_target_exposure_step"] is None\n                    else int(item["first_target_exposure_step"])\n                ),\n            )\n        )\n    return records\n
+"""G3 side-information benchmark for breaking target-exposure lockout.
+
+A target trigger may be too risky to expose under a strict credible-return
+gate. This module studies whether a separate safe sentinel trigger can provide
+information without exposing the target.
+
+The sentinel-transfer policy assumes the sentinel and target share one
+Bernoulli closure parameter. That exchangeability assumption is explicit and
+is stress-tested with misspecified sentinel probabilities.
+
+This is an identifiability/assumption study, not a deployment-safety claim.
+"""
+
+from __future__ import annotations
+
+import random
+from dataclasses import dataclass
+
+from dynnav.online_hazard_learning import (
+    BetaClosurePosterior,
+    credible_safe_probe_allowed,
+)
+
+
+@dataclass(frozen=True)
+class SideInformationLearningRecord:
+    policy: str
+    true_target_probability: float
+    true_sentinel_probability: float
+    minimum_return_probability: float
+    confidence: float
+    opportunities: int
+    sentinel_observations: int
+    target_exposures: int
+    target_failures: int
+    false_safe_exposures: int
+    posterior_mean: float
+    absolute_error: float
+    first_target_exposure_step: int | None
+
+
+def _target_is_truly_safe(
+    true_target_probability: float,
+    minimum_return_probability: float,
+) -> bool:
+    return 1.0 - true_target_probability >= minimum_return_probability
+
+
+def run_side_information_learning_benchmark(
+    *,
+    opportunities: int = 2_000,
+    true_target_probability: float = 0.3,
+    true_sentinel_probability: float | None = None,
+    minimum_return_probability: float = 0.7,
+    confidence: float = 0.90,
+    seed: int = 0,
+) -> list[SideInformationLearningRecord]:
+    """Compare target-only gating, sentinel transfer and a target oracle.
+
+    The sentinel is observed every opportunity and is operationally safe for
+    the simplified return model. Under the shared-parameter model, each
+    sentinel outcome updates the posterior used to gate target exposure.
+
+    If the sentinel and target probabilities differ, that is a deliberate
+    transfer-model misspecification control.
+    """
+
+    if opportunities <= 0:
+        raise ValueError("opportunities must be positive")
+    if not 0.0 <= true_target_probability <= 1.0:
+        raise ValueError("true_target_probability must be in [0, 1]")
+    sentinel_probability = (
+        true_target_probability
+        if true_sentinel_probability is None
+        else true_sentinel_probability
+    )
+    if not 0.0 <= sentinel_probability <= 1.0:
+        raise ValueError("true_sentinel_probability must be in [0, 1]")
+    if not 0.0 <= minimum_return_probability <= 1.0:
+        raise ValueError("minimum_return_probability must be in [0, 1]")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0, 1)")
+
+    rng = random.Random(seed)
+    target_latent = [
+        rng.random() < true_target_probability for _ in range(opportunities)
+    ]
+    sentinel_latent = [
+        rng.random() < sentinel_probability for _ in range(opportunities)
+    ]
+
+    target_only = BetaClosurePosterior(1.0, 3.0)
+    transfer = BetaClosurePosterior(1.0, 3.0)
+
+    counters = {
+        "target_only_credible": {
+            "target_exposures": 0,
+            "target_failures": 0,
+            "false_safe_exposures": 0,
+            "first_target_exposure_step": None,
+        },
+        "shared_sentinel_transfer": {
+            "target_exposures": 0,
+            "target_failures": 0,
+            "false_safe_exposures": 0,
+            "first_target_exposure_step": None,
+        },
+        "oracle_gate": {
+            "target_exposures": 0,
+            "target_failures": 0,
+            "false_safe_exposures": 0,
+            "first_target_exposure_step": None,
+        },
+    }
+    truly_safe = _target_is_truly_safe(
+        true_target_probability,
+        minimum_return_probability,
+    )
+
+    for step, (target_closed, sentinel_closed) in enumerate(
+        zip(target_latent, sentinel_latent, strict=True),
+        start=1,
+    ):
+        target_allowed = credible_safe_probe_allowed(
+            target_only,
+            minimum_return_probability=minimum_return_probability,
+            confidence=confidence,
+        )
+        if target_allowed:
+            item = counters["target_only_credible"]
+            item["target_exposures"] += 1
+            item["target_failures"] += int(target_closed)
+            item["false_safe_exposures"] += int(not truly_safe)
+            if item["first_target_exposure_step"] is None:
+                item["first_target_exposure_step"] = step
+        target_only = target_only.update(
+            exposed=target_allowed,
+            closure_observed=target_closed if target_allowed else False,
+        )
+
+        transfer = transfer.update(
+            exposed=True,
+            closure_observed=sentinel_closed,
+        )
+        transfer_allowed = credible_safe_probe_allowed(
+            transfer,
+            minimum_return_probability=minimum_return_probability,
+            confidence=confidence,
+        )
+        if transfer_allowed:
+            item = counters["shared_sentinel_transfer"]
+            item["target_exposures"] += 1
+            item["target_failures"] += int(target_closed)
+            item["false_safe_exposures"] += int(not truly_safe)
+            if item["first_target_exposure_step"] is None:
+                item["first_target_exposure_step"] = step
+
+        if truly_safe:
+            item = counters["oracle_gate"]
+            item["target_exposures"] += 1
+            item["target_failures"] += int(target_closed)
+            if item["first_target_exposure_step"] is None:
+                item["first_target_exposure_step"] = step
+
+    records: list[SideInformationLearningRecord] = []
+    for name in (
+        "target_only_credible",
+        "shared_sentinel_transfer",
+        "oracle_gate",
+    ):
+        if name == "target_only_credible":
+            posterior_mean = target_only.mean
+            sentinel_observations = 0
+        elif name == "shared_sentinel_transfer":
+            posterior_mean = transfer.mean
+            sentinel_observations = opportunities
+        else:
+            posterior_mean = true_target_probability
+            sentinel_observations = 0
+        item = counters[name]
+        records.append(
+            SideInformationLearningRecord(
+                policy=name,
+                true_target_probability=true_target_probability,
+                true_sentinel_probability=sentinel_probability,
+                minimum_return_probability=minimum_return_probability,
+                confidence=confidence,
+                opportunities=opportunities,
+                sentinel_observations=sentinel_observations,
+                target_exposures=int(item["target_exposures"]),
+                target_failures=int(item["target_failures"]),
+                false_safe_exposures=int(item["false_safe_exposures"]),
+                posterior_mean=posterior_mean,
+                absolute_error=abs(
+                    posterior_mean - true_target_probability
+                ),
+                first_target_exposure_step=(
+                    None
+                    if item["first_target_exposure_step"] is None
+                    else int(item["first_target_exposure_step"])
+                ),
+            )
+        )
+    return records
