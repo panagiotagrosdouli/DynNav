@@ -184,3 +184,73 @@ This does not make the risk-budget method a safety solution. It establishes the 
 The post-V1 exhaustive state-space diagnostic clarifies why the frozen early-goal A* timing result looked modest. At 6 duplicated-trigger modules, the raw augmented graph has 33,354 reachable position-history states, while the exact closure-event quotient has 126, a 264.7x ratio (99.62% reduction).
 
 This strengthens G5 as an exact representation/computation companion, but does not convert the result into a universal online speedup claim.
+
+
+## G1 V4 localization-controlled Nav2/Gazebo confirmatory evidence
+
+The post-V1 G1 programme has now passed a controlled execution gate.
+
+**Workflow:** `36176610216`  
+**Checked-out evidence revision:** `f1a2b04cb0cdb54dd58fa5673c0f27492ed56e53`  
+**Protocol:** `G1_CORRELATED_GAZEBO_V4_PROTOCOL.md`  
+**Retained manifest:** `results/research_gap_program/g1_gazebo_v4_confirmatory_evidence_manifest.json`
+
+The V4 study preserves the frozen canonical two-return-corridor topology and uses resettable simulator odometry instead of AMCL. This localization intervention was introduced only after the V3.1 confirmatory attempt failed its preregistered paired-valid gate because of localization jumps; the failed V3.1 artifacts remain retained.
+
+Each V4 dependence slice contains 10 paired repetitions x 3 planners = 30 valid trials. In every slice:
+
+- `DynNavShortest` and `DynNavHistory` select the 5.40 m direct plan and cross both action-trigger gates;
+- `DynNavRobustHistory` selects the 11.88 m trigger-free detour;
+- History↔Robust paired-valid count is 10/10.
+
+### Exposure mechanism
+
+For independent, common-cause and anti-correlated closure truth alike:
+
+- History both-trigger exposure = 10/10;
+- Robust both-trigger exposure = 0/10;
+- paired risk difference = **-1.0**;
+- bootstrap 95% interval = **[-1.0,-1.0]**;
+- exact McNemar p = **0.001953125**.
+
+This is the clean execution-level mechanism result: uncertainty about joint closure dependence changes the route selected before the dynamic events occur.
+
+### Realized safe-return feasibility
+
+The protocol records recovery feasibility on the realized post-execution topology. This outcome is more directly aligned with the safe-return claim than the older composite `mission_failure AND recovery_infeasible`, because a robot may successfully reach the outward goal after having destroyed its route home.
+
+History versus Robust:
+
+| Dependence truth | History return-infeasible | Robust return-infeasible | Paired risk difference | Bootstrap 95% interval | Exact McNemar p |
+|---|---:|---:|---:|---:|---:|
+| independent | 1/10 | 0/10 | -0.10 | [-0.30,0.00] | 1.0 |
+| common cause | 7/10 | 0/10 | **-0.70** | **[-1.00,-0.40]** | **0.015625** |
+| anti-correlated | 0/10 | 0/10 | 0.00 | [0.00,0.00] | 1.0 |
+
+The common-cause condition therefore supplies the retained execution consequence expected from the G1 mechanism. The anti-correlated condition remains the required no-benefit control.
+
+### Retained cost / harm boundary
+
+Robust planning is not universally preferable.
+
+Mean navigation-time difference, Robust minus History:
+
+- independent: **+37.42 s**, bootstrap 95% interval [32.91,43.80];
+- common cause: **+44.33 s**, interval [36.34,52.75];
+- anti-correlated: **+34.66 s**, interval [31.51,38.08].
+
+Navigation success in the common-cause slice was 10/10 for History and 7/10 for Robust, despite Robust preserving return feasibility. This is retained as a mission-completion/safety trade-off rather than hidden as an implementation nuisance.
+
+### G1 publication decision after V4
+
+G1 has now crossed the main mechanism-evidence gate:
+
+1. exact dependence ambiguity model;
+2. topology-dependent dependence interaction theory;
+3. held-out random-topology sign survey;
+4. finite-data ambiguity study;
+5. Python and C++/Nav2 robust planners;
+6. controlled 90-trial Gazebo confirmatory execution;
+7. explicit beneficial, null and harmful/cost regimes.
+
+The remaining G1 publication work is manuscript integration, literature/bibliography verification, final evidence-manifest reconciliation, and release freeze. Claims must remain scoped to the canonical controlled execution environment; V4 is not evidence of AMCL robustness or physical-robot safety.
