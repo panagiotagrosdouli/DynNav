@@ -9,7 +9,7 @@ How much additional safe-return information and planning value can DynNav obtain
 
 | Gap | Scientific question | Implemented foundation | Publication gate |
 |---|---|---|---|
-| G1 | What if action-triggered closures have uncertain joint dependence? | finite ambiguity sets, exact LP return bounds, robust history-aware A* | retained dependence-shift planning study + literature audit |
+| G1 | What if action-triggered closures have uncertain joint dependence? | finite ambiguity sets, exact LP return bounds, robust Python/C++ history planners, finite-data ambiguity, V4 Gazebo execution | **main mechanism gate passed**; remaining gate is manuscript/literature/release freeze |
 | G2 | What if trigger execution/activation is only noisily observed? | exact activation belief + threshold safety/coverage frontier | repeated-seed parameter sweep + explicit belief/POMDP baseline |
 | G3 | What if trigger-to-closure probabilities must be learned while the policy controls exposure? | exposure-aware Beta calibration + safe information probe rule | online safety/learning frontier with policy baselines |
 | G4 | Which executed actions causally affect later closures? | logged-propensity IPW effect estimator + null/confounding controls | randomized/interventional graph-recovery study |
@@ -36,9 +36,19 @@ For a fixed state and activated-hazard history, the robust return value is the m
 
 The CI runner sweeps 2–5 parallel return corridors and marginal closure probabilities 0.2, 0.5, and 0.8. It reports independent-model return probability, worst/best return over the marginal ambiguity set, and a common-cause reference. A pairwise-identified two-corridor case checks that adding the joint probability can collapse the ambiguity interval. A separate planner test freezes a route-choice case in which the independence planner accepts a two-hazard shortcut while the robust planner chooses a trigger-free detour. A paired execution benchmark now evaluates that same decision under independent, common-cause and anti-correlated latent closures.
 
-### Remaining publication experiment
+### Publication status after V4
 
-Extend the implemented paired execution study to held-out geometries, heterogeneous marginals, partial pairwise information and repeated independent seeds. Report false-safe rate, irreversible-failure rate, path length, true-joint oracle return, robust lower return, LP/planning latency, and the conservative-cost regime.
+G1 now has retained held-out topology evidence, finite-data ambiguity results, repeated synthetic dependence-shift trials, and a localization-controlled Nav2/Gazebo confirmatory study.
+
+In V4, all three dependence slices achieved 10/10 paired-valid History↔Robust repetitions and a stable frozen route audit. Robust planning eliminated both-trigger exposure (10/10 -> 0/10) in every slice. Under common-cause truth, realized return infeasibility fell from 7/10 for the independence-history planner to 0/10 for the robust planner; under anti-correlation both were 0/10, while Robust retained a large navigation-time penalty.
+
+The remaining G1 work is not another hand-tuned benchmark. It is:
+1. integrate theory, finite-data results and V4 execution into the manuscript;
+2. finish venue-specific literature verification;
+3. reconcile all publication numbers to retained manifests;
+4. freeze a clean tagged release.
+
+Further heterogeneous-marginal/high-dimensional-dependence studies are valuable generalization extensions, not prerequisites for the narrow current G1 claim.
 
 ## G2 — uncertain trigger activation
 
