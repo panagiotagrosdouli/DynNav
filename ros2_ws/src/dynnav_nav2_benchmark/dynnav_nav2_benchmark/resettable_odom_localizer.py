@@ -10,8 +10,8 @@ not a replacement for real-world localization.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import math
+from dataclasses import dataclass
 
 from geometry_msgs.msg import TransformStamped
 from nav_msgs.msg import Odometry
