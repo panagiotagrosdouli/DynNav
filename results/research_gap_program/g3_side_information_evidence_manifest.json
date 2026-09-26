@@ -1,0 +1,62 @@
+{
+  "artifact_scope": "G3 post-V1 safe-learning identifiability and side-information evidence",
+  "workflow_run_id": 36223128961,
+  "artifact_id": 10899837124,
+  "artifact_digest": "sha256:b36c20614fbbc0b56f1cac4917acae91bb022ad9f8f4edd6dbea5ef5491428e4",
+  "head_sha": "41a5c25d185214bdf519c493c6641911e51b7d7a",
+  "source_file": "g3_side_information_replication.json",
+  "configuration": {
+    "opportunities_per_condition": 1000,
+    "repetitions": 10,
+    "target_probabilities": [
+      0.1,
+      0.3,
+      0.5,
+      0.7
+    ],
+    "minimum_return_probabilities": [
+      0.5,
+      0.7,
+      0.9
+    ],
+    "confidence": 0.9,
+    "sentinel_conditions": [
+      "exact_shared",
+      "optimistic_misspecified",
+      "pessimistic_misspecified"
+    ]
+  },
+  "retained_findings": {
+    "target_only_credible": {
+      "mean_absolute_error_across_exact_shared_grid": 0.225,
+      "mean_target_exposures": 0,
+      "interpretation": "strict target-only credible gating remains in cold-start lockout"
+    },
+    "exact_shared_sentinel": {
+      "mean_absolute_error": 0.009382470119521914,
+      "mean_target_exposures_across_truly_safe_conditions": 535.7833333333333,
+      "mean_target_exposure_repetition_rate_across_truly_safe_conditions": 0.7666666666666666,
+      "mean_false_safe_exposures_across_truly_unsafe_conditions": 0.06666666666666667,
+      "boundary": "near the exact safety threshold, credible gating may remain conservative or admit rare finite-sample false-safe exposures"
+    },
+    "optimistic_misspecification": {
+      "mean_absolute_error": 0.3006059096945551,
+      "mean_target_exposures_across_truly_safe_conditions": 995.8,
+      "mean_false_safe_exposures_across_truly_unsafe_conditions": 527.8333333333334,
+      "interpretation": "a sentinel that is safer than the target can catastrophically understate target risk"
+    },
+    "pessimistic_misspecification": {
+      "mean_absolute_error": 0.37406208499335997,
+      "mean_target_exposures_across_truly_safe_conditions": 21.783333333333335,
+      "mean_target_exposure_repetition_rate_across_truly_safe_conditions": 0.2333333333333333,
+      "mean_false_safe_exposures_across_truly_unsafe_conditions": 0,
+      "interpretation": "a riskier sentinel preserves or recreates conservative lockout"
+    }
+  },
+  "decision": "G3 is an identifiability/assumption result, not a solved safe-learning method. Side information breaks the deadlock only under a defensible transfer/exchangeability assumption; risk budgets are an alternative that explicitly pays exposure risk.",
+  "claim_boundary": [
+    "no deployment-safety guarantee",
+    "no generic safe-bandit novelty",
+    "no claim that sentinel transfer is robust to model mismatch"
+  ]
+}
