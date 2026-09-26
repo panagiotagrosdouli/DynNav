@@ -8,6 +8,18 @@ from pathlib import Path
 
 import yaml
 from ament_index_python.packages import get_package_share_directory
+from launch_ros.actions import Node
+
+from dynnav_nav2_benchmark.configuration import (
+    freeze_global_costmap_for_planner_comparison,
+    inject_correlated_history_planner_parameters,
+)
+from dynnav_nav2_benchmark.correlated_history_execution import (
+    blocker_footprint_cells,
+    load_correlated_history_execution_suite,
+    quantized_hazard_trigger_gates,
+)
+from dynnav_nav2_benchmark.history_execution import world_to_cell
 from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
@@ -22,18 +34,6 @@ from launch.event_handlers import OnProcessExit, OnShutdown
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import Node
-
-from dynnav_nav2_benchmark.configuration import (
-    freeze_global_costmap_for_planner_comparison,
-    inject_correlated_history_planner_parameters,
-)
-from dynnav_nav2_benchmark.correlated_history_execution import (
-    blocker_footprint_cells,
-    load_correlated_history_execution_suite,
-    quantized_hazard_trigger_gates,
-)
-from dynnav_nav2_benchmark.history_execution import world_to_cell
 
 
 def _launch_setup(context):
