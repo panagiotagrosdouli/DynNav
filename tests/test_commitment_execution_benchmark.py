@@ -37,9 +37,15 @@ def test_state_only_marginal_risk_cannot_value_trigger_avoiding_detours() -> Non
 
     shortest = summary["shortest:p=0.8"]
     state_only = summary["state_only_single:p=0.8"]
+    state_only_exact = summary["state_only_exact:p=0.8"]
     assert state_only["activated_closure_count"] == shortest["activated_closure_count"] == 2
     assert state_only["path_length"] == shortest["path_length"]
     assert state_only["irreversible_failure_rate"] == pytest.approx(
+        shortest["irreversible_failure_rate"]
+    )
+    assert state_only_exact["activated_closure_count"] == shortest["activated_closure_count"]
+    assert state_only_exact["path_length"] == shortest["path_length"]
+    assert state_only_exact["irreversible_failure_rate"] == pytest.approx(
         shortest["irreversible_failure_rate"]
     )
 
@@ -75,6 +81,7 @@ def test_execution_records_are_paired_by_seed_across_planners() -> None:
     for planner in (
         "shortest",
         "state_only_single",
+        "state_only_exact",
         "history_exact",
         "history_cut",
         "hard_return_0.9",

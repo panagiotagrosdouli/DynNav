@@ -104,6 +104,39 @@ bool reachesSafe(
   return false;
 }
 
+std::vector<bool> cellsReachingSafe(
+  const std::size_t width,
+  const std::size_t height,
+  const std::vector<std::uint8_t> & costs,
+  const std::vector<std::size_t> & safe_indices,
+  const std::unordered_set<std::size_t> & closed,
+  const HistorySearchConfig & config)
+{
+  std::queue<std::size_t> frontier;
+  std::vector<bool> reachable(costs.size(), false);
+  for (const auto safe : safe_indices) {
+    if (safe >= costs.size() || closed.count(safe) > 0U || !traversable(costs[safe], config)) {
+      continue;
+    }
+    if (!reachable[safe]) {
+      reachable[safe] = true;
+      frontier.push(safe);
+    }
+  }
+  while (!frontier.empty()) {
+    const auto cell = frontier.front();
+    frontier.pop();
+    for (const auto next : neighbours4(cell, width, height)) {
+      if (reachable[next] || closed.count(next) > 0U || !traversable(costs[next], config)) {
+        continue;
+      }
+      reachable[next] = true;
+      frontier.push(next);
+    }
+  }
+  return reachable;
+}
+
 std::uint64_t activatedAfter(
   const std::size_t source,
   const std::size_t target,
@@ -169,6 +202,7 @@ void validateHistorySearchInputs(
     if (safe >= costs.size()) {throw std::out_of_range("safe cell is outside the grid");}
   }
   std::unordered_set<std::uint64_t> triggers;
+  std::unordered_map<std::size_t, double> closure_probabilities;
   for (const auto & hazard : hazards) {
     if (hazard.source_index >= costs.size() || hazard.target_index >= costs.size() ||
       hazard.closure_index >= costs.size())
@@ -189,6 +223,14 @@ void validateHistorySearchInputs(
     if (!triggers.insert(trigger_key).second) {
       throw std::invalid_argument("duplicate history hazard trigger");
     }
+    const auto existing = closure_probabilities.find(hazard.closure_index);
+    if (existing != closure_probabilities.end() &&
+      std::abs(existing->second - hazard.closure_probability) > kEpsilon)
+    {
+      throw std::invalid_argument(
+              "multiple triggers for one closure cell must share one probability");
+    }
+    closure_probabilities[hazard.closure_index] = hazard.closure_probability;
   }
 }
 
@@ -208,24 +250,34 @@ double exactHistoryReturnProbability(
     throw std::invalid_argument("active hazard mask references an unknown hazard");
   }
 
-  std::vector<std::size_t> active_indices;
+  // Multiple executed triggers may activate the same latent closure event.
+  // Collapse active trigger bits by closure cell so one physical event is never
+  // counted as multiple independent Bernoulli trials.
+  std::unordered_map<std::size_t, double> active_events_by_cell;
   for (std::size_t i = 0; i < hazards.size(); ++i) {
-    if ((active_mask & (1ULL << i)) != 0U) {active_indices.push_back(i);}
+    if ((active_mask & (1ULL << i)) == 0U) {continue;}
+    const auto & hazard = hazards[i];
+    active_events_by_cell[hazard.closure_index] = hazard.closure_probability;
   }
-  if (active_indices.empty()) {return 1.0;}
+  std::vector<std::pair<std::size_t, double>> active_events(
+    active_events_by_cell.begin(), active_events_by_cell.end());
+  std::sort(active_events.begin(), active_events.end());
 
   std::unordered_set<std::size_t> safe(safe_indices.begin(), safe_indices.end());
-  const std::uint64_t realization_count = 1ULL << active_indices.size();
+  if (active_events.empty()) {
+    return reachesSafe(width, height, costs, current_index, safe, {}, config) ? 1.0 : 0.0;
+  }
+  const std::uint64_t realization_count = 1ULL << active_events.size();
   double probability = 0.0;
   for (std::uint64_t realization = 0; realization < realization_count; ++realization) {
     double mass = 1.0;
     std::unordered_set<std::size_t> closed;
-    for (std::size_t bit = 0; bit < active_indices.size(); ++bit) {
-      const auto & hazard = hazards[active_indices[bit]];
+    for (std::size_t bit = 0; bit < active_events.size(); ++bit) {
+      const auto & [closure_index, closure_probability] = active_events[bit];
       const bool closes = (realization & (1ULL << bit)) != 0U;
-      mass *= closes ? hazard.closure_probability : (1.0 - hazard.closure_probability);
-      if (closes && hazard.closure_index != current_index) {
-        closed.insert(hazard.closure_index);
+      mass *= closes ? closure_probability : (1.0 - closure_probability);
+      if (closes && closure_index != current_index) {
+        closed.insert(closure_index);
       }
     }
     if (mass <= 0.0) {continue;}
@@ -262,6 +314,61 @@ HistorySearchResult planHistoryGridPath(
   }
 
   const auto initial_key = key(start_index, initial_active_mask);
+
+  // Exact fast path for the common zero/one-active-hazard case.  Reachability
+  // is precomputed once per closure realization instead of running a graph
+  // search for every A* successor.  Multi-hazard states retain the generic
+  // exact enumerator below.
+  const std::unordered_set<std::size_t> no_closed;
+  const auto base_reachable =
+    cellsReachingSafe(width, height, costs, safe_indices, no_closed, config);
+  std::vector<std::vector<bool>> single_closed_reachable;
+  single_closed_reachable.reserve(hazards.size());
+  for (const auto & hazard : hazards) {
+    single_closed_reachable.push_back(
+      cellsReachingSafe(
+        width,
+        height,
+        costs,
+        safe_indices,
+        std::unordered_set<std::size_t>{hazard.closure_index},
+        config));
+  }
+  std::unordered_map<std::uint64_t, double> return_probability_cache;
+  const auto returnProbability = [&](const std::size_t cell, const std::uint64_t mask) {
+      const auto state_key = key(cell, mask);
+      const auto cached = return_probability_cache.find(state_key);
+      if (cached != return_probability_cache.end()) {
+        return cached->second;
+      }
+
+      double probability = 0.0;
+      if (mask == 0U) {
+        probability = base_reachable[cell] ? 1.0 : 0.0;
+      } else if ((mask & (mask - 1U)) == 0U) {
+        std::size_t hazard_index = 0U;
+        while ((mask & (1ULL << hazard_index)) == 0U) {
+          ++hazard_index;
+        }
+        const auto & hazard = hazards[hazard_index];
+        if (hazard.closure_index == cell) {
+          probability = base_reachable[cell] ? 1.0 : 0.0;
+        } else {
+          const double open_probability = base_reachable[cell] ? 1.0 : 0.0;
+          const double closed_probability =
+            single_closed_reachable[hazard_index][cell] ? 1.0 : 0.0;
+          probability =
+            (1.0 - hazard.closure_probability) * open_probability +
+            hazard.closure_probability * closed_probability;
+        }
+      } else {
+        probability = exactHistoryReturnProbability(
+          width, height, costs, cell, safe_indices, hazards, mask, config);
+      }
+      return_probability_cache.emplace(state_key, probability);
+      return probability;
+    };
+
   std::unordered_map<std::uint64_t, double> cost_so_far{{initial_key, 0.0}};
   std::unordered_map<std::uint64_t, std::uint64_t> parent;
   std::priority_queue<QueueEntry, std::vector<QueueEntry>, GreaterPriority> frontier;
@@ -302,20 +409,17 @@ HistorySearchResult planHistoryGridPath(
       result.minimum_return_probability = 1.0;
       for (const auto state : states) {
         result.path.push_back(keyIndex(state));
-        const double r = exactHistoryReturnProbability(
-          width, height, costs, keyIndex(state), safe_indices, hazards, keyMask(state), config);
+        const double r = returnProbability(keyIndex(state), keyMask(state));
         result.minimum_return_probability = std::min(result.minimum_return_probability, r);
       }
-      result.final_return_probability = exactHistoryReturnProbability(
-        width, height, costs, goal_index, safe_indices, hazards, mask, config);
+      result.final_return_probability = returnProbability(goal_index, mask);
       return result;
     }
 
     for (const auto next : neighbours4(cell, width, height)) {
       if (!traversable(costs[next], config)) {continue;}
       const auto next_mask = activatedAfter(cell, next, hazards, mask);
-      const double return_probability = exactHistoryReturnProbability(
-        width, height, costs, next, safe_indices, hazards, next_mask, config);
+      const double return_probability = returnProbability(next, next_mask);
       const double transition_cost =
         config.neutral_cost + config.recoverability_weight * (1.0 - return_probability);
       const double candidate = known->second + transition_cost;

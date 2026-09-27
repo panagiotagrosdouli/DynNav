@@ -204,6 +204,10 @@ void DynNavGlobalPlanner::configure(
       "dynnav/executed_transition",
       rclcpp::QoS(50),
       std::bind(&DynNavGlobalPlanner::onExecutedTransition, this, std::placeholders::_1));
+    history_reset_subscription_ = node->create_subscription<std_msgs::msg::String>(
+      "dynnav/reset_history",
+      rclcpp::QoS(10),
+      std::bind(&DynNavGlobalPlanner::onHistoryReset, this, std::placeholders::_1));
   }
 
   RCLCPP_INFO(
@@ -218,6 +222,7 @@ void DynNavGlobalPlanner::cleanup()
 {
   RCLCPP_INFO(logger_, "Cleaning up DynNav planner %s", name_.c_str());
   transition_subscription_.reset();
+  history_reset_subscription_.reset();
   {
     std::lock_guard<std::mutex> lock(history_mutex_);
     active_history_mask_ = 0U;
@@ -250,11 +255,11 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
     const auto target = checkedIndex(costmap_, transition.second);
     std::lock_guard<std::mutex> lock(history_mutex_);
     if (observed_cell_valid_ && source != observed_cell_) {
-      RCLCPP_ERROR(
+      RCLCPP_WARN(
         logger_,
-        "Rejected out-of-order executed transition %s: source index %zu != observed %zu",
-        message->data.c_str(), source, observed_cell_);
-      return;
+        "Executed-transition stream resynchronized at source index %zu (previous observed %zu); "
+        "no missing transition is inferred",
+        source, observed_cell_);
     }
     for (std::size_t i = 0; i < history_hazards_.size(); ++i) {
       if (history_hazards_[i].source_index == source &&
@@ -268,6 +273,21 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
   } catch (const std::exception & exc) {
     RCLCPP_ERROR(logger_, "Invalid executed transition '%s': %s", message->data.c_str(), exc.what());
   }
+}
+
+void DynNavGlobalPlanner::onHistoryReset(const std_msgs::msg::String::SharedPtr message)
+{
+  if (!history_aware_) {
+    return;
+  }
+  std::lock_guard<std::mutex> lock(history_mutex_);
+  active_history_mask_ = 0U;
+  observed_cell_valid_ = false;
+  RCLCPP_INFO(
+    logger_,
+    "Reset persistent history state%s%s",
+    message->data.empty() ? "" : ": ",
+    message->data.c_str());
 }
 
 nav_msgs::msg::Path DynNavGlobalPlanner::createPlan(

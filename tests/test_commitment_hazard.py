@@ -92,3 +92,16 @@ def test_history_evaluator_rejects_non_traversable_path() -> None:
 
     with pytest.raises(ValueError, match="non-traversable transition"):
         model.activated_hazard_for_path(grid, ((0, 0), (2, 0)))
+
+
+def test_same_closure_cell_rejects_conflicting_probabilities() -> None:
+    grid = GridMap.from_obstacles(4, 2)
+    model = CommitmentHazardModel(
+        (
+            CommitmentClosure(((0, 0), (1, 0)), (2, 0), 0.2),
+            CommitmentClosure(((0, 1), (1, 1)), (2, 0), 0.8),
+        )
+    )
+
+    with pytest.raises(ValueError, match="same closure cell"):
+        model.validate(grid)

@@ -1,6 +1,6 @@
 {
   "paper_title": "When the Same Place Is Not the Same State: History-Conditioned Safe-Return Planning under Action-Triggered Topology Hazards",
-  "research_question": "Does path/action history contain safe-return-connectivity information that a state-only marginal environmental-risk model discards when robot actions activate future topology hazards?",
+  "research_question": "When executed robot transitions activate stochastic future topology hazards, what safe-return-connectivity information is lost by collapsing distinct activation histories to a state-only marginal representation?",
   "focused_workflow": {
     "name": "Hazard-aware planner pilot",
     "run_id": 34714856493,
@@ -12,76 +12,162 @@
     "conclusion": "success"
   },
   "counterfactual_information_gap": {
-    "closure_probabilities": [0.1, 0.3, 0.5, 0.7, 0.9],
-    "safe_history_return_probability": 1.0,
+    "closure_probabilities": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "safe_history_return_probability": 1,
     "risky_history_rule": "1-p",
     "state_only_rule_for_both_histories": "1-p",
     "mean_history_separation": 0.5,
     "maximum_history_separation": 0.9,
-    "risky_history_invariant_max_abs_error": 0.0
+    "risky_history_invariant_max_abs_error": 0,
+    "endpoint_only_lower_bound_rule": "For histories with reliabilities R1,R2 at the same endpoint, any deterministic endpoint-only scalar estimator has worst-history absolute error >= |R1-R2|/2.",
+    "bridge_lower_bound_rule": "p/2",
+    "maximum_bridge_lower_bound": 0.45
   },
   "analytic_phase_boundary": {
     "rule": "lambda*p > 2*d",
     "trials": 75,
     "route_choice_matches": 75,
-    "match_rate": 1.0
+    "match_rate": 1
   },
   "homogeneous_stochastic_execution": {
     "paired_seeds_per_probability": 1000,
     "module_count": 3,
-    "recoverability_weight": 8.0,
-    "closure_probabilities": [0.2, 0.5, 0.8],
+    "recoverability_weight": 8,
+    "closure_probabilities": [
+      0.2,
+      0.5,
+      0.8
+    ],
     "irreversible_failure_rate": {
-      "shortest": [0.512, 0.881, 0.992],
-      "state_only_single": [0.512, 0.881, 0.992],
-      "history_exact": [0.0, 0.0, 0.0],
-      "history_cut": [0.0, 0.0, 0.0],
-      "hard_return_0.9": [0.0, 0.0, 0.0]
+      "shortest": [
+        0.512,
+        0.881,
+        0.992
+      ],
+      "state_only_single": [
+        0.512,
+        0.881,
+        0.992
+      ],
+      "history_exact": [
+        0,
+        0,
+        0
+      ],
+      "history_cut": [
+        0,
+        0,
+        0
+      ],
+      "hard_return_0.9": [
+        0,
+        0,
+        0
+      ],
+      "state_only_exact": [
+        0.512,
+        0.881,
+        0.992
+      ]
     },
     "state_only_vs_shortest": {
-      "risk_difference": [0.0, 0.0, 0.0],
-      "discordant_pairs": [0, 0, 0],
-      "mcnemar_exact_pvalue": [1.0, 1.0, 1.0]
+      "risk_difference": [
+        0,
+        0,
+        0
+      ],
+      "discordant_pairs": [
+        0,
+        0,
+        0
+      ],
+      "mcnemar_exact_pvalue": [
+        1,
+        1,
+        1
+      ]
     }
   },
   "frozen_heterogeneous_evaluation": {
     "paired_seeds_per_scenario": 500,
     "scenarios": {
       "low_to_high_6": {
-        "probabilities": [0.15, 0.25, 0.35, 0.55, 0.75, 0.85],
+        "probabilities": [
+          0.15,
+          0.25,
+          0.35,
+          0.55,
+          0.75,
+          0.85
+        ],
         "failure_rate": {
           "shortest": 0.992,
           "state_only_single": 0.992,
-          "history_exact": 0.0,
-          "history_cut": 0.0,
-          "hard_return_0.9": 0.0
+          "history_exact": 0,
+          "history_cut": 0,
+          "hard_return_0.9": 0,
+          "state_only_exact": 0.992
         },
         "history_exact_vs_shortest_risk_difference": -0.992,
-        "history_exact_vs_shortest_bootstrap_95": [-0.998, -0.984]
+        "history_exact_vs_shortest_bootstrap_95": [
+          -0.998,
+          -0.984
+        ]
       },
       "alternating_7": {
-        "probabilities": [0.8, 0.2, 0.7, 0.3, 0.6, 0.4, 0.9],
+        "probabilities": [
+          0.8,
+          0.2,
+          0.7,
+          0.3,
+          0.6,
+          0.4,
+          0.9
+        ],
         "failure_rate": {
           "shortest": 0.998,
           "state_only_single": 0.998,
-          "history_exact": 0.0,
-          "history_cut": 0.0,
-          "hard_return_0.9": 0.0
+          "history_exact": 0,
+          "history_cut": 0,
+          "hard_return_0.9": 0,
+          "state_only_exact": 0.998
         },
         "history_exact_vs_shortest_risk_difference": -0.998,
-        "history_exact_vs_shortest_bootstrap_95": [-1.0, -0.994]
+        "history_exact_vs_shortest_bootstrap_95": [
+          -1,
+          -0.994
+        ]
       },
       "mixed_8": {
-        "probabilities": [0.1, 0.9, 0.2, 0.8, 0.35, 0.65, 0.45, 0.75],
+        "probabilities": [
+          0.1,
+          0.9,
+          0.2,
+          0.8,
+          0.35,
+          0.65,
+          0.45,
+          0.75
+        ],
         "failure_rate": {
-          "shortest": 1.0,
-          "state_only_single": 1.0,
-          "history_exact": 0.0,
-          "history_cut": 0.0,
-          "hard_return_0.9": 0.116
+          "shortest": 1,
+          "state_only_single": 1,
+          "history_exact": 0,
+          "history_cut": 0,
+          "hard_return_0.9": 0.116,
+          "state_only_exact": 1
         },
-        "history_exact_vs_shortest_risk_difference": -1.0,
-        "history_exact_vs_shortest_bootstrap_95": [-1.0, -1.0],
+        "history_exact_vs_shortest_risk_difference": -1,
+        "history_exact_vs_shortest_bootstrap_95": [
+          -1,
+          -1
+        ],
         "hard_return_0.9_failures": 58,
         "hard_return_0.9_trials": 500
       }
@@ -94,46 +180,61 @@
     "artifact_id": 10339442639,
     "artifact_digest": "sha256:d8b59cfd6432d8ade1351b882cc29c6371e3437504346322817d41bb4b608e93",
     "paired_seeds_per_scenario": 500,
-    "recoverability_weight": 8.0,
+    "recoverability_weight": 8,
     "scenarios": {
       "fork": {
         "shortest_failure_rate": 0.81,
         "state_only_failure_rate": 0.81,
-        "history_exact_failure_rate": 0.0,
+        "history_exact_failure_rate": 0,
         "shortest_path_length": 6,
         "history_exact_path_length": 8,
         "shortest_activated_closures": 1,
         "history_exact_activated_closures": 0,
         "history_exact_vs_shortest_risk_difference": -0.81,
-        "history_exact_vs_shortest_bootstrap_95": [-0.844, -0.776],
+        "history_exact_vs_shortest_bootstrap_95": [
+          -0.844,
+          -0.776
+        ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.420369946780824e-122,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.81,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       },
       "l_room": {
         "shortest_failure_rate": 0.756,
         "state_only_failure_rate": 0.756,
-        "history_exact_failure_rate": 0.0,
+        "history_exact_failure_rate": 0,
         "shortest_path_length": 8,
         "history_exact_path_length": 8,
         "shortest_activated_closures": 1,
         "history_exact_activated_closures": 0,
         "history_exact_vs_shortest_risk_difference": -0.756,
-        "history_exact_vs_shortest_bootstrap_95": [-0.794, -0.718],
+        "history_exact_vs_shortest_bootstrap_95": [
+          -0.794,
+          -0.718
+        ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 3.248565551764031e-114,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.756,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       },
       "chamber_two_trigger": {
         "shortest_failure_rate": 0.89,
         "state_only_failure_rate": 0.89,
-        "history_exact_failure_rate": 0.0,
+        "history_exact_failure_rate": 0,
         "shortest_path_length": 7,
         "history_exact_path_length": 9,
         "shortest_activated_closures": 2,
         "history_exact_activated_closures": 0,
         "history_exact_vs_shortest_risk_difference": -0.89,
-        "history_exact_vs_shortest_bootstrap_95": [-0.916, -0.862],
+        "history_exact_vs_shortest_bootstrap_95": [
+          -0.916,
+          -0.862
+        ],
         "history_exact_vs_shortest_mcnemar_exact_pvalue": 2.2013136429275836e-134,
-        "state_only_vs_shortest_discordant_pairs": 0
+        "state_only_vs_shortest_discordant_pairs": 0,
+        "state_only_exact_failure_rate": 0.89,
+        "state_only_exact_vs_shortest_discordant_pairs": 0
       }
     },
     "scope": "three predeclared hand-built held-out topologies; stronger than repeated-series-only evidence but not arbitrary-map or real-world geometric generalization"
@@ -145,25 +246,46 @@
     "artifact_id": 10339560355,
     "artifact_digest": "sha256:864fe19cf7c02efd1f4c978fbe80dbbbdb546aa90f1f6488ef6327e7696401aa",
     "paired_seeds_per_configuration": 500,
-    "soft_weights": [0.0, 1.0, 2.0, 4.0, 8.0, 16.0],
-    "hard_thresholds": [0.5, 0.7, 0.8, 0.9, 0.95, 0.99],
+    "soft_weights": [
+      0,
+      1,
+      2,
+      4,
+      8,
+      16
+    ],
+    "hard_thresholds": [
+      0.5,
+      0.7,
+      0.8,
+      0.9,
+      0.95,
+      0.99
+    ],
     "all_configurations_planner_feasible": true,
     "scenario_summary": {
       "fork": {
-        "soft_risky_weights": [0.0, 1.0],
-        "soft_zero_failure_from_weight": 2.0,
+        "soft_risky_weights": [
+          0,
+          1
+        ],
+        "soft_zero_failure_from_weight": 2,
         "hard_zero_failure_all_thresholds": true,
         "safe_route_path_length": 8
       },
       "l_room": {
-        "soft_risky_weights": [0.0],
-        "soft_zero_failure_from_weight": 1.0,
+        "soft_risky_weights": [
+          0
+        ],
+        "soft_zero_failure_from_weight": 1,
         "hard_zero_failure_all_thresholds": true,
         "safe_route_path_length": 8
       },
       "chamber_two_trigger": {
-        "soft_risky_weights": [0.0],
-        "soft_zero_failure_from_weight": 1.0,
+        "soft_risky_weights": [
+          0
+        ],
+        "soft_zero_failure_from_weight": 1,
         "hard_zero_failure_all_thresholds": true,
         "safe_route_path_length": 9
       }
@@ -176,24 +298,44 @@
     "cut_ms": 0.26243299998895964,
     "speedup_exact_over_cut": 188.76935066137233,
     "timing_scope": "single representative retained CI run; controlled series-critical family only",
-    "max_cut_absolute_error": 0.0
+    "max_cut_absolute_error": 0
   },
   "augmented_search_scaling_at_6_modules": {
-    "shortest_augmented": {"nodes": 25, "path_length": 24, "planning_ms": 0.17824399998289664},
-    "history_cut": {"nodes": 72, "path_length": 36, "planning_ms": 5.53709399997615},
-    "history_exact": {"nodes": 72, "path_length": 36, "planning_ms": 12.496012999974937},
+    "shortest_augmented": {
+      "nodes": 25,
+      "path_length": 24,
+      "planning_ms": 0.17824399998289664
+    },
+    "history_cut": {
+      "nodes": 72,
+      "path_length": 36,
+      "planning_ms": 5.53709399997615
+    },
+    "history_exact": {
+      "nodes": 72,
+      "path_length": 36,
+      "planning_ms": 12.496012999974937
+    },
     "timing_scope": "single representative retained CI run after excluding post-hoc diagnostics"
   },
   "joint_cut_counterexample": {
-    "probabilities": [0.2, 0.5, 0.8],
-    "recoverability_weights": [2.0, 4.0, 8.0],
+    "probabilities": [
+      0.2,
+      0.5,
+      0.8
+    ],
+    "recoverability_weights": [
+      2,
+      4,
+      8
+    ],
     "pairs": 9,
     "cut_optimism_cases": 9,
-    "route_history_disagreement_rate": 1.0,
+    "route_history_disagreement_rate": 1,
     "equal_path_length": 6,
     "exact_active_hazards": 0,
     "cut_active_hazards": 2,
-    "cut_estimate": 1.0,
+    "cut_estimate": 1,
     "cut_route_exact_return_probability_by_p": {
       "0.2": 0.96,
       "0.5": 0.75,
@@ -201,7 +343,7 @@
     }
   },
   "claim_scope": {
-    "supported": "mechanism-level evidence that action-triggered environmental topology history can carry safe-return-connectivity information absent from a state-only marginal hazard model, replicated across repeated procedural families and three predeclared hand-built held-out topologies",
+    "supported": "mechanism-level evidence that executed action-triggered stochastic topology history can carry safe-return-connectivity information absent from an endpoint-only fixed-field representation, including an elementary endpoint-aliasing bound, a same-exact-oracle state-only control, replication across controlled and hand-built worlds, and a frozen 96-scenario unavoidable-hazard suite in which every feasible route activates stochastic hazards",
     "not_claimed": [
       "first history-dependent risk planner",
       "first safe-return planner",
@@ -210,7 +352,252 @@
       "hardware validation of the history-conditioned planner",
       "arbitrary-map or real-world geometric generalization",
       "universal superiority of a soft objective over hard safe-return constraints",
-      "novelty of articulation or cut-set graph theory"
+      "novelty of articulation or cut-set graph theory",
+      "comparative Gazebo efficacy from the retained 8-repetition mechanism probe"
     ]
+  },
+  "reviewer_p0_protocol": {
+    "status": "retained_success",
+    "workflow_name": "Reviewer P0 evidence",
+    "run_id": 36122469824,
+    "source_branch_head_sha": "1246ce280bc92b3765f43915505e4dcdd4214830",
+    "pull_request_merge_checkout_sha": "b6551e46245e8b33ac7772f27d36dafc091c2a85",
+    "artifact_id": 10857728526,
+    "artifact_name": "dynnav-reviewer-p0-b6551e46245e8b33ac7772f27d36dafc091c2a85",
+    "downloaded_artifact_sha256": "e065873facb23770ad7f0d667a9b70638fa67f95f2163e5695af741c6d0d7175",
+    "generator_seed": 20260925,
+    "scenario_count": 24,
+    "paired_execution_seeds_per_scenario": 500,
+    "trials_per_planner": 12000,
+    "invariant": "every start-to-goal route activates at least one hazard per module",
+    "planners": [
+      "shortest",
+      "state_only_single",
+      "state_only_exact",
+      "history_exact"
+    ],
+    "primary_control": "state_only_exact uses the same exact connectivity oracle and additive fragility objective as history_exact but one fixed hazard field without trigger conditioning",
+    "aggregate": {
+      "shortest": {
+        "return_infeasible_rate": 0.7795833333333333,
+        "mean_final_exact_return_probability": 0.22423567708333333,
+        "mean_path_length": 12.708333333333334,
+        "mean_activated_closure_count": 2.5416666666666665
+      },
+      "state_only_exact": {
+        "return_infeasible_rate": 0.7795833333333333,
+        "mean_final_exact_return_probability": 0.22423567708333333,
+        "mean_path_length": 12.708333333333334,
+        "mean_activated_closure_count": 2.5416666666666665,
+        "different_hazard_choice_scenarios_vs_shortest": 0
+      },
+      "history_exact": {
+        "return_infeasible_rate": 0.6925833333333333,
+        "mean_final_exact_return_probability": 0.31048307291666666,
+        "mean_path_length": 14.291666666666666,
+        "mean_activated_closure_count": 2.5416666666666665,
+        "different_hazard_choice_scenarios_vs_shortest": 8,
+        "higher_exact_return_probability_scenarios_vs_shortest": 8
+      },
+      "history_vs_state_only_exact_scenario_risk_difference": {
+        "mean": -0.087,
+        "bootstrap_95": [
+          -0.16291666666666665,
+          -0.02466666666666666
+        ],
+        "sample_size": 24,
+        "improved_scenarios": 8,
+        "nonworse_scenarios": 24
+      }
+    }
+  },
+  "gazebo_mechanism_probe": {
+    "status": "retained_valid_integration_evidence_no_efficacy_claim",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36131438728,
+    "source_branch_head_sha": "c21f900212be7c6cdf5d28a5796147eb0c31c278",
+    "pull_request_merge_checkout_sha": "eb61dc41dcea5ba09390eebe621464128c0c63c0",
+    "artifact_id": 10862446501,
+    "artifact_name": "dynnav-action-triggered-gazebo-eb61dc41dcea5ba09390eebe621464128c0c63c0",
+    "downloaded_artifact_sha256": "95ada9ee3c33e590e85d38e967d468d3b5d764bdf861409d3392f8e8957dcde1",
+    "frozen_scenario_sha256": "60e43cf2f0015a8f625309be26d440615126bf8f8b88fd597cf45681f5cc1864",
+    "repetitions_per_planner": 8,
+    "total_trials": 24,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "shared_latent_closure_realizations_per_planner": 7,
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 7
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 6
+    },
+    "costmap_recovery_infeasible": {
+      "NavFn": 0,
+      "DynNavShortest": 2,
+      "DynNavHistory": 1
+    },
+    "interpretation": "strict end-to-end ROS 2/Nav2/Gazebo integration and measurement evidence; one-trial DynNav exposure difference is insufficient for comparative efficacy"
+  },
+  "reviewer_measurement_expansion": {
+    "status": "retained_success_pinned_publication_artifact",
+    "workflow_name": "Reviewer measurement expansion",
+    "run_id": 36139174706,
+    "source_branch_head_sha": "8ef50f9ec167c7e8cc29f112f5b04ce4a821f7df",
+    "pull_request_merge_checkout_sha": "d8625dc1032da07ec26eaeeb8766a76f07f08cfe",
+    "artifact_id": 10865996586,
+    "artifact_name": "dynnav-reviewer-measurements-d8625dc1032da07ec26eaeeb8766a76f07f08cfe",
+    "downloaded_artifact_sha256": "0c9c9cf46f4fd81034f6e91381cd298b1ff0071d5658c50cada4a22afc624958",
+    "generator_seed": 20260925,
+    "scenario_count": 96,
+    "paired_execution_seeds_per_scenario": 250,
+    "trials_per_planner": 24000,
+    "invariant": "every start-to-goal route activates at least one hazard per module",
+    "aggregate": {
+      "state_only_exact": {
+        "return_infeasible_rate": 0.74425,
+        "mean_final_exact_return_probability": 0.2535092447916667,
+        "mean_path_length": 11.770833333333334,
+        "mean_activated_closure_count": 2.3541666666666665
+      },
+      "history_exact": {
+        "return_infeasible_rate": 0.6660416666666666,
+        "mean_final_exact_return_probability": 0.3314013671875,
+        "mean_path_length": 13.333333333333334,
+        "mean_activated_closure_count": 2.3541666666666665
+      },
+      "history_vs_state_only_exact_scenario_risk_difference": {
+        "mean": -0.07820833333333332,
+        "bootstrap_95": [
+          -0.109,
+          -0.04983333333333333
+        ],
+        "sample_size": 96,
+        "improved_scenarios": 36,
+        "nonworse_scenarios": 96
+      }
+    },
+    "repeated_timing_distributions": {
+      "repetitions": 100,
+      "warmups": 10,
+      "scope": "descriptive GitHub Actions runner measurements using planner internal online-latency instrumentation; not hardware-independent runtime guarantees",
+      "oracle_12_hazards": {
+        "exact": {
+          "median_ms": 34.5146145,
+          "iqr_ms": 0.33664599999999467,
+          "p95_ms": 37.0076535
+        },
+        "critical_cut": {
+          "median_ms": 0.1701545,
+          "iqr_ms": 0.005494500000000013,
+          "p95_ms": 0.18832805
+        },
+        "median_speedup_exact_over_cut": 202.84279581204143
+      },
+      "planner_6_modules": {
+        "shortest_augmented": {
+          "median_ms": 0.10248949996594092,
+          "iqr_ms": 0.0024217499969836354,
+          "p95_ms": 0.11332639994634519,
+          "nodes_expanded": 25,
+          "path_length": 24
+        },
+        "history_cut": {
+          "median_ms": 3.6453140000389794,
+          "iqr_ms": 0.02951199996914511,
+          "p95_ms": 3.8795295499596705,
+          "nodes_expanded": 72,
+          "path_length": 36
+        },
+        "history_exact": {
+          "median_ms": 5.1637395000625474,
+          "iqr_ms": 0.0973337499488025,
+          "p95_ms": 5.738602400060699,
+          "nodes_expanded": 72,
+          "path_length": 36
+        }
+      }
+    },
+    "freeze_rule": "Publication timing values are pinned to this retained run; documentation-only commits do not supersede it. Any subsequent planner/oracle/benchmark/timing-code change requires a new timing artifact."
+  },
+  "gazebo_exact_head_rerun": {
+    "status": "retained_valid_integration_evidence_no_comparative_effect",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36141182575,
+    "branch_head_sha": "89961541703fa55730ba2dd2973131812520d593",
+    "artifact_id": 10867597132,
+    "artifact_name": "dynnav-action-triggered-gazebo-04d218be037455399bea329286e743d127afdce1",
+    "repetitions_per_planner": 8,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 7
+    },
+    "irreversible_failures": {
+      "NavFn": 0,
+      "DynNavShortest": 0,
+      "DynNavHistory": 0
+    },
+    "interpretation": "exact-head rerun confirms end-to-end integration but does not reproduce a comparative DynNavHistory-vs-DynNavShortest exposure effect"
+  },
+  "gazebo_release_candidate_probe": {
+    "status": "retained_valid_integration_evidence_no_comparative_effect",
+    "workflow_name": "Action-triggered Gazebo evidence",
+    "run_id": 36145870641,
+    "branch_head_sha": "a8bfb5375a8f54bdf737fd10314ccd9c77f35a01",
+    "pull_request_merge_checkout_sha": "fa565443f3f92417e6116e758f829cb391adbb3c",
+    "artifact_id": 10870492158,
+    "artifact_name": "dynnav-action-triggered-gazebo-fa565443f3f92417e6116e758f829cb391adbb3c",
+    "downloaded_artifact_sha256": "e6dcb43fcbd725a3698d89bd5c6418099471c3321552123cfbadef894abef991",
+    "frozen_scenario_sha256": "60e43cf2f0015a8f625309be26d440615126bf8f8b88fd597cf45681f5cc1864",
+    "repetitions_per_planner": 8,
+    "total_trials": 24,
+    "valid_trials": 24,
+    "navigation_success": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 8
+    },
+    "shared_latent_closure_realizations_per_planner": 7,
+    "trigger_observed": {
+      "NavFn": 0,
+      "DynNavShortest": 8,
+      "DynNavHistory": 7
+    },
+    "closure_applied": {
+      "NavFn": 0,
+      "DynNavShortest": 7,
+      "DynNavHistory": 7
+    },
+    "operational_irreversible_failures": {
+      "NavFn": 0,
+      "DynNavShortest": 0,
+      "DynNavHistory": 0
+    },
+    "recovery_feasible": {
+      "NavFn": 8,
+      "DynNavShortest": 8,
+      "DynNavHistory": 6
+    },
+    "interpretation": "release-candidate end-to-end integration evidence; no stable comparative Gazebo efficacy effect across retained reruns"
   }
 }

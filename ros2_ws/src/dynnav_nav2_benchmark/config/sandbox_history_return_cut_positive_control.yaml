@@ -1,0 +1,52 @@
+schema_version: 1
+seed: 20260925
+
+gazebo:
+  world_name: default
+  robot_entity: turtlebot3_waffle
+  blocker:
+    entity_name: dynnav_route_blocker
+    parking_pose: {x: 100.0, y: 100.0, z: 0.5, yaw: 0.0}
+    # Must match models/dynamic_blocker.sdf.
+    size: {x: 0.35, y: 1.20, z: 1.0}
+
+# Controlled ROS 2/Gazebo positive control for the mechanism tested in the
+# paper. This is deliberately not a held-out natural-environment benchmark.
+#
+# The sandbox map has resolution 0.05 m and origin [-10,-10]. The directed
+# trigger below quantizes to (163,189) -> (164,189), an executed transition
+# observed in all 8 DynNavShortest trials of the preceding diagnostic run.
+# The future closure is centered on the designated safe location itself, so
+# under the planner's grid abstraction that closure is return-critical.
+#
+# Frozen before execution of this positive-control configuration.
+planners:
+  - NavFn
+  - DynNavShortest
+  - DynNavHistory
+
+scenario:
+  name: safe_region_return_cut_positive_control
+  frame_id: map
+  start: {x: -2.0, y: -0.5, yaw: 0.0}
+  goal: {x: 1.75, y: 1.0, yaw: 0.0}
+  safe_region:
+    center: {x: -2.0, y: -0.5, yaw: 0.0}
+    radius_m: 0.12
+  action_trigger:
+    hazard_id: safe_return_gate_0
+    source: {x: -1.825, y: -0.525, yaw: 0.0}
+    target: {x: -1.775, y: -0.525, yaw: 0.0}
+    closure_probability: 0.8
+  # Future closure of the safe location. Physical injection is delayed until
+  # the robot is clear; planner activation occurs immediately on the trigger.
+  blocker_pose: {x: -2.0, y: -0.5, z: 0.5, yaw: 0.0}
+  observation_settle_s: 2.0
+  minimum_injection_clearance_m: 0.9
+  observation_margin_m: 0.1
+  minimum_lethal_cell_increase: 3
+  recovery_budget_m: 5.0
+  reset_pose_tolerance_m: 0.4
+  execution_timeout_s: 75.0
+  wall_timeout_s: 150.0
+  recoverability_weight: 4.0

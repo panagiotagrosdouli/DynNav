@@ -1,5 +1,7 @@
 # DynNav
 
+**Author:** Panagiota Grosdouli
+
 **History-Conditioned Safe-Return Planning for Autonomous Robots under Action-Triggered Topology Hazards**
 
 > **Same place does not always mean the same planning state.**

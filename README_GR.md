@@ -1,5 +1,7 @@
 # DynNav
 
+**Συγγραφέας / Researcher:** Panagiota Grosdouli
+
 **History-conditioned safe-return planning για αυτόνομα ρομπότ με action-triggered topology hazards.**
 
 Το DynNav μελετά ένα συγκεκριμένο failure mode στη δυναμική πλοήγηση: δύο εκτελέσεις μπορούν να φτάσουν στο **ίδιο γεωμετρικό state**, αλλά να έχουν διαφορετική μελλοντική recoverability επειδή προηγούμενες ενέργειες του ρομπότ ενεργοποίησαν διαφορετικά environmental hazards.

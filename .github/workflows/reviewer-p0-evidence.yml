@@ -1,0 +1,82 @@
+name: Reviewer P0 evidence
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "dynnav/planners/hazard_reliability_astar.py"
+      - "dynnav/experiments/commitment_execution_benchmark.py"
+      - "dynnav/experiments/heldout_history_generalization.py"
+      - "dynnav/experiments/geometric_heldout_benchmark.py"
+      - "dynnav/experiments/unavoidable_history_benchmark.py"
+      - "tests/test_hazard_reliability_astar.py"
+      - "tests/test_unavoidable_history_benchmark.py"
+      - ".github/workflows/reviewer-p0-evidence.yml"
+
+concurrency:
+  group: reviewer-p0-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reviewer-p0:
+    name: Exact state-only and unavoidable-hazard evidence
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Run reviewer-targeted regression tests
+        run: >-
+          python -m pytest -q --tb=short
+          tests/test_hazard_reliability_astar.py
+          tests/test_unavoidable_history_benchmark.py
+          tests/test_commitment_execution_benchmark.py
+          tests/test_heldout_history_generalization.py
+          tests/test_geometric_heldout_benchmark.py
+
+      - name: Lint reviewer-targeted code
+        run: >-
+          ruff check
+          dynnav/planners/hazard_reliability_astar.py
+          dynnav/experiments/commitment_execution_benchmark.py
+          dynnav/experiments/heldout_history_generalization.py
+          dynnav/experiments/geometric_heldout_benchmark.py
+          dynnav/experiments/unavoidable_history_benchmark.py
+          tests/test_hazard_reliability_astar.py
+          tests/test_unavoidable_history_benchmark.py
+
+      - name: Re-run controlled execution with exact state-only baseline
+        run: >-
+          python scripts/run_commitment_execution_benchmark.py
+          --out-dir results/reviewer_p0/commitment_execution
+
+      - name: Re-run heterogeneous held-out with exact state-only baseline
+        run: >-
+          python scripts/run_heldout_history_generalization.py
+          --out-dir results/reviewer_p0/heldout_history_generalization
+
+      - name: Re-run geometric held-out with exact state-only baseline
+        run: >-
+          python scripts/run_geometric_heldout_benchmark.py
+          --output-dir results/reviewer_p0/geometric_heldout
+
+      - name: Run frozen unavoidable-hazard challenge suite
+        run: >-
+          python -m dynnav.experiments.unavoidable_history_benchmark
+          --output-dir results/reviewer_p0/unavoidable_history
+
+      - name: Retain protocol and raw evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-reviewer-p0-${{ github.sha }}
+          path: results/reviewer_p0
+          if-no-files-found: error

@@ -74,3 +74,42 @@ def test_reliability_metrics_are_bounded_on_success() -> None:
 def test_invalid_weights_are_rejected() -> None:
     with pytest.raises(ValueError, match="reliability_weight"):
         HazardReliabilityAStarConfig(reliability_weight=-1.0).validate()
+
+
+def test_exact_return_mode_uses_connectivity_not_single_best_path() -> None:
+    # Two independent return corridors survive with probability
+    # 1 - p1*p2 = 0.96, whereas the best single path survives with 0.8.
+    grid = GridMap.from_obstacles(
+        3,
+        3,
+        obstacles={(1, 1)},
+    )
+    start, goal = (2, 1), (2, 1)
+    safe = {(0, 1)}
+    hazard = TopologyHazardBelief({(1, 0): 0.2, (1, 2): 0.2})
+
+    single = hazard_reliability_astar(
+        grid,
+        start,
+        goal,
+        safe_cells=safe,
+        hazard=hazard,
+        mode=HazardReliabilityMode.SINGLE_RETURN,
+    )
+    exact = hazard_reliability_astar(
+        grid,
+        start,
+        goal,
+        safe_cells=safe,
+        hazard=hazard,
+        mode=HazardReliabilityMode.EXACT_RETURN,
+    )
+
+    assert single.success and exact.success
+    assert single.minimum_estimated_return_probability == pytest.approx(0.8)
+    assert exact.minimum_estimated_return_probability == pytest.approx(0.96)
+
+
+def test_negative_max_hazard_cells_is_rejected() -> None:
+    with pytest.raises(ValueError, match="max_hazard_cells"):
+        HazardReliabilityAStarConfig(max_hazard_cells=-1).validate()

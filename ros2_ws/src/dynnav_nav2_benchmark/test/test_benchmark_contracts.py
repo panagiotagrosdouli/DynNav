@@ -18,6 +18,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import (
 from dynnav_nav2_benchmark.history_execution import (
     classify_observed_cells,
     deterministic_event_draw,
+    sampling_gap_can_hide_transition,
     trigger_decision,
 )
 from dynnav_nav2_benchmark.history_runtime import HistoryRuntimeState
@@ -132,6 +133,55 @@ def test_execution_observations_never_interpolate_sampling_gaps() -> None:
     assert adjacent.transition == ((174, 189), (175, 189))
     assert diagonal.kind == "sampling_gap" and diagonal.transition is None
     assert gap.kind == "sampling_gap" and gap.transition is None
+
+
+def test_sampling_gap_validity_is_specific_to_the_configured_trigger() -> None:
+    trigger = ((174, 189), (175, 189))
+
+    # A diagonal skip elsewhere is retained as a sampling gap but cannot hide
+    # the configured directed trigger.
+    assert not sampling_gap_can_hide_transition(
+        (159, 189),
+        (160, 190),
+        trigger,
+    )
+
+    # A two-cell axial skip across the configured edge can hide the trigger and
+    # must remain invalid rather than being interpolated.
+    assert sampling_gap_can_hide_transition(
+        (173, 189),
+        (176, 189),
+        trigger,
+    )
+
+
+def test_runtime_records_irrelevant_gaps_without_invalidating_trigger_label() -> None:
+    trigger = ((174, 189), (175, 189))
+    state = HistoryRuntimeState(
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
+    state.observe((159, 189))
+    state.observe((160, 190))
+
+    assert state.sampling_gaps == [((159, 189), (160, 190))]
+    assert state.ambiguous_trigger_gaps == []
+    assert state.observation_valid
+
+
+def test_runtime_rejects_gap_that_can_hide_trigger() -> None:
+    trigger = ((174, 189), (175, 189))
+    state = HistoryRuntimeState(
+        trigger=trigger,
+        latent_draw=0.2,
+        closure_probability=0.8,
+    )
+    state.observe((173, 189))
+    state.observe((176, 189))
+
+    assert state.ambiguous_trigger_gaps == [((173, 189), (176, 189))]
+    assert not state.observation_valid
 
 
 def test_trigger_requires_observed_directed_transition() -> None:
