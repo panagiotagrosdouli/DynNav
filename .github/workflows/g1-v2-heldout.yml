@@ -1,0 +1,62 @@
+name: G1 V2 heldout study
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/planners/scenario_commitment_astar.py"
+      - "dynnav/experiments/g1_v2_dependence_heldout.py"
+      - "scripts/run_g1_v2_dependence_heldout.py"
+      - "tests/test_g1_v2_dependence_heldout.py"
+      - ".github/workflows/g1-v2-heldout.yml"
+  workflow_dispatch:
+    inputs:
+      trials:
+        description: Trials per condition/repetition
+        required: true
+        default: "2000"
+      repetitions:
+        description: Independent repetitions
+        required: true
+        default: "5"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  g1-v2:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install research dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev,researcher]"
+
+      - name: Run G1 V2 invariant tests
+        run: python -m pytest -q tests/test_g1_v2_dependence_heldout.py
+
+      - name: Run frozen G1 V2 heldout study
+        env:
+          TRIALS: ${{ inputs.trials || '2000' }}
+          REPEATS: ${{ inputs.repetitions || '5' }}
+        run: |
+          python scripts/run_g1_v2_dependence_heldout.py \
+            --trials "$TRIALS" \
+            --repetitions "$REPEATS" \
+            --seed 20260925 \
+            --output-dir results/research_gap_program/g1_v2_heldout
+
+      - name: Upload G1 V2 artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: g1-v2-heldout-evidence
+          path: results/research_gap_program/g1_v2_heldout
+          if-no-files-found: error
