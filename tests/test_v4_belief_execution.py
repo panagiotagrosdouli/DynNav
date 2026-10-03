@@ -2,6 +2,9 @@ from __future__ import annotations
 
 import pytest
 
+from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
+from dynnav.planners.grid_map import GridMap
+
 from dynnav.experiments.unavoidable_history_benchmark import unavoidable_choice_world
 from dynnav.experiments.v4_belief_execution import (
     V4ExecutionScenario,
@@ -169,3 +172,92 @@ def test_detector_as_truth_positive_observation_latches_monotonically() -> None:
 def test_detector_latching_rejects_negative_hazard_index() -> None:
     with pytest.raises(ValueError, match="hazard_index"):
         update_latched_detector_estimate(set(), -1, observed_armed=True)
+
+
+
+def _forced_misspecification_scenario(
+    *,
+    assumed_sensitivity: float | None = None,
+    assumed_specificity: float | None = None,
+    assumed_q: float | None = None,
+) -> V4ExecutionScenario:
+    grid = GridMap.from_obstacles(3, 1)
+    model = CommitmentHazardModel(
+        (
+            CommitmentClosure(
+                trigger=((0, 0), (1, 0)),
+                closure_cell=(1, 0),
+                closure_probability=0.8,
+            ),
+        )
+    )
+    return V4ExecutionScenario(
+        name="v4_forced_misspecification",
+        grid=grid,
+        start=(0, 0),
+        goal=(2, 0),
+        safe_cells=frozenset({(0, 0)}),
+        hazard_model=model,
+        arming_probabilities=(0.5,),
+        detection_sensitivities=(0.8,),
+        detection_specificities=(0.8,),
+        assumed_arming_probabilities=(
+            None if assumed_q is None else (assumed_q,)
+        ),
+        assumed_detection_sensitivities=(
+            None
+            if assumed_sensitivity is None
+            else (assumed_sensitivity,)
+        ),
+        assumed_detection_specificities=(
+            None
+            if assumed_specificity is None
+            else (assumed_specificity,)
+        ),
+    )
+
+
+def test_model_misspecification_changes_inference_not_keyed_truth() -> None:
+    correct = _forced_misspecification_scenario()
+    misspecified = _forced_misspecification_scenario(
+        assumed_sensitivity=0.95,
+        assumed_specificity=0.95,
+        assumed_q=0.7,
+    )
+
+    prediction_differences = 0
+    for seed in range(12):
+        left = run_v4_execution_trial(
+            correct,
+            seed=seed,
+            planner=V4Planner.BELIEF,
+        )
+        right = run_v4_execution_trial(
+            misspecified,
+            seed=seed,
+            planner=V4Planner.BELIEF,
+        )
+
+        assert left.path == right.path
+        assert left.true_armed_set == right.true_armed_set
+        assert left.detector_observations == right.detector_observations
+        assert left.realized_closure_cells == right.realized_closure_cells
+        assert left.return_feasible == right.return_feasible
+        prediction_differences += int(
+            abs(
+                left.predicted_return_probability
+                - right.predicted_return_probability
+            )
+            > 1e-12
+        )
+
+    assert prediction_differences > 0
+
+
+def test_execution_scenario_rejects_invalid_assumed_model() -> None:
+    scenario = _forced_misspecification_scenario(
+        assumed_sensitivity=1.2,
+    )
+
+    with pytest.raises(ValueError, match="planning_detection_sensitivities"):
+        scenario.validate()
