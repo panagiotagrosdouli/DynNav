@@ -4,7 +4,11 @@ import csv
 import json
 import subprocess
 import sys
+
+import pytest
 from pathlib import Path
+
+from scripts.run_v4_suite import select_scenario_shard
 
 from dynnav.experiments.v4_scenario_manifest import (
     V4_DEVELOPMENT_SEED,
@@ -118,3 +122,29 @@ def test_v4_suite_runner_refuses_heldout_with_wrong_freeze_sha() -> None:
     assert "--expected-head-sha must exactly match" in (
         completed.stdout + completed.stderr
     )
+
+
+def test_v4_modulo_sharding_is_deterministic_and_exhaustive() -> None:
+    scenarios = tuple(f"s{i}" for i in range(24))
+    shards = [
+        select_scenario_shard(
+            scenarios,
+            shard_count=12,
+            shard_index=index,
+        )
+        for index in range(12)
+    ]
+
+    assert all(len(shard) == 2 for shard in shards)
+    assert sorted(item for shard in shards for item in shard) == sorted(scenarios)
+    assert shards[0] == ("s0", "s12")
+    assert shards[11] == ("s11", "s23")
+
+
+def test_v4_modulo_sharding_rejects_invalid_index() -> None:
+    with pytest.raises(ValueError, match="shard_index"):
+        select_scenario_shard(
+            ("a", "b"),
+            shard_count=2,
+            shard_index=2,
+        )
