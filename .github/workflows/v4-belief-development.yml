@@ -9,17 +9,20 @@ on:
       - "dynnav/planners/exact_belief_policy.py"
       - "dynnav/experiments/belief_route_mechanism.py"
       - "dynnav/experiments/v4_exact_policy_search.py"
+      - "dynnav/experiments/v4_correlation_benchmark.py"
       - "dynnav/experiments/v4_analysis.py"
       - "dynnav/experiments/v4_scenario_manifest.py"
       - "dynnav/experiments/statistics.py"
       - "scripts/run_v4_belief_route_development.py"
       - "scripts/run_v4_exact_policy_search.py"
+      - "scripts/run_v4_correlation_benchmark.py"
       - "tests/test_activation_belief_v4.py"
       - "tests/test_belief_commitment_astar.py"
       - "tests/test_exact_belief_policy.py"
       - "tests/test_belief_route_mechanism.py"
       - "tests/test_v4_analysis.py"
       - "tests/test_v4_exact_policy_search.py"
+      - "tests/test_v4_correlation_benchmark.py"
       - "tests/test_v4_hierarchical_statistics.py"
       - "tests/test_v4_scenario_manifest.py"
       - "tests/test_recoverability_scenarios.py"
@@ -53,6 +56,7 @@ jobs:
             tests/test_recoverability_scenarios.py \
             tests/test_v4_analysis.py \
             tests/test_v4_exact_policy_search.py \
+            tests/test_v4_correlation_benchmark.py \
             tests/test_v4_hierarchical_statistics.py \
             tests/test_v4_scenario_manifest.py \
             tests/test_v4_belief_execution.py
@@ -67,6 +71,11 @@ jobs:
             --candidates 50 \
             --seed 2026100305 \
             --output-dir results/v4_development/exact_policy_search
+
+      - name: Run development-only equal-marginal correlation study
+        run: |
+          python scripts/run_v4_correlation_benchmark.py \
+            --output-dir results/v4_development/correlation
 
       - name: Record provenance
         env:
@@ -91,6 +100,7 @@ jobs:
                       "trials_per_regime": 5000,
                       "exact_policy_search_candidates": 50,
                       "exact_policy_search_seed": 2026100305,
+                      "correlation_study": "equal_marginal_common_cause",
                   },
                   indent=2,
                   sort_keys=True,
@@ -104,6 +114,8 @@ jobs:
             sha256sum trials.csv summary.json run_metadata.json provenance.json \
               exact_policy_search/trials.csv \
               exact_policy_search/summary.json \
+              correlation/trials.csv \
+              correlation/summary.json \
               > SHA256SUMS.txt
           )
 
