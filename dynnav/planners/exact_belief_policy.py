@@ -11,7 +11,10 @@ import math
 from dataclasses import dataclass
 from functools import cache
 
-from dynnav.activation_belief import (\n    ActivationBelief,\n    expected_safe_return_probability,\n)
+from dynnav.activation_belief import (
+    ActivationBelief,
+    expected_safe_return_probability,
+)
 from dynnav.commitment_hazard import CommitmentHazardModel
 from dynnav.planners.grid_map import GridCell, GridMap
 
