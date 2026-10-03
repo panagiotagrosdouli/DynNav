@@ -1,0 +1,8730 @@
+{
+  "families": [
+    "F1_bridge_detour",
+    "F2_asymmetric_fork",
+    "F3_redundant_loop",
+    "F4_chamber_multitrigger",
+    "F5_parallel_joint_cut",
+    "F6_unavoidable_choice",
+    "F7_multiple_safe_regions",
+    "F8_null_control"
+  ],
+  "generator_seed": 2026100302,
+  "protocol": "EXPERIMENT_PROTOCOL_V4.md",
+  "scenario_count": 48,
+  "scenarios": [
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_00",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F1_bridge_detour",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Short branch arms a latent closure of the unique return bridge; the detour avoids that trigger.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f1_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_00",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F2_asymmetric_fork",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              4,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Upper and lower route choices arm different return-critical hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          2
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          2
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f2_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_00",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F3_redundant_loop",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              5,
+              3
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two redundant return corridors; either single corridor closure is survivable.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f3_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_00",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_01",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_02",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_03",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_04",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F4_chamber_multitrigger",
+      "goal": [
+        8,
+        3
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            2,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            1,
+            3
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              4
+            ],
+            [
+              5,
+              4
+            ]
+          ]
+        }
+      ],
+      "height": 7,
+      "notes": "Different entry histories reach the same chamber while arming different latent hazards.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          0,
+          5
+        ],
+        [
+          0,
+          6
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          1,
+          5
+        ],
+        [
+          1,
+          6
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          2,
+          5
+        ],
+        [
+          2,
+          6
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          5
+        ],
+        [
+          3,
+          6
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          5
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          5
+        ],
+        [
+          5,
+          6
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          5
+        ],
+        [
+          6,
+          6
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          5
+        ],
+        [
+          7,
+          6
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          5
+        ],
+        [
+          8,
+          6
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f4_05",
+      "start": [
+        0,
+        3
+      ],
+      "width": 9
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_00",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F5_parallel_joint_cut",
+      "goal": [
+        6,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              1
+            ],
+            [
+              5,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              4,
+              3
+            ],
+            [
+              5,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "The two closure cells form a joint cut: either alone preserves return, both together disconnect.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          2
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          2
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f5_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 7
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        5,
+        1
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            1,
+            1
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              1
+            ],
+            [
+              4,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              3,
+              1
+            ],
+            [
+              3,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 3,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          2
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          5,
+          0
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_00",
+      "start": [
+        0,
+        1
+      ],
+      "width": 6
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        10,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            6,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              9,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            7,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              8,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 11
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        15,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            6,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              9,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            7,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              8,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            11,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              13,
+              2
+            ],
+            [
+              14,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            12,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              13,
+              2
+            ],
+            [
+              13,
+              3
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          11,
+          0
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          13,
+          0
+        ],
+        [
+          13,
+          1
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          14,
+          0
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          15,
+          0
+        ],
+        [
+          15,
+          1
+        ],
+        [
+          15,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 16
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        5,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              1
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 6
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        10,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              3
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            6,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              9,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            7,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              8,
+              1
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          1
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          3
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          3
+        ],
+        [
+          10,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 11
+    },
+    {
+      "family": "F6_unavoidable_choice",
+      "goal": [
+        15,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            1,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            2,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              3,
+              1
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            6,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              9,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            7,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              8,
+              2
+            ],
+            [
+              8,
+              3
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            11,
+            2
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              13,
+              2
+            ],
+            [
+              14,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            12,
+            2
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              13,
+              2
+            ],
+            [
+              13,
+              1
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Each serial module requires choosing between hazard-arming route alternatives.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          4
+        ],
+        [
+          9,
+          0
+        ],
+        [
+          9,
+          1
+        ],
+        [
+          9,
+          4
+        ],
+        [
+          10,
+          0
+        ],
+        [
+          10,
+          1
+        ],
+        [
+          10,
+          4
+        ],
+        [
+          11,
+          0
+        ],
+        [
+          11,
+          1
+        ],
+        [
+          11,
+          3
+        ],
+        [
+          11,
+          4
+        ],
+        [
+          12,
+          0
+        ],
+        [
+          12,
+          1
+        ],
+        [
+          12,
+          3
+        ],
+        [
+          12,
+          4
+        ],
+        [
+          13,
+          3
+        ],
+        [
+          13,
+          4
+        ],
+        [
+          14,
+          1
+        ],
+        [
+          14,
+          3
+        ],
+        [
+          14,
+          4
+        ],
+        [
+          15,
+          3
+        ],
+        [
+          15,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f6_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 16
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_00",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_01",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_02",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.25,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_03",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_04",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F7_multiple_safe_regions",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            3,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              3,
+              2
+            ],
+            [
+              4,
+              2
+            ]
+          ]
+        },
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            3
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Two safe regions remain candidates; closures can remove access to one without necessarily removing the other.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          2
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          2
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ]
+      ],
+      "scenario_id": "v4_validation_f7_05",
+      "start": [
+        2,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.0,
+          "closure_cell": [
+            3,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Null control: arming probability q=0.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_00",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.7,
+          "closure_cell": [
+            3,
+            2
+          ],
+          "closure_probability": 0.0,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Null control: conditional closure probability p=0.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_01",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            5,
+            1
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "History-irrelevant control: closure affects only a dead-end spur.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_02",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.0,
+          "closure_cell": [
+            3,
+            2
+          ],
+          "closure_probability": 0.8,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Null control: arming probability q=0.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_03",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 1.0,
+          "closure_cell": [
+            3,
+            2
+          ],
+          "closure_probability": 0.0,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "Null control: conditional closure probability p=0.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_04",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    },
+    {
+      "family": "F8_null_control",
+      "goal": [
+        8,
+        2
+      ],
+      "hazards": [
+        {
+          "arming_probability": 0.4,
+          "closure_cell": [
+            5,
+            1
+          ],
+          "closure_probability": 0.5,
+          "trigger": [
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              2
+            ]
+          ]
+        }
+      ],
+      "height": 5,
+      "notes": "History-irrelevant control: closure affects only a dead-end spur.",
+      "obstacles": [
+        [
+          0,
+          0
+        ],
+        [
+          0,
+          1
+        ],
+        [
+          0,
+          3
+        ],
+        [
+          0,
+          4
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          1,
+          1
+        ],
+        [
+          1,
+          3
+        ],
+        [
+          1,
+          4
+        ],
+        [
+          2,
+          0
+        ],
+        [
+          2,
+          1
+        ],
+        [
+          2,
+          3
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          3,
+          0
+        ],
+        [
+          3,
+          1
+        ],
+        [
+          3,
+          3
+        ],
+        [
+          3,
+          4
+        ],
+        [
+          4,
+          0
+        ],
+        [
+          4,
+          1
+        ],
+        [
+          4,
+          3
+        ],
+        [
+          4,
+          4
+        ],
+        [
+          5,
+          0
+        ],
+        [
+          5,
+          3
+        ],
+        [
+          5,
+          4
+        ],
+        [
+          6,
+          0
+        ],
+        [
+          6,
+          1
+        ],
+        [
+          6,
+          3
+        ],
+        [
+          6,
+          4
+        ],
+        [
+          7,
+          0
+        ],
+        [
+          7,
+          1
+        ],
+        [
+          7,
+          3
+        ],
+        [
+          7,
+          4
+        ],
+        [
+          8,
+          0
+        ],
+        [
+          8,
+          1
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          8,
+          4
+        ]
+      ],
+      "safe_cells": [
+        [
+          0,
+          2
+        ]
+      ],
+      "scenario_id": "v4_validation_f8_05",
+      "start": [
+        0,
+        2
+      ],
+      "width": 9
+    }
+  ],
+  "split": "validation"
+}
