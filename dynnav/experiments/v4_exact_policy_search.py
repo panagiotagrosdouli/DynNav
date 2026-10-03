@@ -76,8 +76,6 @@ def _shortest_distance(
 
 def _random_world(
     rng: random.Random,
-    *,
-    candidate: int,
 ) -> tuple[
     GridMap,
     GridCell,
@@ -196,7 +194,7 @@ def run_exact_policy_search(
     while len(records) < candidates and attempts < max_attempts:
         candidate = len(records)
         attempts += 1
-        world = _random_world(rng, candidate=candidate)
+        world = _random_world(rng)
         if world is None:
             continue
 
