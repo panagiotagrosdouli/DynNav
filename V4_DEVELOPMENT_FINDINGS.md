@@ -259,3 +259,182 @@ The V4 paper must explicitly distinguish three information/approximation losses:
 3. planning with a predictive belief while ignoring the value of future observations inside the search tree.
 
 The held-out experiment tests (1) and (2). The exact-policy counterexample documents the limitation in (3).
+
+
+---
+
+## Additional retained development evidence: exact-policy approximation boundary
+
+A later retained V4 development artifact extends the original route-choice benchmark with two independent falsification studies.
+
+**Workflow run:** 37108332731  
+**Head SHA:** f5be4a3127c04ce89081b19c16e96e198093c9e4  
+**Artifact ID:** 11268129840  
+**Artifact digest:** `sha256:d4d6aca5635247d5577dbbbb6951967f9cabafab854a8a0543425c1a65af75ad`
+
+The artifact remains explicitly marked `development_only_not_publication_evidence`.
+
+### Random exact-policy search
+
+The exact finite-horizon observation-contingent reference was compared with the receding-horizon predictive-belief planner on 50 deterministic, seeded tiny worlds.
+
+Retained summary:
+
+- candidates: 50;
+- exact/receding comparable: 50;
+- first-action disagreements: **0/50**;
+- positive exact first-action regret: **0/50**;
+- mean exact states evaluated: **169.28**.
+
+This is useful negative evidence. It indicates that ordinary small random cases do not automatically expose the approximation made by receding-horizon planning.
+
+It must not be interpreted as evidence of POMDP optimality.
+
+### Constructed future-information counterexample
+
+A separate hand-constructed counterexample deliberately creates value in a future observation-contingent decision.
+
+Retained exact first-action values:
+
+[
+Q_{mathrm{exact}}((0,2))=10.8,
+]
+
+[
+Q_{mathrm{exact}}((0,4))=11.0.
+]
+
+The exact finite-horizon policy selects first action ((0,2)), while the receding predictive-belief A* selects ((0,4)).
+
+Therefore the receding planner has exact first-action regret
+
+[
+11.0-10.8=oxed{0.20}.
+]
+
+The exact solver evaluated 233 belief-policy states in this constructed case.
+
+This is an explicit approximation boundary: the receding planner can fail to value future information because candidate-path search marginalizes future observations rather than branching on them.
+
+The correct claim is therefore:
+
+> The V4 planner is a receding-horizon belief-conditioned reference method whose decisions can differ from an exact observation-contingent policy when future information has action value.
+
+It must never be described as a general optimal POMDP solver.
+
+---
+
+## Additional retained development evidence: correlation model misspecification
+
+The same development artifact includes an equal-marginal common-cause study over:
+
+[
+pin{0.25,0.50,0.80},
+qquad
+hoin{0,0.25,0.50,0.75,1}.
+]
+
+Thirty topology/model combinations were evaluated.
+
+Two deliberately opposite network structures were retained.
+
+### Parallel joint cut
+
+Two individually redundant return corridors form a joint cut.
+
+The independent-marginal model is optimistic under positive common-cause dependence.
+
+Maximum retained signed error:
+
+[
+hat R_{mathrm{independent}}-R_{mathrm{joint}}
+=
+oxed{+0.25}.
+]
+
+### Serial any-cut
+
+Either one of two serial closures can destroy the only return path.
+
+For the same equal-marginal positive-dependence family, the independent model can instead be pessimistic.
+
+Minimum retained signed error:
+
+[
+hat R_{mathrm{independent}}-R_{mathrm{joint}}
+=
+oxed{-0.25}.
+]
+
+Thus correlation does not have one universal direction of error. The topology determines whether replacing the joint distribution with independent marginals is optimistic or pessimistic.
+
+The publication-safe conclusion is:
+
+> Equal per-hazard closure marginals do not determine safe-return connectivity; dependence structure and network topology jointly determine reliability error.
+
+Correlation should remain a model-misspecification boundary rather than a second headline contribution unless it motivates a new inference/planning method.
+
+---
+
+## Additional negative result: hard constraint mission refusal
+
+The V4 contract tests exposed a valid case where the hard belief-safe-return baseline with
+
+[
+R(x,b)ge 0.90
+]
+
+admits no outbound successor.
+
+The planner therefore refuses the mission while remaining protocol-valid.
+
+This behavior is now retained as a meaningful baseline outcome rather than treated as an implementation failure.
+
+It reinforces the distinction between:
+
+- preserving a representation of return uncertainty; and
+- choosing a soft versus hard decision objective.
+
+A hard safe-return constraint may preserve a threshold by making the mission infeasible.
+
+---
+
+## Model-misspecification infrastructure
+
+The V4 executor now separates:
+
+[
+	ext{true generative model}
+
+eq
+	ext{planner-assumed model}.
+]
+
+Ground-truth arming and observations are generated from the true (q,s,c), while non-oracle belief updates and future predictive planning may use independently specified assumed parameters.
+
+Property tests require that changing the assumed model does **not** change keyed latent truth:
+
+- true armed set;
+- detector observations;
+- realized closures;
+- realized return outcome.
+
+The change may alter posterior probability, predicted return probability, and route choice.
+
+This establishes the correct experimental substrate for the predeclared model-misspecification study. It is infrastructure/correctness evidence only; no held-out misspecification outcome has yet been inspected.
+
+---
+
+## Current development conclusion
+
+The strongest V4 story after these falsification checks is not “Bayesian belief is always safer.”
+
+Instead:
+
+1. a posterior over action-induced latent topology state can prevent false certainty relative to a latched detector point estimate;
+2. a conservative prior can still dominate on return risk by paying path cost;
+3. the operational question is therefore a risk–efficiency/value-of-information question;
+4. the receding planner is not generally observation-contingent optimal, and a retained counterexample quantifies that limitation;
+5. closure correlation can make an independent topology model either optimistic or pessimistic.
+
+The frozen held-out suite remains unopened.
