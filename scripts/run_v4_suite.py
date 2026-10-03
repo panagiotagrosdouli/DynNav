@@ -78,6 +78,27 @@ def main() -> None:
     )
     parser.add_argument("--seeds", type=int, default=None)
     parser.add_argument(
+        "--assumed-sensitivity",
+        type=float,
+        default=None,
+        help="Planner-assumed detector sensitivity; defaults to true regime.",
+    )
+    parser.add_argument(
+        "--assumed-specificity",
+        type=float,
+        default=None,
+        help="Planner-assumed detector specificity; defaults to true regime.",
+    )
+    parser.add_argument(
+        "--assumed-arming-offset",
+        type=float,
+        default=0.0,
+        help=(
+            "Additive planner-model offset applied to each frozen q_i and "
+            "clipped to [0,1]. Truth remains unchanged."
+        ),
+    )
+    parser.add_argument(
         "--output-dir",
         type=Path,
         default=Path("results/v4_suite"),
@@ -118,14 +139,43 @@ def main() -> None:
         raise ValueError("--seeds must be positive")
 
     sensitivity, specificity = OBSERVATION_REGIMES[args.regime]
+    assumed_sensitivity = (
+        sensitivity
+        if args.assumed_sensitivity is None
+        else float(args.assumed_sensitivity)
+    )
+    assumed_specificity = (
+        specificity
+        if args.assumed_specificity is None
+        else float(args.assumed_specificity)
+    )
+    for label, value in (
+        ("assumed_sensitivity", assumed_sensitivity),
+        ("assumed_specificity", assumed_specificity),
+    ):
+        if not 0.0 <= value <= 1.0:
+            raise ValueError(f"{label} must be in [0, 1]")
     args.output_dir.mkdir(parents=True, exist_ok=True)
     raw_path = args.output_dir / "trials.csv"
 
     rows: list[dict[str, object]] = []
     for spec in scenarios:
+        assumed_q = tuple(
+            min(
+                1.0,
+                max(
+                    0.0,
+                    hazard.arming_probability + args.assumed_arming_offset,
+                ),
+            )
+            for hazard in spec.hazards
+        )
         scenario = spec.to_execution_scenario(
             sensitivity=sensitivity,
             specificity=specificity,
+            assumed_sensitivity=assumed_sensitivity,
+            assumed_specificity=assumed_specificity,
+            assumed_arming_probabilities=assumed_q,
         )
         for seed in range(seed_count):
             for planner in PLANNERS:
@@ -143,11 +193,20 @@ def main() -> None:
                         "observation_regime": args.regime,
                         "sensitivity": sensitivity,
                         "specificity": specificity,
+                        "true_sensitivity": sensitivity,
+                        "true_specificity": specificity,
+                        "assumed_sensitivity": assumed_sensitivity,
+                        "assumed_specificity": assumed_specificity,
+                        "assumed_arming_offset": args.assumed_arming_offset,
                         "recoverability_weight": scenario.recoverability_weight,
                         "hard_return_threshold": scenario.hard_return_threshold,
                         "arming_probabilities": _json(
                             [h.arming_probability for h in spec.hazards]
                         ),
+                        "true_arming_probabilities": _json(
+                            [h.arming_probability for h in spec.hazards]
+                        ),
+                        "assumed_arming_probabilities": _json(assumed_q),
                         "closure_probabilities": _json(
                             [h.closure_probability for h in spec.hazards]
                         ),
@@ -196,6 +255,11 @@ def main() -> None:
         "observation_regime": args.regime,
         "sensitivity": sensitivity,
         "specificity": specificity,
+        "true_sensitivity": sensitivity,
+        "true_specificity": specificity,
+        "assumed_sensitivity": assumed_sensitivity,
+        "assumed_specificity": assumed_specificity,
+        "assumed_arming_offset": args.assumed_arming_offset,
         "scenario_count": len(scenarios),
         "seeds_per_scenario": seed_count,
         "planners": [planner.value for planner in PLANNERS],
