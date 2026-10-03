@@ -2,10 +2,10 @@
 
 **Status:** development-only mechanism evidence. Not publication-facing. Not authorized for manuscript claims.
 
-**Workflow run:** 37103838608  
-**Head SHA:** 912350d34df65aed6338b02d349797366523663c  
-**Artifact ID:** 11267051205  
-**Artifact digest:** `sha256:f0bc231f16e32082429c5a049c99fa19210abe72e6830f52f122c2a9f55cf991`  
+**Workflow run:** 37105534362  
+**Head SHA:** e7f441aad9dc64b0422a318e8475a89eab6b5a0f  
+**Artifact ID:** 11267827909  
+**Artifact digest:** `sha256:fe83c37e4118fc7335f00c8e81b3d1770b1bc1a250ab9e5e1bbb1e5af0ed62dc`  
 **Trials:** 5,000 paired seeds per regime; 40,000 raw rows across two regimes and four methods.
 
 The artifact explicitly records `development_only_not_publication_evidence`.
@@ -156,7 +156,7 @@ The frozen held-out experiment must test this narrower statement.
 
 The downloaded artifact ZIP digest matches the GitHub Actions artifact digest:
 
-`f0bc231f16e32082429c5a049c99fa19210abe72e6830f52f122c2a9f55cf991`.
+`fe83c37e4118fc7335f00c8e81b3d1770b1bc1a250ab9e5e1bbb1e5af0ed62dc`.
 
 The artifact contains:
 
