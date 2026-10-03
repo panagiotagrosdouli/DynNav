@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 from pathlib import Path
 
@@ -63,7 +64,7 @@ def _write_shard(
         "shard_index": shard_index,
         "scenario_count": 1,
         "planners": planners,
-        "raw_trials_sha256": f"hash-{shard_index}",
+        "raw_trials_sha256": hashlib.sha256((directory / "trials.csv").read_bytes()).hexdigest(),
     }
     (directory / "run_metadata.json").write_text(
         json.dumps(metadata),
