@@ -37,6 +37,24 @@ PLANNERS = (
 )
 
 
+def select_scenario_shard(
+    scenarios: tuple[object, ...] | list[object],
+    *,
+    shard_count: int,
+    shard_index: int,
+) -> tuple[object, ...]:
+    """Return deterministic modulo shard without changing scenario order."""
+    if shard_count <= 0:
+        raise ValueError("shard_count must be positive")
+    if shard_index < 0 or shard_index >= shard_count:
+        raise ValueError("shard_index must satisfy 0 <= index < shard_count")
+    return tuple(
+        scenario
+        for index, scenario in enumerate(scenarios)
+        if index % shard_count == shard_index
+    )
+
+
 def _git_head() -> str:
     return subprocess.check_output(
         ["git", "rev-parse", "HEAD"],
@@ -77,6 +95,18 @@ def main() -> None:
         default="O2",
     )
     parser.add_argument("--seeds", type=int, default=None)
+    parser.add_argument(
+        "--shard-count",
+        type=int,
+        default=1,
+        help="Deterministically split the frozen manifest by scenario index.",
+    )
+    parser.add_argument(
+        "--shard-index",
+        type=int,
+        default=0,
+        help="Zero-based modulo shard index.",
+    )
     parser.add_argument(
         "--assumed-sensitivity",
         type=float,
@@ -129,7 +159,14 @@ def main() -> None:
             )
 
     manifest = args.manifest or Path("benchmarks/v4") / f"{args.split}.json"
-    scenarios = load_manifest(manifest)
+    all_scenarios = load_manifest(manifest)
+    scenarios = select_scenario_shard(
+        all_scenarios,
+        shard_count=args.shard_count,
+        shard_index=args.shard_index,
+    )
+    if not scenarios:
+        raise ValueError("selected shard contains no scenarios")
 
     if args.seeds is None:
         seed_count = 250 if args.split == "heldout" and args.regime == "O2" else 100
@@ -261,6 +298,9 @@ def main() -> None:
         "assumed_specificity": assumed_specificity,
         "assumed_arming_offset": args.assumed_arming_offset,
         "scenario_count": len(scenarios),
+        "manifest_scenario_count": len(all_scenarios),
+        "shard_count": args.shard_count,
+        "shard_index": args.shard_index,
         "seeds_per_scenario": seed_count,
         "planners": [planner.value for planner in PLANNERS],
         "head_sha": _git_head(),
