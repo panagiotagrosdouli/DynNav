@@ -129,3 +129,69 @@ def test_arming_probability_vector_must_match_hazard_model() -> None:
             hazard_model=model,
             arming_probabilities=(),
         )
+
+
+
+def test_noisy_arming_observation_can_change_route_at_same_geometric_state() -> None:
+    obstacles = {(2, 0), (2, 2), (2, 4)}
+    grid = GridMap.from_obstacles(5, 5, obstacles=obstacles)
+    current = (3, 2)
+    goal = (4, 2)
+    safe = {(0, 2)}
+    model = CommitmentHazardModel(
+        (
+            CommitmentClosure(
+                trigger=((0, 2), (0, 1)),
+                closure_cell=(2, 1),
+                closure_probability=0.8,
+            ),
+            CommitmentClosure(
+                trigger=(current, goal),
+                closure_cell=(2, 3),
+                closure_probability=0.8,
+            ),
+        )
+    )
+
+    predictive = ActivationBelief.certain_inactive().predict_after_trigger_execution(
+        0,
+        arming_probability=0.5,
+    )
+    armed_report = predictive.condition_on_arming_observation(
+        0,
+        observed_armed=True,
+        detection_sensitivity=0.9,
+        detection_specificity=0.9,
+    )
+    inactive_report = predictive.condition_on_arming_observation(
+        0,
+        observed_armed=False,
+        detection_sensitivity=0.9,
+        detection_specificity=0.9,
+    )
+
+    risky_belief = belief_commitment_astar(
+        grid,
+        current,
+        goal,
+        safe_cells=safe,
+        hazard_model=model,
+        arming_probabilities=(0.0, 1.0),
+        initial_belief=armed_report,
+        config=BeliefCommitmentAStarConfig(recoverability_weight=8.0),
+    )
+    reassuring_belief = belief_commitment_astar(
+        grid,
+        current,
+        goal,
+        safe_cells=safe,
+        hazard_model=model,
+        arming_probabilities=(0.0, 1.0),
+        initial_belief=inactive_report,
+        config=BeliefCommitmentAStarConfig(recoverability_weight=8.0),
+    )
+
+    assert armed_report.probability_armed(0) == pytest.approx(0.9)
+    assert inactive_report.probability_armed(0) == pytest.approx(0.1)
+    assert risky_belief.geometric_length == 3
+    assert reassuring_belief.geometric_length == 1
