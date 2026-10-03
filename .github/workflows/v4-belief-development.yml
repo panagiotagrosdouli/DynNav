@@ -8,15 +8,18 @@ on:
       - "dynnav/planners/belief_commitment_astar.py"
       - "dynnav/planners/exact_belief_policy.py"
       - "dynnav/experiments/belief_route_mechanism.py"
+      - "dynnav/experiments/v4_exact_policy_search.py"
       - "dynnav/experiments/v4_analysis.py"
       - "dynnav/experiments/v4_scenario_manifest.py"
       - "dynnav/experiments/statistics.py"
       - "scripts/run_v4_belief_route_development.py"
+      - "scripts/run_v4_exact_policy_search.py"
       - "tests/test_activation_belief_v4.py"
       - "tests/test_belief_commitment_astar.py"
       - "tests/test_exact_belief_policy.py"
       - "tests/test_belief_route_mechanism.py"
       - "tests/test_v4_analysis.py"
+      - "tests/test_v4_exact_policy_search.py"
       - "tests/test_v4_hierarchical_statistics.py"
       - "tests/test_v4_scenario_manifest.py"
       - "tests/test_recoverability_scenarios.py"
@@ -49,6 +52,7 @@ jobs:
             tests/test_belief_route_mechanism.py \
             tests/test_recoverability_scenarios.py \
             tests/test_v4_analysis.py \
+            tests/test_v4_exact_policy_search.py \
             tests/test_v4_hierarchical_statistics.py \
             tests/test_v4_scenario_manifest.py \
             tests/test_v4_belief_execution.py
@@ -56,6 +60,13 @@ jobs:
       - name: Run development-only paired benchmark
         run: |
           python scripts/run_v4_belief_route_development.py             --trials 5000             --output-dir results/v4_development
+
+      - name: Run development-only exact-policy adversarial search
+        run: |
+          python scripts/run_v4_exact_policy_search.py \
+            --candidates 50 \
+            --seed 2026100305 \
+            --output-dir results/v4_development/exact_policy_search
 
       - name: Record provenance
         env:
@@ -78,6 +89,8 @@ jobs:
                       "workflow_run_attempt": int(os.environ["RUN_ATTEMPT"]),
                       "protocol": "EXPERIMENT_PROTOCOL_V4.md",
                       "trials_per_regime": 5000,
+                      "exact_policy_search_candidates": 50,
+                      "exact_policy_search_seed": 2026100305,
                   },
                   indent=2,
                   sort_keys=True,
@@ -88,7 +101,10 @@ jobs:
           PY
           (
             cd results/v4_development
-            sha256sum trials.csv summary.json run_metadata.json provenance.json               > SHA256SUMS.txt
+            sha256sum trials.csv summary.json run_metadata.json provenance.json \
+              exact_policy_search/trials.csv \
+              exact_policy_search/summary.json \
+              > SHA256SUMS.txt
           )
 
       - name: Upload development artifact
