@@ -61,12 +61,12 @@ class ActivationBelief:
             raise ValueError(f"activation belief must sum to 1, got {total}")
 
     @classmethod
-    def certain_inactive(cls) -> "ActivationBelief":
+    def certain_inactive(cls) -> ActivationBelief:
         """Return the prior before any hazard has been armed."""
         return cls({frozenset(): 1.0})
 
     @classmethod
-    def certain_active(cls, active: frozenset[int] | set[int]) -> "ActivationBelief":
+    def certain_active(cls, active: frozenset[int] | set[int]) -> ActivationBelief:
         """Return a point belief over one armed-hazard set."""
         return cls({frozenset(active): 1.0})
 
@@ -84,7 +84,7 @@ class ActivationBelief:
         hazard_index: int,
         *,
         arming_probability: float,
-    ) -> "ActivationBelief":
+    ) -> ActivationBelief:
         """Propagate after a known trigger execution, before observation."""
         self.validate(self._validation_count(hazard_index))
         q = _unit_interval("arming_probability", arming_probability)
@@ -112,7 +112,7 @@ class ActivationBelief:
         observed_armed: bool,
         detection_sensitivity: float,
         detection_specificity: float,
-    ) -> "ActivationBelief":
+    ) -> ActivationBelief:
         """Condition a predictive belief on one noisy arming observation."""
         self.validate(self._validation_count(hazard_index))
         sensitivity = _unit_interval("detection_sensitivity", detection_sensitivity)
@@ -148,7 +148,7 @@ class ActivationBelief:
         observed_armed: bool,
         detection_sensitivity: float,
         detection_specificity: float,
-    ) -> "ActivationBelief":
+    ) -> ActivationBelief:
         """Exact Bayes update for known trigger execution and latent arming."""
         return self.predict_after_trigger_execution(
             hazard_index,
@@ -168,7 +168,7 @@ class ActivationBelief:
         observed_crossing: bool,
         detection_sensitivity: float,
         detection_specificity: float,
-    ) -> "ActivationBelief":
+    ) -> ActivationBelief:
         """Compatibility wrapper for the provisional noisy-crossing model.
 
         New V4 work should use update_after_trigger_execution, where geometric
