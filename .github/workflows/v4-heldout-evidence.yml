@@ -49,6 +49,13 @@ jobs:
             tests/test_v4_analysis.py \
             tests/test_v4_hierarchical_statistics.py
 
+      - name: V4 Gazebo information barrier contract
+        env:
+          PYTHONPATH: ros2_ws/src/dynnav_nav2_benchmark
+        run: |
+          python -m pytest -q \
+            ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py
+
       - name: Verify frozen manifest checksums
         run: |
           cd benchmarks/v4
