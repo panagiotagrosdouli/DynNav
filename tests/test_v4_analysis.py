@@ -4,6 +4,7 @@ import pytest
 
 from dynnav.experiments.v4_analysis import (
     V4AnalysisRow,
+    calibration_metrics,
     fixed_bin_calibration,
     paired_v4_comparison,
 )
@@ -133,3 +134,23 @@ def test_fixed_calibration_bins_include_probability_one() -> None:
     assert bins[-1].count == 2
     assert bins[-1].mean_prediction == pytest.approx(0.975)
     assert bins[-1].empirical_frequency == pytest.approx(0.5)
+
+
+def test_calibration_metrics_known_answer() -> None:
+    rows = [
+        _row("a", 0, "belief", feasible=True, prediction=0.8, path=2),
+        _row("a", 1, "belief", feasible=False, prediction=0.2, path=2),
+    ]
+
+    metrics = calibration_metrics(
+        rows,
+        planner="belief",
+        observation_regime="O2",
+    )
+
+    assert metrics["count"] == 2
+    assert metrics["brier_score"] == pytest.approx(0.04)
+    assert metrics["mean_prediction"] == pytest.approx(0.5)
+    assert metrics["empirical_frequency"] == pytest.approx(0.5)
+    assert metrics["calibration_in_the_large"] == pytest.approx(0.0)
+    assert metrics["expected_calibration_error"] == pytest.approx(0.2)
