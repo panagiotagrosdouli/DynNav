@@ -62,3 +62,65 @@ def exact_scenario_safe_return_probability(
         if _can_reach_safe_region(realized, start, safe_cells):
             probability += scenario.probability
     return min(1.0, max(0.0, probability))
+
+
+
+def equal_marginal_common_cause_belief(
+    closure_cells: tuple[GridCell, ...],
+    *,
+    marginal_probability: float,
+    correlation: float,
+) -> TopologyScenarioBelief:
+    """Build the V4 equal-marginal positive-dependence closure model.
+
+    With probability correlation all cells share one Bernoulli closure
+    outcome. Otherwise they close independently. Every cell therefore retains
+    marginal closure probability marginal_probability while dependence
+    increases from independence at 0 to a common outcome at 1.
+    """
+
+    p = float(marginal_probability)
+    rho = float(correlation)
+    if not 0.0 <= p <= 1.0:
+        raise ValueError("marginal_probability must be in [0, 1]")
+    if not 0.0 <= rho <= 1.0:
+        raise ValueError("correlation must be in [0, 1]")
+    if len(set(closure_cells)) != len(closure_cells):
+        raise ValueError("closure_cells must be unique")
+    if not closure_cells:
+        return TopologyScenarioBelief((ClosureScenario(frozenset(), 1.0),))
+
+    from itertools import product
+
+    mass: dict[frozenset[GridCell], float] = {}
+
+    common_open = rho * (1.0 - p)
+    common_closed = rho * p
+    if common_open:
+        mass[frozenset()] = mass.get(frozenset(), 0.0) + common_open
+    if common_closed:
+        all_closed = frozenset(closure_cells)
+        mass[all_closed] = mass.get(all_closed, 0.0) + common_closed
+
+    independent_weight = 1.0 - rho
+    if independent_weight:
+        for flags in product((False, True), repeat=len(closure_cells)):
+            probability = independent_weight
+            closed: set[GridCell] = set()
+            for cell, flag in zip(closure_cells, flags, strict=True):
+                probability *= p if flag else 1.0 - p
+                if flag:
+                    closed.add(cell)
+            if probability:
+                key = frozenset(closed)
+                mass[key] = mass.get(key, 0.0) + probability
+
+    return TopologyScenarioBelief(
+        tuple(
+            ClosureScenario(cells, probability)
+            for cells, probability in sorted(
+                mass.items(),
+                key=lambda item: (len(item[0]), sorted(item[0])),
+            )
+        )
+    )

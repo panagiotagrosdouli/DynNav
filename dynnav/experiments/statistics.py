@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import math
 import random
-from collections.abc import Iterable, Sequence
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
 from statistics import mean, median, stdev
 
@@ -159,3 +159,58 @@ def summarize(values: Iterable[float]) -> dict[str, float]:
         "minimum": min(data),
         "maximum": max(data),
     }
+
+
+def hierarchical_paired_bootstrap_interval(
+    differences_by_scenario: Mapping[str, Sequence[float]],
+    *,
+    confidence: float = 0.95,
+    resamples: int = 5000,
+    seed: int = 0,
+) -> IntervalEstimate:
+    """Bootstrap a paired effect while respecting scenario -> seed hierarchy.
+
+    Inputs are already paired proposed-minus-baseline differences for each
+    scenario. Each bootstrap replicate resamples scenarios with replacement and,
+    within each selected scenario, resamples paired execution differences with
+    replacement. Scenarios receive equal weight in the final estimand.
+    """
+    if not differences_by_scenario:
+        raise ValueError("at least one scenario is required")
+    if not 0.0 < confidence < 1.0:
+        raise ValueError("confidence must be in (0, 1)")
+    if resamples < 100:
+        raise ValueError("resamples must be at least 100")
+
+    scenario_values: dict[str, list[float]] = {}
+    for name, values in differences_by_scenario.items():
+        if not name:
+            raise ValueError("scenario names must be non-empty")
+        scenario_values[name] = _values(values)
+
+    names = sorted(scenario_values)
+    observed_scenario_means = [mean(scenario_values[name]) for name in names]
+    estimate = mean(observed_scenario_means)
+
+    rng = random.Random(seed)
+    replicates: list[float] = []
+    for _ in range(resamples):
+        sampled_names = rng.choices(names, k=len(names))
+        sampled_scenario_means: list[float] = []
+        for name in sampled_names:
+            values = scenario_values[name]
+            within = rng.choices(values, k=len(values))
+            sampled_scenario_means.append(mean(within))
+        replicates.append(mean(sampled_scenario_means))
+
+    replicates.sort()
+    tail = (1.0 - confidence) / 2.0
+    lo = min(resamples - 1, max(0, int(tail * resamples)))
+    hi = min(resamples - 1, max(0, int((1.0 - tail) * resamples) - 1))
+    return IntervalEstimate(
+        estimate=estimate,
+        lower=replicates[lo],
+        upper=replicates[hi],
+        confidence=confidence,
+        sample_size=len(names),
+    )

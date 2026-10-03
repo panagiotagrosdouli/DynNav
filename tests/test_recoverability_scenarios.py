@@ -7,6 +7,7 @@ from dynnav.recoverability_belief import TopologyHazardBelief, exact_safe_return
 from dynnav.recoverability_scenarios import (
     ClosureScenario,
     TopologyScenarioBelief,
+    equal_marginal_common_cause_belief,
     exact_scenario_safe_return_probability,
 )
 
@@ -62,3 +63,55 @@ def test_scenario_probabilities_must_sum_to_one() -> None:
     belief = TopologyScenarioBelief((ClosureScenario(frozenset(), 0.8),))
     with pytest.raises(ValueError, match="sum to 1"):
         belief.validate(grid)
+
+
+
+def test_equal_marginal_model_recovers_independent_and_common_cause_limits() -> None:
+    grid, current, safe = _parallel_corridors()
+    cells = ((1, 0), (1, 2))
+
+    independent = equal_marginal_common_cause_belief(
+        cells,
+        marginal_probability=0.5,
+        correlation=0.0,
+    )
+    common = equal_marginal_common_cause_belief(
+        cells,
+        marginal_probability=0.5,
+        correlation=1.0,
+    )
+
+    assert exact_scenario_safe_return_probability(
+        grid, current, safe, independent
+    ) == pytest.approx(0.75)
+    assert exact_scenario_safe_return_probability(
+        grid, current, safe, common
+    ) == pytest.approx(0.5)
+
+
+def test_equal_marginal_model_preserves_each_cell_marginal() -> None:
+    cells = ((1, 0), (1, 2), (2, 2))
+    belief = equal_marginal_common_cause_belief(
+        cells,
+        marginal_probability=0.3,
+        correlation=0.65,
+    )
+
+    for cell in cells:
+        marginal = sum(
+            scenario.probability
+            for scenario in belief.scenarios
+            if cell in scenario.closed_cells
+        )
+        assert marginal == pytest.approx(0.3)
+
+    assert sum(scenario.probability for scenario in belief.scenarios) == pytest.approx(1.0)
+
+
+def test_equal_marginal_model_rejects_duplicate_cells() -> None:
+    with pytest.raises(ValueError, match="unique"):
+        equal_marginal_common_cause_belief(
+            ((1, 0), (1, 0)),
+            marginal_probability=0.5,
+            correlation=0.5,
+        )

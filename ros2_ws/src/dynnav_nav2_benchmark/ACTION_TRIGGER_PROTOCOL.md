@@ -19,3 +19,62 @@ A pre-publication audit exposed two over-strict/incorrect implementation behavio
 2. a realized closure was rejected immediately when the robot was still inside the minimum blocker-clearance radius, rather than remaining pending as a future closure.
 
 The revised implementation preserves all sampling gaps, invalidates only trigger-ambiguous gaps, and keeps a realized closure pending until the unchanged clearance gate is satisfied. These changes alter validation/execution semantics, not the trigger, closure probability, blocker size, or minimum-clearance threshold. Publication-facing Gazebo results must come from a retained artifact generated after this revision.
+
+
+## V4 partial-observation extension
+
+V4 introduces a latent environmental arming state between observed trigger
+execution and future closure realization. This changes the causal semantics from
+
+```text
+observed trigger -> closure draw
+```
+
+to
+
+```text
+known executed trigger
+    -> hidden arming draw
+    -> noisy detector observation delivered to non-oracle planner
+    -> later closure draw conditional on true arming
+```
+
+The benchmark controller owns the latent `true_armed` state. A non-oracle
+planner must never receive that value or the future closure realization. Its
+planner-facing message may contain only:
+
+- hazard identifier;
+- noisy `observed_armed` detector outcome;
+- declared arming probability;
+- declared detector sensitivity/specificity;
+- declared conditional closure probability.
+
+The explicit oracle condition is the only condition permitted to receive the
+latent arming truth.
+
+The ROS-independent contract is implemented in
+`dynnav_nav2_benchmark/v4_hidden_arming.py` so this information barrier can be
+tested without relying on Gazebo topic conventions.
+
+### Required execution logging
+
+For audit and post-hoc scoring, the benchmark artifact must retain both sides of
+the information barrier:
+
+- executed trigger transition;
+- latent arming draw and true arming state;
+- detector draw and planner-visible detector outcome;
+- planner condition;
+- posterior/belief state if applicable;
+- future closure draw and physical blocker application;
+- recovery assessment.
+
+Truth fields are evaluator data. Their presence in the retained artifact does
+not authorize exposing them to a non-oracle planner at runtime.
+
+### Validity rule
+
+Any trial in which a non-oracle planner can read latent arming truth or future
+closure truth is protocol-invalid. A truth-leakage bug invalidates the affected
+comparative run and requires a complete rerun of the frozen condition after the
+bug is fixed.

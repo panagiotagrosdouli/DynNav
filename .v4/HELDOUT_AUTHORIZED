@@ -1,0 +1,24 @@
+V4 HELD-OUT EXECUTION AUTHORIZED
+
+Freeze candidate after infrastructure-only checksum fix:
+441d0f3c6efc7857df451b350215c1f9bd950f13
+
+Previous authorization run 37113423396 terminated in preflight before any
+held-out trial because the checksum command changed directory before reading a
+checksum file containing repository-relative paths. All research contracts
+passed; no shard executed and no held-out outcome was generated.
+
+This re-authorization follows an infrastructure-only workflow path correction.
+No planner, generator, scenario manifest, stochastic semantics, endpoint,
+statistical rule, or analysis implementation changed.
+
+Authorization conditions:
+- full CI on the semantic freeze candidate: success
+- focused V4 contracts: success
+- V4 Gazebo information barrier: success
+- documentation and web build gates: success
+- committed manifest digests unchanged
+- pre-outcome audit recorded in .v4/PREOUTCOME_FREEZE.md
+
+Any research-semantic change after this authorization invalidates the resulting
+held-out evidence and requires a protocol amendment and a fresh freeze.

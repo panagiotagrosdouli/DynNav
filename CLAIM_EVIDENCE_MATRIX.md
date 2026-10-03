@@ -30,6 +30,25 @@ This matrix defines what the current repository may and may not claim. Publicati
 | Safety is improved in deployment | no formal safety proof, powered hardware study, or certification evidence | UNSUPPORTED | explicit non-certification remains required |
 | Physical-robot efficacy | no retained hardware execution study for the history-conditioned planner | UNSUPPORTED | staged named-hardware validation required |
 
+
+## V4 belief-conditioned research track
+
+These rows describe the new V4 track only. They do not change the evidence level of the current known-history manuscript.
+
+| Claim | Current evidence | Status | Boundary / next step |
+|---|---|---|---|
+| Exact categorical belief over latent hazard arming is implemented | `dynnav/activation_belief.py`; perfect/uninformative sensor, monotone re-trigger, multi-hazard and legacy-compatibility tests | SUPPORTED | implementation/model claim only; exact support can scale exponentially |
+| Predictive-belief A* can select different routes at the same geometric state under different arming posteriors | `belief_commitment_astar.py`; two-corridor known-answer route-choice regression | SUPPORTED | controlled mechanism only; planner is receding-horizon predictive-belief, not an optimal POMDP solver |
+| Belief representation improves probabilistic calibration under partial observation | retained V4 development artifact run 37105534362 (artifact 11267827909): medium-noise belief Brier 0.0561 vs detector-as-truth 0.0696 in one development world | PARTIAL | development-only, one topology; frozen held-out calibration analysis required |
+| Belief-conditioned planning improves operational safety/efficiency under partial observation | development artifact shows non-dominance: medium-noise belief and detector have equal 0.0696 return-infeasible rate; miss-heavy belief removes detector false-safe failures but matches conservative prior-only path length and zero observed failure | PARTIAL | cannot claim general improvement; must evaluate held-out risk/path-cost frontier against detector and prior/fixed-marginal controls |
+| Equal per-cell closure marginals can imply different return reliability under different joint closure distributions | exact scenario oracle plus equal-marginal common-cause model; redundant-corridor known-answer limits recover (1-p^2) under independence and (1-p) under perfect common cause | SUPPORTED | representation/model counterexample only; no arbitrary correlation-handling claim |
+| V4 conclusions generalize across the predeclared 96 held-out scenarios | explicit development/validation/held-out manifests and frozen analysis pipeline now exist; no held-out planner outcomes have been inspected | UNSUPPORTED | publication claim remains unauthorized until the SHA-gated retained held-out run is completed |
+| V4 Gazebo execution demonstrates comparative efficacy under noisy arming observation | blinded hidden-arming/detector information-barrier contract and tests now exist; no retained V4 comparative Gazebo outcome study yet | UNSUPPORTED | protocol correctness is not efficacy; complete the separately frozen execution study before comparative claims |
+| V4 probabilities are calibrated to physical robot outcomes | no physical calibration study | UNSUPPORTED | separate hardware protocol required |
+| Exact V4 categorical belief is a small-hazard reference rather than a scalable general solver | retained development scaling artifact at head `fcf2e92...`: support grows 2,4,16,64,256 for 1,2,4,6,8 hazards; median wall time grows from ~1.16 ms to ~19.39 s and exceeds the 5 s development budget at 8 hazards | SUPPORTED | runner-specific scaling evidence; held-out suite is deliberately limited to at most 6 hazards |
+| Receding-horizon predictive-belief planning can lose value-of-future-information relative to an exact observation-contingent policy | retained constructed counterexample: exact first action differs from receding first action with exact first-action regret 0.2 | SUPPORTED | approximation-boundary result only; do not call P4 an optimal POMDP/belief-space solver |
+| Equal closure marginals do not determine return connectivity under correlated future closures | retained development common-cause study: maximum absolute independent-model error 0.25 in both parallel-joint-cut and serial-any-cut topologies, with opposite error signs | SUPPORTED | controlled model-boundary result; not a claim of arbitrary correlation handling |
+
 ## Interpretation rule
 
 A `SUPPORTED` entry means the repository contains evidence for the **narrow wording shown in that row**. It does not imply safety, deployment readiness, broad generalization, or superiority outside the evaluated assumptions.

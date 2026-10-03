@@ -1,0 +1,174 @@
+name: V4 belief-route development evidence
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/activation_belief.py"
+      - "dynnav/recoverability_scenarios.py"
+      - "dynnav/planners/belief_commitment_astar.py"
+      - "dynnav/planners/exact_belief_policy.py"
+      - "dynnav/experiments/belief_route_mechanism.py"
+      - "dynnav/experiments/v4_exact_policy_search.py"
+      - "dynnav/experiments/v4_information_value_counterexample.py"
+      - "dynnav/experiments/v4_correlation_benchmark.py"
+      - "dynnav/experiments/v4_belief_scaling.py"
+      - "dynnav/experiments/v4_analysis.py"
+      - "dynnav/experiments/v4_publication.py"
+      - "scripts/render_v4_publication_outputs.py"
+      - "tests/test_v4_publication.py"
+      - "dynnav/experiments/v4_scenario_manifest.py"
+      - "dynnav/experiments/statistics.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/v4_hidden_arming.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md"
+      - "scripts/run_v4_belief_route_development.py"
+      - "scripts/run_v4_exact_policy_search.py"
+      - "scripts/run_v4_information_value_counterexample.py"
+      - "scripts/run_v4_correlation_benchmark.py"
+      - "scripts/run_v4_belief_scaling.py"
+      - "scripts/run_v4_suite.py"
+      - "scripts/merge_v4_shards.py"
+      - "tests/test_activation_belief_v4.py"
+      - "tests/test_belief_commitment_astar.py"
+      - "tests/test_exact_belief_policy.py"
+      - "tests/test_belief_route_mechanism.py"
+      - "tests/test_v4_analysis.py"
+      - "tests/test_v4_exact_policy_search.py"
+      - "tests/test_v4_correlation_benchmark.py"
+      - "tests/test_v4_belief_scaling.py"
+      - "tests/test_v4_hierarchical_statistics.py"
+      - "tests/test_v4_scenario_manifest.py"
+      - "tests/test_v4_suite_runner.py"
+      - "tests/test_v4_shard_merge.py"
+      - "tests/test_recoverability_scenarios.py"
+      - ".github/workflows/v4-belief-development.yml"
+
+jobs:
+  development-benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install research package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Focused V4 contracts
+        run: |
+          python -m pytest -q \
+            tests/test_activation_belief.py \
+            tests/test_activation_belief_v4.py \
+            tests/test_belief_commitment_astar.py \
+            tests/test_exact_belief_policy.py \
+            tests/test_belief_route_mechanism.py \
+            tests/test_recoverability_scenarios.py \
+            tests/test_v4_analysis.py \
+            tests/test_v4_publication.py \
+            tests/test_v4_exact_policy_search.py \
+            tests/test_v4_correlation_benchmark.py \
+            tests/test_v4_belief_scaling.py \
+            tests/test_v4_hierarchical_statistics.py \
+            tests/test_v4_scenario_manifest.py \
+            tests/test_v4_suite_runner.py \
+            tests/test_v4_shard_merge.py \
+            tests/test_v4_belief_execution.py
+
+      - name: V4 Gazebo information barrier contract
+        env:
+          PYTHONPATH: ros2_ws/src/dynnav_nav2_benchmark
+        run: |
+          python -m pytest -q \
+            ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py
+
+      - name: Run development-only paired benchmark
+        run: |
+          python scripts/run_v4_belief_route_development.py             --trials 5000             --output-dir results/v4_development
+
+      - name: Run development-only exact-policy adversarial search
+        run: |
+          python scripts/run_v4_exact_policy_search.py \
+            --candidates 50 \
+            --seed 2026100305 \
+            --output-dir results/v4_development/exact_policy_search
+
+      - name: Run future-information approximation counterexample
+        run: |
+          python scripts/run_v4_information_value_counterexample.py \
+            --output results/v4_development/information_value_counterexample.json
+
+      - name: Run development-only equal-marginal correlation study
+        run: |
+          python scripts/run_v4_correlation_benchmark.py \
+            --output-dir results/v4_development/correlation
+
+      - name: Run development-only exact-belief scaling
+        run: |
+          python scripts/run_v4_belief_scaling.py \
+            --hazard-counts 1,2,4,6,8 \
+            --warmups 0 \
+            --repetitions 2 \
+            --per-call-budget-s 5 \
+            --output-dir results/v4_development/scaling
+
+      - name: Record provenance
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("results/v4_development/provenance.json")
+          path.write_text(
+              json.dumps(
+                  {
+                      "status": "development_only_not_publication_evidence",
+                      "head_sha": os.environ["HEAD_SHA"],
+                      "workflow_run_id": int(os.environ["RUN_ID"]),
+                      "workflow_run_attempt": int(os.environ["RUN_ATTEMPT"]),
+                      "protocol": "EXPERIMENT_PROTOCOL_V4.md",
+                      "trials_per_regime": 5000,
+                      "exact_policy_search_candidates": 50,
+                      "exact_policy_search_seed": 2026100305,
+                      "correlation_study": "equal_marginal_common_cause",
+                      "information_value_counterexample": True,
+                      "scaling_hazard_counts": [1, 2, 4, 6, 8],
+                      "scaling_repetitions": 2,
+                      "scaling_per_call_budget_s": 5,
+                  },
+                  indent=2,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          (
+            cd results/v4_development
+            sha256sum trials.csv summary.json run_metadata.json provenance.json \
+              exact_policy_search/trials.csv \
+              exact_policy_search/summary.json \
+              correlation/trials.csv \
+              correlation/summary.json \
+              information_value_counterexample.json \
+              scaling/trials.csv \
+              scaling/summary.json \
+              > SHA256SUMS.txt
+          )
+
+      - name: Upload development artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-v4-development-${{ github.event.pull_request.head.sha }}
+          path: results/v4_development
+          if-no-files-found: error

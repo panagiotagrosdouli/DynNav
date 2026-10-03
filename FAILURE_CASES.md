@@ -43,3 +43,63 @@ The current suite is designed to expose where history-conditioned safe-return re
 6. **Retain negative cases.** Counterexamples and harmful regimes are part of the research artifact set and should remain reproducible.
 
 See `EXPERIMENT_PROTOCOL_V3.md` for current validation semantics and `docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md` for the earlier J0–J3 protocol.
+
+
+---
+
+## V4 partial-observation failure boundaries
+
+These cases apply only to the belief-conditioned research track.
+
+### V4-F1 — Belief does not automatically dominate a conservative prior
+
+The retained development-only two-corridor benchmark gives a deliberate counterexample to a universal belief-planner superiority claim.
+
+Under the medium correctly specified detector:
+
+- belief: mean path 2.286, return-infeasible 0.0696;
+- detector-as-truth: mean path 2.286, return-infeasible 0.0696;
+- prior-only: mean path 3.000, return-infeasible 0.0000.
+
+The belief improves Brier score relative to the point estimate but does not improve the operational failure rate in this world. The conservative prior avoids the downstream trigger entirely.
+
+**Consequence:** V4 must report a risk/path-cost frontier rather than a single “winner.”
+
+### V4-F2 — Correct Bayes can become conservatively indistinguishable from the prior
+
+Under the miss-heavy development regime:
+
+- belief: mean path 3.000, return-infeasible 0.0000;
+- prior-only: mean path 3.000, return-infeasible 0.0000;
+- detector-as-truth: mean path 2.004, return-infeasible 0.1378.
+
+The posterior prevents false-safe point-estimate decisions, but in this topology it obtains that protection by making the same route decision as the prior-only rule.
+
+**Consequence:** a safety advantage over detector-as-truth is not enough to establish value over a conservative uncertainty representation.
+
+### V4-F3 — Sensor/model misspecification can invalidate calibration
+
+The V4 protocol explicitly requires overconfident, pessimistic, miss-rate and false-alarm likelihood misspecification. A mathematically exact posterior is only exact for its assumed model.
+
+**Required falsification:** retain cases in which wrong likelihood or arming parameters increase Brier loss, calibration error or false-safe decisions.
+
+### V4-F4 — Exact categorical belief is not a scalable default
+
+With (m) binary latent arming variables, unrestricted belief support can contain (2^m) states. Exact safe-return evaluation can additionally enumerate future closure configurations.
+
+**Consequence:** V4 exact belief planning is a small-hazard reference until scaling evidence establishes otherwise.
+
+### V4-F5 — Receding-horizon predictive belief is not an optimal POMDP policy
+
+The V4 reference A* marginalizes observations that have not yet occurred and replans after real observations. It does not branch over future observations during search.
+
+**Consequence:** compare against an exact finite-horizon observation-contingent policy on small worlds before making policy-quality claims.
+
+### V4-F6 — Equal marginals do not identify joint return risk
+
+In a two-corridor topology with marginal closure probability (p) on each return corridor:
+
+- independent closures give return probability (1-p^2);
+- perfectly common-cause closures with the same marginals give (1-p).
+
+**Consequence:** an independent marginal closure model can be systematically optimistic or pessimistic depending on topology/dependence. The correlation study is a model-boundary test, not evidence of arbitrary correlation robustness.
