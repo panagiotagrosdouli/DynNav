@@ -98,10 +98,14 @@ class V4ExecutionRecord:
     path_length: int
     true_armed_set: tuple[int, ...]
     estimated_armed_set: tuple[int, ...]
+    trigger_ids_executed: tuple[int, ...]
+    detector_observations: tuple[tuple[int, int, bool], ...]
     observation_count: int
     final_belief_support_size: int
     final_belief_entropy_bits: float
+    final_true_armed_posterior_probability: float
     predicted_return_probability: float
+    true_model_return_probability: float
     realized_closure_cells: tuple[GridCell, ...]
     return_feasible: bool
     planning_calls: int
@@ -289,6 +293,8 @@ def run_v4_execution_trial(
     path = [scenario.start]
     current = scenario.start
     trigger_occurrences = [0 for _ in scenario.hazard_model.closures]
+    trigger_ids_executed: list[int] = []
+    detector_observations: list[tuple[int, int, bool]] = []
     observation_count = 0
     planning_calls = 0
     nodes_expanded = 0
@@ -323,10 +329,23 @@ def run_v4_execution_trial(
                 path_length=max(0, len(path) - 1),
                 true_armed_set=tuple(sorted(true_active)),
                 estimated_armed_set=tuple(sorted(detector_active)),
+                trigger_ids_executed=tuple(trigger_ids_executed),
+                detector_observations=tuple(detector_observations),
                 observation_count=observation_count,
                 final_belief_support_size=len(belief.probability_by_active_set),
                 final_belief_entropy_bits=belief.entropy_bits(),
+                final_true_armed_posterior_probability=belief.probability_by_active_set.get(
+                    frozenset(true_active), 0.0
+                ),
                 predicted_return_probability=float("nan"),
+                true_model_return_probability=expected_safe_return_probability(
+                    scenario.grid,
+                    current,
+                    set(scenario.safe_cells),
+                    scenario.hazard_model,
+                    _point_belief(true_active),
+                    max_hazard_cells=max(16, len(scenario.hazard_model.closures)),
+                ),
                 realized_closure_cells=(),
                 return_feasible=False,
                 planning_calls=planning_calls,
@@ -346,6 +365,7 @@ def run_v4_execution_trial(
                 continue
             occurrence = trigger_occurrences[index]
             trigger_occurrences[index] += 1
+            trigger_ids_executed.append(index)
 
             if index not in true_active:
                 armed = (
@@ -377,6 +397,7 @@ def run_v4_execution_trial(
                 < observation_probability
             )
             observation_count += 1
+            detector_observations.append((index, occurrence, observed_armed))
 
             belief = belief.update_after_trigger_execution(
                 index,
@@ -420,6 +441,15 @@ def run_v4_execution_trial(
             invalid_reason="step_budget_exceeded",
         )
 
+    true_model_return_probability = expected_safe_return_probability(
+        scenario.grid,
+        scenario.goal,
+        set(scenario.safe_cells),
+        scenario.hazard_model,
+        _point_belief(true_active),
+        max_hazard_cells=max(16, len(scenario.hazard_model.closures)),
+    )
+
     closed_cells = {
         scenario.hazard_model.closures[index].closure_cell
         for index in true_active
@@ -453,10 +483,16 @@ def run_v4_execution_trial(
         path_length=max(0, len(path) - 1),
         true_armed_set=tuple(sorted(true_active)),
         estimated_armed_set=tuple(sorted(detector_active)),
+        trigger_ids_executed=tuple(trigger_ids_executed),
+        detector_observations=tuple(detector_observations),
         observation_count=observation_count,
         final_belief_support_size=len(belief.probability_by_active_set),
         final_belief_entropy_bits=belief.entropy_bits(),
+        final_true_armed_posterior_probability=belief.probability_by_active_set.get(
+            frozenset(true_active), 0.0
+        ),
         predicted_return_probability=prediction,
+        true_model_return_probability=true_model_return_probability,
         realized_closure_cells=tuple(sorted(closed_cells)),
         return_feasible=return_probability >= 1.0,
         planning_calls=planning_calls,
