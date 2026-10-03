@@ -95,3 +95,26 @@ def test_v4_suite_runner_refuses_heldout_without_explicit_gate() -> None:
     assert "held-out execution is locked" in (
         completed.stdout + completed.stderr
     )
+
+
+
+def test_v4_suite_runner_refuses_heldout_with_wrong_freeze_sha() -> None:
+    completed = subprocess.run(
+        [
+            sys.executable,
+            "scripts/run_v4_suite.py",
+            "--split",
+            "heldout",
+            "--allow-heldout",
+            "--expected-head-sha",
+            "0000000000000000000000000000000000000000",
+        ],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+
+    assert completed.returncode != 0
+    assert "--expected-head-sha must exactly match" in (
+        completed.stdout + completed.stderr
+    )
