@@ -49,7 +49,7 @@ jobs:
 
       - name: Commit frozen manifests if changed
         run: |
-          if git diff --quiet -- benchmarks/v4; then
+          if [ -z "$(git status --porcelain -- benchmarks/v4)" ]; then
             echo "V4 manifests already frozen at this generator state."
             exit 0
           fi
