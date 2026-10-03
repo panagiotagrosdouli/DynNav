@@ -82,6 +82,12 @@ jobs:
             --bootstrap-seed 2026100304 \
             --output results/v4_heldout_o2/v4_analysis.json
 
+      - name: Render publication outputs from frozen analysis
+        run: |
+          python scripts/render_v4_publication_outputs.py \
+            results/v4_heldout_o2/v4_analysis.json \
+            --output-dir results/v4_heldout_o2/publication
+
       - name: Record immutable provenance
         env:
           RUN_ID: ${{ github.run_id }}
@@ -95,7 +101,15 @@ jobs:
           from pathlib import Path
 
           root = Path("results/v4_heldout_o2")
-          files = ["trials.csv", "run_metadata.json", "v4_analysis.json"]
+          files = [
+              "trials.csv",
+              "run_metadata.json",
+              "v4_analysis.json",
+              "publication/table_v4_primary.tex",
+              "publication/table_v4_calibration.tex",
+              "publication/figure_v4_calibration.png",
+              "publication/publication_output_manifest.json",
+          ]
           hashes = {}
           for name in files:
               path = root / name
@@ -116,7 +130,12 @@ jobs:
           PY
           (
             cd results/v4_heldout_o2
-            sha256sum trials.csv run_metadata.json v4_analysis.json provenance.json > SHA256SUMS.txt
+            sha256sum trials.csv run_metadata.json v4_analysis.json provenance.json \
+              publication/table_v4_primary.tex \
+              publication/table_v4_calibration.tex \
+              publication/figure_v4_calibration.png \
+              publication/publication_output_manifest.json \
+              > SHA256SUMS.txt
           )
 
       - name: Upload retained primary evidence
