@@ -146,6 +146,25 @@ def _point_belief(active: set[int]) -> ActivationBelief:
     return ActivationBelief.certain_active(active)
 
 
+def update_latched_detector_estimate(
+    detector_active: set[int],
+    hazard_index: int,
+    *,
+    observed_armed: bool,
+) -> None:
+    """Update the frozen P3 positive-latching point estimate.
+
+    The V4 latent arming state is monotone. P3 deliberately collapses noisy
+    observations to a persistent binary estimate: a positive observation
+    latches the hazard as armed, while later negative observations cannot clear
+    it. This is a naive comparator, not a Bayesian update.
+    """
+    if hazard_index < 0:
+        raise ValueError("hazard_index must be non-negative")
+    if observed_armed:
+        detector_active.add(hazard_index)
+
+
 def _plan_next(
     scenario: V4ExecutionScenario,
     planner: V4Planner,
@@ -371,8 +390,11 @@ def run_v4_execution_trial(
                 arming_probability=scenario.arming_probabilities[index],
             )
 
-            if observed_armed:
-                detector_active.add(index)
+            update_latched_detector_estimate(
+                detector_active,
+                index,
+                observed_armed=observed_armed,
+            )
 
     mission_success = current == scenario.goal
     if not mission_success:
