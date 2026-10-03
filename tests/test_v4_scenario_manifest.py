@@ -76,3 +76,29 @@ def test_specs_construct_execution_scenarios_without_sampling_outcomes() -> None
     )
     assert scenario.detection_sensitivities == (0.85,) * len(spec.hazards)
     assert scenario.detection_specificities == (0.85,) * len(spec.hazards)
+
+
+
+def test_specs_can_separate_true_and_assumed_observation_models() -> None:
+    spec = validation_suite()[0]
+    assumed_q = tuple(
+        min(1.0, hazard.arming_probability + 0.2)
+        for hazard in spec.hazards
+    )
+    scenario = spec.to_execution_scenario(
+        sensitivity=0.85,
+        specificity=0.85,
+        assumed_sensitivity=0.95,
+        assumed_specificity=0.70,
+        assumed_arming_probabilities=assumed_q,
+    )
+
+    assert scenario.detection_sensitivities == (0.85,) * len(spec.hazards)
+    assert scenario.detection_specificities == (0.85,) * len(spec.hazards)
+    assert scenario.planning_detection_sensitivities() == (
+        (0.95,) * len(spec.hazards)
+    )
+    assert scenario.planning_detection_specificities() == (
+        (0.70,) * len(spec.hazards)
+    )
+    assert scenario.planning_arming_probabilities() == assumed_q
