@@ -9,12 +9,14 @@ on:
       - "dynnav/planners/exact_belief_policy.py"
       - "dynnav/experiments/belief_route_mechanism.py"
       - "dynnav/experiments/v4_exact_policy_search.py"
+      - "dynnav/experiments/v4_information_value_counterexample.py"
       - "dynnav/experiments/v4_correlation_benchmark.py"
       - "dynnav/experiments/v4_analysis.py"
       - "dynnav/experiments/v4_scenario_manifest.py"
       - "dynnav/experiments/statistics.py"
       - "scripts/run_v4_belief_route_development.py"
       - "scripts/run_v4_exact_policy_search.py"
+      - "scripts/run_v4_information_value_counterexample.py"
       - "scripts/run_v4_correlation_benchmark.py"
       - "tests/test_activation_belief_v4.py"
       - "tests/test_belief_commitment_astar.py"
@@ -72,6 +74,11 @@ jobs:
             --seed 2026100305 \
             --output-dir results/v4_development/exact_policy_search
 
+      - name: Run future-information approximation counterexample
+        run: |
+          python scripts/run_v4_information_value_counterexample.py \
+            --output results/v4_development/information_value_counterexample.json
+
       - name: Run development-only equal-marginal correlation study
         run: |
           python scripts/run_v4_correlation_benchmark.py \
@@ -101,6 +108,7 @@ jobs:
                       "exact_policy_search_candidates": 50,
                       "exact_policy_search_seed": 2026100305,
                       "correlation_study": "equal_marginal_common_cause",
+                      "information_value_counterexample": True,
                   },
                   indent=2,
                   sort_keys=True,
@@ -116,6 +124,7 @@ jobs:
               exact_policy_search/summary.json \
               correlation/trials.csv \
               correlation/summary.json \
+              information_value_counterexample.json \
               > SHA256SUMS.txt
           )
 
