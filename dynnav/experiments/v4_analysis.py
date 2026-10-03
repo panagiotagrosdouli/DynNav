@@ -111,6 +111,49 @@ def fixed_bin_calibration(
     return tuple(bins)
 
 
+
+def calibration_metrics(
+    rows: Iterable[V4AnalysisRow],
+    *,
+    planner: str,
+    observation_regime: str,
+) -> dict[str, float | int]:
+    selected = [
+        row
+        for row in rows
+        if row.planner == planner
+        and row.observation_regime == observation_regime
+        and row.protocol_valid
+        and row.mission_success
+        and math.isfinite(row.predicted_return_probability)
+    ]
+    if not selected:
+        raise ValueError("no valid mission-successful predictions for calibration")
+
+    brier = mean(_brier(row) for row in selected)
+    mean_prediction = mean(row.predicted_return_probability for row in selected)
+    empirical_frequency = mean(float(row.return_feasible) for row in selected)
+    bins = fixed_bin_calibration(
+        selected,
+        planner=planner,
+        observation_regime=observation_regime,
+    )
+    ece = sum(
+        (item.count / len(selected))
+        * abs(item.mean_prediction - item.empirical_frequency)
+        for item in bins
+        if item.count > 0
+    )
+    return {
+        "count": len(selected),
+        "brier_score": brier,
+        "mean_prediction": mean_prediction,
+        "empirical_frequency": empirical_frequency,
+        "calibration_in_the_large": mean_prediction - empirical_frequency,
+        "expected_calibration_error": ece,
+    }
+
+
 def _paired_rows(
     rows: Iterable[V4AnalysisRow],
     *,
