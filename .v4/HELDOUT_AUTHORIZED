@@ -1,20 +1,24 @@
 V4 HELD-OUT EXECUTION AUTHORIZED
 
-Parent freeze candidate:
-3e9e97c58e88d1105fec1f666b03f1ada17bca68
+Freeze candidate after infrastructure-only checksum fix:
+441d0f3c6efc7857df451b350215c1f9bd950f13
 
-Authorization conditions satisfied before this commit:
-- full CI: success
-- V4 focused contracts: success
-- V4 Gazebo information-barrier contract: success
-- documentation integrity: success
-- web portal/build gates: success
-- frozen manifest SHA-256 checks committed
-- pre-outcome audit committed at .v4/PREOUTCOME_FREEZE.md
+Previous authorization run 37113423396 terminated in preflight before any
+held-out trial because the checksum command changed directory before reading a
+checksum file containing repository-relative paths. All research contracts
+passed; no shard executed and no held-out outcome was generated.
 
-This authorization commit changes no planner, generator, stochastic semantics,
-analysis rule, endpoint, or scenario manifest. It only unlocks the frozen
-held-out workflow defined in .github/workflows/v4-heldout-evidence.yml.
+This re-authorization follows an infrastructure-only workflow path correction.
+No planner, generator, scenario manifest, stochastic semantics, endpoint,
+statistical rule, or analysis implementation changed.
 
-Any semantic change after this authorization invalidates the resulting held-out
-publication candidate and requires a protocol amendment plus a fresh freeze.
+Authorization conditions:
+- full CI on the semantic freeze candidate: success
+- focused V4 contracts: success
+- V4 Gazebo information barrier: success
+- documentation and web build gates: success
+- committed manifest digests unchanged
+- pre-outcome audit recorded in .v4/PREOUTCOME_FREEZE.md
+
+Any research-semantic change after this authorization invalidates the resulting
+held-out evidence and requires a protocol amendment and a fresh freeze.
