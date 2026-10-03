@@ -15,6 +15,9 @@ on:
       - "dynnav/experiments/v4_analysis.py"
       - "dynnav/experiments/v4_scenario_manifest.py"
       - "dynnav/experiments/statistics.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/v4_hidden_arming.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py"
+      - "ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md"
       - "scripts/run_v4_belief_route_development.py"
       - "scripts/run_v4_exact_policy_search.py"
       - "scripts/run_v4_information_value_counterexample.py"
@@ -69,6 +72,13 @@ jobs:
             tests/test_v4_scenario_manifest.py \
             tests/test_v4_suite_runner.py \
             tests/test_v4_belief_execution.py
+
+      - name: V4 Gazebo information barrier contract
+        env:
+          PYTHONPATH: ros2_ws/src/dynnav_nav2_benchmark
+        run: |
+          python -m pytest -q \
+            ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py
 
       - name: Run development-only paired benchmark
         run: |
