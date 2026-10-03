@@ -30,6 +30,22 @@ This matrix defines what the current repository may and may not claim. Publicati
 | Safety is improved in deployment | no formal safety proof, powered hardware study, or certification evidence | UNSUPPORTED | explicit non-certification remains required |
 | Physical-robot efficacy | no retained hardware execution study for the history-conditioned planner | UNSUPPORTED | staged named-hardware validation required |
 
+
+## V4 belief-conditioned research track
+
+These rows describe the new V4 track only. They do not change the evidence level of the current known-history manuscript.
+
+| Claim | Current evidence | Status | Boundary / next step |
+|---|---|---|---|
+| Exact categorical belief over latent hazard arming is implemented | `dynnav/activation_belief.py`; perfect/uninformative sensor, monotone re-trigger, multi-hazard and legacy-compatibility tests | SUPPORTED | implementation/model claim only; exact support can scale exponentially |
+| Predictive-belief A* can select different routes at the same geometric state under different arming posteriors | `belief_commitment_astar.py`; two-corridor known-answer route-choice regression | SUPPORTED | controlled mechanism only; planner is receding-horizon predictive-belief, not an optimal POMDP solver |
+| Belief representation improves probabilistic calibration under partial observation | retained V4 development artifact run 37103838608: medium-noise belief Brier 0.0561 vs detector-as-truth 0.0696 in one development world | PARTIAL | development-only, one topology; frozen held-out calibration analysis required |
+| Belief-conditioned planning improves operational safety/efficiency under partial observation | development artifact shows non-dominance: medium-noise belief and detector have equal 0.0696 return-infeasible rate; miss-heavy belief removes detector false-safe failures but matches conservative prior path length | PARTIAL | cannot claim general improvement; must evaluate held-out risk/path-cost frontier against detector and prior/fixed-marginal controls |
+| Equal per-cell closure marginals can imply different return reliability under different joint closure distributions | exact scenario oracle plus equal-marginal common-cause model; redundant-corridor known-answer limits recover (1-p^2) under independence and (1-p) under perfect common cause | SUPPORTED | representation/model counterexample only; no arbitrary correlation-handling claim |
+| V4 conclusions generalize across the predeclared 96 held-out scenarios | protocol exists but held-out manifests/results have not been generated as publication evidence | UNSUPPORTED | freeze generator/manifests/analysis before outcome inspection |
+| V4 Gazebo execution demonstrates comparative efficacy under noisy arming observation | no V4 execution-level retained study yet | UNSUPPORTED | blinded latent-arming/detector protocol and powered-enough mechanism repetitions required |
+| V4 probabilities are calibrated to physical robot outcomes | no physical calibration study | UNSUPPORTED | separate hardware protocol required |
+
 ## Interpretation rule
 
 A `SUPPORTED` entry means the repository contains evidence for the **narrow wording shown in that row**. It does not imply safety, deployment readiness, broad generalization, or superiority outside the evaluated assumptions.
