@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import math
 from collections import defaultdict
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from statistics import mean
-from typing import Iterable
 
 from dynnav.experiments.statistics import hierarchical_paired_bootstrap_interval
 
