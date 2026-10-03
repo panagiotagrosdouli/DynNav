@@ -2,13 +2,16 @@ from __future__ import annotations
 
 import pytest
 
+from dynnav.activation_belief import ActivationBelief
 from dynnav.commitment_hazard import CommitmentClosure, CommitmentHazardModel
+from dynnav.experiments.belief_route_mechanism import redundant_corridor_world
 from dynnav.planners.grid_map import GridMap
 
 from dynnav.experiments.unavoidable_history_benchmark import unavoidable_choice_world
 from dynnav.experiments.v4_belief_execution import (
     V4ExecutionScenario,
     V4Planner,
+    _plan_next,
     keyed_uniform,
     run_v4_execution_trial,
     update_latched_detector_estimate,
@@ -261,3 +264,93 @@ def test_execution_scenario_rejects_invalid_assumed_model() -> None:
 
     with pytest.raises(ValueError, match="planning_detection_sensitivities"):
         scenario.validate()
+
+
+
+def _information_barrier_scenario() -> tuple[V4ExecutionScenario, tuple[int, int]]:
+    grid, current, goal, safe, model = redundant_corridor_world(
+        closure_probability=0.8
+    )
+    scenario = V4ExecutionScenario(
+        name="v4_information_barrier",
+        grid=grid,
+        start=current,
+        goal=goal,
+        safe_cells=frozenset(safe),
+        hazard_model=model,
+        arming_probabilities=(0.0, 1.0),
+        detection_sensitivities=(0.85, 0.85),
+        detection_specificities=(0.85, 0.85),
+    )
+    return scenario, current
+
+
+@pytest.mark.parametrize(
+    "planner",
+    (
+        V4Planner.SHORTEST,
+        V4Planner.FIXED_MARGINAL_EXACT,
+        V4Planner.DETECTOR_AS_TRUTH,
+        V4Planner.BELIEF,
+        V4Planner.HARD_BELIEF,
+        V4Planner.PRIOR_ONLY,
+    ),
+)
+def test_non_oracle_planners_cannot_change_action_when_only_hidden_truth_changes(
+    planner: V4Planner,
+) -> None:
+    scenario, current = _information_barrier_scenario()
+    observed_belief = ActivationBelief.certain_inactive()
+    prior_only = ActivationBelief.certain_inactive()
+    detector_active: set[int] = set()
+
+    latent_inactive = _plan_next(
+        scenario,
+        planner,
+        current,
+        true_active=set(),
+        detector_active=detector_active,
+        belief=observed_belief,
+        prior_only_belief=prior_only,
+    )
+    latent_armed = _plan_next(
+        scenario,
+        planner,
+        current,
+        true_active={0},
+        detector_active=detector_active,
+        belief=observed_belief,
+        prior_only_belief=prior_only,
+    )
+
+    assert latent_inactive.success == latent_armed.success
+    assert latent_inactive.path == latent_armed.path
+    assert latent_inactive.cost == pytest.approx(latent_armed.cost)
+
+
+def test_oracle_is_the_only_condition_allowed_to_change_action_with_hidden_truth() -> None:
+    scenario, current = _information_barrier_scenario()
+    belief = ActivationBelief.certain_inactive()
+
+    latent_inactive = _plan_next(
+        scenario,
+        V4Planner.ACTIVATION_ORACLE,
+        current,
+        true_active=set(),
+        detector_active=set(),
+        belief=belief,
+        prior_only_belief=belief,
+    )
+    latent_armed = _plan_next(
+        scenario,
+        V4Planner.ACTIVATION_ORACLE,
+        current,
+        true_active={0},
+        detector_active=set(),
+        belief=belief,
+        prior_only_belief=belief,
+    )
+
+    assert latent_inactive.success
+    assert latent_armed.success
+    assert latent_inactive.path != latent_armed.path
