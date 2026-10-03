@@ -105,6 +105,12 @@ Uses the exact return-connectivity oracle but applies a fixed marginal hazard fi
 
 Purpose: representation ablation.
 
+### P1b — prior-only predictive belief
+
+Propagates the declared arming model after executed triggers but ignores detector observations. It therefore retains uncertainty induced by action exposure without receiving observation information.
+
+Purpose: strong conservative information-ablation baseline. The development study showed that this comparator can match or outperform P4 operationally by accepting longer routes; it is therefore mandatory in all primary V4 risk/cost analyses.
+
 ### P2 — activation oracle
 
 Receives the true latent armed set \(A_t\).
@@ -207,6 +213,8 @@ No held-out result may be used to select the headline hyperparameter.
 | O6 | 0.50 | 0.50 | uninformative control |
 
 Primary operational/calibration comparison: **P4 vs P3 under O2**.
+
+Mandatory strong-baseline comparison: **P4 vs P1b under O2**, reported on both return risk and path cost. No V4 operational-superiority claim is authorized if it depends on omitting P1b.
 
 O0 is a mandatory sanity control: when the observation model is perfect, belief and detector-as-truth should agree up to implementation/tie-breaking details.
 
@@ -582,7 +590,7 @@ If branching on future observations has negligible value in these worlds, retain
 
 Tests must enforce:
 
-- P0/P1 cannot read true armed state;
+- P0/P1/P1b cannot read true armed state;
 - P3 receives detector outcomes only and applies the frozen positive-latching rule; it cannot read true arming state;
 - P4 receives detector outcome + declared probabilistic model only;
 - P2 is the only planner permitted to read truth;
