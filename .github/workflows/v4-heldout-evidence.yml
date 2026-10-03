@@ -66,6 +66,15 @@ jobs:
             --expected-head-sha "$FREEZE_SHA" \
             --output-dir results/v4_heldout_o2
 
+      - name: Run frozen primary analysis
+        run: |
+          python scripts/analyze_v4_trials.py \
+            results/v4_heldout_o2/trials.csv \
+            --regime O2 \
+            --resamples 5000 \
+            --bootstrap-seed 2026100304 \
+            --output results/v4_heldout_o2/v4_analysis.json
+
       - name: Record immutable provenance
         env:
           RUN_ID: ${{ github.run_id }}
@@ -79,7 +88,7 @@ jobs:
           from pathlib import Path
 
           root = Path("results/v4_heldout_o2")
-          files = ["trials.csv", "run_metadata.json"]
+          files = ["trials.csv", "run_metadata.json", "v4_analysis.json"]
           hashes = {}
           for name in files:
               path = root / name
@@ -100,7 +109,7 @@ jobs:
           PY
           (
             cd results/v4_heldout_o2
-            sha256sum trials.csv run_metadata.json provenance.json > SHA256SUMS.txt
+            sha256sum trials.csv run_metadata.json v4_analysis.json provenance.json > SHA256SUMS.txt
           )
 
       - name: Upload retained primary evidence
