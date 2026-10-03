@@ -174,3 +174,88 @@ Retained inner-file hashes:
 - `provenance.json`: `eec6970a82e2753b3e8010df73e1e7691572c3ddcb9e91478cf97e6f11782005`.
 
 These values document the development run only. They must not be copied into the publication evidence manifest.
+
+
+---
+
+## Extended development audit: exact-policy and correlation boundaries
+
+A later development-only workflow extended the same research track without promoting any result to publication evidence.
+
+**Workflow run:** 37108332731  
+**Head SHA:** f5be4a3127c04ce89081b19c16e96e198093c9e4  
+**Artifact ID:** 11268129840  
+**Artifact digest:** \`sha256:d4d6aca5635247d5577dbbbb6951967f9cabafab854a8a0543425c1a65af75ad\`
+
+The artifact retains the original route-choice benchmark plus two additional falsification studies.
+
+### Exact observation-contingent policy comparison
+
+A random development search over 50 small candidate worlds found:
+
+- 50/50 candidates comparable;
+- 0 first-action disagreements between receding-horizon predictive-belief planning and the exact finite-horizon observation-contingent reference;
+- maximum first-action regret 0 in that random candidate set;
+- mean exact states evaluated: 169.28.
+
+This is a useful null result, but it is not evidence that the receding-horizon approximation is exact.
+
+A deliberately constructed future-information counterexample produced:
+
+\[
+a_{\mathrm{exact}} \neq a_{\mathrm{receding}},
+\]
+
+with:
+
+- exact first action: \((0,2)\);
+- receding-horizon first action: \((0,4)\);
+- exact value: 10.8;
+- exact value of the receding first action: 11.0;
+- first-action regret: **0.2**;
+- exact states evaluated: 233.
+
+Therefore the main V4 planner has an explicit approximation boundary:
+
+> Marginalizing observations that have not yet occurred can lose decision value when an action is valuable because of information that will become available before a later commitment.
+
+The planner must continue to be described as a **receding-horizon predictive-belief method**, not an optimal belief-space/POMDP policy solver.
+
+### Equal-marginal correlation boundary
+
+The development correlation study evaluated 30 exact reliability cases across two topology classes.
+
+For the parallel joint-cut topology, the maximum absolute error from replacing the true common-cause joint closure model with independent marginals was:
+
+\[
+\boxed{0.25}.
+\]
+
+For the serial-any-cut topology, the maximum absolute error was also:
+
+\[
+\boxed{0.25}.
+\]
+
+The sign depends on topology:
+
+- parallel redundant returns can make independence **optimistic** about reliability;
+- serial cut structures can make independence **pessimistic** relative to the tested positively correlated common-cause model.
+
+This reinforces an important modeling result:
+
+> equal per-hazard closure marginals do not determine safe-return connectivity.
+
+Correlation remains a misspecification boundary rather than a second headline contribution unless the project develops a new joint-model planning method.
+
+### Research consequence
+
+These extended development results strengthen the paper only by narrowing it.
+
+The V4 paper must explicitly distinguish three information/approximation losses:
+
+1. collapsing latent action-induced state to geometric or fixed-marginal state;
+2. collapsing posterior uncertainty to a point estimate;
+3. planning with a predictive belief while ignoring the value of future observations inside the search tree.
+
+The held-out experiment tests (1) and (2). The exact-policy counterexample documents the limitation in (3).
