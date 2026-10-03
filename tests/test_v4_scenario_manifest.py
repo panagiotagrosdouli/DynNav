@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from collections import Counter
+import hashlib
+from pathlib import Path
 
 from dynnav.experiments.v4_scenario_manifest import (
     V4_DEVELOPMENT_SEED,
@@ -102,3 +104,22 @@ def test_specs_can_separate_true_and_assumed_observation_models() -> None:
         (0.70,) * len(spec.hazards)
     )
     assert scenario.planning_arming_probabilities() == assumed_q
+
+
+
+def test_committed_v4_manifest_bytes_match_frozen_sha256s() -> None:
+    root = Path("benchmarks/v4")
+    expected: dict[str, str] = {}
+    for line in (root / "SHA256SUMS.txt").read_text(encoding="utf-8").splitlines():
+        digest, relative = line.split(maxsplit=1)
+        expected[Path(relative).name] = digest
+
+    assert set(expected) == {
+        "development.json",
+        "validation.json",
+        "heldout.json",
+    }
+
+    for name, digest in expected.items():
+        observed = hashlib.sha256((root / name).read_bytes()).hexdigest()
+        assert observed == digest
