@@ -62,6 +62,30 @@ class V4ExecutionScenario:
     detection_specificities: tuple[float, ...]
     recoverability_weight: float = 8.0
     hard_return_threshold: float = 0.9
+    assumed_arming_probabilities: tuple[float, ...] | None = None
+    assumed_detection_sensitivities: tuple[float, ...] | None = None
+    assumed_detection_specificities: tuple[float, ...] | None = None
+
+    def planning_arming_probabilities(self) -> tuple[float, ...]:
+        return (
+            self.arming_probabilities
+            if self.assumed_arming_probabilities is None
+            else self.assumed_arming_probabilities
+        )
+
+    def planning_detection_sensitivities(self) -> tuple[float, ...]:
+        return (
+            self.detection_sensitivities
+            if self.assumed_detection_sensitivities is None
+            else self.assumed_detection_sensitivities
+        )
+
+    def planning_detection_specificities(self) -> tuple[float, ...]:
+        return (
+            self.detection_specificities
+            if self.assumed_detection_specificities is None
+            else self.assumed_detection_specificities
+        )
 
     def validate(self) -> None:
         self.grid.validate()
@@ -71,6 +95,15 @@ class V4ExecutionScenario:
             ("arming_probabilities", self.arming_probabilities),
             ("detection_sensitivities", self.detection_sensitivities),
             ("detection_specificities", self.detection_specificities),
+            ("planning_arming_probabilities", self.planning_arming_probabilities()),
+            (
+                "planning_detection_sensitivities",
+                self.planning_detection_sensitivities(),
+            ),
+            (
+                "planning_detection_specificities",
+                self.planning_detection_specificities(),
+            ),
         ):
             if len(values) != n:
                 raise ValueError(f"{label} must have one value per hazard")
@@ -221,13 +254,18 @@ def _plan_next(
             else None
         )
 
+    planning_arming_probabilities = (
+        scenario.arming_probabilities
+        if planner is V4Planner.ACTIVATION_ORACLE
+        else scenario.planning_arming_probabilities()
+    )
     return belief_commitment_astar(
         scenario.grid,
         current,
         scenario.goal,
         safe_cells=safe,
         hazard_model=scenario.hazard_model,
-        arming_probabilities=scenario.arming_probabilities,
+        arming_probabilities=planning_arming_probabilities,
         initial_belief=current_belief,
         config=BeliefCommitmentAStarConfig(
             recoverability_weight=scenario.recoverability_weight,
@@ -401,14 +439,14 @@ def run_v4_execution_trial(
 
             belief = belief.update_after_trigger_execution(
                 index,
-                arming_probability=scenario.arming_probabilities[index],
+                arming_probability=scenario.planning_arming_probabilities()[index],
                 observed_armed=observed_armed,
-                detection_sensitivity=scenario.detection_sensitivities[index],
-                detection_specificity=scenario.detection_specificities[index],
+                detection_sensitivity=scenario.planning_detection_sensitivities()[index],
+                detection_specificity=scenario.planning_detection_specificities()[index],
             )
             prior_only = prior_only.predict_after_trigger_execution(
                 index,
-                arming_probability=scenario.arming_probabilities[index],
+                arming_probability=scenario.planning_arming_probabilities()[index],
             )
 
             update_latched_detector_estimate(
@@ -428,10 +466,23 @@ def run_v4_execution_trial(
             path_length=max(0, len(path) - 1),
             true_armed_set=tuple(sorted(true_active)),
             estimated_armed_set=tuple(sorted(detector_active)),
+            trigger_ids_executed=tuple(trigger_ids_executed),
+            detector_observations=tuple(detector_observations),
             observation_count=observation_count,
             final_belief_support_size=len(belief.probability_by_active_set),
             final_belief_entropy_bits=belief.entropy_bits(),
+            final_true_armed_posterior_probability=belief.probability_by_active_set.get(
+                frozenset(true_active), 0.0
+            ),
             predicted_return_probability=float("nan"),
+            true_model_return_probability=expected_safe_return_probability(
+                scenario.grid,
+                current,
+                set(scenario.safe_cells),
+                scenario.hazard_model,
+                _point_belief(true_active),
+                max_hazard_cells=max(16, len(scenario.hazard_model.closures)),
+            ),
             realized_closure_cells=(),
             return_feasible=False,
             planning_calls=planning_calls,
