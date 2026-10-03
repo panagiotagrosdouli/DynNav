@@ -333,9 +333,10 @@ Planner route divergence must not shift another planner's latent random draws.
 
 ## 15. Primary endpoints
 
-### 15.1 Operational
+### 15.1 Conditional return-risk endpoint
 
-Post-closure return-infeasible indicator at the outbound evaluation point.
+For paired executions in which **both** methods reach the outbound evaluation
+state, measure the post-closure return-infeasible indicator.
 
 Primary effect:
 
@@ -349,9 +350,13 @@ under O2.
 
 Negative values favor P4.
 
-### 15.2 Probabilistic/calibration
+This endpoint is conditional on the outbound evaluation state existing. Mission
+failures must never be silently removed from the overall operational analysis.
 
-Brier score of final predicted return probability against realized return feasibility.
+### 15.2 Probabilistic/calibration endpoint
+
+For the same jointly mission-successful paired subset, compute Brier score of
+the final predicted return probability against realized return feasibility.
 
 Primary effect:
 
@@ -363,7 +368,35 @@ Primary effect:
 
 Negative values favor P4.
 
-These endpoints answer different questions. Improvement on one does not imply improvement on the other.
+### 15.3 Mandatory mission and composite operational gates
+
+Every protocol-valid paired execution, including asymmetric mission failures,
+contributes to:
+
+\[
+\Delta_{\mathrm{mission}}
+=
+P(\text{mission failure}\mid P4)
+-
+P(\text{mission failure}\mid P3),
+\]
+
+and to the composite descriptive endpoint
+
+\[
+\Delta_{\mathrm{operational}}
+=
+P(\text{mission failure OR return infeasible}\mid P4)
+-
+P(\text{mission failure OR return infeasible}\mid P3).
+\]
+
+The composite endpoint does not replace the two co-primary scientific endpoints.
+Its purpose is to prevent a method from appearing safer merely because it fails
+to reach the outbound state.
+
+A positive conditional return-risk result cannot support an operational
+improvement claim if it is offset by materially worse mission completion.
 
 ## 16. Secondary outcomes
 
@@ -374,6 +407,10 @@ Record at minimum:
 - path length;
 - outbound goal success;
 - return feasibility;
+- mission-failure difference;
+- composite mission-or-return operational failure;
+- number of jointly mission-successful paired trials;
+- number of asymmetric mission-success pairs;
 - true armed hazard identities;
 - trigger identities executed;
 - observation sequence;
@@ -385,7 +422,7 @@ Record at minimum:
 - oracle calls;
 - regret versus P2.
 
-Do not collapse these into one composite score.
+Do not collapse these into one headline score.
 
 ## 17. Calibration analysis
 
@@ -519,15 +556,25 @@ If null-hypothesis p-values are reported for both, use Holm correction across th
 
 ## 21. Interpretation rules
 
-An operational-improvement statement requires:
+A conditional return-risk improvement statement requires:
 
-- negative predeclared O2 P4–P3 risk difference;
+- negative predeclared O2 P4–P3 conditional return-risk difference;
 - a 95% hierarchical-bootstrap interval excluding zero;
+- the number of jointly mission-successful pairs reported;
 - path cost reported beside the risk effect.
+
+An **operational improvement** statement additionally requires that mission
+completion is not materially worse. Report both mission-failure difference and
+the composite mission-or-return operational-failure difference on all valid
+pairs.
+
+If asymmetric mission failures occur, they must be shown explicitly; the
+conditional return-risk subset cannot be presented as though it represented all
+executions.
 
 A calibration-improvement statement requires:
 
-- negative P4–P3 paired Brier difference;
+- negative P4–P3 paired Brier difference on jointly mission-successful pairs;
 - interval reported;
 - reliability plots consistent with the numerical result.
 
@@ -538,7 +585,8 @@ Regardless of outcome, report:
 - F8 null topologies;
 - misspecification results;
 - hard-constraint comparison;
-- path-cost changes.
+- path-cost changes;
+- mission completion and composite operational failure.
 
 No “universal winner” language is permitted.
 
