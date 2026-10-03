@@ -310,6 +310,43 @@ Secondary O0/O1/O3/O4/O5/O6 analyses may use 100 paired seeds per scenario if th
 
 No outcome-based early stopping or outcome-based sample-size increase is allowed.
 
+### 13.1 Held-out execution sharding
+
+The primary O2 held-out run may be executed in **12 deterministic modulo
+scenario shards** to keep exact-belief reference computation within CI wall-time
+limits.
+
+For the committed 96-scenario manifest, scenario index (j) belongs to shard
+
+\[
+k = j \bmod 12.
+\]
+
+Because each of the eight topology families contains 12 scenarios in manifest
+order, every shard contains exactly one scenario from every family. This also
+distributes the heavier 4- and 6-hazard F6 scenarios across workers.
+
+Sharding changes only execution parallelism. It does **not** change:
+
+- the frozen scenario manifest;
+- the 250 paired execution seeds per scenario;
+- planner configurations;
+- keyed CRN draws;
+- scenario weighting;
+- primary estimands;
+- bootstrap procedure.
+
+Before analysis, shard artifacts must be merged with machine checks requiring:
+
+- all shard indices (0,ldots,11);
+- identical freeze SHA and manifest digest;
+- identical protocol/regime/seed metadata;
+- no duplicate ((scenario,seed,planner)) keys;
+- all 96 scenarios present;
+- the exact expected number of merged trial rows.
+
+Analysis is run only on the integrity-checked merged artifact.
+
 ## 14. Common random numbers
 
 Stochastic variables are keyed, not consumed sequentially by planner order.
