@@ -18,6 +18,7 @@ def _row(
     prediction: float,
     path: float,
     family: str = "F1",
+    mission_success: bool = True,
 ) -> V4AnalysisRow:
     return V4AnalysisRow(
         scenario=scenario,
@@ -28,7 +29,7 @@ def _row(
         path_length=path,
         predicted_return_probability=prediction,
         return_feasible=feasible,
-        mission_success=True,
+        mission_success=mission_success,
         protocol_valid=True,
     )
 
@@ -52,11 +53,14 @@ def test_primary_comparison_is_scenario_weighted_and_paired() -> None:
         seed=4,
     )
 
-    # Scenario a mean risk difference is -1; scenario b is +1.
+    # Scenario a conditional return-risk difference is -1; scenario b is +1.
     # Equal scenario weighting therefore gives zero.
-    assert result["risk_difference"]["estimate"] == pytest.approx(0.0)
+    assert result["conditional_return_risk_difference"]["estimate"] == pytest.approx(0.0)
+    assert result["operational_failure_difference"]["estimate"] == pytest.approx(0.0)
+    assert result["mission_failure_difference"]["estimate"] == pytest.approx(0.0)
     assert result["scenario_count"] == 2
     assert result["paired_seed_count"] == 3
+    assert result["joint_mission_success_pair_count"] == 3
 
 
 def test_incomplete_pairing_is_rejected() -> None:
@@ -71,6 +75,47 @@ def test_incomplete_pairing_is_rejected() -> None:
             observation_regime="O2",
             resamples=500,
         )
+
+
+def test_asymmetric_mission_failure_is_not_silently_dropped() -> None:
+    rows = [
+        _row(
+            "a",
+            0,
+            "detector",
+            feasible=True,
+            prediction=0.9,
+            path=2,
+            mission_success=True,
+        ),
+        _row(
+            "a",
+            0,
+            "belief",
+            feasible=False,
+            prediction=float("nan"),
+            path=0,
+            mission_success=False,
+        ),
+    ]
+
+    result = paired_v4_comparison(
+        rows,
+        proposed="belief",
+        baseline="detector",
+        observation_regime="O2",
+        resamples=500,
+        seed=4,
+    )
+
+    assert result["paired_seed_count"] == 1
+    assert result["joint_mission_success_pair_count"] == 0
+    assert result["asymmetric_mission_success_pair_count"] == 1
+    assert result["mission_failure_difference"]["estimate"] == pytest.approx(1.0)
+    assert result["operational_failure_difference"]["estimate"] == pytest.approx(1.0)
+    assert result["conditional_return_risk_difference"] is None
+    assert result["conditional_brier_difference"] is None
+    assert result["conditional_path_length_difference"] is None
 
 
 def test_fixed_calibration_bins_include_probability_one() -> None:
