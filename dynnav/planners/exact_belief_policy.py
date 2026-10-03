@@ -51,6 +51,7 @@ class ExactBeliefPolicyResult:
     success: bool
     first_action: GridCell | None
     value: float
+    action_values: tuple[tuple[GridCell, float], ...]
     states_evaluated: int
     horizon: int
 
@@ -234,10 +235,18 @@ def exact_finite_horizon_belief_policy(
         return best
 
     if start == goal:
-        return ExactBeliefPolicyResult(True, None, 0.0, 1, cfg.horizon)
+        return ExactBeliefPolicyResult(
+            True,
+            None,
+            0.0,
+            (),
+            1,
+            cfg.horizon,
+        )
 
     best_action: GridCell | None = None
     best_value = math.inf
+    action_values: list[tuple[GridCell, float]] = []
     belief = belief0
     for neighbor in grid.neighbors4(start):
         hazard_index = _trigger_index(hazard_model, start, neighbor)
@@ -273,6 +282,7 @@ def exact_finite_horizon_belief_policy(
             expected += observation_probability * (
                 stage + value(neighbor, posterior_key, cfg.horizon - 1)
             )
+        action_values.append((neighbor, expected))
         if expected < best_value:
             best_value = expected
             best_action = neighbor
@@ -282,6 +292,7 @@ def exact_finite_horizon_belief_policy(
         success=success,
         first_action=best_action,
         value=best_value,
+        action_values=tuple(action_values),
         states_evaluated=states_evaluated,
         horizon=cfg.horizon,
     )
