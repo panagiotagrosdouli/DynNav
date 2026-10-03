@@ -1,0 +1,62 @@
+{
+  "protocol": "EXPERIMENT_PROTOCOL_V4.md",
+  "true_regime": "O2",
+  "true_sensitivity": 0.85,
+  "true_specificity": 0.85,
+  "conditions": [
+    {
+      "id": "M0_correct",
+      "assumed_sensitivity": 0.85,
+      "assumed_specificity": 0.85,
+      "assumed_arming_offset": 0.0,
+      "role": "correctly specified reference"
+    },
+    {
+      "id": "M1_sensor_overconfident",
+      "assumed_sensitivity": 0.95,
+      "assumed_specificity": 0.95,
+      "assumed_arming_offset": 0.0,
+      "role": "overconfident observation model"
+    },
+    {
+      "id": "M2_sensor_weak",
+      "assumed_sensitivity": 0.70,
+      "assumed_specificity": 0.70,
+      "assumed_arming_offset": 0.0,
+      "role": "weak/pessimistic observation model"
+    },
+    {
+      "id": "M3_miss_rate_error",
+      "assumed_sensitivity": 0.70,
+      "assumed_specificity": 0.85,
+      "assumed_arming_offset": 0.0,
+      "role": "false-negative likelihood misspecification"
+    },
+    {
+      "id": "M4_false_alarm_error",
+      "assumed_sensitivity": 0.85,
+      "assumed_specificity": 0.70,
+      "assumed_arming_offset": 0.0,
+      "role": "false-positive likelihood misspecification"
+    },
+    {
+      "id": "Q_minus_0p2",
+      "assumed_sensitivity": 0.85,
+      "assumed_specificity": 0.85,
+      "assumed_arming_offset": -0.20,
+      "role": "underestimated arming probability"
+    },
+    {
+      "id": "Q_plus_0p2",
+      "assumed_sensitivity": 0.85,
+      "assumed_specificity": 0.85,
+      "assumed_arming_offset": 0.20,
+      "role": "overestimated arming probability"
+    }
+  ],
+  "notes": [
+    "Arming offsets are applied to each frozen q_i and clipped to [0,1].",
+    "True arming, detector observations, closure realizations and CRN keys are unchanged across assumed-model conditions.",
+    "Misspecification outcomes are secondary; no condition may be removed after outcome inspection."
+  ]
+}
