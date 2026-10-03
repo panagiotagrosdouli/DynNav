@@ -68,6 +68,7 @@ def main() -> None:
         "prior_only",
         "fixed_marginal_exact",
         "activation_oracle",
+        "hard_belief",
     ):
         comparisons[f"belief_vs_{baseline}"] = paired_v4_comparison(
             rows,
@@ -85,6 +86,7 @@ def main() -> None:
         "prior_only",
         "fixed_marginal_exact",
         "activation_oracle",
+        "hard_belief",
     ):
         bins = fixed_bin_calibration(
             rows,
