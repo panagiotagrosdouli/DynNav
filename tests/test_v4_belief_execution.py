@@ -8,6 +8,7 @@ from dynnav.experiments.v4_belief_execution import (
     V4Planner,
     keyed_uniform,
     run_v4_execution_trial,
+    update_latched_detector_estimate,
 )
 
 
@@ -130,3 +131,21 @@ def test_all_predeclared_planners_produce_valid_records_on_small_world() -> None
             assert record.predicted_return_probability != record.predicted_return_probability
         else:
             assert 0.0 <= record.predicted_return_probability <= 1.0
+
+
+def test_detector_as_truth_positive_observation_latches_monotonically() -> None:
+    estimated: set[int] = set()
+
+    update_latched_detector_estimate(estimated, 0, observed_armed=False)
+    assert estimated == set()
+
+    update_latched_detector_estimate(estimated, 0, observed_armed=True)
+    assert estimated == {0}
+
+    update_latched_detector_estimate(estimated, 0, observed_armed=False)
+    assert estimated == {0}
+
+
+def test_detector_latching_rejects_negative_hazard_index() -> None:
+    with pytest.raises(ValueError, match="hazard_index"):
+        update_latched_detector_estimate(set(), -1, observed_armed=True)
