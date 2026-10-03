@@ -195,3 +195,35 @@ def test_noisy_arming_observation_can_change_route_at_same_geometric_state() -> 
     assert inactive_report.probability_armed(0) == pytest.approx(0.1)
     assert risky_belief.geometric_length == 3
     assert reassuring_belief.geometric_length == 1
+
+
+
+def test_hard_return_threshold_uses_same_belief_but_changes_admissibility() -> None:
+    grid, start, goal, model = _trap_problem()
+
+    soft = belief_commitment_astar(
+        grid,
+        start,
+        goal,
+        safe_cells={start},
+        hazard_model=model,
+        arming_probabilities=(0.2,),
+        config=BeliefCommitmentAStarConfig(recoverability_weight=0.0),
+    )
+    hard = belief_commitment_astar(
+        grid,
+        start,
+        goal,
+        safe_cells={start},
+        hazard_model=model,
+        arming_probabilities=(0.2,),
+        config=BeliefCommitmentAStarConfig(
+            recoverability_weight=0.0,
+            minimum_return_probability=0.9,
+        ),
+    )
+
+    assert soft.geometric_length == 3
+    assert soft.final_predicted_return_probability == pytest.approx(0.84)
+    assert hard.geometric_length == 5
+    assert hard.final_predicted_return_probability == pytest.approx(1.0)
