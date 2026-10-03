@@ -58,6 +58,7 @@ class BeliefCommitmentAStarResult:
     cost: float
     geometric_length: int
     nodes_expanded: int
+    return_oracle_calls: int
     planning_time_ms: float
     final_predicted_return_probability: float
     minimum_predicted_return_probability: float
@@ -167,7 +168,7 @@ def belief_commitment_astar(
         raise ValueError("start and goal must be inside the grid")
     if not grid.passable(start) or not grid.passable(goal):
         return BeliefCommitmentAStarResult(
-            (), False, float("inf"), 0, 0, 0.0, 0.0, 0.0, 0, 0.0, 0.0
+            (), False, float("inf"), 0, 0, 0, 0.0, 0.0, 0.0, 0, 0.0, 0.0
         )
 
     initial_key = _belief_key(belief0, digits=cfg.belief_round_digits)
@@ -212,6 +213,7 @@ def belief_commitment_astar(
                 cost=costs[state],
                 geometric_length=max(0, len(path) - 1),
                 nodes_expanded=nodes_expanded,
+                return_oracle_calls=len(return_cache),
                 planning_time_ms=planning_time_ms,
                 final_predicted_return_probability=probabilities[-1],
                 minimum_predicted_return_probability=min(probabilities),
@@ -269,6 +271,7 @@ def belief_commitment_astar(
         float("inf"),
         0,
         nodes_expanded,
+        len(return_cache),
         (time.perf_counter() - t0) * 1000.0,
         0.0,
         0.0,
