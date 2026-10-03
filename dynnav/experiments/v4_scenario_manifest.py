@@ -97,6 +97,9 @@ class FrozenV4ScenarioSpec:
         *,
         sensitivity: float,
         specificity: float,
+        assumed_sensitivity: float | None = None,
+        assumed_specificity: float | None = None,
+        assumed_arming_probabilities: tuple[float, ...] | None = None,
         recoverability_weight: float = 8.0,
         hard_return_threshold: float = 0.90,
     ) -> V4ExecutionScenario:
@@ -126,6 +129,17 @@ class FrozenV4ScenarioSpec:
             detection_specificities=(float(specificity),) * len(self.hazards),
             recoverability_weight=recoverability_weight,
             hard_return_threshold=hard_return_threshold,
+            assumed_arming_probabilities=assumed_arming_probabilities,
+            assumed_detection_sensitivities=(
+                None
+                if assumed_sensitivity is None
+                else (float(assumed_sensitivity),) * len(self.hazards)
+            ),
+            assumed_detection_specificities=(
+                None
+                if assumed_specificity is None
+                else (float(assumed_specificity),) * len(self.hazards)
+            ),
         )
 
     def to_dict(self) -> dict[str, object]:
