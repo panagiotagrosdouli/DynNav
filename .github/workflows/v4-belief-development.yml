@@ -13,6 +13,9 @@ on:
       - "dynnav/experiments/v4_correlation_benchmark.py"
       - "dynnav/experiments/v4_belief_scaling.py"
       - "dynnav/experiments/v4_analysis.py"
+      - "dynnav/experiments/v4_publication.py"
+      - "scripts/render_v4_publication_outputs.py"
+      - "tests/test_v4_publication.py"
       - "dynnav/experiments/v4_scenario_manifest.py"
       - "dynnav/experiments/statistics.py"
       - "ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/v4_hidden_arming.py"
@@ -65,6 +68,7 @@ jobs:
             tests/test_belief_route_mechanism.py \
             tests/test_recoverability_scenarios.py \
             tests/test_v4_analysis.py \
+            tests/test_v4_publication.py \
             tests/test_v4_exact_policy_search.py \
             tests/test_v4_correlation_benchmark.py \
             tests/test_v4_belief_scaling.py \
