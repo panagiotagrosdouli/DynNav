@@ -27,6 +27,7 @@ on:
       - "scripts/run_v4_correlation_benchmark.py"
       - "scripts/run_v4_belief_scaling.py"
       - "scripts/run_v4_suite.py"
+      - "scripts/merge_v4_shards.py"
       - "tests/test_activation_belief_v4.py"
       - "tests/test_belief_commitment_astar.py"
       - "tests/test_exact_belief_policy.py"
@@ -38,6 +39,7 @@ on:
       - "tests/test_v4_hierarchical_statistics.py"
       - "tests/test_v4_scenario_manifest.py"
       - "tests/test_v4_suite_runner.py"
+      - "tests/test_v4_shard_merge.py"
       - "tests/test_recoverability_scenarios.py"
       - ".github/workflows/v4-belief-development.yml"
 
@@ -75,6 +77,7 @@ jobs:
             tests/test_v4_hierarchical_statistics.py \
             tests/test_v4_scenario_manifest.py \
             tests/test_v4_suite_runner.py \
+            tests/test_v4_shard_merge.py \
             tests/test_v4_belief_execution.py
 
       - name: V4 Gazebo information barrier contract
