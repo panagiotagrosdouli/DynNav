@@ -37,6 +37,7 @@ Backward/forward chaining focused on the closest lines below.
 | Robotics self-induced obstacles | Frenkel, Parker & Mansouri, RA-L 2026 | Robot task execution creates future non-traversable structure, modeled using self-deleting graphs | Closest robotics constraint on broad topology claims |
 | Decision-dependent uncertainty | Nohadani & Sharma, SIAM J. Optimization | Decisions affect uncertainty sets; shortest-path example | Endogenous/decision-dependent uncertainty is not novel |
 | General POMDP robotics | Kurniawati, Annual Review 2022 | Belief-state planning under action/state uncertainty is mature, with substantial solver literature | Belief-state Markovization is standard theory |
+| Environment-centric hazard sensing | Ingle & Kim, *Seeing Danger Before Moving: Learning Environment-Centric Risk for Safe Robot Navigation*, RSS 2026 | Environment-mounted cameras/sensors estimate hazards such as smoke, heat, water, vibration, gas and structural risk before robot entry | Environmental risk estimation outside onboard-only perception is active current prior art; V4 novelty must remain tied to action-induced latent topology state and safe-return connectivity |
 
 ## 3. Citation-chain observations
 
@@ -69,6 +70,12 @@ Liu et al. model a workspace released by an opened door that may close and use a
 Decision-dependent uncertainty has a mature optimization literature, including shortest-path examples where decisions affect uncertain arc quantities.
 
 **Boundary:** the contribution cannot be the general observation that decisions alter future uncertainty.
+
+### 3.6 Environment-centric hazardous-navigation sensing
+
+Ingle & Kim's RSS 2026 paper *Seeing Danger Before Moving: Learning Environment-Centric Risk for Safe Robot Navigation* uses environment-mounted cameras and sensors to estimate hazards before a robot reaches unsafe areas. This is not the DynNav action-induced topology mechanism, but it is a direct current constraint on broad language about environment-centric risk estimation or anticipating hazards before traversal.
+
+**Boundary:** V4 must not claim novelty merely for maintaining environmental risk information that is not reducible to current onboard geometry. The defensible distinction remains that known robot actions stochastically create a latent environmental state that governs future return connectivity.
 
 ## 4. Defensible intersection after chaining
 
@@ -147,6 +154,7 @@ Not authorized:
 10. S. Frenkel, D. Parker, and M. Mansouri, "Coverage with Self-Induced Obstacles on Grids," IEEE RA-L, 2026, 11(3):3454–3461. DOI: 10.1109/LRA.2026.3656776.
 11. O. Nohadani and K. Sharma, "Optimization under Decision-Dependent Uncertainty," SIAM Journal on Optimization. DOI: 10.1137/17M1110560.
 12. H. Kurniawati, "Partially Observable Markov Decision Processes and Robotics," Annual Review of Control, Robotics, and Autonomous Systems, 2022. DOI: 10.1146/annurev-control-042920-092451.
+13. P. Y. Ingle and Y.-G. Kim, "Seeing Danger Before Moving: Learning Environment-Centric Risk for Safe Robot Navigation," Robotics: Science and Systems (RSS), 2026. Accepted-paper/publication listing verified from the authors' institutional publication page; full methodological comparison should be repeated from the final archival paper before submission.
 
 ## 8. Submission-time repeat
 
