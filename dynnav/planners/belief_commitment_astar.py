@@ -31,6 +31,7 @@ class BeliefCommitmentAStarConfig:
     heuristic_weight: float = 1.0
     max_hazard_cells: int = 16
     belief_round_digits: int = 15
+    minimum_return_probability: float | None = None
 
     def validate(self) -> None:
         if self.step_cost <= 0.0:
@@ -43,6 +44,11 @@ class BeliefCommitmentAStarConfig:
             raise ValueError("max_hazard_cells must be non-negative")
         if self.belief_round_digits < 6:
             raise ValueError("belief_round_digits must be at least 6")
+        if (
+            self.minimum_return_probability is not None
+            and not 0.0 <= self.minimum_return_probability <= 1.0
+        ):
+            raise ValueError("minimum_return_probability must be in [0, 1]")
 
 
 @dataclass(frozen=True)
@@ -233,6 +239,11 @@ def belief_commitment_astar(
             next_state: BeliefState = (neighbor, next_key)
 
             probability = return_probability(next_state)
+            if (
+                cfg.minimum_return_probability is not None
+                and probability < cfg.minimum_return_probability
+            ):
+                continue
             transition_cost = (
                 cfg.step_cost
                 + cfg.recoverability_weight * (1.0 - probability)
