@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import math
 from dataclasses import dataclass
-from functools import lru_cache
+from functools import cache
 
-from dynnav.activation_belief import ActivationBelief, expected_safe_return_probability
+from dynnav.activation_belief import (\n    ActivationBelief,\n    expected_safe_return_probability,\n)
 from dynnav.commitment_hazard import CommitmentHazardModel
 from dynnav.planners.grid_map import GridCell, GridMap
 
@@ -179,7 +179,7 @@ def exact_finite_horizon_belief_policy(
         beliefs.setdefault(key, belief)
         return key
 
-    @lru_cache(maxsize=None)
+    @cache
     def value(cell: GridCell, belief_key: BeliefKey, remaining: int) -> float:
         nonlocal states_evaluated
         states_evaluated += 1
