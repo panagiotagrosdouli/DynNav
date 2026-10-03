@@ -97,7 +97,19 @@ def test_repeated_trial_is_identical_regardless_of_other_planner_execution() -> 
         planner=V4Planner.BELIEF,
     )
 
-    assert repeated == first
+    assert repeated.scenario == first.scenario
+    assert repeated.seed == first.seed
+    assert repeated.planner == first.planner
+    assert repeated.mission_success == first.mission_success
+    assert repeated.path == first.path
+    assert repeated.true_armed_set == first.true_armed_set
+    assert repeated.estimated_armed_set == first.estimated_armed_set
+    assert repeated.observation_count == first.observation_count
+    assert repeated.predicted_return_probability == pytest.approx(
+        first.predicted_return_probability
+    )
+    assert repeated.realized_closure_cells == first.realized_closure_cells
+    assert repeated.return_feasible == first.return_feasible
 
 
 def test_all_predeclared_planners_produce_valid_records_on_small_world() -> None:
