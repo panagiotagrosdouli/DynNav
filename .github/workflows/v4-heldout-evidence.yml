@@ -63,9 +63,7 @@ jobs:
           python -m pytest -q             ros2_ws/src/dynnav_nav2_benchmark/test/test_v4_hidden_arming.py
 
       - name: Verify frozen manifest checksums
-        run: |
-          cd benchmarks/v4
-          sha256sum --check SHA256SUMS.txt
+        run: sha256sum --check benchmarks/v4/SHA256SUMS.txt
 
   heldout-shard:
     needs: preflight
