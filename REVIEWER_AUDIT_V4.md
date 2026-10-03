@@ -494,21 +494,30 @@ V4 should **not** move from draft-research status to submission manuscript until
 
 ### P0
 
+
+**Gate interpretation:** checked items above are infrastructure/mechanism gates that
+are already supported without viewing held-out outcomes. Unchecked empirical
+gates must remain unchecked until the SHA-gated retained experiment is run.
+The global repository CI also contains website dependency-audit jobs unrelated
+to V4 research validity; the focused V4 workflow is the pre-outcome research
+gate, while Python-version compatibility remains separately open until the
+canonical Python matrix completes successfully.
+
 - [ ] Python V4 contracts pass on all supported Python versions.
-- [ ] Held-out generator and explicit manifests are committed before outcomes.
-- [ ] Keyed CRN tests pass.
+- [x] Held-out generator and explicit manifests are committed before outcomes.
+- [x] Keyed CRN tests pass.
 - [ ] Multi-step held-out planning shows a nontrivial belief-state effect.
 - [ ] Perfect-sensor and history-irrelevant controls behave as null cases.
 - [ ] Model-misspecification failure boundary is retained.
-- [ ] Scenario-level/hierarchical uncertainty analysis is implemented.
-- [ ] Exact-small-world policy comparison is completed or explicitly removed with justification.
-- [ ] Gazebo truth-leakage test exists.
-- [ ] Closest-prior-art citation chaining is documented.
+- [x] Scenario-level/hierarchical uncertainty analysis is implemented.
+- [x] Exact-small-world policy comparison is completed, including a retained future-information counterexample that bounds the receding-horizon approximation.
+- [x] Gazebo truth-leakage test exists.
+- [x] Closest-prior-art citation chaining is documented.
 
 ### P1
 
-- [ ] Correlated equal-marginal study completed.
-- [ ] Scaling boundary measured.
+- [x] Correlated equal-marginal development study completed and retained; publication positioning remains a misspecification boundary.
+- [x] Exact-belief scaling boundary measured in retained development evidence; 8 hazards exceeded the 5 s development budget while the frozen held-out suite is capped at 6.
 - [ ] Calibration plots generated automatically.
 - [ ] Hard versus soft belief objective compared.
 - [ ] Paper tables/figures generated from retained artifacts.
@@ -516,7 +525,7 @@ V4 should **not** move from draft-research status to submission manuscript until
 ### P2
 
 - [ ] Physical robot validation, if required by target venue.
-- [ ] Approximate belief method for larger hazard sets, if exact scaling proves limiting.
+- [ ] Approximate belief method for larger hazard sets, only if claims are extended beyond the current <=6-hazard exact-reference scope.
 
 ---
 
