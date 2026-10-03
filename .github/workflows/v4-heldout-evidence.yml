@@ -1,0 +1,112 @@
+name: V4 held-out evidence
+
+on:
+  workflow_dispatch:
+    inputs:
+      frozen_sha:
+        description: "Exact pre-outcome commit SHA authorized for held-out execution"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  heldout-o2:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.frozen_sha }}
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Verify exact freeze SHA
+        env:
+          EXPECTED_SHA: ${{ inputs.frozen_sha }}
+        run: |
+          ACTUAL_SHA="$(git rev-parse HEAD)"
+          test "$ACTUAL_SHA" = "$EXPECTED_SHA"
+          echo "Frozen SHA verified: $ACTUAL_SHA"
+
+      - name: Install research package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Verify pre-outcome contracts
+        run: |
+          python -m pytest -q \
+            tests/test_activation_belief_v4.py \
+            tests/test_belief_commitment_astar.py \
+            tests/test_v4_belief_execution.py \
+            tests/test_v4_scenario_manifest.py \
+            tests/test_v4_analysis.py \
+            tests/test_v4_hierarchical_statistics.py
+
+      - name: Verify frozen manifest checksums
+        run: |
+          cd benchmarks/v4
+          sha256sum --check SHA256SUMS.txt
+
+      - name: Run primary O2 held-out suite
+        env:
+          FREEZE_SHA: ${{ inputs.frozen_sha }}
+        run: |
+          python scripts/run_v4_suite.py \
+            --split heldout \
+            --regime O2 \
+            --seeds 250 \
+            --allow-heldout \
+            --expected-head-sha "$FREEZE_SHA" \
+            --output-dir results/v4_heldout_o2
+
+      - name: Record immutable provenance
+        env:
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+          FREEZE_SHA: ${{ inputs.frozen_sha }}
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path("results/v4_heldout_o2")
+          files = ["trials.csv", "run_metadata.json"]
+          hashes = {}
+          for name in files:
+              path = root / name
+              hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
+
+          provenance = {
+              "status": "publication_candidate_primary_o2",
+              "protocol": "EXPERIMENT_PROTOCOL_V4.md",
+              "freeze_sha": os.environ["FREEZE_SHA"],
+              "workflow_run_id": int(os.environ["RUN_ID"]),
+              "workflow_run_attempt": int(os.environ["RUN_ATTEMPT"]),
+              "artifact_files_sha256": hashes,
+          }
+          (root / "provenance.json").write_text(
+              json.dumps(provenance, indent=2, sort_keys=True) + "\n",
+              encoding="utf-8",
+          )
+          PY
+          (
+            cd results/v4_heldout_o2
+            sha256sum trials.csv run_metadata.json provenance.json > SHA256SUMS.txt
+          )
+
+      - name: Upload retained primary evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-v4-heldout-o2-${{ inputs.frozen_sha }}
+          path: results/v4_heldout_o2
+          retention-days: 90
+          if-no-files-found: error
