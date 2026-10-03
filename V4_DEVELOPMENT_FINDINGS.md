@@ -438,3 +438,43 @@ Instead:
 5. closure correlation can make an independent topology model either optimistic or pessimistic.
 
 The frozen held-out suite remains unopened.
+
+
+---
+
+## Exact-belief scaling boundary
+
+The retained development artifact from workflow run `37109354502`
+(head `fcf2e92a53107615506b89b44f1a07a20f5f2304`) also measures the
+exact categorical belief reference as hazard count increases.
+
+| Hazards | Belief support | Median wall time | Median oracle calls | Median peak memory | Status |
+|---:|---:|---:|---:|---:|---|
+| 1 | 2 | 1.16 ms | 5 | 6.8 kB | completed |
+| 2 | 4 | 6.32 ms | 19 | 18.5 kB | completed |
+| 4 | 16 | 114.01 ms | 130 | 170 kB | completed |
+| 6 | 64 | 1596.61 ms | 652 | 1.62 MB | completed |
+| 8 | 256 | 19390.09 ms | 2570 | 13.0 MB | exceeded 5 s development budget |
+
+This is not a hardware-independent performance claim. It is a scaling
+diagnostic on the retained CI runner.
+
+The result establishes that exact categorical belief is a **small-hazard
+reference implementation**. It should not be presented as a general scalable
+POMDP solution.
+
+The frozen V4 held-out suite remains inside the measured small-hazard range:
+among 96 scenarios, hazard counts are:
+
+- 24 scenarios with 1 hazard;
+- 64 scenarios with 2 hazards;
+- 4 scenarios with 4 hazards;
+- 4 scenarios with 6 hazards;
+- no held-out scenario exceeds 6 hazards.
+
+Therefore the primary held-out experiment can legitimately use exact belief as
+a controlled reference without introducing an approximation solely to make the
+main experiment run. The scaling limitation must nevertheless be reported.
+
+Approximation work becomes a follow-on contribution only if the paper seeks
+claims beyond this small-hazard scope.
