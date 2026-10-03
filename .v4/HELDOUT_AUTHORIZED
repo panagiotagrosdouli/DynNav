@@ -1,0 +1,20 @@
+V4 HELD-OUT EXECUTION AUTHORIZED
+
+Parent freeze candidate:
+3e9e97c58e88d1105fec1f666b03f1ada17bca68
+
+Authorization conditions satisfied before this commit:
+- full CI: success
+- V4 focused contracts: success
+- V4 Gazebo information-barrier contract: success
+- documentation integrity: success
+- web portal/build gates: success
+- frozen manifest SHA-256 checks committed
+- pre-outcome audit committed at .v4/PREOUTCOME_FREEZE.md
+
+This authorization commit changes no planner, generator, stochastic semantics,
+analysis rule, endpoint, or scenario manifest. It only unlocks the frozen
+held-out workflow defined in .github/workflows/v4-heldout-evidence.yml.
+
+Any semantic change after this authorization invalidates the resulting held-out
+publication candidate and requires a protocol amendment plus a fresh freeze.
