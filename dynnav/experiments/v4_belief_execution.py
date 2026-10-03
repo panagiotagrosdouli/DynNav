@@ -122,7 +122,7 @@ def keyed_uniform(
 
     payload = (
         f"{scenario}|{seed}|{hazard_index}|{event_type}|{occurrence_index}"
-    ).encode("utf-8")
+    ).encode()
     digest = hashlib.sha256(payload).digest()
     return int.from_bytes(digest[:8], "big") / float(2**64)
 
