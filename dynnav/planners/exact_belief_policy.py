@@ -1,3 +1,4 @@
+# ruff: noqa: I001
 """Exact finite-horizon belief-policy reference for tiny V4 worlds.
 
 This module is intentionally exponential and limited to small hazard sets. It
