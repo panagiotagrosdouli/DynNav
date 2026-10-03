@@ -8,6 +8,7 @@ from pathlib import Path
 
 from dynnav.experiments.v4_analysis import (
     V4AnalysisRow,
+    calibration_metrics,
     fixed_bin_calibration,
     paired_v4_comparison,
 )
@@ -80,6 +81,7 @@ def main() -> None:
         )
 
     calibration = {}
+    calibration_summary = {}
     for planner in (
         "belief",
         "detector_as_truth",
@@ -89,6 +91,11 @@ def main() -> None:
         "hard_belief",
     ):
         bins = fixed_bin_calibration(
+            rows,
+            planner=planner,
+            observation_regime=args.regime,
+        )
+        calibration_summary[planner] = calibration_metrics(
             rows,
             planner=planner,
             observation_regime=args.regime,
@@ -118,6 +125,7 @@ def main() -> None:
         "bootstrap_seed": args.bootstrap_seed,
         "bootstrap_resamples": args.resamples,
         "comparisons": comparisons,
+        "calibration_metrics": calibration_summary,
         "calibration": calibration,
     }
 
