@@ -143,6 +143,7 @@ class V4ExecutionRecord:
     return_feasible: bool
     planning_calls: int
     nodes_expanded: int
+    oracle_calls: int
     planning_time_ms: float
     protocol_valid: bool
     invalid_reason: str
@@ -336,6 +337,7 @@ def run_v4_execution_trial(
     observation_count = 0
     planning_calls = 0
     nodes_expanded = 0
+    oracle_calls = 0
     planning_time_ms = 0.0
     step_budget = max_steps or max(
         32,
@@ -356,6 +358,7 @@ def run_v4_execution_trial(
         )
         planning_calls += 1
         nodes_expanded += int(result.nodes_expanded)
+        oracle_calls += int(getattr(result, "return_oracle_calls", 0))
         planning_time_ms += float(result.planning_time_ms)
         if not result.success or len(result.path) < 2:
             return V4ExecutionRecord(
@@ -388,6 +391,7 @@ def run_v4_execution_trial(
                 return_feasible=False,
                 planning_calls=planning_calls,
                 nodes_expanded=nodes_expanded,
+                oracle_calls=oracle_calls,
                 planning_time_ms=planning_time_ms,
                 protocol_valid=True,
                 invalid_reason="",
@@ -487,6 +491,7 @@ def run_v4_execution_trial(
             return_feasible=False,
             planning_calls=planning_calls,
             nodes_expanded=nodes_expanded,
+            oracle_calls=oracle_calls,
             planning_time_ms=planning_time_ms,
             protocol_valid=False,
             invalid_reason="step_budget_exceeded",
@@ -548,6 +553,7 @@ def run_v4_execution_trial(
         return_feasible=return_probability >= 1.0,
         planning_calls=planning_calls,
         nodes_expanded=nodes_expanded,
+        oracle_calls=oracle_calls,
         planning_time_ms=planning_time_ms,
         protocol_valid=True,
         invalid_reason="",
