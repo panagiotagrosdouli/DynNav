@@ -6,11 +6,19 @@ on:
       - "dynnav/activation_belief.py"
       - "dynnav/recoverability_scenarios.py"
       - "dynnav/planners/belief_commitment_astar.py"
+      - "dynnav/planners/exact_belief_policy.py"
       - "dynnav/experiments/belief_route_mechanism.py"
+      - "dynnav/experiments/v4_analysis.py"
+      - "dynnav/experiments/v4_scenario_manifest.py"
+      - "dynnav/experiments/statistics.py"
       - "scripts/run_v4_belief_route_development.py"
       - "tests/test_activation_belief_v4.py"
       - "tests/test_belief_commitment_astar.py"
+      - "tests/test_exact_belief_policy.py"
       - "tests/test_belief_route_mechanism.py"
+      - "tests/test_v4_analysis.py"
+      - "tests/test_v4_hierarchical_statistics.py"
+      - "tests/test_v4_scenario_manifest.py"
       - "tests/test_recoverability_scenarios.py"
       - ".github/workflows/v4-belief-development.yml"
 
@@ -33,7 +41,17 @@ jobs:
 
       - name: Focused V4 contracts
         run: |
-          python -m pytest -q             tests/test_activation_belief.py             tests/test_activation_belief_v4.py             tests/test_belief_commitment_astar.py             tests/test_belief_route_mechanism.py             tests/test_recoverability_scenarios.py
+          python -m pytest -q \
+            tests/test_activation_belief.py \
+            tests/test_activation_belief_v4.py \
+            tests/test_belief_commitment_astar.py \
+            tests/test_exact_belief_policy.py \
+            tests/test_belief_route_mechanism.py \
+            tests/test_recoverability_scenarios.py \
+            tests/test_v4_analysis.py \
+            tests/test_v4_hierarchical_statistics.py \
+            tests/test_v4_scenario_manifest.py \
+            tests/test_v4_belief_execution.py
 
       - name: Run development-only paired benchmark
         run: |
