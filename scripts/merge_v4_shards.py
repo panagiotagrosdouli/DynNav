@@ -55,6 +55,7 @@ def merge_v4_shards(
         "manifest_sha256",
         "manifest_scenario_count",
         "shard_count",
+        "planners",
     )
     reference = metadata[0]
     for item in metadata[1:]:
@@ -77,6 +78,16 @@ def merge_v4_shards(
         trial_path = metadata_path.parent / "trials.csv"
         if not trial_path.exists():
             raise ValueError(f"missing trials.csv beside {metadata_path}")
+
+        metadata_item = json.loads(
+            metadata_path.read_text(encoding="utf-8")
+        )
+        actual_trial_sha = _sha256(trial_path)
+        if actual_trial_sha != metadata_item["raw_trials_sha256"]:
+            raise ValueError(
+                f"shard trial digest mismatch for {trial_path}: "
+                f"{actual_trial_sha} != {metadata_item['raw_trials_sha256']}"
+            )
 
         with trial_path.open(newline="", encoding="utf-8") as handle:
             reader = csv.DictReader(handle)
@@ -108,22 +119,32 @@ def merge_v4_shards(
             f"expected {expected_scenarios} scenarios, found {len(scenarios)}"
         )
 
-    planner_names = sorted(
-        {
-            planner
-            for item in metadata
-            for planner in item["planners"]
-        }
-    )
-    expected_rows = (
-        expected_scenarios
-        * int(reference["seeds_per_scenario"])
-        * len(planner_names)
-    )
+    planner_names = sorted(str(value) for value in reference["planners"])
+    seed_count = int(reference["seeds_per_scenario"])
+    expected_rows = expected_scenarios * seed_count * len(planner_names)
     if len(rows) != expected_rows:
         raise ValueError(
             f"expected {expected_rows} merged rows, found {len(rows)}"
         )
+
+    expected_per_scenario = {
+        (seed, planner)
+        for seed in range(seed_count)
+        for planner in planner_names
+    }
+    observed_per_scenario: dict[str, set[tuple[int, str]]] = {
+        scenario: set() for scenario in scenarios
+    }
+    for scenario, seed, planner in seen:
+        observed_per_scenario[scenario].add((seed, planner))
+    for scenario, observed in observed_per_scenario.items():
+        if observed != expected_per_scenario:
+            missing = sorted(expected_per_scenario - observed)[:10]
+            extra = sorted(observed - expected_per_scenario)[:10]
+            raise ValueError(
+                f"incomplete paired key set for {scenario}; "
+                f"missing={missing}, extra={extra}"
+            )
 
     rows.sort(
         key=lambda row: (
