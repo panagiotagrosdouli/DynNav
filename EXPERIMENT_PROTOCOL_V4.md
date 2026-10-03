@@ -111,11 +111,13 @@ Receives the true latent armed set \(A_t\).
 
 Purpose: upper-information reference. Not a realistic deployment condition.
 
-### P3 — detector-as-truth
+### P3 — latched detector-as-truth
 
-Treats the binary observation as exact armed/inactive state.
+Uses a naive monotone point estimate consistent with the monotone arming model: once any detector observation reports hazard (i) as armed, the estimator retains (i) as armed for the rest of the mission. A negative observation never clears a previously latched positive.
 
-Purpose: tests overconfidence from collapsing posterior uncertainty.
+Before the first positive observation, the hazard is treated as inactive.
+
+Purpose: tests overconfidence from collapsing posterior uncertainty to a binary persistent state. This baseline is intentionally distinct from the Bayesian posterior and its latching semantics must remain fixed across all V4 runs.
 
 ### P4 — belief-conditioned
 
@@ -581,7 +583,7 @@ If branching on future observations has negligible value in these worlds, retain
 Tests must enforce:
 
 - P0/P1 cannot read true armed state;
-- P3 receives detector outcome only;
+- P3 receives detector outcomes only and applies the frozen positive-latching rule; it cannot read true arming state;
 - P4 receives detector outcome + declared probabilistic model only;
 - P2 is the only planner permitted to read truth;
 - planned candidate paths do not mutate persistent truth or posterior;
