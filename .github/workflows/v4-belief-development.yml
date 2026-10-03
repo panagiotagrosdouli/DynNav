@@ -1,0 +1,81 @@
+name: V4 belief-route development evidence
+
+on:
+  pull_request:
+    paths:
+      - "dynnav/activation_belief.py"
+      - "dynnav/recoverability_scenarios.py"
+      - "dynnav/planners/belief_commitment_astar.py"
+      - "dynnav/experiments/belief_route_mechanism.py"
+      - "scripts/run_v4_belief_route_development.py"
+      - "tests/test_activation_belief_v4.py"
+      - "tests/test_belief_commitment_astar.py"
+      - "tests/test_belief_route_mechanism.py"
+      - "tests/test_recoverability_scenarios.py"
+      - ".github/workflows/v4-belief-development.yml"
+
+jobs:
+  development-benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install research package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ".[dev]"
+
+      - name: Focused V4 contracts
+        run: |
+          python -m pytest -q             tests/test_activation_belief.py             tests/test_activation_belief_v4.py             tests/test_belief_commitment_astar.py             tests/test_belief_route_mechanism.py             tests/test_recoverability_scenarios.py
+
+      - name: Run development-only paired benchmark
+        run: |
+          python scripts/run_v4_belief_route_development.py             --trials 5000             --output-dir results/v4_development
+
+      - name: Record provenance
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+
+          path = Path("results/v4_development/provenance.json")
+          path.write_text(
+              json.dumps(
+                  {
+                      "status": "development_only_not_publication_evidence",
+                      "head_sha": os.environ["HEAD_SHA"],
+                      "workflow_run_id": int(os.environ["RUN_ID"]),
+                      "workflow_run_attempt": int(os.environ["RUN_ATTEMPT"]),
+                      "protocol": "EXPERIMENT_PROTOCOL_V4.md",
+                      "trials_per_regime": 5000,
+                  },
+                  indent=2,
+                  sort_keys=True,
+              )
+              + "\n",
+              encoding="utf-8",
+          )
+          PY
+          (
+            cd results/v4_development
+            sha256sum trials.csv summary.json run_metadata.json provenance.json               > SHA256SUMS.txt
+          )
+
+      - name: Upload development artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-v4-development-${{ github.event.pull_request.head.sha }}
+          path: results/v4_development
+          if-no-files-found: error
