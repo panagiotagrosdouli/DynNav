@@ -123,14 +123,34 @@ def test_all_predeclared_planners_produce_valid_records_on_small_world() -> None
             planner=planner,
         )
         assert record.protocol_valid
-        assert record.mission_success
         assert record.path[0] == scenario.start
-        assert record.path[-1] == scenario.goal
         assert record.path_length == len(record.path) - 1
+        if planner is V4Planner.HARD_BELIEF:
+            # A hard safe-return constraint is allowed to make the mission
+            # infeasible. That is a meaningful baseline outcome, not a
+            # protocol failure to be hidden or coerced into success.
+            continue
+        assert record.mission_success
+        assert record.path[-1] == scenario.goal
         if planner is V4Planner.SHORTEST:
             assert record.predicted_return_probability != record.predicted_return_probability
         else:
             assert 0.0 <= record.predicted_return_probability <= 1.0
+
+
+def test_hard_belief_can_refuse_an_outbound_mission_without_protocol_failure() -> None:
+    scenario = _two_module_scenario(sensitivity=0.85, specificity=0.85)
+
+    record = run_v4_execution_trial(
+        scenario,
+        seed=3,
+        planner=V4Planner.HARD_BELIEF,
+    )
+
+    assert record.protocol_valid
+    assert not record.mission_success
+    assert record.path == (scenario.start,)
+    assert record.planning_calls == 1
 
 
 def test_detector_as_truth_positive_observation_latches_monotonically() -> None:
