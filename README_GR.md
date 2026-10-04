@@ -8,7 +8,7 @@
 
 [English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE paper](paper/dynnav_r/main.tex)
 
-> **Κατάσταση:** ενεργό research prototype με retained synthetic/geometric evidence, C++ Nav2 planner και frozen action-triggered Gazebo protocol. Δεν γίνεται claim για safety certification, universal superiority ή physical-robot efficacy.
+> **Κατάσταση:** ενεργό research prototype με retained synthetic/geometric evidence, C++ Nav2 planner και retained action-triggered Gazebo integration evidence. Τα strict Gazebo probes επιβεβαιώνουν εκτέλεση/measurement contracts, όχι σταθερό comparative efficacy effect. Δεν γίνεται claim για safety certification, universal superiority ή physical-robot efficacy.
 
 ## Ερευνητικό ερώτημα
 
@@ -111,12 +111,12 @@ source install/setup.bash
 colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
 ```
 
-Το πρώτο action-triggered Gazebo scenario παγώθηκε πριν από comparative outcomes: trigger `(174,189) -> (175,189)`, closure cell `(181,191)`, probability `0.8`. Νέα Gazebo efficacy claims μπαίνουν μόνο αν υπάρχουν valid retained execution artifacts.
+Το πρώτο action-triggered Gazebo scenario παγώθηκε πριν από comparative outcomes: trigger `(174,189) -> (175,189)`, closure cell `(181,191)`, probability `0.8`. Retained strict reruns έδωσαν valid end-to-end integration evidence και επιτυχημένη εκτέλεση και για τις τρεις planner conditions, αλλά το DynNavHistory-vs-DynNavShortest exposure effect δεν ήταν σταθερό μεταξύ reruns. Συνεπώς **δεν** υποστηρίζεται Gazebo comparative-efficacy claim.
 
 ## Evidence discipline
 
 Publication-facing claim σημαίνει implementation, deterministic regression coverage, frozen config/seed policy, retained machine-readable output, provenance, σωστή paired/statistical analysis και explicit limitation/failure boundary.
 
-Η ισχυρότερη evidence βάση παραμένει simulation/grid based. Το επόμενο hardening βήμα είναι paired retained action-triggered Gazebo execution και μετά partial-observability / probability-miscalibration stress tests, εφόσον το execution evidence είναι valid.
+Η ισχυρότερη comparative evidence βάση παραμένει synthetic/geometric. Τα επόμενα hardening βήματα είναι probability-miscalibration και partial-observability/delayed-revelation stress tests, καθώς και ευρύτερο predeclared Gazebo study μόνο αν πρόκειται να διατυπωθεί execution-efficacy claim.
 
-[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Protocol](EXPERIMENT_PROTOCOL_V2.md) · [Failure cases](FAILURE_CASES.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [License](LICENSE)
+[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Protocol](EXPERIMENT_PROTOCOL_V3.md) · [Failure cases](FAILURE_CASES.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [License](LICENSE)

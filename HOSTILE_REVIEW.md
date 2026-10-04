@@ -4,6 +4,14 @@ Review date: 2026-09-19. This review evaluates the narrow publication claim in
 `paper/dynnav_r/main.tex`; it does not treat repository size as scientific
 evidence.
 
+> **Evidence-status update (2026-10-04):** subsequent strict action-triggered
+> Gazebo mechanism probes retained protocol-valid end-to-end executions, including
+> 24/24 valid trials and successful navigation in all frozen planner conditions.
+> The DynNavHistory-vs-DynNavShortest exposure difference was not stable across
+> reruns, so this resolves the integration-evidence gap but **does not** establish
+> comparative Gazebo efficacy. The dated review text below is preserved as the
+> state of the critique when it was written.
+
 ## Reviewer A — motion planning and robotics
 
 ### Fatal concerns
@@ -104,7 +112,7 @@ evidence.
 
 No remaining criticism justifies strengthening the claims. Fixable repository
 inconsistencies identified above have been corrected. The remaining major gates
-are new action-triggered execution evidence, broader predeclared evaluation,
-probability-miscalibration/delayed-revelation studies, and final release-level
-bibliography and provenance checks. Until those gates are satisfied, the
+are broader predeclared evaluation, probability-miscalibration/delayed-revelation
+studies, any new study needed before a comparative Gazebo-efficacy claim, and
+final release-level bibliography and provenance checks. Until those gates are satisfied, the
 submission decision remains the one in `PUBLICATION_READINESS.md`.
