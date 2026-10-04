@@ -27,7 +27,10 @@ jobs:
             geometric-heldout-evidence.yml
             geometric-pareto-evidence.yml
             hazard-planner-pilot.yml
+            history-gazebo-evidence.yml
             paper-build.yml
+            reviewer-measurement-expansion.yml
+            reviewer-p0-evidence.yml
             ros2-dynamic.yml
             ros2-simulation.yml
             streamlit-dashboard.yml
