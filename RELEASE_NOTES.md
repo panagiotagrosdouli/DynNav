@@ -1,5 +1,18 @@
 # Release Notes
 
+## Unreleased — release-candidate hardening
+
+- patched all web surfaces to a non-vulnerable Next.js 16.3.8 dependency and synchronized committed lockfiles;
+- restored strict clean `npm ci` semantics instead of regenerating lockfiles inside CI;
+- kept production/runtime dependency auditing at high severity while separating build-only development findings;
+- corrected Vercel monorepo root configuration and removed the obsolete repository-root config;
+- stabilized the action-triggered Gazebo workflow against the upstream temporary-SDF startup race;
+- implemented the canonical ROS-free OccupancyGrid adapter and regression coverage;
+- expanded the full-main audit so every manually dispatchable validation workflow is included;
+- aligned publication-facing documentation with the V3 history-conditioned claim and retained Gazebo evidence boundary;
+- removed duplicate quick-start documentation and stale J0–J3 indexing;
+- retained comparative Gazebo efficacy as explicitly unsupported because the strict reruns do not show a stable DynNavHistory-vs-DynNavShortest effect.
+
 ## Unreleased — repository-wide audit corrections
 
 - repaired malformed ROS-independent action-trigger benchmark contracts;
@@ -40,6 +53,7 @@ This release moves DynNav from the original risk/recoverability scaffold to a pu
 - C++17 `nav2_core::GlobalPlanner` integration on ROS 2 Jazzy;
 - persistent hazard history updated from executed transitions rather than planned paths;
 - ROS/Gazebo benchmark infrastructure and frozen action-triggered execution protocol;
+- retained strict Gazebo mechanism probes with protocol-valid execution evidence but no stable comparative efficacy effect;
 - CI build, plugin discovery and configuration checks.
 
 ### Reproducibility and repository quality
@@ -54,7 +68,7 @@ This release moves DynNav from the original risk/recoverability scaffold to a pu
 
 ### Current limitations
 
-- history-conditioned action-triggered Gazebo efficacy outcomes are not yet retained publication evidence;
+- comparative action-triggered Gazebo efficacy is unsupported by the retained strict reruns;
 - closure probabilities are model inputs, not calibrated real-world probabilities;
 - partial-observability and probability-miscalibration stress tests remain future work;
 - no physical-robot efficacy or safety-certification claim is made.

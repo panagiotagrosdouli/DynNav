@@ -1,22 +1,37 @@
 # DynNav extension catalog
 
-DynNav now has one primary research contribution:
+DynNav has one publication-facing research core:
 
-> **Risk- and recoverability-aware online replanning under dynamic route invalidation.**
+> **History-conditioned safe-return planning under action-triggered topology hazards.**
 
-The repository also contains a broad set of earlier research modules. They remain available for reuse, comparison and future extensions, but they are not equal parts of the central research claim.
+The repository also contains a broad set of earlier research modules. They remain available for reuse, comparison and future extensions, but they are not equal parts of the current paper claim.
 
-## Core modules
+## Publication-facing core
 
-The focused research program directly builds on:
-
-| ID | Module | Role in the main research program |
+| Area | Canonical implementation | Role |
 |---|---|---|
-| **C03** | Risk-Aware A* | Supplies occupancy-risk route costs and risk-only ablations. |
-| **C04** | Returnability and Recoverability | Supplies escape-option, returnability, bottleneck and irreversibility concepts. |
-| **C05** | Safe-Mode Supervisor | Supports explicit replan, recover and stop responses after risk or recoverability degradation. |
+| Action-triggered hazard model | `dynnav/commitment_hazard.py` | separates planning, executed trigger activation and future closure realization |
+| Exact safe-return model | `dynnav/recoverability_belief.py` | computes bounded-hazard future return connectivity |
+| Exact history planner | `dynnav/planners/commitment_aware_astar.py` | searches over position plus activated-hazard state |
+| Critical-cut approximation | `dynnav/recoverability_cut.py`, `dynnav/planners/commitment_cut_astar.py` | provides a faster approximation with a retained joint-cut failure case |
+| Hard safe-return baseline | `dynnav/planners/commitment_safe_return_astar.py` | feasibility-style objective comparison |
+| State-only baseline | `dynnav/planners/hazard_reliability_astar.py` | endpoint-only marginal ablation |
+| ROS 2/Nav2 implementation | `ros2_ws/src/dynnav_nav2_cpp/` | C++ Jazzy global planner with persistent executed-history state |
+| Gazebo validation | `ros2_ws/src/dynnav_nav2_benchmark/` | frozen execution and measurement contracts |
 
-Classical A*, Dijkstra and D* Lite implementations provide the geometric and online-replanning baselines.
+Publication-facing claims and numerical values are governed by `CLAIM_EVIDENCE_MATRIX.md`, `EXPERIMENT_PROTOCOL_V3.md` and `paper/dynnav_r/evidence_manifest.json`.
+
+## Earlier supporting modules
+
+The earlier risk/recoverability stack remains useful for engineering context and exploratory work:
+
+| ID | Module | Supporting role |
+|---|---|---|
+| **C03** | Risk-Aware A* | Occupancy-risk routing and legacy risk ablations. |
+| **C04** | Returnability and Recoverability | Earlier structural escape-option and bottleneck concepts. |
+| **C05** | Safe-Mode Supervisor | Runtime replan/recover/stop supervision prototypes. |
+
+These modules should not be presented as the central V3 contribution unless a current evidence artifact explicitly depends on them.
 
 ## Supporting modules
 
@@ -53,11 +68,11 @@ The following modules remain in the repository as independent exploratory direct
 - **C24** — NeRF Uncertainty
 - **C26** — Byzantine-Fault-Tolerant Swarm
 
-These extensions should not delay the focused work on objective contracts, recoverability metrics, deterministic route-invalidation scenarios, ablations and multi-seed evaluation.
+These extensions should not delay validation of the history-conditioned core, its failure boundaries and its reproducible evidence contracts.
 
 ## Interactive access
 
-The existing dashboard remains available as an inspection and demonstration interface:
+The dashboard remains available as an inspection and demonstration interface:
 
 ```bash
 python -m pip install -e ".[dashboard]"
@@ -72,7 +87,8 @@ For module-level source code, experiments, figures and bilingual documentation, 
 
 - [`contributions/CONTRIBUTIONS_README.md`](../contributions/CONTRIBUTIONS_README.md)
 - [`contributions/`](../contributions/)
+- [`archive/README.md`](archive/README.md)
 
 ## Evidence interpretation
 
-A renderer, figure, test or synthetic benchmark does not by itself establish real-robot safety, broad generalization, formal correctness, ROS 2 integration or production readiness. Each module retains its own maturity and evidence boundary.
+A renderer, figure, test or synthetic benchmark does not by itself establish real-robot safety, broad generalization, formal correctness or production readiness. ROS 2/Nav2 build and Gazebo execution evidence establish their stated integration contracts only. Each module retains its own maturity and evidence boundary.
