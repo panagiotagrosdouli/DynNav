@@ -43,25 +43,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Resolve patched dependency graphs
-        run: |
-          npm --prefix website install --package-lock-only --ignore-scripts --no-audit --no-fund
-          npm --prefix apps/web install --package-lock-only --ignore-scripts --no-audit --no-fund
-          npm --prefix vercel_app install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install locked dependencies
         run: |
           npm --prefix website ci --no-audit --no-fund
           npm --prefix apps/web ci --no-audit --no-fund
           npm --prefix vercel_app ci --no-audit --no-fund
-      - name: Capture regenerated lockfiles
-        uses: actions/upload-artifact@v4
-        with:
-          name: regenerated-web-lockfiles
-          path: |
-            website/package-lock.json
-            apps/web/package-lock.json
-            vercel_app/package-lock.json
-          if-no-files-found: error
       - name: Audit dependency trees
         run: |
           npm --prefix website audit --omit=dev --audit-level=high
