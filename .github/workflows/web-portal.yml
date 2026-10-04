@@ -53,6 +53,15 @@ jobs:
           npm --prefix website ci --no-audit --no-fund
           npm --prefix apps/web ci --no-audit --no-fund
           npm --prefix vercel_app ci --no-audit --no-fund
+      - name: Capture regenerated lockfiles
+        uses: actions/upload-artifact@v4
+        with:
+          name: regenerated-web-lockfiles
+          path: |
+            website/package-lock.json
+            apps/web/package-lock.json
+            vercel_app/package-lock.json
+          if-no-files-found: error
       - name: Audit dependency trees
         run: |
           npm --prefix website audit --omit=dev --audit-level=high
