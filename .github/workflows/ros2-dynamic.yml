@@ -8,6 +8,14 @@ on:
       - '.github/workflows/ros2-dynamic.yml'
       - 'ros2_ws/src/dynnav_nav2_cpp/**'
       - 'ros2_ws/src/dynnav_nav2_benchmark/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ros2-dynamic.yml'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/dynamic_analysis.py'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/dynamic_runner.py'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_dynamic_events.yaml'
   workflow_dispatch:
     inputs:
       repetitions:
