@@ -9,7 +9,10 @@ from ament_index_python.packages import get_package_share_directory
 from launch_ros.actions import Node
 
 from dynnav_nav2_benchmark.analysis import Pose2D
-from dynnav_nav2_benchmark.configuration import inject_history_planner_parameters
+from dynnav_nav2_benchmark.configuration import (
+    cap_history_execution_speed,
+    inject_history_planner_parameters,
+)
 from dynnav_nav2_benchmark.history_execution import (
     load_history_execution_suite,
     transition_from_world_trigger,
@@ -89,6 +92,10 @@ def _launch_setup(context):
         closure_cell=closure_cell,
         closure_probability=scenario.trigger.closure_probability,
         recoverability_weight=scenario.recoverability_weight,
+    )
+    payload = cap_history_execution_speed(
+        payload,
+        scenario.maximum_forward_speed_mps,
     )
     generated_params.parent.mkdir(parents=True, exist_ok=True)
     generated_params.write_text(

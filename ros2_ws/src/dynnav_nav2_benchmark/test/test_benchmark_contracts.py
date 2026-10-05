@@ -5,6 +5,7 @@ from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order, load_su
 from dynnav_nav2_benchmark.configuration import (
     HISTORY_PLANNER_IDS,
     PLANNER_IDS,
+    cap_history_execution_speed,
     inject_history_planner_parameters,
     inject_planner_parameters,
     planner_parameter_overrides,
@@ -122,6 +123,25 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
         suite.blocker_size.y,
         suite.blocker_size.z,
     )
+
+
+def test_history_execution_speed_cap_is_non_mutating() -> None:
+    source = {
+        "controller_server": {
+            "ros__parameters": {
+                "FollowPath": {"vx_max": 0.5, "vx_min": -0.35}
+            }
+        }
+    }
+    capped = cap_history_execution_speed(source, 0.2)
+    assert source["controller_server"]["ros__parameters"]["FollowPath"] == {
+        "vx_max": 0.5,
+        "vx_min": -0.35,
+    }
+    assert capped["controller_server"]["ros__parameters"]["FollowPath"] == {
+        "vx_max": 0.2,
+        "vx_min": -0.2,
+    }
 
 
 def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import copy
+import math
 from typing import Any
 
 PLANNER_IDS = (
@@ -151,4 +152,36 @@ def inject_history_planner_parameters(
         }
     )
     planner_parameters["DynNavHistory"] = history
+    return merged
+
+
+def cap_history_execution_speed(
+    payload: dict[str, Any],
+    max_forward_speed_mps: float,
+) -> dict[str, Any]:
+    """Cap MPPI longitudinal speed for transition-observation fidelity.
+
+    Sampling-gap validity remains strict: the benchmark never reconstructs a
+    missing transition. The cap only reduces the chance of skipping across the
+    frozen 0.05 m trigger edge between navigation feedback updates.
+    """
+
+    if (
+        not math.isfinite(max_forward_speed_mps)
+        or max_forward_speed_mps <= 0.0
+    ):
+        raise ValueError("max_forward_speed_mps must be finite and positive")
+
+    merged = copy.deepcopy(payload)
+    try:
+        follow_path = merged["controller_server"]["ros__parameters"]["FollowPath"]
+        vx_max = float(follow_path["vx_max"])
+        vx_min = float(follow_path["vx_min"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise ValueError(
+            "base Nav2 parameters do not expose MPPI FollowPath vx_max/vx_min"
+        ) from exc
+
+    follow_path["vx_max"] = min(vx_max, max_forward_speed_mps)
+    follow_path["vx_min"] = max(vx_min, -max_forward_speed_mps)
     return merged

@@ -47,6 +47,9 @@ scenario:
   minimum_lethal_cell_increase: 3
   recovery_budget_m: 5.0
   reset_pose_tolerance_m: 0.4
-  execution_timeout_s: 75.0
-  wall_timeout_s: 150.0
+  execution_timeout_s: 110.0
+  wall_timeout_s: 180.0
+  # The trigger is one 0.05 m grid transition. Slow the frozen execution enough
+  # to improve feedback resolution while retaining strict sampling-gap invalidity.
+  maximum_forward_speed_mps: 0.20
   recoverability_weight: 4.0

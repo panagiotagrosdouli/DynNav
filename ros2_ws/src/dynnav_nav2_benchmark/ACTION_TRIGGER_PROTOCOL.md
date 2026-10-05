@@ -19,3 +19,14 @@ A pre-publication audit exposed two over-strict/incorrect implementation behavio
 2. a realized closure was rejected immediately when the robot was still inside the minimum blocker-clearance radius, rather than remaining pending as a future closure.
 
 The revised implementation preserves all sampling gaps, invalidates only trigger-ambiguous gaps, and keeps a realized closure pending until the unchanged clearance gate is satisfied. These changes alter validation/execution semantics, not the trigger, closure probability, blocker size, or minimum-clearance threshold. Publication-facing Gazebo results must come from a retained artifact generated after this revision.
+
+
+## October 2026 observation-resolution hardening
+
+The release-level audit exposed one trigger-ambiguous axial sampling gap in an
+otherwise valid 24-trial mechanism run. The validity rule was not relaxed.
+Instead, the frozen positive-control scenario now records a maximum forward
+execution speed of 0.20 m/s, and the launch configuration caps the Nav2 MPPI
+controller to that value. This reduces the chance that navigation feedback
+skips over the 0.05 m trigger transition. Any gap that can still conceal the
+directed trigger remains invalid, and no missing transition is interpolated.
