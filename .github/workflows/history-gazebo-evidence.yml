@@ -36,7 +36,7 @@ concurrency:
 jobs:
   history-gazebo:
     runs-on: ubuntu-24.04
-    timeout-minutes: 60
+    timeout-minutes: 45
     container: ros:jazzy-ros-base-noble
     env:
       LIBGL_ALWAYS_SOFTWARE: '1'
@@ -108,7 +108,7 @@ jobs:
           chmod +x /tmp/dynnav_history/bin/gz
           export PATH="/tmp/dynnav_history/bin:$PATH"
 
-          timeout --signal=INT --kill-after=30s 50m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} scenario_file:=/tmp/dynnav_history/install/dynnav_nav2_benchmark/share/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
+          timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} scenario_file:=/tmp/dynnav_history/install/dynnav_nav2_benchmark/share/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
           test -s /tmp/dynnav_history/results/results.json
       - name: Validate paired event and trial contract
         run: |
@@ -125,7 +125,10 @@ jobs:
           by_rep = defaultdict(list)
           for row in trials:
               by_rep[row['repetition']].append(row)
-              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible'): assert key in row
+              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible','execution_observation_source','execution_observation_count','execution_transform_failures','observation_poll_period_s'): assert key in row
+              assert row['execution_observation_source'] == 'tf:map->base_link'
+              assert row['execution_observation_count'] > 0
+              assert row['observation_poll_period_s'] == 0.01
           assert set(by_rep) == set(range(repetitions))
           assert all(r['valid_trial'] for r in trials), [
               (r['planner_id'], r['repetition'], r.get('invalid_reason'))
