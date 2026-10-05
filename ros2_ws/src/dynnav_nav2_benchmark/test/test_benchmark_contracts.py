@@ -5,7 +5,6 @@ from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order, load_su
 from dynnav_nav2_benchmark.configuration import (
     HISTORY_PLANNER_IDS,
     PLANNER_IDS,
-    cap_history_execution_speed,
     inject_history_planner_parameters,
     inject_planner_parameters,
     planner_parameter_overrides,
@@ -19,6 +18,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import (
 from dynnav_nav2_benchmark.history_execution import (
     classify_observed_cells,
     deterministic_event_draw,
+    load_history_execution_suite,
     sampling_gap_can_hide_transition,
     trigger_decision,
 )
@@ -125,23 +125,12 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
     )
 
 
-def test_history_execution_speed_cap_is_non_mutating() -> None:
-    source = {
-        "controller_server": {
-            "ros__parameters": {
-                "FollowPath": {"vx_max": 0.5, "vx_min": -0.35}
-            }
-        }
-    }
-    capped = cap_history_execution_speed(source, 0.2)
-    assert source["controller_server"]["ros__parameters"]["FollowPath"] == {
-        "vx_max": 0.5,
-        "vx_min": -0.35,
-    }
-    assert capped["controller_server"]["ros__parameters"]["FollowPath"] == {
-        "vx_max": 0.2,
-        "vx_min": -0.2,
-    }
+def test_history_positive_control_uses_high_rate_tf_observation() -> None:
+    suite = load_history_execution_suite(
+        PACKAGE_ROOT / "config" / "sandbox_history_return_cut_positive_control.yaml"
+    )
+    assert suite.scenario.observation_frame == "base_link"
+    assert suite.scenario.observation_poll_period_s == 0.01
 
 
 def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:
