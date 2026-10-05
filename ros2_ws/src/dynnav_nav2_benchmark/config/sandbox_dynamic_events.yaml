@@ -45,6 +45,9 @@ scenarios:
       minimum_injection_clearance_m: 0.90
       observation_margin_m: 0.10
       minimum_lethal_cell_increase: 3
+      # This closes the return gate behind the departing robot; it need not
+      # intersect the active forward plan.
+      require_forward_path_invalidation: false
       blocker_pose: {x: -0.95, y: -0.425, z: 0.5, yaw: 0.0}
     recovery_budget_m: 5.0
     reset_pose_tolerance_m: 0.40
@@ -64,6 +67,8 @@ scenarios:
       minimum_injection_clearance_m: 0.90
       observation_margin_m: 0.10
       minimum_lethal_cell_increase: 3
+      # Negative control: this blocker must invalidate the active forward route.
+      require_forward_path_invalidation: true
       blocker_pose: {x: 0.9, y: -0.1, z: 0.5, yaw: 0.0}
     recovery_budget_m: 5.0
     reset_pose_tolerance_m: 0.40

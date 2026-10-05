@@ -106,6 +106,14 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
             assert configured[planner.planner_id]["irreversibility_weight"] == planner.irreversibility_weight
     assert len(suite.scenarios) == 2
     assert all(scenario.event.trigger_elapsed_s > 0.0 for scenario in suite.scenarios)
+    requirements = {
+        scenario.name: scenario.event.require_forward_path_invalidation
+        for scenario in suite.scenarios
+    }
+    assert requirements == {
+        "return_gate_closure": False,
+        "forward_closure_negative_control": True,
+    }
     model = ElementTree.parse(PACKAGE_ROOT / "models" / "dynamic_blocker.sdf")
     size_text = model.findtext(".//collision/geometry/box/size")
     assert size_text is not None

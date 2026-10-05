@@ -70,6 +70,7 @@ class ObstacleEvent:
     minimum_injection_clearance_m: float
     observation_margin_m: float
     minimum_lethal_cell_increase: int
+    require_forward_path_invalidation: bool
     blocker_pose: Pose3D
 
     def validate(self) -> None:
@@ -274,6 +275,9 @@ def load_dynamic_suite(path: str | Path) -> DynamicBenchmarkSuite:
                     ),
                     minimum_lethal_cell_increase=int(
                         event_payload["minimum_lethal_cell_increase"]
+                    ),
+                    require_forward_path_invalidation=bool(
+                        event_payload.get("require_forward_path_invalidation", True)
                     ),
                     blocker_pose=_pose3(event_payload["blocker_pose"]),
                 ),
