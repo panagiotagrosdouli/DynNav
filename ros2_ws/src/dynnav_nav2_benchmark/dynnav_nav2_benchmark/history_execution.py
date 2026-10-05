@@ -52,13 +52,16 @@ class HistoryScenarioSpec:
     reset_pose_tolerance_m: float
     execution_timeout_s: float
     wall_timeout_s: float
-    maximum_forward_speed_mps: float
+    observation_frame: str
+    observation_poll_period_s: float
     recoverability_weight: float = 4.0
     frame_id: str = "map"
 
     def validate(self) -> None:
-        if not self.name or not self.frame_id:
-            raise ValueError("scenario name and frame must be non-empty")
+        if not self.name or not self.frame_id or not self.observation_frame:
+            raise ValueError(
+                "scenario name, map frame, and observation frame must be non-empty"
+            )
         self.start.validate()
         self.goal.validate()
         self.safe_region.validate()
@@ -72,7 +75,7 @@ class HistoryScenarioSpec:
             self.reset_pose_tolerance_m,
             self.execution_timeout_s,
             self.wall_timeout_s,
-            self.maximum_forward_speed_mps,
+            self.observation_poll_period_s,
             self.recoverability_weight,
         ):
             if not math.isfinite(value) or value < 0.0:
@@ -81,8 +84,8 @@ class HistoryScenarioSpec:
             raise ValueError("minimum_lethal_cell_increase must be positive")
         if self.execution_timeout_s <= 0.0 or self.wall_timeout_s < self.execution_timeout_s:
             raise ValueError("invalid execution/wall timeout")
-        if self.maximum_forward_speed_mps <= 0.0:
-            raise ValueError("maximum_forward_speed_mps must be positive")
+        if self.observation_poll_period_s <= 0.0:
+            raise ValueError("observation_poll_period_s must be positive")
 
 
 @dataclass(frozen=True, slots=True)
@@ -184,9 +187,8 @@ def load_history_execution_suite(path: str | Path) -> HistoryExecutionSuite:
             reset_pose_tolerance_m=float(item["reset_pose_tolerance_m"]),
             execution_timeout_s=float(item["execution_timeout_s"]),
             wall_timeout_s=float(item["wall_timeout_s"]),
-            maximum_forward_speed_mps=float(
-                item.get("maximum_forward_speed_mps", 0.5)
-            ),
+            observation_frame=str(item["observation_frame"]),
+            observation_poll_period_s=float(item["observation_poll_period_s"]),
             recoverability_weight=float(item.get("recoverability_weight", 4.0)),
         ),
     )
