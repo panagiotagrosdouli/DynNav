@@ -8,6 +8,14 @@ on:
       - '.github/workflows/ros2-dynamic.yml'
       - 'ros2_ws/src/dynnav_nav2_cpp/**'
       - 'ros2_ws/src/dynnav_nav2_benchmark/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ros2-dynamic.yml'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/dynamic_analysis.py'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark/dynamic_runner.py'
+      - 'ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_dynamic_events.yaml'
   workflow_dispatch:
     inputs:
       repetitions:
@@ -125,8 +133,25 @@ jobs:
           assert len(result["summary"]) == 6
           assert result["source_revision"] != "unrecorded"
           assert all(row["valid_trial"] for row in result["trials"])
-          assert all(row["pre_event_path_invalidated"] for row in result["trials"])
-          assert all(row["planner_path_count"] >= 1 for row in result["trials"])
+          forward_requirements = {
+              item["name"]: item["event"].get(
+                  "require_forward_path_invalidation", True
+              )
+              for item in result["scenarios"]
+          }
+          assert all(
+              not (
+                  row["event_applied"]
+                  and forward_requirements[row["scenario"]]
+              )
+              or row["pre_event_path_invalidated"] is True
+              for row in result["trials"]
+          )
+          assert all(
+              row["planner_path_count"] >= 1
+              for row in result["trials"]
+              if row["event_applied"]
+          )
           assessed = sum(
               row["recovery_assessment"] is not None for row in result["trials"]
           )

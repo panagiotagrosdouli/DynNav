@@ -19,3 +19,18 @@ A pre-publication audit exposed two over-strict/incorrect implementation behavio
 2. a realized closure was rejected immediately when the robot was still inside the minimum blocker-clearance radius, rather than remaining pending as a future closure.
 
 The revised implementation preserves all sampling gaps, invalidates only trigger-ambiguous gaps, and keeps a realized closure pending until the unchanged clearance gate is satisfied. These changes alter validation/execution semantics, not the trigger, closure probability, blocker size, or minimum-clearance threshold. Publication-facing Gazebo results must come from a retained artifact generated after this revision.
+
+
+## October 2026 observation-resolution hardening
+
+The release-level audit exposed trigger-ambiguous quantized gaps when execution
+history was sampled only from `NavigateToPose` feedback. A controller speed cap
+reduced displacement between samples but did not eliminate diagonal
+grid-boundary ambiguity and would also have changed robot dynamics.
+
+The benchmark therefore keeps the original controller dynamics and observes
+execution from the composed `map -> base_link` TF stream at a frozen 0.01 s
+poll cadence. This uses execution/localization telemetry rather than planned
+path geometry. The validity rule is unchanged: every observed non-adjacent cell
+jump is retained, any jump that could conceal the directed trigger invalidates
+the trial, and no missing transition is interpolated.

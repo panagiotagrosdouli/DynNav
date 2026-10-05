@@ -49,4 +49,9 @@ scenario:
   reset_pose_tolerance_m: 0.4
   execution_timeout_s: 75.0
   wall_timeout_s: 150.0
+  # Observe executed motion from the composed map->base_link TF stream rather
+  # than lower-rate NavigateToPose feedback. Missing/ambiguous transitions are
+  # never interpolated.
+  observation_frame: base_link
+  observation_poll_period_s: 0.01
   recoverability_weight: 4.0

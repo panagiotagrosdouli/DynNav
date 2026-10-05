@@ -60,8 +60,8 @@ control. Coordinates are frozen in
 
 | Scenario | Trigger | Blocker pose | Intended mechanism |
 |---|---:|---:|---|
-| `return_gate_closure` | 8.0 s | `(-0.95, -0.425)` | Close a narrow return gate after departure |
-| `forward_closure_negative_control` | 4.0 s | `(0.9, -0.1)` | Block the forward route without intentionally sealing the safe region |
+| `return_gate_closure` | 8.0 s | `(-0.95, -0.425)` | Close a narrow return gate after departure; active forward-path intersection is **not** required |
+| `forward_closure_negative_control` | 4.0 s | `(0.9, -0.1)` | Block the active forward route without intentionally sealing the safe region; active-path intersection **is** required |
 
 Both use the same red static box (`0.35 × 1.20 × 1.00 m`) and a 2.0 s
 observation delay. A trial is invalid—not a planner failure—when:
@@ -74,7 +74,15 @@ observation delay. A trial is invalid—not a planner failure—when:
 - the number of lethal cells inside the blocker footprint plus its declared
   observation margin does not increase by the frozen minimum from the
   pre-event costmap;
-- no post-event costmap/recovery assessment is captured.
+- no post-event costmap/recovery assessment is captured;
+- for a scenario declaring `require_forward_path_invalidation: true`, the
+  blocker footprint does not intersect the active pre-event planner path.
+
+The return-gate mechanism intentionally closes connectivity behind the departing
+robot. It is therefore validated through blocker observation plus the
+independent safe-region recovery oracle, not by requiring intersection with the
+forward plan. The forward-closure negative control retains the active
+path-invalidation requirement.
 
 A genuine Nav2 terminal failure before the event is retained as a valid
 pre-event method failure with no irreversibility assessment. A successful goal

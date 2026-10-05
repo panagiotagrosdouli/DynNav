@@ -18,6 +18,7 @@ from dynnav_nav2_benchmark.dynamic_analysis import (
 from dynnav_nav2_benchmark.history_execution import (
     classify_observed_cells,
     deterministic_event_draw,
+    load_history_execution_suite,
     sampling_gap_can_hide_transition,
     trigger_decision,
 )
@@ -106,6 +107,14 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
             assert configured[planner.planner_id]["irreversibility_weight"] == planner.irreversibility_weight
     assert len(suite.scenarios) == 2
     assert all(scenario.event.trigger_elapsed_s > 0.0 for scenario in suite.scenarios)
+    requirements = {
+        scenario.name: scenario.event.require_forward_path_invalidation
+        for scenario in suite.scenarios
+    }
+    assert requirements == {
+        "return_gate_closure": False,
+        "forward_closure_negative_control": True,
+    }
     model = ElementTree.parse(PACKAGE_ROOT / "models" / "dynamic_blocker.sdf")
     size_text = model.findtext(".//collision/geometry/box/size")
     assert size_text is not None
@@ -114,6 +123,14 @@ def test_dynamic_suite_uses_configured_planners_and_frozen_events() -> None:
         suite.blocker_size.y,
         suite.blocker_size.z,
     )
+
+
+def test_history_positive_control_uses_high_rate_tf_observation() -> None:
+    suite = load_history_execution_suite(
+        PACKAGE_ROOT / "config" / "sandbox_history_return_cut_positive_control.yaml"
+    )
+    assert suite.scenario.observation_frame == "base_link"
+    assert suite.scenario.observation_poll_period_s == 0.01
 
 
 def test_frozen_history_scenario_is_pre_outcome_and_cell_consistent() -> None:

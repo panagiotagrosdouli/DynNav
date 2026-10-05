@@ -125,7 +125,10 @@ jobs:
           by_rep = defaultdict(list)
           for row in trials:
               by_rep[row['repetition']].append(row)
-              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible'): assert key in row
+              for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible','execution_observation_source','execution_observation_count','execution_transform_failures','observation_poll_period_s'): assert key in row
+              assert row['execution_observation_source'] == 'tf:map->base_link'
+              assert row['execution_observation_count'] > 0
+              assert row['observation_poll_period_s'] == 0.01
           assert set(by_rep) == set(range(repetitions))
           assert all(r['valid_trial'] for r in trials), [
               (r['planner_id'], r['repetition'], r.get('invalid_reason'))

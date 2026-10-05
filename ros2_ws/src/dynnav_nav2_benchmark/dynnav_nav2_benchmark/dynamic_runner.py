@@ -522,8 +522,13 @@ def _run_dynamic_trial(
                             scenario.event.blocker_pose,
                             _blocker_observation_size(suite, scenario),
                         )
-                        if not pre_event_path_invalidated:
-                            raise RuntimeError("event does not intersect pre-event planner path")
+                        if (
+                            scenario.event.require_forward_path_invalidation
+                            and not pre_event_path_invalidated
+                        ):
+                            raise RuntimeError(
+                                "event does not intersect pre-event planner path"
+                            )
                         _set_entity_pose(
                             navigator,
                             set_pose_client,
@@ -587,8 +592,9 @@ def _run_dynamic_trial(
     event_not_applied_reason: str | None = None
     if event_error is None and not event_applied:
         if pre_event_terminal_failure:
+            # A genuine method failure before the event is a valid outcome for
+            # that planner, but it has no post-event irreversibility assessment.
             event_not_applied_reason = "navigation_failed_before_event"
-            event_error = event_not_applied_reason
         elif timed_out:
             event_error = "event_not_reached_before_timeout"
         else:
@@ -612,13 +618,17 @@ def _run_dynamic_trial(
     if event_error is None and event_applied and recovery_assessment is None:
         event_error = "navigation_completed_before_post_event_assessment"
 
-    valid_trial = (
+    valid_event_trial = (
         event_error is None
         and event_applied
         and blocker_observed
-        and pre_event_path_invalidated is True
+        and (
+            not scenario.event.require_forward_path_invalidation
+            or pre_event_path_invalidated is True
+        )
         and recovery_assessment is not None
     )
+    valid_trial = pre_event_terminal_failure or valid_event_trial
     failure_class = (
         terminal_failure_class(
             succeeded=succeeded,

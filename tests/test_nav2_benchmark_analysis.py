@@ -169,6 +169,14 @@ def test_dynamic_suite_is_frozen_and_matches_runtime_plugins() -> None:
         "return_gate_closure",
         "forward_closure_negative_control",
     }
+    requirements = {
+        scenario.name: scenario.event.require_forward_path_invalidation
+        for scenario in suite.scenarios
+    }
+    assert requirements == {
+        "return_gate_closure": False,
+        "forward_closure_negative_control": True,
+    }
     model = ElementTree.parse(ROS_PACKAGE / "models" / "dynamic_blocker.sdf")
     size_text = model.findtext(".//collision/geometry/box/size")
     assert size_text is not None
