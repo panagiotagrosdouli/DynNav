@@ -10,8 +10,10 @@ from pathlib import Path
 
 import rclpy
 from nav2_simple_commander.robot_navigator import BasicNavigator
+from rclpy.time import Time
 from ros_gz_interfaces.srv import SetEntityPose, SpawnEntity
 from std_msgs.msg import String
+from tf2_ros import Buffer, TransformException, TransformListener
 
 from dynnav_nav2_benchmark.analysis import Pose2D, balanced_trial_order
 from dynnav_nav2_benchmark.dynamic_analysis import (
@@ -45,6 +47,7 @@ def _trial(
     order_index,
     bt,
     reset_s,
+    tf_buffer,
 ):
     scenario = suite.scenario
     _set_entity_pose(
@@ -139,13 +142,33 @@ def _trial(
     injection_clearance_m = None
     maximum_pending_clearance_m = None
     last_feedback = None
-    while not navigator.isTaskComplete():
-        feedback = navigator.getFeedback()
-        if feedback is not None:
-            last_feedback = feedback
-            pose = feedback.current_pose.pose.position
+    last_execution_pose = None
+    execution_observation_count = 0
+    execution_transform_failures = 0
+    while navigator.result_future is not None and not navigator.result_future.done():
+        rclpy.spin_once(
+            navigator,
+            timeout_sec=scenario.observation_poll_period_s,
+        )
+
+        try:
+            transform = tf_buffer.lookup_transform(
+                scenario.frame_id,
+                scenario.observation_frame,
+                Time(),
+            )
+        except TransformException:
+            execution_transform_failures += 1
+        else:
+            translation = transform.transform.translation
+            current_pose = Pose2D(
+                float(translation.x),
+                float(translation.y),
+            )
+            last_execution_pose = current_pose
+            execution_observation_count += 1
             cell = world_to_cell(
-                Pose2D(float(pose.x), float(pose.y)),
+                current_pose,
                 origin_x=origin_x,
                 origin_y=origin_y,
                 resolution=resolution,
@@ -155,17 +178,13 @@ def _trial(
                 publisher.publish(String(data=text))
             if state.closure_requested and not closure_applied:
                 clearance = math.hypot(
-                    float(pose.x) - scenario.blocker_pose.x,
-                    float(pose.y) - scenario.blocker_pose.y,
+                    current_pose.x - scenario.blocker_pose.x,
+                    current_pose.y - scenario.blocker_pose.y,
                 )
                 maximum_pending_clearance_m = max(
                     clearance,
                     maximum_pending_clearance_m or 0.0,
                 )
-                # A realized closure is a future event.  The trigger requests
-                # it, but physical injection is delayed until the robot is
-                # safely clear of the blocker footprint.  The clearance gate
-                # is never weakened to make a trial pass.
                 if clearance >= scenario.minimum_injection_clearance_m:
                     try:
                         _set_entity_pose(
@@ -182,6 +201,10 @@ def _trial(
                     else:
                         closure_applied = True
                         injection_clearance_m = clearance
+
+        feedback = navigator.getFeedback()
+        if feedback is not None:
+            last_feedback = feedback
             nav_s = float(feedback.navigation_time.sec) + (
                 float(feedback.navigation_time.nanosec) / 1e9
             )
@@ -189,6 +212,7 @@ def _trial(
                 navigator.cancelTask()
                 _wait_after_cancel(navigator)
                 break
+
         if injection_error is not None:
             navigator.cancelTask()
             _wait_after_cancel(navigator)
@@ -197,13 +221,14 @@ def _trial(
             navigator.cancelTask()
             _wait_after_cancel(navigator)
             break
-        rclpy.spin_once(navigator, timeout_sec=0.05)
 
     success, error_code, error_message = _result_details(navigator)
     recovery = None
-    if last_feedback is not None:
+    current = last_execution_pose
+    if current is None and last_feedback is not None:
         pose = last_feedback.current_pose.pose.position
         current = Pose2D(float(pose.x), float(pose.y))
+    if current is not None:
         cm = navigator.getGlobalCostmap()
         md = cm.metadata
         recovery = assess_recovery_reachability(
@@ -219,6 +244,8 @@ def _trial(
         ).to_dict()
     navigator.destroy_publisher(publisher)
     navigator.destroy_publisher(reset_publisher)
+    if execution_observation_count == 0 and injection_error is None:
+        injection_error = "execution_pose_unavailable"
     if (
         injection_error is None
         and state.closure_requested
@@ -251,6 +278,12 @@ def _trial(
         "injection_clearance_m": injection_clearance_m,
         "maximum_pending_clearance_m": maximum_pending_clearance_m,
         "event_outcome": state.event_outcome,
+        "execution_observation_source": (
+            f"tf:{scenario.frame_id}->{scenario.observation_frame}"
+        ),
+        "execution_observation_count": execution_observation_count,
+        "execution_transform_failures": execution_transform_failures,
+        "observation_poll_period_s": scenario.observation_poll_period_s,
         "accepted_transitions": state.accepted_transitions,
         "sampling_gaps": state.sampling_gaps,
         "ambiguous_trigger_gaps": state.ambiguous_trigger_gaps,
@@ -277,6 +310,8 @@ def main(argv: list[str] | None = None) -> int:
     args.output.mkdir(parents=True, exist_ok=True)
     rclpy.init(args=ros_arguments)
     nav = BasicNavigator(node_name="dynnav_history_execution_benchmark")
+    tf_buffer = Buffer(node=nav)
+    tf_listener = TransformListener(tf_buffer, nav, spin_thread=False)
     spawn = nav.create_client(
         SpawnEntity,
         f"/world/{suite.world_name}/create",
@@ -312,6 +347,7 @@ def main(argv: list[str] | None = None) -> int:
                         order_index,
                         bts[planner_id],
                         args.reset_settle_s,
+                        tf_buffer,
                     )
                 )
         payload = {
@@ -325,6 +361,7 @@ def main(argv: list[str] | None = None) -> int:
         )
         return 0 if all(item["valid_trial"] for item in trials) else 2
     finally:
+        del tf_listener
         nav.destroy_node()
         rclpy.shutdown()
 
