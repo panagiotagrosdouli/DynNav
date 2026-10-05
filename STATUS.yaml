@@ -1,7 +1,7 @@
 project: DynNav
 branch: main
 status: active_research
-last_updated: 2026-09-14
+last_updated: 2026-10-04
 verified_main:
   sha: 97fdf7d97403cef738858ce4fe82e1dfe90ee961
   ci_run: 34831325240
@@ -27,16 +27,20 @@ ros2:
   history_conditioned_cpp_nav2_planner: integrated
   persistent_history_from_executed_transitions: implemented
   action_triggered_gazebo_protocol: frozen
-  action_triggered_gazebo_comparative_outcomes: pending
+  action_triggered_gazebo_execution: retained_integration_evidence
+  action_triggered_gazebo_comparative_efficacy: unsupported_no_stable_effect
 claims_not_made:
   - safety_certification
   - universal_superiority
   - physical_robot_efficacy
   - broad_real_world_generalization
 next_validation:
-  - retained action-triggered Gazebo paired execution
   - trigger-probability miscalibration stress tests
   - partial-observability and delayed-revelation stress tests
+  - broader predeclared Gazebo efficacy study before any comparative execution claim
+release_gate:
+  - clean tagged full-main audit
+  - final bibliography and evidence-manifest verification
 repository_organization:
   canonical_guide: docs/REPOSITORY_GUIDE.md
   claim_boundary: CLAIM_EVIDENCE_MATRIX.md

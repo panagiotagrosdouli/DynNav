@@ -1,15 +1,17 @@
 """ROS 2 integration boundary for DynNav.
 
-This module intentionally avoids importing ROS 2 packages at module import time so
-the core research package remains testable in non-ROS CI environments. Concrete
-adapters should live behind optional dependencies and convert ROS messages into
-`dynnav.core` primitives.
+The adapter deliberately avoids importing ROS 2 packages at module import time so
+the canonical research package remains usable in non-ROS environments.  Message
+objects are consumed through the small attribute surface exposed by
+``nav_msgs/msg/OccupancyGrid``.
 """
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 from typing import Any
+
+import numpy as np
 
 from dynnav.core import GridMap, Pose, Trajectory
 
@@ -24,18 +26,34 @@ class Ros2NavigationCommand:
 
 
 class Ros2Adapter:
-    """Boundary class for future ROS 2 / Nav2 integration."""
+    """Dependency-light conversion boundary between ROS 2 messages and DynNav."""
 
     def occupancy_from_message(self, message: Any) -> GridMap:
-        """Convert a ROS occupancy message into a DynNav grid.
+        """Convert a ROS OccupancyGrid-like message into the canonical grid.
 
-        This placeholder documents the integration contract. A concrete adapter
-        should parse nav_msgs/OccupancyGrid and preserve unknown cells as
-        probabilities rather than forcing a binary map.
+        The conversion follows the ROS row-major occupancy convention. Values in
+        ``[0, 100]`` become probabilities in ``[0, 1]``, while unknown
+        cells (``-1``) retain uncertainty as probability ``0.5``.  Only the
+        standard ``message.info.width``, ``height``, ``resolution`` and
+        ``message.data`` attributes are required, so this function remains
+        testable without ROS installed.
         """
-        raise NotImplementedError(
-            "ROS 2 message conversion requires optional ROS dependencies"
-        )
+        try:
+            width = int(message.info.width)
+            height = int(message.info.height)
+            resolution = float(message.info.resolution)
+            raw = np.asarray(tuple(message.data), dtype=float)
+        except (AttributeError, TypeError, ValueError) as exc:
+            raise ValueError("message must provide OccupancyGrid-compatible info and data") from exc
+
+        if width <= 0 or height <= 0:
+            raise ValueError("occupancy grid width and height must be positive")
+        if raw.size != width * height:
+            raise ValueError("occupancy grid data length must equal width * height")
+
+        occupancy = raw.reshape((height, width))
+        occupancy = np.where(occupancy < 0.0, 0.5, np.clip(occupancy / 100.0, 0.0, 1.0))
+        return GridMap(occupancy=occupancy, resolution=resolution)
 
     def command_from_trajectory(
         self,

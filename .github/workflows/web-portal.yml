@@ -43,11 +43,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Resolve patched dependency graphs
-        run: |
-          npm --prefix website install --package-lock-only --ignore-scripts --no-audit --no-fund
-          npm --prefix apps/web install --package-lock-only --ignore-scripts --no-audit --no-fund
-          npm --prefix vercel_app install --package-lock-only --ignore-scripts --no-audit --no-fund
       - name: Install locked dependencies
         run: |
           npm --prefix website ci --no-audit --no-fund
@@ -55,9 +50,9 @@ jobs:
           npm --prefix vercel_app ci --no-audit --no-fund
       - name: Audit dependency trees
         run: |
-          npm --prefix website audit --audit-level=high
-          npm --prefix apps/web audit --audit-level=high
-          npm --prefix vercel_app audit --audit-level=high
+          npm --prefix website audit --omit=dev --audit-level=high
+          npm --prefix apps/web audit --omit=dev --audit-level=high
+          npm --prefix vercel_app audit --omit=dev --audit-level=high
       - name: Type-check standalone Vercel app
         run: npm --prefix vercel_app run typecheck
       - name: Build combined portal

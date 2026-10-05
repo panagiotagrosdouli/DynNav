@@ -248,53 +248,6 @@ Authoritative paper-facing values and provenance live in [`paper/dynnav_r/eviden
 
 ---
 
-## Quick start
-
-### Python
-
-DynNav requires Python 3.10 or newer and is configured for Python 3.10, 3.11, and 3.12.
-
-```bash
-git clone https://github.com/panagiotagrosdouli/DynNav.git
-cd DynNav
-python -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev,researcher,dashboard]"
-```
-
-On Windows, activate the environment with:
-
-```powershell
-.venv\Scripts\activate
-```
-
-Available package entry points include:
-
-```bash
-dynnav-demo
-dynnav-benchmark
-```
-
-Run the regression suite and lint checks with:
-
-```bash
-python -m pytest -q
-ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
-```
-
-### ROS 2 Jazzy / Nav2
-
-```bash
-source /opt/ros/jazzy/setup.bash
-rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
-colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
-source install/setup.bash
-colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
-```
-
----
-
 ## Experimental methodology
 
 The evaluation stack is designed around matched comparisons and retained evidence rather than isolated demo runs. It includes:

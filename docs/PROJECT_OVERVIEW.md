@@ -1,126 +1,105 @@
 # DynNav — Project Overview
 
-## What I built
+## What DynNav studies
 
-DynNav is a research-grade autonomous navigation project focused on **dynamic replanning under uncertainty**.
+DynNav is a research project on **history-conditioned safe-return planning under action-triggered topology hazards**. Its central observation is that two robot executions can reach the same geometric cell while having different future return-connectivity because earlier **executed actions** activated different stochastic closure hazards.
 
-The central idea is simple: a robot should not only choose a short path; it should also avoid decisions that leave it with no useful recovery option if the environment changes.
+The publication-facing planning state is therefore not position alone. Under the finite hazard model used by the current paper, the sufficient statistic is `(grid cell, activated hazard set)`. This is standard state augmentation / Markovization; the contribution is the explicit action-triggered return-topology formulation, its controlled information-gap construction, and the measured behavior of exact and approximate planners under that formulation.
 
-I built the project as a complete research pipeline rather than a single planner implementation:
+## Current research question
 
-1. **Planning algorithms** — deterministic A*, Dijkstra, D* Lite, and a controlled J0–J3 family that separates geometric cost, risk, and recoverability.
-2. **Dynamic environment models** — occupancy, uncertainty, risk, obstacle updates, and safe-region definitions.
-3. **Recoverability reasoning** — structural estimates of whether a navigation decision preserves escape and return options.
-4. **Evaluation tooling** — paired multi-seed experiments, failure metrics, latency and path-cost measurements, confidence intervals, and retained raw artifacts.
-5. **ROS 2 / Nav2 integration** — a C++17 `nav2_core::GlobalPlanner` plugin and benchmark packages.
-6. **Gazebo experiments** — static planner-server checks and dynamic route-invalidation protocols.
-7. **Research interfaces** — a Streamlit laboratory plus FastAPI/Next.js tools for configuring, running, and inspecting experiments.
-8. **Reproducibility and evidence** — CI, tests, frozen configurations, manifests, claim–evidence tracking, and publication-oriented protocols.
+> Does executed path history carry recoverability-relevant information that an endpoint-only fixed-field representation discards when robot actions activate future topology hazards?
 
-## The research question
+DynNav does **not** claim that history-aware planning, MDP state augmentation, safe-return constraints, or generic recoverability are new.
 
-The project asks:
+## Canonical system
 
-> When a route becomes invalid during execution, can a planner reduce recovery-infeasible failures by preserving useful escape options before the failure occurs?
+The current publication path contains:
 
-This differs from classical shortest-path planning because the cheapest path can still be brittle. A robot may enter a narrow region or consume its last safe retreat option immediately before a new obstacle appears.
+1. **Action-triggered hazard semantics** — directed executed transitions activate stochastic future closures.
+2. **Exact safe-return probability** — bounded hazard sets are evaluated by enumerating future closure realizations and checking connectivity to a designated safe region.
+3. **Exact history-aware A\*** — search over `(cell, activated hazards)`.
+4. **Baselines** — geometric shortest/NavFn, state-only marginal/exact fixed-field controls, and hard safe-return constraints.
+5. **Approximation** — critical-cut planning with both a series-critical regime where it is exact and a retained joint-cut counterexample where it is optimistic.
+6. **Paired evaluation** — common-random-number stochastic studies, held-out horizon/probability cases, frozen hand-authored topologies, and objective-form sensitivity.
+7. **ROS 2 / Nav2** — a C++17 `nav2_core::GlobalPlanner` with persistent history updated from executed transitions rather than from planned paths.
+8. **Gazebo validation** — a frozen action-triggered mechanism protocol with retained strict integration probes and explicit validity/exclusion rules.
+9. **Evidence discipline** — machine-readable provenance, claim/evidence mapping, failure cases, and publication-facing limitations.
 
-## The controlled comparison
+## Evidence currently retained
 
-The core scientific comparison uses four objectives implemented under the same experimental conditions:
+The strongest comparative evidence remains controlled synthetic/geometric evaluation. Retained studies include the same-state/different-history information-gap construction, analytic commitment phase-boundary checks, paired stochastic execution, held-out module/probability studies, three frozen hand-authored geometries, exact state-only fixed-field controls, a 96-scenario unavoidable-hazard expansion, exact-vs-critical-cut scaling, a joint-cut adversarial counterexample, and soft-objective versus hard-safe-return Pareto sweeps.
 
-| ID | Objective | Meaning |
-|---|---|---|
-| J0 | shortest path | geometric baseline |
-| J1 | path + risk | risk-aware baseline |
-| J2 | path + recoverability penalty | tests escape-option preservation |
-| J3 | path + risk + recoverability penalty | joint objective |
+The ROS/Gazebo evidence establishes software integration and protocol-valid execution. Retained strict mechanism probes have valid end-to-end trials and successful navigation across the frozen planner conditions, but the DynNavHistory-vs-DynNavShortest trigger-exposure difference is not stable across reruns. Therefore **comparative Gazebo efficacy is not a supported claim**.
 
-The goal is not to claim that J2 or J3 is universally better. The goal is to measure **when preserving recovery options helps, what it costs, and when it fails**.
+Authoritative numerical provenance is in [paper/dynnav_r/evidence_manifest.json](../paper/dynnav_r/evidence_manifest.json), and claim boundaries are in [CLAIM_EVIDENCE_MATRIX.md](../CLAIM_EVIDENCE_MATRIX.md).
 
-## How the system works
+## Publication-facing execution semantics
 
-```text
-Map / sensor state / obstacle event
-                │
-                ▼
- Occupancy + risk + uncertainty
-                │
-                ▼
- Recoverability / escape-option estimate
-                │
-                ▼
-      J0 / J1 / J2 / J3 planner
-                │
-                ▼
-      Execute through Python or Nav2
-                │
-        environment changes
-                │
-                ▼
-             Replan
-                │
-                ▼
- Metrics + failures + raw evidence bundle
-```
+A planned path may reason about future triggers, but it does not mutate persistent hazard history. Only observed execution does. The sequence is: executed transition → trigger observation → activated hazard history → safe-return model → history-conditioned search → ROS 2/Nav2 execution → retained evidence.
 
-A normal experiment therefore follows the full loop: observe → plan → execute → invalidate route → replan → measure outcome.
+## What is canonical and what is exploratory
 
-## What is core and what is exploratory
-
-The **core DynNav work** is the risk/recoverability-aware replanning pipeline, its controlled J0–J3 comparison, ROS 2/Nav2 integration, and evidence-oriented evaluation.
-
-The repository also contains exploratory modules covering learning, mapping, security, multi-robot coordination, human/AI interaction, and other research directions. These are useful prototypes, but they are **not evidence for the central DynNav claim**.
-
-This distinction is intentional: the repository separates the smallest publishable scientific contribution from the broader research programme.
-
-## Evidence currently available
-
-The repository contains several levels of evidence:
-
-- Python regression and research-contract tests.
-- Reproducible controlled synthetic experiments.
-- ROS 2 / Nav2 plugin and integration tests.
-- Retained static planner-server runs.
-- Dynamic Gazebo commissioning trials.
-- Experiment protocols, manifests, failure definitions, and claim–evidence documentation.
-
-The current dynamic Gazebo evidence is commissioning-level rather than a powered efficacy study. The project therefore does **not** claim formal safety guarantees, universal performance superiority, or physical-robot validation.
-
-## Repository reading path
-
-For a first review, use this order:
-
-1. [`README.md`](../README.md) — project summary and quick start.
-2. [`CORE_CONTRIBUTION.md`](../CORE_CONTRIBUTION.md) — the smallest publishable scientific contribution.
-3. [`CLAIM_EVIDENCE_MATRIX.md`](../CLAIM_EVIDENCE_MATRIX.md) — what each claim is supported by.
-4. [`EXPERIMENT_PROTOCOL_V2.md`](../EXPERIMENT_PROTOCOL_V2.md) — experimental design and validity rules.
-5. [`FAILURE_CASES.md`](../FAILURE_CASES.md) — failure definitions and falsification cases.
-6. [`REPRODUCIBILITY_REPORT.md`](../REPRODUCIBILITY_REPORT.md) — reproducibility status.
-7. [`docs/PHD_APPLICATION_READINESS.md`](PHD_APPLICATION_READINESS.md) — concise research-review dossier.
-
-## Main code paths
+The canonical publication path is described in [REPOSITORY_GUIDE.md](REPOSITORY_GUIDE.md). The main paths are:
 
 ```text
-dynnav/                     Python research core
-  planners/                 planning and replanning algorithms
-  experiments/              controlled scenarios and studies
-  evaluation/               metrics and statistical analysis
+dynnav/                              Python research core
+  planners/                          exact, approximate and baseline planners
+  experiments/                       controlled and held-out studies
+  evaluation/                        metrics/statistics
 
-ros2_ws/src/
-  dynnav_nav2_cpp/           C++ Nav2 global-planner plugin
-  dynnav_nav2_benchmark/     static and dynamic ROS/Gazebo benchmarks
-  dynnav_turtlebot3/         simulation / hardware bring-up
-
-configs/                    frozen experiment configuration
-scripts/                    reproducibility runners and validators
-tests/                      software and research-contract tests
-results/                    retained evidence and experiment artifacts
-contributions/              exploratory research modules
+ros2_ws/src/dynnav_nav2_cpp/         C++ Nav2 planner
+ros2_ws/src/dynnav_nav2_benchmark/   ROS/Gazebo benchmark contracts
+paper/dynnav_r/                       manuscript + evidence manifest
+results/                              retained outputs
+scripts/                              reproducible runners and audits
+tests/                                regression/research-contract tests
+configs/                              frozen configuration
+app/                                  Streamlit research lab
+apps/api/ + apps/web/                 research API/workspace
+contributions/                        exploratory programme; not paper evidence
 ```
 
-## Current research boundary
+Historical J0–J3 risk/recoverability experiments and broader exploratory modules remain useful research history, but they are **not** the current central paper claim.
 
-The present recoverability quantity is a structural heuristic, not a calibrated probability that recovery will succeed. A major next step is validating a robot-information-conditioned recovery-feasibility estimator and then running a sufficiently powered paired dynamic study.
+## Reproduce the core
 
-That boundary is important: DynNav is designed to make unsupported claims difficult by keeping code, experiments, limitations, and evidence explicitly linked.
+Python:
+
+```bash
+python -m pip install -e ".[dev,researcher,dashboard]"
+ruff check dynnav ros2_ws/src/dynnav_nav2_benchmark
+python -m pytest -q
+python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke
+python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks
+```
+
+ROS 2 Jazzy / Nav2:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+rosdep install --from-paths ros2_ws/src --ignore-src --rosdistro jazzy -r -y
+colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+source install/setup.bash
+colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark
+```
+
+Web surfaces use committed npm lockfiles and clean `npm ci` installs.
+
+## Reviewer reading path
+
+1. [README.md](../README.md)
+2. [CORE_CONTRIBUTION.md](../CORE_CONTRIBUTION.md)
+3. [CLAIM_EVIDENCE_MATRIX.md](../CLAIM_EVIDENCE_MATRIX.md)
+4. [EXPERIMENT_PROTOCOL_V3.md](../EXPERIMENT_PROTOCOL_V3.md)
+5. [FAILURE_CASES.md](../FAILURE_CASES.md)
+6. [paper/dynnav_r/evidence_manifest.json](../paper/dynnav_r/evidence_manifest.json)
+7. [REPOSITORY_GUIDE.md](REPOSITORY_GUIDE.md)
+8. [ros2_ws/src/dynnav_nav2_cpp](../ros2_ws/src/dynnav_nav2_cpp)
+9. [ros2_ws/src/dynnav_nav2_benchmark](../ros2_ws/src/dynnav_nav2_benchmark)
+
+## Current boundary
+
+DynNav does not establish formal safety certification, calibrated real-world hazard probabilities, arbitrary-map generalization, universal superiority, or physical-robot efficacy. The next scientific hardening targets are probability-miscalibration, partial-observability/delayed-revelation stress tests, broader predeclared geometry families, and—only if an execution-efficacy claim is desired—a broader powered Gazebo study.
+
+A release candidate should be frozen only after the repository's full-main audit, paper build, final bibliography review, and number-to-evidence-manifest verification all pass.

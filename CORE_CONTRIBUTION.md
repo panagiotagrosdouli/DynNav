@@ -50,18 +50,19 @@ Current retained evidence supports:
 - replication across three frozen hand-authored geometric topologies;
 - exact-vs-cut scaling in a series-critical family;
 - a joint-cut counterexample where the cut approximation is optimistic;
-- C++ Nav2 integration of persistent history semantics.
+- C++ Nav2 integration of persistent history semantics;
+- retained action-triggered Gazebo mechanism probes establishing end-to-end integration and measurement validity, without a stable comparative efficacy effect.
 
 Current evidence does **not** support:
 
 - universal superiority of the soft history objective over hard safe-return constraints;
 - universal exactness of the critical-cut approximation;
 - calibrated real-world closure probabilities;
-- completed history-conditioned Gazebo efficacy results;
+- comparative Gazebo efficacy of the history-conditioned planner;
 - physical-robot efficacy or safety certification.
 
 ## Publication gate
 
-The IEEE manuscript and retained synthetic/geometric evidence are already integrated. The next hardening gate is valid paired action-triggered Gazebo execution. New execution-level claims should enter the manuscript only after trigger observation, event realization/injection, costmap observation and recovery-label contracts all pass and the resulting artifact is retained with provenance.
+The IEEE manuscript, retained synthetic/geometric evidence, and strict action-triggered Gazebo integration probes are already integrated into the evidence boundary. The Gazebo probes validate execution and measurement contracts but do not establish a stable DynNavHistory-vs-DynNavShortest efficacy effect. The remaining publication gate is a clean tagged full validation run plus final bibliography/provenance checks. Any future comparative Gazebo efficacy claim requires a broader predeclared study with retained valid trials and an analysis plan fixed before outcomes are inspected.
 
 See `paper/dynnav_r/evidence_manifest.json` and `CLAIM_EVIDENCE_MATRIX.md` for authoritative claim/evidence mapping.

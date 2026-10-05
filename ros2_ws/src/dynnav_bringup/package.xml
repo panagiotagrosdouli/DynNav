@@ -3,7 +3,7 @@
   <name>dynnav_bringup</name>
   <version>0.1.0</version>
   <description>Bringup package for DynNav with ROS 2 Jazzy, Nav2 and TurtleBot3.</description>
-  <maintainer email="maintainer@todo.invalid">DynNav Team</maintainer>
+  <maintainer email="75089541+panagiotagrosdouli@users.noreply.github.com">Panagiota Grosdouli</maintainer>
   <license>Apache-2.0</license>
   <buildtool_depend>ament_python</buildtool_depend>
   <exec_depend>rclpy</exec_depend>

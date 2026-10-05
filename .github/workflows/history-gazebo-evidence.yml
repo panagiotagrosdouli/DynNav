@@ -76,6 +76,38 @@ jobs:
           set -o pipefail
           source /opt/ros/jazzy/setup.bash
           source /tmp/dynnav_history/install/setup.bash
+
+          # nav2_bringup/tb3_simulation_launch.py starts xacro and `gz sim`
+          # concurrently. On fast CI runners Gazebo can read the temporary
+          # world path before xacro has finished writing it, then exits 255
+          # with "Unable to find or download file" while Nav2 waits forever
+          # for the missing odom TF. Wrap only the gz executable for this step
+          # and wait until the generated SDF is complete before exec'ing Gazebo.
+          export DYNNAV_REAL_GZ="$(command -v gz)"
+          mkdir -p /tmp/dynnav_history/bin
+          cat > /tmp/dynnav_history/bin/gz <<'EOF'
+          #!/usr/bin/env bash
+          set -euo pipefail
+          if [[ "${1:-}" == "sim" ]]; then
+            sdf="${!#}"
+            if [[ "$sdf" == /tmp/nav2_*.sdf ]]; then
+              for _ in $(seq 1 200); do
+                if [[ -s "$sdf" ]] && grep -q '</sdf>' "$sdf"; then
+                  break
+                fi
+                sleep 0.05
+              done
+              if [[ ! -s "$sdf" ]] || ! grep -q '</sdf>' "$sdf"; then
+                echo "Timed out waiting for Nav2-generated world SDF: $sdf" >&2
+                exit 66
+              fi
+            fi
+          fi
+          exec "$DYNNAV_REAL_GZ" "$@"
+          EOF
+          chmod +x /tmp/dynnav_history/bin/gz
+          export PATH="/tmp/dynnav_history/bin:$PATH"
+
           timeout --signal=INT --kill-after=30s 35m ros2 launch dynnav_nav2_benchmark tb3_history_execution_benchmark.launch.py headless:=true repetitions:=${{ inputs.repetitions || '8' }} scenario_file:=/tmp/dynnav_history/install/dynnav_nav2_benchmark/share/dynnav_nav2_benchmark/config/sandbox_history_return_cut_positive_control.yaml output_dir:=/tmp/dynnav_history/results 2>&1 | tee /tmp/dynnav_history/results/ros_launch.log
           test -s /tmp/dynnav_history/results/results.json
       - name: Validate paired event and trial contract
