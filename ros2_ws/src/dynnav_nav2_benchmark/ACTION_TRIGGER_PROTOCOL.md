@@ -23,10 +23,14 @@ The revised implementation preserves all sampling gaps, invalidates only trigger
 
 ## October 2026 observation-resolution hardening
 
-The release-level audit exposed one trigger-ambiguous axial sampling gap in an
-otherwise valid 24-trial mechanism run. The validity rule was not relaxed.
-Instead, the frozen positive-control scenario now records a maximum forward
-execution speed of 0.20 m/s, and the launch configuration caps the Nav2 MPPI
-controller to that value. This reduces the chance that navigation feedback
-skips over the 0.05 m trigger transition. Any gap that can still conceal the
-directed trigger remains invalid, and no missing transition is interpolated.
+The release-level audit exposed trigger-ambiguous quantized gaps when execution
+history was sampled only from `NavigateToPose` feedback. A controller speed cap
+reduced displacement between samples but did not eliminate diagonal
+grid-boundary ambiguity and would also have changed robot dynamics.
+
+The benchmark therefore keeps the original controller dynamics and observes
+execution from the composed `map -> base_link` TF stream at a frozen 0.01 s
+poll cadence. This uses execution/localization telemetry rather than planned
+path geometry. The validity rule is unchanged: every observed non-adjacent cell
+jump is retained, any jump that could conceal the directed trigger invalidates
+the trial, and no missing transition is interpolated.
