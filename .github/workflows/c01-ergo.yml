@@ -1,0 +1,27 @@
+name: C01 ERGO pilot checks
+on:
+  pull_request:
+    paths:
+      - 'contributions/01_learned_astar/**'
+      - 'tests/test_c01_ergo_optimal.py'
+      - '.github/workflows/c01-ergo.yml'
+  workflow_dispatch:
+jobs:
+  ergo:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install numpy pytest
+      - name: Exact shortest-path and cache regression
+        run: python -m pytest -q tests/test_c01_ergo_optimal.py
+      - name: Proxy instrumentation smoke (not a learned-neural experiment)
+        run: python contributions/01_learned_astar/experiments/ergo_pilot.py --episodes 8 --out results/ergo_ci_proxy
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c01-ergo-proxy-smoke
+          path: results/ergo_ci_proxy/
+          if-no-files-found: warn
