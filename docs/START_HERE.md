@@ -2,6 +2,8 @@
 
 > **Navigation guide, not a new scientific claim.** DynNav is a research repository with one canonical publication track, a robotics implementation, interactive labs and a collection of exploratory research modules. Different directories have different validation levels.
 
+For a narrated walkthrough of the problem, algorithm, experiments and integration, see the [five-minute project tour](PROJECT_TOUR.md).
+
 ## Choose your path
 
 | I want to… | Start here | What to expect |
