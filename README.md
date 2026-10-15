@@ -16,6 +16,8 @@ DynNav studies autonomous navigation in environments where a robot's **executed 
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-22314E)](ros2_ws/src/dynnav_nav2_cpp/README.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-4C1.svg)](LICENSE)
 
+**[Explore the five-minute project tour](docs/PROJECT_TOUR.md)** · [Research website](https://dyn-nav.vercel.app) · [Contributing](CONTRIBUTING.md)
+
 ## Find what you need
 
 | Research paper | Robotics software | Experiments and evidence | Exploratory modules | Apps and demos |
