@@ -8,13 +8,21 @@
 
 DynNav studies autonomous navigation in environments where a robot's **executed actions can change future topology**. Two trajectories can end at the same geometric location while leaving the robot with different safe-return options because one trajectory activated a future hazard and the other did not.
 
-[English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE manuscript](paper/dynnav_r/main.tex)
+[**Start here — project map**](docs/START_HERE.md) · [English](README.md) · [Ελληνικά](README_GR.md) · [Repository guide](docs/REPOSITORY_GUIDE.md) · [IEEE manuscript](paper/dynnav_r/main.tex)
 
 [![CI](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml)
 [![Paper](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/paper-build.yml/badge.svg)](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/paper-build.yml)
 [![Python](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB)](pyproject.toml)
 [![ROS 2](https://img.shields.io/badge/ROS_2-Jazzy-22314E)](ros2_ws/src/dynnav_nav2_cpp/README.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-4C1.svg)](LICENSE)
+
+## Find what you need
+
+| Research paper | Robotics software | Experiments and evidence | Exploratory modules | Apps and demos |
+|---|---|---|---|---|
+| [Manuscript](paper/dynnav_r/main.tex) | [Python core](dynnav/) · [ROS 2/Nav2](ros2_ws/src/) | [Evidence](paper/dynnav_r/evidence_manifest.json) · [Protocols](docs/BENCHMARK_PROTOCOL.md) | [Contributions C01–C27](contributions/README.md) | [Streamlit](app/) · [Web/API](apps/) |
+
+**New to the repository?** Follow the [start-here guide](docs/START_HERE.md) for the canonical research track, reproducibility instructions, and the distinction between validated results and exploratory prototypes.
 
 ## The idea in 20 seconds
 
