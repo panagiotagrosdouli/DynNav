@@ -19,12 +19,21 @@ const process = [
   ["04", "Evaluate", "Retain seeds, artifacts, metrics, counterexamples and limitations."],
 ] as const;
 
+const visuals = [
+  { id: "C01", title: "Learned A* planning", src: "C01_overview.svg" },
+  { id: "C04", title: "Returnability & recoverability", src: "C04_overview.svg" },
+  { id: "C09", title: "Multi-robot coordination", src: "C09_overview.svg" },
+  { id: "C17", title: "Semantic topological maps", src: "C17_overview.svg" },
+  { id: "C18", title: "Formal safety shields", src: "C18_overview.svg" },
+  { id: "C25", title: "Adversarial navigation testing", src: "C25_overview.svg" },
+] as const;
+
 export default function Home() {
   return (
     <main>
       <nav className="topbar" aria-label="Primary navigation">
         <a className="wordmark" href="#top"><span className="mark" aria-hidden="true">D</span> DynNav<span className="portfolio-dot">.</span></a>
-        <div className="nav-links"><a href="#about">About</a><a href="#work">My work</a><a href="#results">Results</a><a href="#explore">Explore</a></div>
+        <div className="nav-links"><a href="#about">About</a><a href="#work">My work</a><a href="#gallery">Gallery</a><a href="#results">Results</a><a href="#explore">Explore</a></div>
         <a className="nav-cta" href={repo} target="_blank" rel="noopener noreferrer">View GitHub ↗</a>
       </nav>
 
@@ -70,6 +79,22 @@ export default function Home() {
           <div className="work-card-top"><span>{item.number} / {item.category}</span><span>↗</span></div>
           <h3>{item.name}</h3><p>{item.detail}</p><div className="work-tech">{item.tech}</div>
         </a>)}</div>
+      </section>
+
+
+      <section className="architecture gallery-section" id="gallery">
+        <div className="section-heading"><p className="eyebrow"><span /> Visual project gallery</p><h2>A closer look at the systems.</h2><p>Original diagrams from the DynNav repository, illustrating selected research modules. These are explanatory architecture visuals, not simulation screenshots or empirical results.</p></div>
+        <figure className="map-figure">
+          <img src="https://raw.githubusercontent.com/panagiotagrosdouli/DynNav/main/assets/readme/dynnav_living_map.svg" alt="DynNav research illustration showing a grid map, risk area and alternative navigation paths" loading="lazy" />
+          <figcaption>DynNav living map · conceptual visualization</figcaption>
+        </figure>
+        <div className="gallery-grid">
+          {visuals.map(v => <a key={v.id} className="gallery-card" href={`${file}/assets/contributions/${v.src}`} target="_blank" rel="noopener noreferrer">
+            <div className="gallery-image"><img src={`https://raw.githubusercontent.com/panagiotagrosdouli/DynNav/main/assets/contributions/${v.src}`} alt={`${v.id}: ${v.title} explanatory module diagram`} loading="lazy" /></div>
+            <div className="gallery-label"><span>{v.id} / {v.title}</span><span>↗</span></div>
+          </a>)}
+        </div>
+        <a className="gallery-all" href={`${file}/docs/CONTRIBUTION_VISUAL_GALLERY.md`}>Explore all 26 research-module diagrams →</a>
       </section>
 
       <section className="architecture" id="approach">
