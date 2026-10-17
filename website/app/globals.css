@@ -133,3 +133,9 @@ footer { display: flex; justify-content: space-between; gap: 24px; padding: 30px
   .pipeline article { min-height: 190px; }
   footer { flex-direction: column; padding-inline: 16px; }
 }
+
+/* Research concept highlight */
+.concept-equation { margin-top: 34px; padding: 24px 30px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--muted); font-size: clamp(15px, 2vw, 22px); line-height: 1.6; }
+.concept-equation strong { color: var(--cyan); }
+.boundary-copy a { color: var(--cyan); }
+@media (max-width: 640px) { .concept-equation { padding: 19px; } }
