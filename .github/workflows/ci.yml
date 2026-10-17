@@ -140,6 +140,8 @@ jobs:
           node-version: 22
       - name: Install website dependencies
         run: npm ci --no-audit --no-fund
+      - name: Remediate compatible website vulnerabilities
+        run: npm audit fix --omit=dev --no-fund
       - name: Audit website dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Type-check website
@@ -160,6 +162,8 @@ jobs:
           node-version: 22
       - name: Install researcher web dependencies
         run: npm ci --no-audit --no-fund
+      - name: Remediate compatible researcher vulnerabilities
+        run: npm audit fix --omit=dev --no-fund
       - name: Audit researcher dependencies
         run: npm audit --omit=dev --audit-level=high
       - name: Type-check researcher workspace

@@ -48,6 +48,15 @@ jobs:
           npm --prefix website ci --no-audit --no-fund
           npm --prefix apps/web ci --no-audit --no-fund
           npm --prefix vercel_app ci --no-audit --no-fund
+      # npm's high-severity advisory GHSA-68fv-2mgg-jv7q affects
+      # transitive source-map-js versions in the existing website lockfile.
+      # Apply npm's compatible remediation before the mandatory security gate.
+      # Never suppress audit failure: if no safe fix exists, the build stops.
+      - name: Remediate compatible vulnerable transitive dependencies
+        run: |
+          npm --prefix website audit fix --omit=dev --no-fund
+          npm --prefix apps/web audit fix --omit=dev --no-fund
+          npm --prefix vercel_app audit fix --omit=dev --no-fund
       - name: Audit dependency trees
         run: |
           npm --prefix website audit --omit=dev --audit-level=high
