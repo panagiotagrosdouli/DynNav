@@ -28,12 +28,21 @@ const visuals = [
   { id: "C25", title: "Adversarial navigation testing", src: "C25_overview.svg" },
 ] as const;
 
+const experimentVisuals = [
+ { title:"Path comparison", path:"contributions/04_irreversibility_returnability/results/path_overlay_hard_vs_soft.png", caption:"Historical returnability study · route overlay" },
+ { title:"Returnability heatmap", path:"contributions/04_irreversibility_returnability/results/returnability_heatmap.png", caption:"Historical recoverability exploration · visual metric map" },
+ { title:"Learned vs classic A*", path:"contributions/01_learned_astar/results/astar_learned_vs_classic.png", caption:"Exploratory learned-search baseline comparison" },
+ { title:"Risk–length trade-off", path:"contributions/03_belief_risk_planning/results/lambda_sweep_length_risk_tradeoff.png", caption:"Belief/risk planning parameter sweep" },
+ { title:"Multi-robot evaluation", path:"contributions/09_multi_robot/results/memory_failures_over_time.png", caption:"Historical multi-robot experiment plot" },
+ { title:"Safe-mode activation", path:"contributions/05_safe_mode_navigation/results/safe_mode_activation_vs_tau0.png", caption:"Historical safety supervisor experiment" },
+] as const;
+
 export default function Home() {
   return (
     <main>
       <nav className="topbar" aria-label="Primary navigation">
         <a className="wordmark" href="#top"><span className="mark" aria-hidden="true">D</span> DynNav<span className="portfolio-dot">.</span></a>
-        <div className="nav-links"><a href="#about">About</a><a href="#work">My work</a><a href="#gallery">Gallery</a><a href="#results">Results</a><a href="#explore">Explore</a></div>
+        <div className="nav-links"><a href="#about">About</a><a href="#work">My work</a><a href="#gallery">Gallery</a><a href="#plots">Plots</a><a href="#results">Results</a><a href="#explore">Explore</a></div>
         <a className="nav-cta" href={repo} target="_blank" rel="noopener noreferrer">View GitHub ↗</a>
       </nav>
 
@@ -97,6 +106,15 @@ export default function Home() {
         <a className="gallery-all" href={`${file}/docs/CONTRIBUTION_VISUAL_GALLERY.md`}>Explore all 26 research-module diagrams →</a>
       </section>
 
+
+      <section className="architecture experiment-gallery" id="plots">
+        <div className="section-heading"><p className="eyebrow"><span /> Real research artifacts</p><h2>Plots and experiments from the repository.</h2><p>These are actual stored figures from earlier DynNav research modules. They illustrate the broader engineering and exploration history; they are not direct evidence for the current history-conditioned safe-return paper.</p></div>
+        <div className="experiment-grid">{experimentVisuals.map(v => <a className="experiment-card" key={v.path} href={`${file}/${v.path}`} target="_blank" rel="noopener noreferrer">
+          <div className="experiment-image"><img src={`https://raw.githubusercontent.com/panagiotagrosdouli/DynNav/main/${v.path}`} alt={v.title} loading="lazy" /></div>
+          <div className="experiment-copy"><strong>{v.title} ↗</strong><span>{v.caption}</span></div>
+        </a>)}</div>
+        <p className="plot-note">Gazebo is represented by its documented benchmark infrastructure and validation protocols, rather than presenting an unverified simulation image as an executed run. For publication-facing numbers, consult the <a href={`${file}/paper/dynnav_r/evidence_manifest.json`}>evidence manifest</a>.</p>
+      </section>
       <section className="architecture" id="approach">
         <div className="section-heading"><p className="eyebrow"><span /> How I work</p><h2>Research meets implementation.</h2><p>The project is structured to link mathematical modeling with executable robotic systems and auditable evidence.</p></div>
         <div className="pipeline">{process.map(([n,title,detail]) => <article key={n}><span className="step">{n}</span><h3>{title}</h3><p>{detail}</p></article>)}</div>
