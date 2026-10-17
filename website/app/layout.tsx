@@ -4,9 +4,9 @@ import type { ReactNode } from "react";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "DynNav Research Prototype",
+  title: "DynNav | History-Conditioned Safe-Return Planning",
   description:
-    "Risk-aware dynamic navigation and rerouting in partially observed environments.",
+    "History-conditioned safe-return planning for autonomous robots under action-triggered topology hazards.",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
