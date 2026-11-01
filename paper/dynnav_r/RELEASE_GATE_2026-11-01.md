@@ -31,6 +31,13 @@ python paper/dynnav_r/check_submission.py
 cd paper/dynnav_r && latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
 ```
 
+## Provisional venue plan (verified 1 November 2026)
+
+- **Primary conference candidate: IROS 2027** (Florence). [IEEE RAS calendar](https://www.ieee-ras.org/event/2027-ieee-rsj-international-conference-on-intelligent-robots-and-systems-iros-70525/) lists the **1 March 2027** paper deadline. The conference's official detailed submission instructions, final page-length and video policies must be checked when released; the current 8-page IEEE draft is *not* automatically venue-compliant.
+- **Journal alternative: IEEE Robotics and Automation Letters (RA-L)**, with rolling submission; its current general guidance describes six pages plus up to two paid overlength pages. A stronger reviewer-facing case and journal-specific formatting may be needed. [IEEE RA-L](https://www.ieee-ras.org/publications/ieee-robotics-and-automation-letters/).
+- **ICRA 2027 is closed** to new contributed paper submissions as of this review ([official call](https://2027.ieee-icra.org/announcements/call-for-technical-papers/)). Do not imply this manuscript has been submitted there.
+- Final target, author list, anonymization and any publication-fee decision require the human authors' explicit approval.
+
 ## Remaining tasks before *actual submission*
 
 - [ ] **Human bibliography audit:** open publisher/DOI landing pages for each cited contribution, verify exact titles, author spelling, years, venues, and specific claims of novelty. A correct BibTeX key is *not* a verified scientific citation.
