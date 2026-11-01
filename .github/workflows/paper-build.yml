@@ -28,6 +28,9 @@ jobs:
             echo "Unresolved manuscript placeholder detected"
             exit 1
           fi
+      - name: Verify citations and V3 abstract claims
+        working-directory: paper/dynnav_r
+        run: python check_submission.py
       - name: Install LaTeX toolchain
         run: |
           sudo apt-get update
@@ -36,10 +39,19 @@ jobs:
             texlive-latex-base \
             texlive-latex-extra \
             texlive-fonts-recommended \
-            texlive-publishers
+            texlive-publishers \
+            poppler-utils
       - name: Compile IEEE manuscript
         working-directory: paper/dynnav_r
         run: latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex
+      - name: Check PDF page count (IEEE conference draft)
+        working-directory: paper/dynnav_r
+        run: |
+          test -s main.pdf
+          pages=$(pdfinfo main.pdf | awk '/^Pages:/ {print $2}')
+          echo "Conference draft has ${pages} pages"
+          test "${pages}" -ge 1
+          test "${pages}" -le 8
       - name: Reject unresolved references
         working-directory: paper/dynnav_r
         run: |
