@@ -1,0 +1,64 @@
+# DynNav V3 — source-grounded prior-art and novelty review
+**Reviewed:** 1 November 2026 · **Status:** reviewer-facing literature audit, not a claim of exhaustive precedence or paper acceptance.
+
+## Executive conclusion
+
+**The work is a defensible, *narrow* research-paper candidate, not an invention of safe-return planning, history-conditioned risk, action-induced topology change or MDP state augmentation.** Those ideas have clear published precedents. The specific testable contribution is the *controlled separation of executed-trigger activation, stochastic future closure realization, and the resulting conditional safe-set connectivity*. The V3 abstraction evaluates counterfactual future-closure connectivity: it **does not** implement observed within-mission closure updates in the frozen V3 model. A conventional MDP with sufficient hazard state can express this model; representation-aware A* is therefore a reference implementation rather than a generically novel algorithm.
+
+This assessment is **more conservative** than claiming no previous work studied exactly this combination. It reflects a targeted source search, checked against the existing `main.tex` and `references.bib`; it cannot prove universal novelty.
+
+## Closest published work and publication-status distinctions
+
+| Source | Published / status | Closest overlap | Defensible distinction / reviewer challenge |
+|---|---|---|---|
+| **Xiao, Dufek & Murphy**, [Robot Risk-Awareness by Formal Risk Reasoning and Planning](https://doi.org/10.1109/LRA.2020.2974434) | IEEE RA-L 2020, peer reviewed | Locale-, action-, traverse-dependent robot risk; history-sensitive path evaluation and a directional search method | Very high novelty pressure. Their risk is accumulated motion risk; V3 asks conditional probability of *future environment-to-safe-set connectivity* after trigger activation. Must not claim history-aware planning is new. |
+| **Carmesin et al.**, [Traversal-Dependent Edge Deletion](https://doi.org/10.1016/j.jocs.2023.102156) | Journal of Computational Science 2023, peer reviewed | Traversing the graph changes which edges can exist later | Very high pressure. Self-deleting model is deterministic conditional on visited vertices; V3 uses executed transition triggers + a later stochastic closure query. Neither self-induced topology nor path-dependent graph search is novel. |
+| **Dvořák et al.**, [Pathfinding in Self-Deleting Graphs](https://doi.org/10.4230/LIPIcs.ISAAC.2025.28) | ISAAC 2025, peer reviewed | Algorithms and complexity for traversal-dependent feasible paths | Very high for graph abstraction; it solves shortest-path in a deterministic deletion model, not activation-conditioned *probabilistic return reliability*. Avoid attributing general graph complexity results to V3. |
+| **Frenkel, Parker & Mansouri**, [Coverage with Self-Induced Obstacles on Grids](https://doi.org/10.1109/LRA.2026.3656776) | IEEE RA-L 11(3), 2026, peer reviewed | Robot motion generates its own obstacles; visited-set memory determines future graph feasibility | **Closest robotics-topology threat.** Coverage with deterministic self-induced obstacles differs in task and closure semantics. The deterministic limit p=1 should be a direct conceptual baseline, not dismissed. |
+| **Baldes et al.**, [A Model for Optimal Resilient Planning Subject to Fallible Actuators](https://arxiv.org/abs/2405.11402) | arXiv 2024 preprint; not independently confirmed as peer-reviewed | Robot actions probabilistically degrade *future available capability*; augmented state and strategic use of fragile resources | Very high conceptual risk: endogenous stochastic loss of future control is already modeled. V3 degradation affects *environmental return connectivity* rather than actuators. No novelty claim for action-dependent failure probability or Markovization. |
+| **Guo et al.**, [Hierarchical Motion Planning Under Probabilistic Temporal Tasks and Safe-Return Constraints](https://doi.org/10.1109/TAC.2023.3244884) | IEEE TAC 2023, peer reviewed | High-probability safe return within uncertain MDPs; outbound and return policies | High. Their method is more general in policy synthesis; V3 isolates a specific environmental hazard-activation mechanism and evaluates conditional connectivity, not arbitrary temporal tasks. |
+| **Stephens et al.**, [Safe Robot Exploration Using Gaussian Process Prediction](https://doi.org/10.1007/s10514-024-10172-6) | Autonomous Robots 2024, peer reviewed | Safe reachability/returnability *probabilities* under uncertain hazard estimates, including physical robot demonstration | High: returnability probability itself is not new. Key V3 difference is endogenous activation of future topology-closure hazards by executed actions, not exogenous GP hazard estimates. |
+| **Kameyama et al.**, [Active Modular Environment for Robot Navigation (AFADA)](https://doi.org/10.1109/ICRA48506.2021.9561111) | ICRA 2021, peer reviewed | Robot navigation under **stochastically** changing topology | High. Their modular environment manages topology/routing; in V3, robot-executed transitions create hazard activation history. Do not claim stochastic topology is new. |
+| **Jung, Estornell & Everett**, [Contingency Constrained Planning with MPPI within MPPI](https://proceedings.mlr.press/v283/jung25a.html) | L4DC 2025, peer reviewed | Online planned contingency to a safe set, physical/simulated validation | High on return guarantee motivation. V3 is not an alternative general real-time control framework; focus on action-triggered stochastic return-connectivity queries. |
+| **Srirangam et al.**, [SCRAMPPI](https://arxiv.org/abs/2603.26995) | arXiv preprint, March 2026; peer review unconfirmed | Contingency-constrained navigation using HJ reachability / safe-set retreat feasibility | High on contingency-return constraints. Its dynamic reach-avoid guarantees are *stronger* under specified assumptions. V3 does not certify dynamics-safe recovery, but has distinct activation-conditioned stochastic graph model. |
+| **Han & Zhu**, [RCSP](https://arxiv.org/abs/2605.26348) | arXiv preprint, May 2026; publication unconfirmed | Near-miss commitments to passages that can soon become blocked, risk-sensitive scenario planning | High on motivation, moderate on same stochastic mechanism: RCSP predicts moving-obstacle futures; V3 models persistent topology-hazard activation by the robot's own executed history. Do not conflate dynamic-obstacle near misses with triggered closure. |
+| **Perret & Alami**, [Planning with Non-Deterministic Events for Enhanced Robot Autonomy](https://doi.org/10.1016/0921-8890(95)00086-0) | Robotics and Autonomous Systems 1996, peer reviewed | Explicit action/event semantics, conditional robustness in robot plans | Conceptual prior art for separating actions from uncertain events; not the same numerical safe-return problem. |
+
+**Other acknowledged foundations:** Moldovan & Abbeel (2012) and SafeMDP (2016) address safe exploration and returnability; decision-dependent uncertainty has broad nonrobotics prior art. These must remain cited in the paper. The above table is not a claim that we exhaustively compared algorithm source code or independently reproduced these methods. Paper status is based on publisher/proceedings records where available; arXiv listings alone are *preprints*.
+
+## Claim ladder — what can go into a submission
+
+**Established by the frozen evidence manifest and manuscript:**
+1. A constructive same-geometry/different-trigger-history counterexample and a simple endpoint-scalar aliasing lower bound (elementary inequality, **not** a new information-theory theorem).
+2. A correct reference representation of a *declared finite, independent* triggered-hazard model; exact future closure-connectivity enumeration when hazard count is tractable.
+3. A 96-scenario synthetic, generator-specific comparison where same-oracle fixed-field state-only planning has average return-infeasibility **0.74425**, history-conditioned planning **0.66604**, paired **scenario-level** mean difference **-0.07821**, 95% bootstrap CI **[-0.109,-0.04983]**. It improves 36/96 scenarios, is nonworse in 96/96 *sampled scenarios*.
+4. A deliberate negative result: hard return constraints can match the soft objective in some worlds; the critical-cut approximation has a joint-cut failure counterexample.
+5. ROS2/Nav2 plugin compatibility and action-triggered Gazebo integration are demonstrated; the retained Gazebo probes do **not** establish a stable comparative efficacy effect.
+
+**Not justified by the current V3 evidence:** first-of-kind planning paradigm, generic superiority over POMDP/MDP methods, guarantees on actual observed runtime closures, real-world calibrated safety probabilities, safety certification, field performance, or broad environmental generalization.
+
+**Proposed revised one-sentence claim:**
+
+> We characterize and test the safe-return connectivity information lost when a planner marginalizes robot-executed stochastic topology-hazard activations into a position-only map, using exact return-connectivity queries, a same-oracle representation ablation, and frozen paired scenarios.
+
+## Anticipated strong-reviewer objections and targeted answers
+
+| Objection | Strongest supported response | Evidence that would make the answer stronger |
+|---|---|---|
+| **The sufficient-state augmentation is just an MDP.** | Agree. We study a specific transition-triggered stochastic topology and a falsifiable *representation-ablation* question; A* is not claimed generally novel. | Compare against a **proper full-state MDP policy**, documenting information parity and expected agreement/advantage. |
+| **State-only exact is a strawman because it throws out information by construction.** | It is a controlled ablation, *not* state-of-the-art. Same oracle/objective isolates that omitted variable. | Add alternative decision-relevant, information-matched models and **exogenous-closure matched marginals**, not just another shortest-path comparator. |
+| **Self-deleting graphs / Frenkel already make environments history dependent.** | Yes; V3 uses a stochastic activation vs future realization distinction and evaluates chance of safe-set connectivity. | Report a p=1 deterministic self-deletion limit, a p in (0,1) sweep, and matched exogenous stochastic-closure control on comparable maps. |
+| **The environment is synthetic and trigger semantics too engineered.** | Existing experiments are controlled mechanism tests; 96 mandatory-trigger cases address the easy trigger-free path explanation. | Independent blind generator, unfamiliar topologies and realistic map-transfer setup with a repeatable action-triggered closure mechanism. |
+| **Soft objective might be no better than hard constraints.** | Correct; retain the measured matching result as an objective sensitivity finding. | Predeclared cost-risk Pareto front and mission-completion trade-offs across constraint thresholds. |
+| **Approximation breaks in cutsets / exact computation scales poorly.** | Explicit joint-cut counterexample and retained timing evidence already report this. | Characterize graph-cut width, closure correlation, and runtime scaling on independently generated topologies. |
+| **ROS2 demo proves better navigation?** | No: integration was successful, efficacy difference unstable. | New frozen paired execution study on externally authored maps; do not re-label integration as efficacy. |
+
+## Immediate research decision
+
+**Narrow-but-defensible publication pathway; reject a first-of-kind novelty narrative.** Publication competitiveness would improve most from *one rigorous new independent benchmark* with information-parity controls and meaningful exogenous-vs-endogenous closure comparison, plus an independently audited, final 8-page manuscript. Do not choose or tune the new protocol after observing its outcomes. Publication is ultimately decided by peer review, not a green CI check.
+
+See [PROPOSED_DISCRIMINATING_EXPERIMENT.md](PROPOSED_DISCRIMINATING_EXPERIMENT.md) for a **not-yet-frozen, not-yet-run** experimental design. V4 belief-conditioned work is a separate research track.
+
+## Sources and verification scope
+
+These records were checked against publisher, proceedings, research-institution or original arXiv entries on 1 November 2026. The existing paper's 22 citation keys already cover the most closely related works; no duplicate citation or unnecessary 9th page is added by this documentation-only review. Targeted keyword queries included "action-triggered stochastic topology", "self-deleting graphs", "safe-return constraints", "robot risk traverse dependence", "contingency MPPI", "dynamic near-miss commitment", and "fallible actuators". New indexing results may change the novelty assessment, so the table is a point-in-time audit, **not** proof of no earlier overlapping work.
