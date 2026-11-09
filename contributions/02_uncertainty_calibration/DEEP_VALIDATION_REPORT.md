@@ -45,6 +45,12 @@ python contributions/02_uncertainty_calibration/code/train_drift_uncertainty_net
 
 Run the dedicated [C02 deep-validation workflow](https://github.com/panagiotagrosdouli/DynNav/actions/workflows/c02-deep-validation.yml) to obtain all original and new C02 artifacts. Previous verified C02 baseline results in [run #42703777158](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42703777158) include ECE-style (raw 3.13473, global scale 0.60325, quantile 0.52399), but the respective empirical 1σ coverages (89.631%, 50.359%, 54.413%) explicitly indicate that a lower mean-sigma-vs-mean-error calibration metric does not ensure correct Gaussian intervals.
 
+## Actual ROS 2 Jazzy topic-integration evidence
+
+[Successful GitHub Actions run #42706526701](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42706526701) executed a genuine ROS 2 Jazzy DDS pub/sub sequence, `/c02/archived_grid_calibration`, with two separate rclpy nodes. It published **120** held-out archived uncertainty observations and **received all 120** in another ROS 2 node. The received values matched the source exactly (within 1e-12); the subscriber computed 95.0% sample coverage for those 120 messages, using a threshold estimated only on separate calibration maps (`q = 3.8305638550766425`).
+
+This proves **real ROS 2 DDS message transmission and software-level uncertainty computation**, but the messages represent **generated grid-world archive values**, not actual Dingo LiDAR/Odometry, independent ground truth, robot localization or physical control. The ROS2 topic is read-only in the sense that no `/cmd_vel` or actuation topic was ever published. This separate 120-point replay result must not be confused with the 10-seed map-level calibration benchmark.
+
 ## What has NOT happened
 
 No archived Dingo sensor bag supplies the ground-truth error/uncertainty triples needed to validate C02 directly. Merely reading ROS2 LiDAR/Odometry or running archived source trajectories through ROS2 does not validate calibrated localization uncertainty, physical robot control, or safety performance.
