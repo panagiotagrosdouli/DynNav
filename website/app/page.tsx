@@ -183,8 +183,8 @@ export default function Home() {
           <article>
             <span className="surface-label">Research site</span>
             <h3>Full research overview</h3>
-            <p>The existing published research guide contains the detailed model, retained results, negative findings, ROS 2 architecture and scientific limitations.</p>
-            <a href="https://panagiotagrosdouli.github.io/DynNav/">Open the published research guide →</a>
+            <p>The repository README preserves the detailed model, retained results, negative findings, ROS 2 architecture and scientific limitations.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/README.md">Open the research guide on GitHub →</a>
           </article>
           <article className="accent-card">
             <span className="surface-label">DynNav Researcher</span>
