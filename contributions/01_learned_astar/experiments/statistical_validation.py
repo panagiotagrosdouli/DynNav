@@ -235,7 +235,7 @@ def main() -> None:
 
     rng = random.Random(args.seed)
     raw_lh = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=False)
-    clipped_lh = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=True)
+    clipped_lh = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=False)
 
     methods: list[tuple[str, Callable[[Grid, Node, Node], tuple[list[Node] | None, int]]]] = [
         ("dijkstra_h0", lambda grid, start, goal: astar_search(grid, start, goal, lambda *_: 0.0)),
