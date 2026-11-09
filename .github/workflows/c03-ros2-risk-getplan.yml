@@ -43,6 +43,42 @@ jobs:
             trap - EXIT
             sleep 1
           done
+      - name: Execute full C03 ROS2 GetPlan-to-Twist-to-Odometry simulated closed loop
+        run: |
+          set -eo pipefail
+          source /opt/ros/jazzy/setup.bash
+          for W in 0 8; do
+            python3 contributions/03_belief_risk_planning/experiments/ros2_get_plan_risk.py \
+              --ros-args -p map_topic:=/c03/isolated_sim/map -p risk_weight:="${W}.0" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            timeout 115 python3 contributions/03_belief_risk_planning/experiments/ros2_isolated_risk_closed_loop.py \
+              --risk-weight "$W" \
+              --output "results/c03_actual_ros2/weight_${W}_simulated_closed_loop.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+      - name: Verify two complete ROS2 feedback navigation runs, explicitly simulated
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("results/c03_actual_ros2")
+          for w in (0,8):
+              data=json.loads((root/f"weight_{w}_simulated_closed_loop.json").read_text())
+              assert data["ros2_closed_loop_completed"],data
+              assert data["ros2_getplan_received"]
+              assert data["ros2_twist_messages_received"]>0
+              assert data["ros2_odometry_messages_received"]>0
+              assert data["grid_collision_count"]==0
+              assert data["distance_from_goal_m"]<.12
+              assert data["planner_diagnostics"]["risk_weight"]==w
+              assert data["physical_robot_trial"] is False
+              assert data["hardware_motion_commanded"] is False
+              print("C03 synthetic closed loop",w,data["executed_distance_m"],data["simulated_duration_seconds"])
+          PY
       - name: Independently verify ROS2 topic evidence and no hardware actuation
         run: |
           python3 - <<'PY'
