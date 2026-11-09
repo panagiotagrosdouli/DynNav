@@ -129,6 +129,30 @@ jobs:
           kill "$SERVER_PID" 2>/dev/null || true
           wait "$SERVER_PID" 2>/dev/null || true
 
+      - name: Install CPU PyTorch for actual C01 saved neural checkpoint
+        run: |
+          source /tmp/c01-ros-venv/bin/activate
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Actually exercise raw and clipped learned C01 GetPlan service on ROS2 Jazzy
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          MODEL="$PWD/contributions/01_learned_astar/models/heuristic_net_rich.pt"
+          for MODE in learned_raw learned_manhattan_clipped; do
+            python contributions/01_learned_astar/experiments/ros2_get_plan_node.py \
+              --ros-args -p mode:="$MODE" -p map_topic:=/c01/test_grid -p checkpoint:="$MODEL" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            python contributions/01_learned_astar/experiments/ros2_get_plan_roundtrip_test.py \
+              --expected-mode "$MODE" \
+              --output "results/c01_real_rosbag/c01_ros2_${MODE}_roundtrip.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+
       - name: Upload ROS2 real-recording replay report (not raw bag)
         if: always()
         uses: actions/upload-artifact@v4
