@@ -8,6 +8,8 @@
 
 <p align="center"><em>Conceptual overview of Contribution 02. The diagram explains the processing pipeline; it is not experimental evidence, a probabilistic guarantee, or a safety certification.</em></p>
 
+> **Executed deep C02 validation (2026-11-09):** [DEEP_VALIDATION_REPORT.md](DEEP_VALIDATION_REPORT.md) documents the actually executed 10-seed map-instance-disjoint fit/calibration/held-out experiments, a reproducible two-epoch PyTorch drift uncertainty retraining with training-only normalization, regression tests, real GitHub Actions results and the remaining physical-robot evidence gaps. The data are original *generated grid-world* records, **not a physical robot localization dataset**.
+
 ## Plain-language summary
 
 A robot should not only estimate where it is. It should also know how uncertain that estimate is.
