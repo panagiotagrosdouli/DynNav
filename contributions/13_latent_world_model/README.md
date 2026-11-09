@@ -1,6 +1,8 @@
 # Contribution 13 — Latent World Model and Imagined Rollout Audit
 
-[![Module](https://img.shields.io/badge/Module-13-purple)](.) [![Type](https://img.shields.io/badge/Type-Model--Based%20RL-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/Module-13-purple)](.) [![Type](https://img.shields.io/badge/Type-Model--Based%20RL-blue)](.) [![Status](https://img.shields.io/badge/Status-Untrained%20Prototype-orange)](.)
+
+> **Evidence correction:** The current NumPy RSSM is an untrained random-weight prototype. It has no observation/reward training loop or learned dynamics checkpoint. Rollout outputs are synthetic model behavior and do not establish predictive accuracy or reduced navigation failures.
 
 ## Plain-language summary
 

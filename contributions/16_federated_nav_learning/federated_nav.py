@@ -1,13 +1,15 @@
 """
 Contribution 16: Federated Navigation Learning
 ===============================================
-Privacy-preserving multi-robot learning: each robot trains a local navigation
-model on its own experience, shares only parameter updates (gradients / model
-deltas), and receives a globally aggregated model — without exposing raw
-sensor data or trajectories.
+Federated multi-robot learning: clients train a local navigation model and
+share parameters with a server. Optional server-side Gaussian noise is a
+client-level central-DP mechanism under the assumptions documented below; it
+does not hide updates from the aggregation server.
 
-Implements FedAvg (McMahan et al. 2017) with optional differential-privacy
-noise injection (Gaussian mechanism) and contribution-weighted aggregation.
+Implements FedAvg (McMahan et al. 2017), with optional clipped client updates
+and server-side Gaussian noise. In DP mode the server uses uniform weights,
+fixed participation, replace-one client adjacency and basic composition across
+rounds. This is a research simulation, not a production privacy guarantee.
 
 Research Question (RQ-Fed): Does federated learning of navigation heuristics
 across a heterogeneous robot fleet improve generalisation to unseen environments
@@ -47,6 +49,27 @@ class FedNavConfig:
     aggregation: str = "weighted"         # "uniform" | "weighted"
     input_dim: int = 16                   # feature vector size
     output_dim: int = 2                   # (vx, vy) action
+
+    def __post_init__(self) -> None:
+        if self.n_robots < 1 or self.local_epochs < 1 or self.global_rounds < 1:
+            raise ValueError("robot count, epochs, and rounds must be positive")
+        if self.lr <= 0 or not np.isfinite(self.lr):
+            raise ValueError("lr must be finite and positive")
+        if self.aggregation not in {"uniform", "weighted"}:
+            raise ValueError("aggregation must be 'uniform' or 'weighted'")
+        if self.input_dim < 1 or self.output_dim < 1:
+            raise ValueError("model dimensions must be positive")
+        if self.dp_epsilon is not None:
+            if not np.isfinite(self.dp_epsilon) or self.dp_epsilon <= 0:
+                raise ValueError("dp_epsilon must be finite and positive")
+            if not 0 < self.dp_delta < 1 or not np.isfinite(self.dp_delta):
+                raise ValueError("dp_delta must be finite and in (0, 1)")
+            if not np.isfinite(self.dp_clip_norm) or self.dp_clip_norm <= 0:
+                raise ValueError("dp_clip_norm must be finite and positive")
+            if self.aggregation != "uniform":
+                raise ValueError("DP mode requires uniform aggregation")
+            if self.dp_epsilon / self.global_rounds > 1:
+                raise ValueError("basic composition requires epsilon/rounds <= 1")
 
 
 # ---------------------------------------------------------------------------
@@ -121,29 +144,9 @@ class FederatedRobotClient:
                 self.model.W -= self.cfg.lr * grad_W
                 self.model.b -= self.cfg.lr * grad_b
 
-        params = self.model.get_params()
-        if self.cfg.dp_epsilon is not None:
-            params = self._add_dp_noise(params)
-
-        return params
-
-    def _add_dp_noise(self, params: dict[str, np.ndarray]
-                      ) -> dict[str, np.ndarray]:
-        """Gaussian mechanism for (ε, δ)-differential privacy."""
-        sigma = (
-            self.cfg.dp_clip_norm
-            * np.sqrt(2 * np.log(1.25 / self.cfg.dp_delta))
-            / self.cfg.dp_epsilon
-        )
-        rng = np.random.default_rng()
-        noisy = {}
-        for k, v in params.items():
-            # Clip gradient norm
-            norm = np.linalg.norm(v)
-            clipped = v * min(1.0, self.cfg.dp_clip_norm / (norm + 1e-8))
-            noisy[k] = clipped + rng.standard_normal(v.shape) * sigma
-        logger.debug("[Robot %d] DP noise σ=%.4f applied", self.robot_id, sigma)
-        return noisy
+        # The server applies clipping/noise to client deltas. Clipping absolute
+        # model parameters would not bound sensitivity of a client's update.
+        return self.model.get_params()
 
     @property
     def n_samples(self) -> int:
@@ -176,6 +179,23 @@ class FederatedServer:
         if not client_updates:
             raise ValueError("No client updates to aggregate")
 
+        reference = self.global_model.get_params()
+        expected_keys = set(reference)
+        for params, n_samples in client_updates:
+            if n_samples <= 0:
+                raise ValueError("client sample counts must be positive")
+            if set(params) != expected_keys:
+                raise ValueError("client parameter keys do not match global model")
+            for key, value in params.items():
+                if value.shape != reference[key].shape or not np.all(np.isfinite(value)):
+                    raise ValueError(f"invalid client parameter array: {key}")
+
+        if self.cfg.dp_epsilon is not None and len(client_updates) != self.cfg.n_robots:
+            raise ValueError("DP mode requires the configured fixed client cohort")
+
+        if self.cfg.dp_epsilon is not None:
+            return self._aggregate_dp(client_updates, reference)
+
         total_n = sum(n for _, n in client_updates)
         weights = (
             [n / total_n for _, n in client_updates]
@@ -190,9 +210,46 @@ class FederatedServer:
 
         return agg
 
+    def _aggregate_dp(
+        self,
+        client_updates: list[tuple[dict[str, np.ndarray], int]],
+        reference: dict[str, np.ndarray],
+    ) -> dict[str, np.ndarray]:
+        """Aggregate clipped client deltas with a basic-composition Gaussian mechanism.
+
+        This gives a central client-level mechanism for the released aggregate,
+        assuming a fixed cohort and replace-one adjacency. The server still sees
+        each unnoised client update; this is not local differential privacy.
+        """
+        count = len(client_updates)
+        clipped_deltas: list[dict[str, np.ndarray]] = []
+        for params, _ in client_updates:
+            delta = {key: params[key] - reference[key] for key in reference}
+            norm = float(np.sqrt(sum(np.sum(value ** 2) for value in delta.values())))
+            scale = min(1.0, self.cfg.dp_clip_norm / max(norm, 1e-12))
+            clipped_deltas.append({key: value * scale for key, value in delta.items()})
+
+        mean_delta = {
+            key: sum(update[key] for update in clipped_deltas) / count
+            for key in reference
+        }
+        eps_round = self.cfg.dp_epsilon / self.cfg.global_rounds
+        delta_round = self.cfg.dp_delta / self.cfg.global_rounds
+        # Classic Gaussian calibration for eps <= 1. Replace-one sensitivity
+        # of the mean is 2*C/count for fixed-size client adjacency.
+        sigma = (2 * self.cfg.dp_clip_norm / count
+                 * np.sqrt(2 * np.log(1.25 / delta_round)) / eps_round)
+        rng = np.random.default_rng()
+        return {
+            key: reference[key] + value + rng.normal(0.0, sigma, value.shape)
+            for key, value in mean_delta.items()
+        }
+
     def run_round(self, clients: list[FederatedRobotClient]) -> dict:
         """Execute one federated round: collect → train → aggregate → broadcast."""
         updates = []
+        if self.cfg.dp_epsilon is not None and len(clients) != self.cfg.n_robots:
+            raise ValueError("DP mode requires the configured fixed client cohort")
         for client in clients:
             client.model.set_params(self.global_model.get_params())
             client.collect_experience()

@@ -19,6 +19,7 @@ References:
 from __future__ import annotations
 
 import logging
+from collections import deque
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Optional
@@ -45,6 +46,7 @@ class CausalNode:
     # structural equation: f(parent_values, noise) → value
     # stored as a callable; defaults to weighted sum + noise
     structural_eq: Optional[callable] = None
+    reference_value: float = 0.0
     _value: Optional[float] = field(default=None, init=False, repr=False)
 
     def evaluate(self, parent_values: dict[str, float],
@@ -92,7 +94,8 @@ class NavigationSCM:
         self.add_node(CausalNode(
             "map_accuracy", NodeType.ENDOGENOUS,
             parents=["sensor_noise"],
-            structural_eq=lambda p, n: 1.0 - 0.5 * abs(p["sensor_noise"]) + 0.1 * n
+            structural_eq=lambda p, n: 1.0 - 0.5 * abs(p["sensor_noise"]) + 0.1 * n,
+            reference_value=1.0,
         ))
         self.add_node(CausalNode(
             "obstacle_detection", NodeType.ENDOGENOUS,
@@ -100,7 +103,8 @@ class NavigationSCM:
             structural_eq=lambda p, n: (
                 1.0 - 0.4 * abs(p["localization_error"])
                 - 0.3 * abs(p["sensor_noise"]) + 0.05 * n
-            )
+            ),
+            reference_value=1.0,
         ))
         self.add_node(CausalNode(
             "path_risk", NodeType.ENDOGENOUS,
@@ -122,7 +126,47 @@ class NavigationSCM:
         ))
 
     def add_node(self, node: CausalNode) -> None:
+        if not node.name:
+            raise ValueError("causal node name must not be empty")
+        if node.name in self.nodes:
+            raise ValueError(f"causal node already exists: {node.name}")
         self.nodes[node.name] = node
+
+    def _topological_order(self) -> list[str]:
+        """Return a topological ordering or reject an invalid causal graph."""
+        indegree = {name: 0 for name in self.nodes}
+        children = {name: [] for name in self.nodes}
+        for name, node in self.nodes.items():
+            for parent in node.parents:
+                if parent not in self.nodes:
+                    raise ValueError(f"unknown parent {parent!r} of node {name!r}")
+                indegree[name] += 1
+                children[parent].append(name)
+
+        ready = deque(name for name in self.nodes if indegree[name] == 0)
+        order: list[str] = []
+        while ready:
+            name = ready.popleft()
+            order.append(name)
+            for child in children[name]:
+                indegree[child] -= 1
+                if indegree[child] == 0:
+                    ready.append(child)
+        if len(order) != len(self.nodes):
+            raise ValueError("causal graph contains a directed cycle")
+        return order
+
+    def _ancestors(self, outcome_node: str) -> set[str]:
+        if outcome_node not in self.nodes:
+            raise ValueError(f"unknown outcome node: {outcome_node}")
+        ancestors: set[str] = set()
+        pending = list(self.nodes[outcome_node].parents)
+        while pending:
+            parent = pending.pop()
+            if parent not in ancestors:
+                ancestors.add(parent)
+                pending.extend(self.nodes[parent].parents)
+        return ancestors
 
     # ------------------------------------------------------------------
     # Inference
@@ -135,12 +179,7 @@ class NavigationSCM:
         Returns the value of every endogenous node.
         """
         values: dict[str, float] = {}
-        # Topological evaluation order (hardcoded for default graph)
-        order = [
-            "sensor_noise", "localization_error", "map_accuracy",
-            "obstacle_detection", "path_risk", "collision"
-        ]
-        for name in order:
+        for name in self._topological_order():
             node = self.nodes[name]
             parent_vals = {p: values[p] for p in node.parents}
             noise = noise_samples.get(name, 0.0)
@@ -161,12 +200,14 @@ class NavigationSCM:
         observed_noise  : exogenous noise realisation (from the actual episode)
         intervention    : {node_name: forced_value}  — do(X=x)
         """
+        unknown = set(intervention) - self.nodes.keys()
+        if unknown:
+            raise ValueError(f"unknown intervention node(s): {sorted(unknown)}")
+        if any(not np.isfinite(float(value)) for value in intervention.values()):
+            raise ValueError("intervention values must be finite")
+
         values: dict[str, float] = {}
-        order = [
-            "sensor_noise", "localization_error", "map_accuracy",
-            "obstacle_detection", "path_risk", "collision"
-        ]
-        for name in order:
+        for name in self._topological_order():
             if name in intervention:
                 values[name] = intervention[name]
                 continue
@@ -188,6 +229,12 @@ class NavigationSCM:
         E[Y | do(X=treatment)] - E[Y | do(X=control)]
         Estimated by Monte-Carlo over noise distributions.
         """
+        if treatment_node not in self.nodes:
+            raise ValueError(f"unknown treatment node: {treatment_node}")
+        if outcome_node not in self.nodes:
+            raise ValueError(f"unknown outcome node: {outcome_node}")
+        if n_samples < 1:
+            raise ValueError("n_samples must be at least 1")
         rng = np.random.default_rng(42)
         diffs = []
         for _ in range(n_samples):
@@ -219,19 +266,30 @@ class NavigationSCM:
         Rank all upstream nodes by their counterfactual contribution to
         the observed outcome (Shapley-inspired ablation).
         """
-        baseline = self.observational_query(observed_noise)[outcome_node]
+        if n_samples < 1:
+            raise ValueError("n_samples must be at least 1")
+        ancestors = self._ancestors(outcome_node)
         scores = {}
         rng = np.random.default_rng(0)
 
-        for name, node in self.nodes.items():
-            if name == outcome_node:
+        for name in self._topological_order():
+            if name not in ancestors:
                 continue
             diffs = []
             for _ in range(n_samples):
+                # Compare factual and interventional outcomes under the same
+                # exogenous realization. The previous code used an all-zero
+                # factual baseline and randomized counterfactual noise, which
+                # confounded the attributed effect with unrelated noise.
                 noise = {k: rng.standard_normal() for k in self.nodes}
                 noise.update(observed_noise)
-                # Intervene: set node to zero (null intervention)
-                cf = self.counterfactual_query(noise, {name: 0.0})
+                baseline = self.observational_query(noise)[outcome_node]
+                # Compare each node with its declared nominal/reference value.
+                # Zero is harmful for quality variables such as map accuracy,
+                # so a universal do(X=0) does not define a fair attribution.
+                cf = self.counterfactual_query(
+                    noise, {name: self.nodes[name].reference_value}
+                )
                 diffs.append(baseline - cf[outcome_node])
             scores[name] = float(np.mean(diffs))
 

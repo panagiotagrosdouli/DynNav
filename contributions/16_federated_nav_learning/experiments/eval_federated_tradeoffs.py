@@ -48,8 +48,8 @@ def main() -> None:
     configs = [
         ("weighted_no_dp", "weighted", None),
         ("uniform_no_dp", "uniform", None),
-        ("weighted_dp_eps_2", "weighted", 2.0),
-        ("weighted_dp_eps_1", "weighted", 1.0),
+        ("uniform_dp_eps_2", "uniform", 2.0),
+        ("uniform_dp_eps_1", "uniform", 1.0),
     ]
     results = [
         run_federated_eval(name, aggregation, dp, n_clients=args.n_clients, rounds=args.rounds)

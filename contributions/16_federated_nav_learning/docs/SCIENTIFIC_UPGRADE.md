@@ -1,8 +1,10 @@
 # C16 Scientific Upgrade Notes — Federated Trade-Off Evaluation
 
+> **Evidence correction:** Training data and targets are synthetic and do not represent navigation demonstrations. The optional Gaussian mechanism clips client deltas and noises the central aggregate under fixed-cohort, uniform-aggregation assumptions with basic composition. The server still sees unnoised individual updates; no secure aggregation, local DP, or real-data privacy evaluation is present.
+
 ## What was already strong
 
-Contribution 16 already implemented the core idea of privacy-preserving fleet learning:
+Contribution 16 implemented federated parameter aggregation for a synthetic fleet-learning simulation:
 
 > Multiple robots improve a shared navigation model without uploading raw maps, trajectories, or sensor logs.
 

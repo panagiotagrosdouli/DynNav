@@ -1,12 +1,12 @@
 # Contribution 16 — Federated Navigation Learning
 
-[![Module](https://img.shields.io/badge/Module-16-purple)](.) [![Type](https://img.shields.io/badge/Type-Federated%20Learning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/Module-16-purple)](.) [![Type](https://img.shields.io/badge/Type-Federated%20Learning-blue)](.) [![Status](https://img.shields.io/badge/Status-Synthetic%20DP%20Simulation-orange)](.)
 
 ## Plain-language summary
 
 A robot fleet can learn from many environments, but raw maps and trajectories may be private or sensitive.
 
-Contribution 16 implements privacy-preserving multi-robot learning using federated averaging. Each robot trains locally on its own navigation data and shares only model parameters or updates, not raw sensor data.
+Contribution 16 simulates federated multi-robot learning using federated averaging. Clients train locally on synthetic data and share model parameters with a central aggregation server. Optional server-side Gaussian noise implements a client-level central-DP mechanism under explicit fixed-cohort assumptions; the server still observes individual unnoised updates.
 
 The upgraded version adds a trade-off benchmark:
 
@@ -23,7 +23,7 @@ This contribution studies:
 - FedAvg aggregation,
 - weighted vs uniform aggregation,
 - local robot training,
-- differential privacy noise,
+- clipped client-level update noise (central DP simulation),
 - heterogeneous client data,
 - fleet-level fairness,
 - communication cost.
@@ -59,7 +59,7 @@ The original C16 implementation includes:
 - `FederatedRobotClient`,
 - `FederatedServer`,
 - FedAvg aggregation,
-- optional Gaussian differential privacy noise,
+- optional server-side clipping and Gaussian noise on client deltas (not local DP),
 - weighted or uniform aggregation.
 
 ---
@@ -126,8 +126,8 @@ The new benchmark compares:
 |---|---|---|
 | `weighted_no_dp` | sample-weighted FedAvg | none |
 | `uniform_no_dp` | equal client weights | none |
-| `weighted_dp_eps_2` | sample-weighted FedAvg | Gaussian DP noise, epsilon 2 |
-| `weighted_dp_eps_1` | sample-weighted FedAvg | stronger Gaussian DP noise, epsilon 1 |
+| `uniform_dp_eps_2` | uniform FedAvg | client-level Gaussian mechanism, epsilon 2 |
+| `uniform_dp_eps_1` | uniform FedAvg | client-level Gaussian mechanism, epsilon 1 |
 
 ---
 
@@ -186,7 +186,8 @@ federated_update = {
 
 - The navigation model is a lightweight linear policy.
 - Client datasets are synthetic.
-- DP noise is simplified and not a complete privacy accountant.
+- DP uses fixed full-cohort participation, replace-one client adjacency, uniform aggregation, and basic composition across rounds; it is not local DP and has no secure aggregation.
+- The central server observes individual client updates before clipping. Treat privacy claims as a mathematical mechanism under these assumptions, not a deployed privacy guarantee.
 - Secure aggregation is not implemented.
 - Robust aggregation against poisoned updates is left for future work.
 
@@ -212,6 +213,6 @@ This would connect C16 with C08 and C26.
 
 ## Conclusion
 
-Contribution 16 establishes the federated learning layer of DynNav.
+Contribution 16 provides a synthetic federated-learning simulation and an explicitly scoped central-DP mechanism.
 
 The upgraded version makes the module scientifically stronger by evaluating privacy, fairness, communication, and aggregation trade-offs instead of only demonstrating FedAvg mechanics.

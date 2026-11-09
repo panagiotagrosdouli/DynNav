@@ -1,11 +1,11 @@
-"""Swarm consensus evaluation utilities for Contribution 26.
+"""Centralized proposal-selection evaluation utilities for Contribution 26.
 
-The base module implements BFT weighted-median consensus. This evaluator turns
-that mechanism into measurable multi-robot outcomes:
+The base module implements a median/MAD selector, not distributed consensus.
+This evaluator measures synthetic selection outcomes:
 
 - consensus accuracy against an honest reference path cost,
 - mission success rate,
-- Byzantine detection recall proxy,
+- cost-outlier recall proxy,
 - communication overhead,
 - scalability score,
 - trust-weighted agreement quality,
@@ -85,6 +85,19 @@ def consensus_accuracy(agreed_cost: float, reference_cost: float) -> float:
     return float(max(0.0, 1.0 - rel_error))
 
 
+def path_is_valid(grid: np.ndarray, path: list[tuple[int, int]],
+                  start: tuple[int, int], goal: tuple[int, int]) -> bool:
+    """Check grid bounds, free cells, adjacency, and required endpoints."""
+    if not path or path[0] != start or path[-1] != goal:
+        return False
+    height, width = grid.shape
+    for row, col in path:
+        if not (0 <= row < height and 0 <= col < width) or grid[row, col] > 0.5:
+            return False
+    return all(abs(r1-r0) + abs(c1-c0) == 1
+               for (r0, c0), (r1, c1) in zip(path, path[1:]))
+
+
 def trust_weighted_agreement(result_cost: float, reference_cost: float, participants: int, n_robots: int) -> float:
     acc = consensus_accuracy(result_cost, reference_cost)
     participation = participants / max(1, n_robots)
@@ -111,9 +124,12 @@ def evaluate_swarm_consensus_case(
 
     result = coord.plan(grid, start, goal)
     acc = consensus_accuracy(result.agreed_cost, ref_cost)
-    mission_success = bool(result.agreed_path and np.isfinite(result.agreed_cost) and acc >= 0.75)
+    valid_path = path_is_valid(grid, result.agreed_path, start, goal)
+    mission_success = bool(valid_path and np.isfinite(result.agreed_cost) and acc >= 0.75)
     detection_recall = result.n_byzantine_detected / max(1, actual_faulty)
-    messages = int(result.n_participants * max(1, result.rounds))
+    # Approximate one proposal upload and one coordinator result broadcast per
+    # responding robot. This is bookkeeping, not measured networking.
+    messages = int(2 * result.n_participants)
     comm_scaling = float(messages / max(1, n_robots))
     twa = trust_weighted_agreement(result.agreed_cost, ref_cost, result.n_participants, n_robots)
     scalability = float(twa / (1.0 + 0.02 * messages))

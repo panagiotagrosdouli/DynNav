@@ -1,7 +1,8 @@
 """Swarm consensus benchmark for Contribution 26.
 
-This benchmark evaluates Byzantine-fault-tolerant swarm consensus under scaling,
-Byzantine faults, silent robots, and packet-loss conditions.
+This synthetic benchmark evaluates centralized median/MAD proposal selection
+under varying swarm sizes, corrupted proposals, silent robots, and packet loss.
+It does not validate a distributed BFT protocol.
 
 Run from the repository root:
 

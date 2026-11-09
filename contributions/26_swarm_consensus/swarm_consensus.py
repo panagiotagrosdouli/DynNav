@@ -1,21 +1,21 @@
 """
 Contribution 26: Swarm Consensus Navigation
 ============================================
-N robots reach a fault-tolerant consensus on the best navigation plan
-through a distributed Byzantine-fault-tolerant (BFT) agreement protocol.
+ A centralized coordinator selects a representative navigation proposal from
+ a batch using a median/MAD outlier heuristic. This is not a distributed
+ agreement protocol and provides no Byzantine fault-tolerance guarantee.
 
-Each robot independently computes a local plan and broadcasts its
-risk-weighted cost estimate. The swarm then uses a weighted median
-consensus (robust to Byzantine agents) to select the global plan.
+Robots submit local proposals to one coordinator. The coordinator applies a
+robust-statistics heuristic to their reported costs and selects a submitted
+path. The demonstration does not model message exchange or agreement rounds.
 
 Extensions:
     - Raft-based leader election for coordinator
     - Gossip protocol for scalable plan propagation
     - Disagreement detection (builds on Contribution 09 multi-robot)
 
-Research Question (RQ-Swarm): Does BFT swarm consensus improve
-navigation robustness in the presence of compromised/faulty robots
-compared to naive majority voting?
+Research Question (RQ-Swarm): How does centralized median/MAD proposal
+selection behave under synthetic corrupted, silent, and packet-loss cases?
 
 References:
     Lamport et al. (1982) "Byzantine Generals Problem"
@@ -150,70 +150,84 @@ class SwarmRobot:
 
 class BFTConsensus:
     """
-    Byzantine-Fault-Tolerant consensus for navigation plan selection.
+    Backwards-compatible name for a centralized robust proposal selector.
 
     Algorithm:
-        1. Collect proposals from all robots.
-        2. Detect outliers using robust statistics (median ± k*MAD).
-        3. Weighted-median vote on path cost.
-        4. Select path from highest-confidence non-Byzantine robot
-           whose cost is within the consensus cost range.
+        1. Receive proposals at one coordinator.
+        2. Flag reported costs beyond median ± k*MAD as outliers.
+        3. Select a submitted path nearest the median cost.
 
-    Tolerates up to ⌊(n-1)/3⌋ Byzantine robots (standard BFT bound).
+    Outlier flags do not identify malicious robots. There is no BFT guarantee.
     """
 
     def __init__(self, n_robots: int,
                  byzantine_threshold: float = 3.0,   # k*MAD for outlier detection
                  min_participants: float = 0.67):     # min fraction needed
+        if n_robots < 1:
+            raise ValueError("n_robots must be positive")
+        if not np.isfinite(byzantine_threshold) or byzantine_threshold < 0:
+            raise ValueError("byzantine_threshold must be finite and nonnegative")
+        if not np.isfinite(min_participants) or not 0 < min_participants <= 1:
+            raise ValueError("min_participants must be in (0, 1]")
         self.n_robots = n_robots
         self.byz_thresh = byzantine_threshold
         self.min_part = min_participants
-        self._max_byzantine = (n_robots - 1) // 3
 
     def reach_consensus(self,
                         proposals: list[NavProposal]) -> ConsensusResult:
         """
-        Run BFT consensus on a list of proposals.
-        Returns the agreed plan.
+        Select one proposal from a list using centralized robust statistics.
+        Returns the selected plan; this does not establish distributed agreement.
         """
         valid = [p for p in proposals if p is not None]
+        ids = [p.robot_id for p in valid]
+        if len(set(ids)) != len(ids):
+            raise ValueError("proposal robot_id values must be unique")
+        for proposal in valid:
+            if (not np.isfinite(proposal.cost) or proposal.cost < 0
+                    or not np.isfinite(proposal.confidence)
+                    or not 0 <= proposal.confidence <= 1
+                    or not proposal.path):
+                raise ValueError("proposal contains invalid cost, confidence, or path")
         logger.info("Consensus: %d/%d robots responded", len(valid), self.n_robots)
 
-        if len(valid) < int(self.n_robots * self.min_part):
-            logger.error("Not enough participants for consensus")
-            # Fall back to best single proposal
-            best = min(valid, key=lambda p: p.cost) if valid else None
+        if len(valid) < int(np.ceil(self.n_robots * self.min_part)):
+            logger.error("Not enough participants for robust selection")
             return ConsensusResult(
-                agreed_path=best.path if best else [],
-                agreed_cost=best.cost if best else np.inf,
+                agreed_path=[],
+                agreed_cost=np.inf,
                 n_participants=len(valid),
                 n_byzantine_detected=0,
                 rounds=1,
-                method="fallback_single",
+                method="abstain_insufficient_participants",
             )
 
-        # Step 1: Detect Byzantine outliers via MAD
+        # Step 1: Flag cost outliers via scaled MAD (not attacker detection).
         costs = np.array([p.cost for p in valid])
         median_cost = float(np.median(costs))
-        mad = float(np.median(np.abs(costs - median_cost))) + 1e-8
-        outlier_mask = np.abs(costs - median_cost) > self.byz_thresh * mad
+        mad = float(np.median(np.abs(costs - median_cost)))
+        # When MAD is zero, only proposals numerically equal to the median
+        # remain. This handles a majority of identical reports without an
+        # arbitrary epsilon turning every outlier into an inlier.
+        tolerance = max(1e-12, self.byz_thresh * 1.4826 * mad)
+        outlier_mask = np.abs(costs - median_cost) > tolerance
 
         honest = [p for p, out in zip(valid, outlier_mask) if not out]
         n_byz = int(outlier_mask.sum())
-        logger.info("Byzantine detected: %d (threshold=%.1f*MAD)",
+        logger.info("Cost outliers flagged: %d (threshold=%.1f scaled MAD)",
                     n_byz, self.byz_thresh)
 
         if not honest:
             honest = valid   # all suspected — use all
             n_byz = 0
 
-        # Step 2: Weighted median cost among honest proposals
+        # A self-reported confidence can be adversarially inflated, so do not
+        # let it affect the robust center or proposal tie-breaking.
         h_costs = np.array([p.cost for p in honest])
-        h_confs = np.array([p.confidence for p in honest])
-        agreed_cost = float(self._weighted_median(h_costs, h_confs))
+        agreed_cost = float(np.median(h_costs))
 
         # Step 3: Select path from robot closest to agreed cost, highest conf
-        honest.sort(key=lambda p: (abs(p.cost - agreed_cost), -p.confidence))
+        honest.sort(key=lambda p: (abs(p.cost - agreed_cost), p.robot_id))
         best = honest[0]
 
         logger.info(
@@ -222,25 +236,14 @@ class BFTConsensus:
         )
         return ConsensusResult(
             agreed_path=best.path,
-            agreed_cost=agreed_cost,
+            # Keep the returned path and cost from the same robot proposal;
+            # the robust center is only used to rank submitted proposals.
+            agreed_cost=float(best.cost),
             n_participants=len(valid),
             n_byzantine_detected=n_byz,
-            rounds=2,
-            method="bft_weighted_median",
+            rounds=1,
+            method="centralized_mad_median",
         )
-
-    @staticmethod
-    def _weighted_median(values: np.ndarray,
-                          weights: np.ndarray) -> float:
-        """Weighted median."""
-        sorted_idx = np.argsort(values)
-        sv = values[sorted_idx]
-        sw = weights[sorted_idx]
-        cumw = np.cumsum(sw)
-        cutoff = cumw[-1] / 2.0
-        idx = np.searchsorted(cumw, cutoff)
-        return float(sv[min(idx, len(sv) - 1)])
-
 
 # ---------------------------------------------------------------------------
 # Swarm coordinator
@@ -249,7 +252,7 @@ class BFTConsensus:
 class SwarmCoordinator:
     """
     Orchestrates the full swarm: creates robots, collects proposals,
-    runs BFT consensus, and logs results.
+    runs centralized proposal selection, and logs results.
     """
 
     def __init__(self, n_robots: int = 6, n_byzantine: int = 1):

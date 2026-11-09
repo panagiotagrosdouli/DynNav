@@ -1,8 +1,10 @@
 # C26 Scientific Upgrade Notes — Swarm Consensus Evaluation
 
+> **Scope correction:** Despite legacy headings and metric names below, the executable implementation is a centralized proposal-selection simulation. Its cost-outlier detector is a median/MAD heuristic; it is not a distributed BFT protocol and does not inherit the classical `f <= floor((n-1)/3)` guarantee. Historical “Byzantine detection” metrics measure detection of injected cost outliers, not verified attacker identification.
+
 ## What was already strong
 
-Contribution 26 already implemented a useful distributed-robotics idea:
+Contribution 26 implements a centralized simulation of a useful distributed-robotics question:
 
 > A robot swarm should agree on a navigation plan even when some robots are faulty, silent, or malicious.
 
@@ -19,7 +21,7 @@ This is important because multi-robot systems cannot blindly trust every shared 
 
 ## Main weakness before this upgrade
 
-The original module demonstrated BFT consensus, but did not evaluate its distributed-system properties.
+The original module demonstrated centralized proposal selection, but did not evaluate distributed-system properties.
 
 A reviewer could ask:
 

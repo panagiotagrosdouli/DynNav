@@ -42,6 +42,18 @@ class RSSMConfig:
     lr: float = 1e-3
     gamma: float = 0.99             # discount for imagined returns
     irreversibility_penalty: float = 5.0
+    seed: int = 0
+
+    def __post_init__(self) -> None:
+        if min(self.obs_dim, self.action_dim, self.latent_dim, self.hidden_dim,
+               self.horizon, self.n_rollouts) < 1:
+            raise ValueError("RSSM dimensions, horizon, and rollout count must be positive")
+        if not np.isfinite(self.lr) or self.lr <= 0:
+            raise ValueError("lr must be finite and positive")
+        if not np.isfinite(self.gamma) or not 0 <= self.gamma <= 1:
+            raise ValueError("gamma must be finite and in [0, 1]")
+        if not np.isfinite(self.irreversibility_penalty) or self.irreversibility_penalty < 0:
+            raise ValueError("irreversibility_penalty must be finite and nonnegative")
 
 
 # ---------------------------------------------------------------------------
@@ -59,7 +71,7 @@ class RSSM:
 
     def __init__(self, cfg: RSSMConfig):
         self.cfg = cfg
-        rng = np.random.default_rng(0)
+        rng = np.random.default_rng(cfg.seed)
         D = cfg.hidden_dim
 
         # Transition: [h, z, a] → h'
@@ -84,7 +96,7 @@ class RSSM:
             (D + cfg.latent_dim, 1)
         ) * 0.01
 
-        self._rng = np.random.default_rng(1)
+        self._rng = np.random.default_rng(cfg.seed + 1)
 
     # ------------------------------------------------------------------
     # Core RSSM steps
@@ -170,7 +182,12 @@ class WorldModelPlanner:
 
     def update_belief(self, obs: np.ndarray, action: np.ndarray) -> None:
         """Step the recurrent state forward with a real observation."""
-        obs_flat = obs.flatten()[: self.cfg.obs_dim]
+        obs_flat = np.asarray(obs, dtype=float).reshape(-1)
+        action = np.asarray(action, dtype=float).reshape(-1)
+        if obs_flat.size != self.cfg.obs_dim or not np.all(np.isfinite(obs_flat)):
+            raise ValueError("observation must be finite and match obs_dim")
+        if action.size != self.cfg.action_dim or not np.all(np.isfinite(action)):
+            raise ValueError("action must be finite and match action_dim")
         self._h = self.rssm.recurrent_step(self._h, self._z, action)
         self._z, _, _ = self.rssm.posterior(self._h, obs_flat)
 
@@ -184,6 +201,16 @@ class WorldModelPlanner:
         Applies irreversibility penalty if checker provided.
         Returns (best_sequence, best_return).
         """
+        if not candidate_sequences:
+            raise ValueError("at least one candidate sequence is required")
+        for seq in candidate_sequences:
+            if not seq:
+                raise ValueError("candidate action sequences must be nonempty")
+            for action in seq:
+                action_array = np.asarray(action, dtype=float).reshape(-1)
+                if action_array.size != self.cfg.action_dim or not np.all(np.isfinite(action_array)):
+                    raise ValueError("candidate actions must be finite and match action_dim")
+
         best_seq, best_return = None, -np.inf
 
         for seq in candidate_sequences:
@@ -192,6 +219,8 @@ class WorldModelPlanner:
 
             # Penalise irreversible trajectories
             if irreversibility_checker is not None:
+                if not rollout["states"]:
+                    raise ValueError("candidate rollout produced no states")
                 final_state = rollout["states"][-1]
                 if not irreversibility_checker(final_state):
                     G -= self.cfg.irreversibility_penalty
@@ -208,9 +237,12 @@ class WorldModelPlanner:
                                    horizon: int | None = None
                                    ) -> list[list[np.ndarray]]:
         """Sample random action sequences for CEM / random shooting."""
-        H = horizon or self.cfg.horizon
-        rng = np.random.default_rng()
+        if n < 1:
+            raise ValueError("n must be positive")
+        H = self.cfg.horizon if horizon is None else horizon
+        if H < 1:
+            raise ValueError("horizon must be positive")
         return [
-            [rng.uniform(-1, 1, self.cfg.action_dim) for _ in range(H)]
+            [self.rssm._rng.uniform(-1, 1, self.cfg.action_dim) for _ in range(H)]
             for _ in range(n)
         ]

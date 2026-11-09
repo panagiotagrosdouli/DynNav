@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-14-purple)](.) [![Type](https://img.shields.io/badge/Type-Causal%20AI-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Evidence correction:** The ranking is a paired-noise counterfactual ablation in a hand-specified synthetic SCM, not Shapley attribution or real-world causal identification. Candidate causes are intervened on at their declared reference values. Results validate consistency with this simulator's assumed graph only.
+
 ## Plain-language summary
 
 When a robot fails, it is not enough to say:
@@ -87,7 +89,7 @@ Interpretation:
 | `observational_query(noise)` | Forward evaluation through the causal graph |
 | `counterfactual_query(noise, intervention)` | Intervention-style query using the same episode noise |
 | `average_causal_effect(X, Y, ...)` | Monte-Carlo ACE estimation |
-| `root_cause_ranking(noise)` | Shapley-inspired ablation ranking |
+| `root_cause_ranking(noise)` | Paired-noise counterfactual ablation ranking |
 
 ---
 
@@ -158,7 +160,7 @@ The new benchmark includes synthetic failure episodes with known root causes:
 | `obstacle_detection_failure` | obstacle detection |
 | `path_risk_failure` | path risk |
 
-For each case, the benchmark checks whether the SCM ranking places the true cause near the top.
+For each case, the benchmark checks whether the SCM ranking places the injected cause near the top. In the audited 200-sample run, top-1 accuracy was 0.60 and mean true-cause rank was 2.20; the map-accuracy and obstacle-detection causes ranked fourth. This is evidence of limitations in this synthetic model, not evidence of general causal attribution performance.
 
 ---
 

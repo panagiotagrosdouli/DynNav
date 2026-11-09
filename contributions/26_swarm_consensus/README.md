@@ -1,6 +1,8 @@
-# Contribution 26 — Swarm Consensus Navigation and Resilience Evaluation
+# Contribution 26 — Centralized Swarm Proposal Selection
 
-[![Module](https://img.shields.io/badge/Module-26-purple)](.) [![Type](https://img.shields.io/badge/Type-Multi--Robot%20%2F%20Distributed-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/Module-26-purple)](.) [![Type](https://img.shields.io/badge/Type-Multi--Robot%20%2F%20Distributed-blue)](.) [![Status](https://img.shields.io/badge/Status-Centralized%20Simulation-orange)](.)
+
+> **Evidence correction:** The current code is a centralized median/MAD proposal selector. It is not a distributed consensus protocol, does not establish agreement among independent replicas, and has no Byzantine fault-tolerance guarantee. The class name `BFTConsensus` remains for compatibility only. Results are synthetic selector simulations.
 
 ## Plain-language summary
 
@@ -16,11 +18,11 @@ overconfident,
 or affected by bad local sensing.
 ```
 
-Contribution 26 implements Byzantine-fault-tolerant swarm consensus for navigation plan selection. Multiple robots submit local path proposals and cost estimates. The swarm then uses robust weighted-median consensus to select a shared navigation plan.
+Contribution 26 simulates multiple robots submitting local path proposals and cost estimates to a centralized coordinator. The coordinator applies a median/MAD heuristic and selects a submitted navigation path. Self-reported confidence is not used because an adversarial robot can inflate it.
 
 The upgraded version adds a resilience benchmark:
 
-> The module does not only run consensus. It evaluates whether consensus remains accurate and useful under scaling, Byzantine faults, silent robots, and packet loss.
+> The module evaluates the centralized selector under synthetic faults, silent participants, and packet loss. Mission success checks that the returned path is in-bounds, collision-free on the grid, cell-adjacent, and connects the requested endpoints.
 
 ---
 
@@ -31,9 +33,9 @@ The upgraded version adds a resilience benchmark:
 This contribution studies:
 
 - multi-robot navigation proposals,
-- Byzantine-fault-tolerant consensus,
+- centralized robust proposal selection,
 - robust outlier detection,
-- weighted-median agreement,
+- median cost selection,
 - silent robot / packet-loss behaviour,
 - swarm scalability,
 - trust-weighted agreement,
@@ -41,7 +43,7 @@ This contribution studies:
 
 ---
 
-## Conceptual Pipeline
+## Simulated Pipeline
 
 ```text
 N robots compute local plans
@@ -52,9 +54,9 @@ invalid / silent proposals are filtered
       ↓
 MAD-based outlier detection
       ↓
-weighted-median consensus
+central median/MAD proposal selection
       ↓
-team executes agreed plan
+coordinator returns selected proposal
       ↓
 consensus resilience evaluation
 ```
@@ -74,13 +76,13 @@ The original C26 implementation includes:
 - constant-bad Byzantine behaviour,
 - silent robot behaviour,
 - robust median absolute deviation outlier detection,
-- weighted-median consensus.
+- centralized median/MAD selection.
 
 ---
 
-## Byzantine Fault Model
+## Synthetic Fault Scenarios
 
-The module uses the common BFT design reference:
+The value below is shown only as a conventional experimental scenario reference. The implementation does not satisfy or prove this bound:
 
 ```text
 f ≤ floor((N - 1) / 3)
@@ -89,9 +91,9 @@ f ≤ floor((N - 1) / 3)
 where:
 
 - `N` is the number of robots,
-- `f` is the number of Byzantine or compromised robots.
+- `f` is the number of synthetically corrupted robots in a scenario.
 
-The implementation is a lightweight simulation and not a formally verified distributed protocol, but it allows the repository to test the navigation consequences of faulty shared proposals.
+The evaluator can vary the fault count around this reference to observe behavior of this centralized heuristic; such results are not BFT protocol results.
 
 ---
 
@@ -117,7 +119,7 @@ This evaluator measures:
 
 - consensus accuracy,
 - mission success,
-- Byzantine detection recall proxy,
+- cost-outlier recall proxy,
 - communication messages,
 - communication scaling,
 - trust-weighted agreement,
@@ -198,9 +200,9 @@ The benchmark evaluates:
 | Metric | Meaning |
 |---|---|
 | Consensus accuracy | Agreement cost closeness to honest reference cost |
-| Mission success | Whether the agreed plan is finite and sufficiently close to the honest reference |
-| Byzantine detection recall | Fraction of faulty robots detected as outliers |
-| Communication messages | Approximate proposal/consensus message count |
+| Mission success | Whether the selected path is valid and its cost is sufficiently close to the honest reference |
+| Cost-outlier recall proxy | Fraction of injected faulty robots whose reported costs were flagged; this does not identify malicious robots |
+| Communication messages | Approximate proposal upload and selected-result broadcast count |
 | Communication scaling | Messages normalized by swarm size |
 | Trust-weighted agreement | Combination of consensus accuracy and participation |
 | Scalability score | Agreement quality penalized by communication overhead |
@@ -263,9 +265,9 @@ swarm_consensus_output = {
 ## Limitations
 
 - The implementation simulates centralized proposal collection rather than full asynchronous distributed consensus.
-- Communication overhead is approximated by message counts.
+- Communication overhead counts one proposal upload and one result broadcast per participant; it is not measured networking.
 - Packet loss is modeled as silent robots.
-- The BFT bound is a design reference, not a formal verification result for this implementation.
+- There is no distributed agreement protocol or established BFT bound for this implementation.
 - Real deployment requires ROS 2/DDS networking experiments, message authentication, clock handling, replay protection, and asynchronous failure handling.
 
 ---
@@ -290,6 +292,6 @@ This would connect C26 directly to C08, C16, and C25.
 
 ## Conclusion
 
-Contribution 26 establishes the distributed swarm-consensus layer of DynNav.
+Contribution 26 provides a centralized robust proposal-selection simulation for DynNav.
 
-The upgraded version makes the module stronger by evaluating consensus accuracy, Byzantine resilience, packet-loss robustness, communication overhead, and scalability.
+Its metrics describe synthetic selection behavior under modeled faults. They do not establish Byzantine resilience, distributed consensus, or real network performance.
