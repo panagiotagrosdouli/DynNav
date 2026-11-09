@@ -13,6 +13,7 @@ reports using auditable criteria:
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
 
 from multimodal_failure_explainer import FailureReport
 
@@ -48,6 +49,14 @@ def score_failure_report(
     report: FailureReport,
     expectation: FailureExplanationExpectation,
 ) -> FailureReportScore:
+    if not expectation.case_name:
+        raise ValueError("case_name must not be empty")
+    if not math.isfinite(report.confidence) or not 0 <= report.confidence <= 1:
+        raise ValueError("report confidence must be finite and in [0, 1]")
+    if any(not name or not math.isfinite(score) for name, score in report.root_causes):
+        raise ValueError("root-cause entries must have names and finite scores")
+    if not math.isfinite(report.timestamp):
+        raise ValueError("report timestamp must be finite")
     sections = [
         bool(report.scene_description.strip()),
         len(report.root_causes) > 0,

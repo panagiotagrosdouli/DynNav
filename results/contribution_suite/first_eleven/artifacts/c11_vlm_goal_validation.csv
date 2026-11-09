@@ -1,0 +1,7 @@
+scenario,region_label,confidence,decision,valid_confidence,valid_region,valid_pixel,valid_waypoint,reason
+valid_corridor_goal,corridor,0.86,ACCEPT,True,True,True,True,goal passed VLM safety validation
+low_confidence_goal,doorway,0.43,ASK_HUMAN,False,True,True,True,goal is partially plausible but needs human confirmation
+hallucinated_region,floating_platform,0.82,ASK_HUMAN,True,False,True,True,goal is partially plausible but needs human confirmation
+out_of_frame_pixel,open_space,0.9,REJECT,True,True,False,True,goal failed VLM safety validation
+far_waypoint,exit,0.92,REJECT,True,True,True,False,goal failed VLM safety validation
+forbidden_semantics,room,0.88,ASK_HUMAN,True,False,True,True,goal is partially plausible but needs human confirmation

@@ -1,0 +1,4 @@
+policy_name,n_episodes,success_rate,collision_rate,mean_reward,mean_episode_length,mean_min_obstacle_distance,mean_final_goal_distance,shield_intervention_rate
+ppo,8,0.0,0.0,0.2190804979554879,120.0,2.9966658041843757,7.694257966228163,0.0
+ppo_shielded,8,0.0,0.0,0.2190804979554879,120.0,2.9966658041843757,7.694257966228163,0.0
+greedy_goal,8,0.625,0.375,1.8508461156689235,28.625,0.5852021835773795,1.9106941203721792,0.0

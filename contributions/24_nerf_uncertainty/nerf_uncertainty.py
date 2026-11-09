@@ -41,6 +41,7 @@ class NeRFConfig:
     grid_resolution: float = 0.1  # metres per cell for uncertainty extraction
     grid_size: tuple[int, int] = (64, 64)
     n_uncertainty_samples: int = 8  # MC dropout samples for uncertainty
+    seed: int = 0                   # reproducible proxy/dropout sequence
 
 
 class PositionalEncoder:
@@ -68,6 +69,15 @@ class TinyNeRF:
 
     def __init__(self, cfg: NeRFConfig):
         self.cfg = cfg
+        if cfg.pos_encoding_L < 0 or cfg.dir_encoding_L < 0 or cfg.hidden_dim < 2:
+            raise ValueError("encoding levels must be nonnegative and hidden_dim >= 2")
+        if cfg.n_samples_coarse < 2 or cfg.n_uncertainty_samples < 1:
+            raise ValueError("sampling counts must be positive (coarse >= 2)")
+        if not (0 < cfg.near < cfg.far) or not (0 < cfg.grid_resolution):
+            raise ValueError("require 0 < near < far and positive grid_resolution")
+        if len(cfg.grid_size) != 2 or min(cfg.grid_size) <= 0:
+            raise ValueError("grid_size must contain two positive dimensions")
+        self._rng = np.random.default_rng(cfg.seed)
         self.pos_enc = PositionalEncoder(cfg.pos_encoding_L)
         self.dir_enc = PositionalEncoder(cfg.dir_encoding_L)
 
@@ -93,14 +103,19 @@ class TinyNeRF:
         Query NeRF at 3D points with view directions.
         Returns (rgb, sigma) with shapes (N, 3) and (N,).
         """
-        rng = np.random.default_rng()
+        points = np.asarray(points, dtype=float)
+        dirs = np.asarray(dirs, dtype=float)
+        if points.ndim != 2 or points.shape[1] != 3 or dirs.shape != points.shape:
+            raise ValueError("points and dirs must have matching shape (N, 3)")
+        if not np.isfinite(points).all() or not np.isfinite(dirs).all():
+            raise ValueError("points and dirs must be finite")
         pe = self.pos_enc.encode(points)
         de = self.dir_enc.encode(dirs)
 
         # Density branch
         h = np.maximum(0, pe @ self.W_density1)
-        if training or True:  # MC dropout always on for uncertainty
-            mask = rng.random(h.shape) > self._dropout_rate
+        if training:
+            mask = self._rng.random(h.shape) > self._dropout_rate
             h = h * mask / (1 - self._dropout_rate)
         h = np.maximum(0, h @ self.W_density2)
         sigma = np.maximum(0, (h @ self.W_sigma).squeeze(-1))

@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-22-purple)](.) [![Type](https://img.shields.io/badge/Type-Reinforcement%20Learning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Evidence correction:** C22 implements a curriculum scheduler and synthetic environment. Its benchmark runs a random-action policy; it does not optimize or train a PPO agent. Stage progression and learning-curve metrics are scheduler simulations, not evidence of curriculum learning gains.
+
 ## Plain-language summary
 
 Training a navigation policy directly in a very hard environment can fail.

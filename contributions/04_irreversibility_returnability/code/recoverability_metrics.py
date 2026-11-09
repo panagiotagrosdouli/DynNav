@@ -83,8 +83,8 @@ class PathRecoverabilityProfile:
         3. exposure to locally constrained states.
         """
         weights = (minimum_weight, degradation_weight, bottleneck_weight)
-        if any(weight < 0.0 for weight in weights):
-            raise ValueError("penalty weights must be non-negative")
+        if any(not np.isfinite(weight) or weight < 0.0 for weight in weights):
+            raise ValueError("penalty weights must be finite and non-negative")
         return float(
             minimum_weight * (1.0 - self.min_recoverability)
             + degradation_weight * self.cumulative_recoverability_loss
@@ -96,6 +96,11 @@ class PathRecoverabilityProfile:
 
 
 def in_bounds(grid: Grid, node: Node) -> bool:
+    grid = np.asarray(grid)
+    if grid.ndim != 2 or 0 in grid.shape or not np.isfinite(grid).all():
+        raise ValueError("grid must be a non-empty finite 2D array")
+    if len(node) != 2 or any(not isinstance(v, (int, np.integer)) for v in node):
+        raise ValueError("node coordinates must be two integers")
     x, y = node
     height, width = grid.shape
     return 0 <= x < width and 0 <= y < height
@@ -117,6 +122,9 @@ def neighbours4(grid: Grid, node: Node) -> list[Node]:
 
 
 def shortest_path_distance(grid: Grid, start: Node, goal: Node) -> float:
+    grid = np.asarray(grid)
+    if grid.ndim != 2 or 0 in grid.shape or not np.isfinite(grid).all():
+        raise ValueError("grid must be a non-empty finite 2D array")
     if not is_free(grid, start) or not is_free(grid, goal):
         return float("inf")
     q: deque[Node] = deque([start])
@@ -174,8 +182,8 @@ def recoverability_score(
 
     if max_return_distance is None:
         max_return_distance = float(grid.shape[0] + grid.shape[1])
-    if max_return_distance <= 0.0:
-        raise ValueError("max_return_distance must be positive")
+    if not np.isfinite(max_return_distance) or max_return_distance <= 0.0:
+        raise ValueError("max_return_distance must be finite and positive")
 
     distance_factor = 0.0 if not returnable else max(0.0, 1.0 - dist / max_return_distance)
     escape_factor = escape_options / 4.0

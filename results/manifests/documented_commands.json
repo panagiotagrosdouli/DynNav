@@ -91,42 +91,6 @@
   },
   {
     "classification": "required and executable",
-    "command": "pytest",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "find . -type f -iname 'README*' | sort",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "docker build -t dynnav .",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "docker run --rm dynnav",
-    "document": "AUDIT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
     "command": "python benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py --seeds 50",
     "document": "benchmarks/dynamic_self_aware_astar/RANDOMIZED_DYNAMIC_README.md",
     "verified": false
@@ -135,6 +99,12 @@
     "classification": "required and executable",
     "command": "python benchmarks/dynamic_self_aware_astar/run_dynamic_demo.py",
     "document": "benchmarks/dynamic_self_aware_astar/README.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python benchmarks/fragile_commitment/v2_benchmark.py --seeds 100 --output results/fragile_commitment_v2.csv",
+    "document": "benchmarks/fragile_commitment/README.md",
     "verified": false
   },
   {
@@ -270,14 +240,20 @@
     "verified": false
   },
   {
-    "classification": "illustrative",
-    "command": "pip install -e .[dev]",
+    "classification": "required and executable",
+    "command": "python -m pip install --upgrade pip",
     "document": "CONTRIBUTING.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "pytest",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
+    "document": "CONTRIBUTING.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pytest -q",
     "document": "CONTRIBUTING.md",
     "verified": false
   },
@@ -703,20 +679,110 @@
   },
   {
     "classification": "required and executable",
-    "command": "pytest contributions/tests/test_new_contributions.py -v",
-    "document": "contributions/CONTRIBUTIONS_README.md",
+    "command": "python scripts/run_contribution_suite.py --only C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11 --output-dir results/contribution_suite/c01-c11",
+    "document": "contributions/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py",
-    "document": "contributions/CONTRIBUTIONS_README.md",
+    "command": "python scripts/run_contribution_suite.py --output-dir results/contribution_suite/c01-c26",
+    "document": "contributions/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python contributions/18_formal_safety_shields/experiments/eval_safety_shields.py",
-    "document": "contributions/CONTRIBUTIONS_README.md",
+    "command": "python scripts/run_contribution_suite.py --only C26 --output-dir results/contribution_suite/c26",
+    "document": "contributions/README.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --symlink-install",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test-result --verbose",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "ros2 launch dynnav_nav2_benchmark tb3_static_planner_benchmark.launch.py headless:=true repetitions:=10 output_dir:=$PWD/results/nav2_static",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "ros2 launch dynnav_nav2_benchmark tb3_dynamic_execution_benchmark.launch.py headless:=true repetitions:=100 output_dir:=$PWD/results/nav2_dynamic",
+    "document": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/validate_contribution_registry.py",
+    "document": "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --output-dir results/contribution_suite/full",
+    "document": "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --only C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11 --output-dir results/contribution_suite/first_eleven",
+    "document": "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --only C26 --output-dir results/contribution_suite/c26",
+    "document": "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/validate_contribution_registry.py",
+    "document": "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --output-dir results/contribution_suite/full",
+    "document": "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --only C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11 --output-dir results/contribution_suite/first_eleven",
+    "document": "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_contribution_suite.py --only C26 --output-dir results/contribution_suite/c26",
+    "document": "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
@@ -918,6 +984,36 @@
     "verified": false
   },
   {
+    "classification": "hardware-only",
+    "command": "export TURTLEBOT3_MODEL=waffle",
+    "document": "docs/HARDWARE_VALIDATION_CHECKLIST.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "docs/HARDWARE_VALIDATION_CHECKLIST.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
+    "document": "docs/HARDWARE_VALIDATION_CHECKLIST.md",
+    "verified": false
+  },
+  {
+    "classification": "hardware-only",
+    "command": "ros2 launch dynnav_turtlebot3 turtlebot3_dynnav_hardware.launch.py map:=/absolute/path/map.yaml risk_weight:=0.0 irreversibility_weight:=0.0",
+    "document": "docs/HARDWARE_VALIDATION_CHECKLIST.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "ros2 bag record -o dynnav_hardware_run /tf /tf_static /odom /scan /cmd_vel /amcl_pose /plan /global_costmap/costmap /global_costmap/costmap_updates /local_costmap/costmap /local_costmap/costmap_updates",
+    "document": "docs/HARDWARE_VALIDATION_CHECKLIST.md",
+    "verified": false
+  },
+  {
     "classification": "required and executable",
     "command": "python3 simple_risk_planner.py",
     "document": "docs/Human Preference\u2013Aware Risk Navigation.md",
@@ -951,6 +1047,12 @@
     "classification": "required and executable",
     "command": "python3 run_real_human_preference_demo.py",
     "document": "docs/Human Preference\u2013Aware Risk Navigation.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/analyze_lilocbench_ground_truth.py /path/to/gt_poses.txt --output results/real_data/lilocbench_dynamics_0_summary.json",
+    "document": "docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md",
     "verified": false
   },
   {
@@ -1003,6 +1105,60 @@
   },
   {
     "classification": "required and executable",
+    "command": "python -m venv .venv",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source .venv/bin/activate",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pip install --upgrade pip",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pytest -q",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "docs/PHD_APPLICATION_READINESS.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
     "command": "python -m pip install -e \".[dev,dashboard]\"",
     "document": "docs/PRESENTATION_GUIDE.md",
     "verified": false
@@ -1023,6 +1179,54 @@
     "classification": "required and executable",
     "command": "python scripts/presentation_benchmark.py --seeds 1-20 --out-dir results/presentation/benchmark",
     "document": "docs/PRESENTATION_GUIDE.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python -m pytest -q",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_all.py --config configs/default.yaml --smoke --out-dir results/ci_smoke",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python scripts/run_benchmarks.py --config configs/default.yaml --smoke --out-dir results/ci_benchmarks",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
+    "document": "docs/PROJECT_OVERVIEW.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "docs/PROJECT_OVERVIEW.md",
     "verified": false
   },
   {
@@ -1147,13 +1351,13 @@
   },
   {
     "classification": "required and executable",
-    "command": "python -m pip install -e \".[dev]\"",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
     "document": "docs/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "pytest",
+    "command": "python -m pytest -q",
     "document": "docs/README.md",
     "verified": false
   },
@@ -1170,8 +1374,26 @@
     "verified": false
   },
   {
-    "classification": "required and executable",
-    "command": "python -m pip install -e \".[dashboard]\"",
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "docs/README.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "docs/README.md",
+    "verified": false
+  },
+  {
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
+    "document": "docs/README.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "docs/README.md",
     "verified": false
   },
@@ -1333,6 +1555,12 @@
   },
   {
     "classification": "required and executable",
+    "command": "python scripts/inspect_ros_map.py /path/to/map.yaml --start 1.0,2.0 --goal 7.0,4.0",
+    "document": "docs/REAL_DATA_VALIDATION.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
     "command": "python -m venv .venv",
     "document": "docs/REPRODUCIBILITY.md",
     "verified": false
@@ -1422,123 +1650,33 @@
     "verified": false
   },
   {
-    "classification": "hardware-only",
-    "command": "find lidar_ros2 -maxdepth 3 -type f -print",
-    "document": "lidar_ros2/readme",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "sudo apt install ros-jazzy-turtlebot3-gazebo",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "source ~/.bashrc",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "sudo apt install ros-jazzy-slam-toolbox",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "sudo apt install ros-jazzy-nav2-bringup",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "sudo apt install ros-jazzy-turtlebot3-navigation2",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "export TURTLEBOT3_MODEL=burger",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 launch slam_toolbox online_async_launch.py",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 run turtlebot3_teleop teleop_keyboard",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "mkdir -p ~/maps",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 run nav2_map_server map_saver_cli -f ~/maps/tb3_world_map",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "export TURTLEBOT3_MODEL=burger",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 launch nav2_bringup bringup_launch.py use_sim_time:=True map:=/home/YOUR_USER/maps/tb3_world_map.yaml",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 bag record /scan /map /tf /cmd_vel /odom",
-    "document": "lidar_ros2/README (4).md",
-    "verified": false
-  },
-  {
     "classification": "required and executable",
-    "command": "python ../../benchmarks/fragile_commitment/random_benchmark.py --seeds 100 --output random_topology_results.csv",
+    "command": "python scripts/run_history_information_gap_benchmark.py --out-dir results/history_information_gap",
     "document": "paper/dynnav_r/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python ../../benchmarks/fragile_commitment/paired_tests.py random_topology_results.csv --baseline risk_only --candidate recoverability_aware --output-csv paired_tests.csv --markdown paired_tests.md",
+    "command": "python scripts/run_heldout_history_generalization.py --seeds 500 --out-dir results/heldout_history_generalization",
     "document": "paper/dynnav_r/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python ../../benchmarks/fragile_commitment/paper_figures.py random_topology_results.csv --output-dir ../figures/fragile_commitment --format pdf",
+    "command": "python scripts/run_geometric_heldout_benchmark.py --seeds 500 --output-dir results/geometric_heldout",
     "document": "paper/dynnav_r/README.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python ../../benchmarks/fragile_commitment/paper_tables.py random_topology_results.csv paired_tests.csv --output-dir ../tables/fragile_commitment",
+    "command": "python scripts/run_geometric_pareto_benchmark.py --seeds 500 --output-dir results/geometric_pareto",
     "document": "paper/dynnav_r/README.md",
+    "verified": false
+  },
+  {
+    "classification": "required and executable",
+    "command": "python paper/dynnav_r/check_submission.py",
+    "document": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
     "verified": false
   },
   {
@@ -1567,79 +1705,7 @@
   },
   {
     "classification": "required and executable",
-    "command": "python -m pip install -e \".[dev,dashboard]\"",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python -m pip install -e \".[researcher]\"",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python -m uvicorn apps.api.main:app --reload --port 8000",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm install",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm run dev",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm --prefix website ci --no-audit --no-fund",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm --prefix apps/web ci --no-audit --no-fund",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "bash scripts/build_web_portal.sh",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python -m http.server 4173 --directory .web-dist",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "streamlit run app/dashboard.py",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "dynnav-benchmark",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/run_all.py",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/run_benchmarks.py",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
     "document": "README.md",
     "verified": false
   },
@@ -1657,7 +1723,7 @@
   },
   {
     "classification": "ROS2-only",
-    "command": "colcon build --base-paths ros2_ws/src/dynnav_nav2_cpp --packages-select dynnav_nav2_cpp",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "README.md",
     "verified": false
   },
@@ -1669,31 +1735,7 @@
   },
   {
     "classification": "ROS2-only",
-    "command": "colcon test --packages-select dynnav_nav2_cpp",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "colcon test-result --verbose",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 launch dynnav_nav2_benchmark tb3_static_planner_benchmark.launch.py headless:=true repetitions:=10 output_dir:=$PWD/results/nav2_static",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/validate_contribution_registry.py",
-    "document": "README.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "python scripts/run_contribution_suite.py --output-dir results/contribution_suite",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "README.md",
     "verified": false
   },
@@ -1723,26 +1765,38 @@
   },
   {
     "classification": "required and executable",
-    "command": "python -m pip install -e \".[dev,dashboard]\"",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
     "document": "README_GR.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "pytest",
+    "command": "python -m pytest -q",
     "document": "README_GR.md",
     "verified": false
   },
   {
     "classification": "illustrative",
-    "command": "streamlit run app/dashboard.py",
+    "command": "source /opt/ros/jazzy/setup.bash",
+    "document": "README_GR.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "README_GR.md",
     "verified": false
   },
   {
     "classification": "illustrative",
-    "command": "git clone https://github.com/panagiotagrosdouli/DynNav-Dynamic-Navigation-Rerouting-in-Unknown-Environments.git dynnav_repo",
-    "document": "REPRODUCIBILITY_REPORT.md",
+    "command": "source install/setup.bash",
+    "document": "README_GR.md",
+    "verified": false
+  },
+  {
+    "classification": "ROS2-only",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
+    "document": "README_GR.md",
     "verified": false
   },
   {
@@ -1765,79 +1819,37 @@
   },
   {
     "classification": "required and executable",
-    "command": "python -m pip install -e \".[dev]\"",
+    "command": "python -m pip install -e \".[dev,researcher,dashboard]\"",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
     "classification": "required and executable",
-    "command": "python -m compileall src scripts tests",
+    "command": "python -m pytest -q",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
-    "classification": "required and executable",
-    "command": "pytest -q",
+    "classification": "illustrative",
+    "command": "source /opt/ros/jazzy/setup.bash",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
-    "classification": "required and executable",
-    "command": "python scripts/run_all.py --mode smoke",
+    "classification": "ROS2-only",
+    "command": "colcon build --base-paths ros2_ws/src --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
-    "classification": "required and executable",
-    "command": "python scripts/run_all.py --mode validate",
+    "classification": "illustrative",
+    "command": "source install/setup.bash",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
   {
-    "classification": "required and executable",
-    "command": "docker build -t dynnav .",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "docker run --rm dynnav",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "docker run --rm -v \"$(pwd)/results:/app/results\" dynnav",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm ci",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm run lint",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm run typecheck",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm run test",
-    "document": "REPRODUCIBILITY_REPORT.md",
-    "verified": false
-  },
-  {
-    "classification": "required and executable",
-    "command": "npm run build",
+    "classification": "ROS2-only",
+    "command": "colcon test --packages-select dynnav_nav2_cpp dynnav_nav2_benchmark",
     "document": "REPRODUCIBILITY_REPORT.md",
     "verified": false
   },
@@ -1893,96 +1905,6 @@
     "classification": "hardware-only",
     "command": "find ros2_ws/lidar_slam_tb3 -maxdepth 4 -type f -print",
     "document": "ros2_ws/lidar_slam_tb3/readme",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "sudo apt install ros-jazzy-turtlebot3-gazebo",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "source ~/.bashrc",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "sudo apt install ros-jazzy-slam-toolbox",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "sudo apt install ros-jazzy-nav2-bringup",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "sudo apt install ros-jazzy-turtlebot3-navigation2",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "export TURTLEBOT3_MODEL=burger",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 launch slam_toolbox online_async_launch.py",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 run turtlebot3_teleop teleop_keyboard",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "illustrative",
-    "command": "mkdir -p ~/maps",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 run nav2_map_server map_saver_cli -f ~/maps/tb3_world_map",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "export TURTLEBOT3_MODEL=burger",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "hardware-only",
-    "command": "ros2 launch turtlebot3_gazebo turtlebot3_world.launch.py",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 launch nav2_bringup bringup_launch.py use_sim_time:=True map:=/home/YOUR_USER/maps/tb3_world_map.yaml",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
-    "verified": false
-  },
-  {
-    "classification": "ROS2-only",
-    "command": "ros2 bag record /scan /map /tf /cmd_vel /odom",
-    "document": "ros2_ws/lidar_slam_tb3/README (4).md",
     "verified": false
   },
   {
@@ -2209,7 +2131,7 @@
   },
   {
     "classification": "required and executable",
-    "command": "python -m pytest -q",
+    "command": "pytest",
     "document": "src/README.md",
     "verified": false
   },

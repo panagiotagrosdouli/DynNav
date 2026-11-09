@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-12-purple)](.) [![Type](https://img.shields.io/badge/Type-Probabilistic%20Planning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Evidence correction:** The current NumPy score network is randomly initialized and untrained. It has no training loop or learned checkpoint. It now conditions its forward pass on the latest occupancy frame, but generated maps are prototype outputs, not validated diffusion predictions. The evaluator's metrics validate probability maps only.
+
 ## Plain-language summary
 
 A deterministic occupancy grid gives the robot one guess about the future.

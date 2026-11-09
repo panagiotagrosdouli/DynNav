@@ -1,0 +1,4 @@
+case_name,completeness_score,root_cause_recall,action_relevance,stl_coverage,operator_readiness,total_score
+collision_near_obstacle,1.0,1.0,1.0,1.0,1.0,1.0
+sensor_fault,1.0,1.0,1.0,1.0,1.0,1.0
+irreversible_state,1.0,1.0,1.0,1.0,1.0,1.0

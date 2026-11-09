@@ -1,0 +1,6 @@
+instruction,predicted_sequence,expected_sequence,ordering_accuracy,exact_sequence_match,unresolved_waypoints,duplicate_waypoints,forbidden_violations,missing_required,execution_ready,confidence
+go to the kitchen then the corridor and exit,kitchen->corridor->exit,kitchen->corridor->exit,1.0,True,0,0,0,0,True,0.6
+inspect the office and then return to the charging station,office->charging_station,office->charging_station,1.0,True,0,0,0,0,True,0.6
+"start at the entrance, check the storage room, then go to the exit",start->entrance->storage_room->exit,entrance->storage_room->exit,0.0,False,0,0,0,0,True,0.6
+go to the private lab then kitchen,kitchen,kitchen,1.0,True,0,0,0,0,True,0.5
+go to the corridor corridor and then exit,corridor->exit,corridor->exit,1.0,True,0,0,0,0,True,0.6

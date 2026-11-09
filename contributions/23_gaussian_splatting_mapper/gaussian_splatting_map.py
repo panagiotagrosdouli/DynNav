@@ -113,7 +113,17 @@ class GaussianSplattingMap:
 
         Returns number of new Gaussians added.
         """
+        points = np.asarray(points, dtype=float)
+        if points.ndim != 2 or points.shape[1] != 3 or not np.isfinite(points).all():
+            raise ValueError("points must be a finite (N, 3) array")
+        if colors is not None:
+            colors = np.asarray(colors, dtype=float)
+            if colors.shape != points.shape or not np.isfinite(colors).all():
+                raise ValueError("colors must be finite and have shape (N, 3)")
         if pose is not None:
+            pose = np.asarray(pose, dtype=float)
+            if pose.shape != (4, 4) or not np.isfinite(pose).all():
+                raise ValueError("pose must be a finite (4, 4) transform")
             R = pose[:3, :3]
             t = pose[:3, 3]
             points = (R @ points.T).T + t
@@ -159,10 +169,12 @@ class GaussianSplattingMap:
             if g.mahalanobis(point) < self.cfg.merge_threshold:
                 # Kalman-style update: shift mean toward new point
                 alpha = 0.1
-                g.mu = (1 - alpha) * g.mu + alpha * point
-                g.cov = (1 - alpha) * g.cov + alpha * np.outer(
-                    point - g.mu, point - g.mu
-                )
+                old_mu = g.mu.copy()
+                delta = point - old_mu
+                g.mu = old_mu + alpha * delta
+                # Mixture covariance update includes the between-mean term.
+                g.cov = (1 - alpha) * g.cov + alpha * np.outer(delta, delta)
+                g.cov = 0.5 * (g.cov + g.cov.T)
                 g.confidence = min(1.0, g.confidence + 0.05)
                 return True
         return False

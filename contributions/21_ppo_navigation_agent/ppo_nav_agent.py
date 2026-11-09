@@ -311,19 +311,11 @@ class PPOAgent:
         }
 
     def train(self, env: NavEnv, n_updates: int = 50) -> list[dict]:
-        """Main training loop."""
-        for update in range(n_updates):
-            stats = self.collect_rollout(env)
-            advantages, returns = self.buffer.compute_gae(
-                0.0, self.cfg.gamma, self.cfg.gae_lambda
-            )
-            loss_stats = self.update(advantages, returns)
-            record = {"update": update + 1, **stats, **loss_stats}
-            self.training_log.append(record)
-            if (update + 1) % 10 == 0:
-                logger.info(
-                    "Update %3d | ep_r=%.2f | ep_len=%.1f | v_loss=%.4f",
-                    update + 1, stats["mean_ep_reward"],
-                    stats["mean_ep_length"], loss_stats["value_loss"]
-                )
-        return self.training_log
+        """Raise until a real optimizer is implemented.
+
+        The NumPy networks have no gradient/backpropagation code. Logging
+        rollout losses as PPO updates would falsely imply policy learning.
+        """
+        raise NotImplementedError(
+            "PPO training is not implemented: actor/critic parameters are not updated"
+        )

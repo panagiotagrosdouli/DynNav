@@ -1,0 +1,4 @@
+strategy,n_episodes,final_stage,final_stage_idx,n_stage_transitions,episodes_to_hard,mean_success_last_window,success_trend,stability_score,heldout_transfer_success,sample_efficiency_score
+adaptive,40,easy,0,0,-1,0.525,0.0,1.0,0.1419138246648736,0.525
+fixed,40,easy,0,0,-1,0.525,0.0,1.0,0.1419138246648736,0.525
+reverse,40,easy,0,0,-1,0.525,0.0,1.0,0.1419138246648736,0.525

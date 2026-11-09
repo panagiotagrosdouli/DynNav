@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.39",
+  "claim_boundary": "Controlled implementation smoke checks only; no real-robot, Gazebo, formal-proof, trained-model, or generalization claim.",
+  "results": [
+    {
+      "contribution_id": "C26",
+      "experiment_id": "c26_swarm_consensus",
+      "status": "passed",
+      "command": [
+        "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python",
+        "/workspace/scratch/4ac5dda24d06/DynNav/contributions/26_swarm_consensus/experiments/eval_swarm_consensus.py",
+        "--out",
+        "/workspace/scratch/4ac5dda24d06/DynNav/results/contribution_suite/c26/artifacts/c26_swarm_consensus.csv"
+      ],
+      "artifact": "artifacts/c26_swarm_consensus.csv",
+      "evidence_level": "synthetic",
+      "claim_boundary": "In-process simulation does not model real network delays, packet ordering, or ROS 2 DDS failure modes.",
+      "missing_dependencies": [],
+      "returncode": 0,
+      "duration_seconds": 0.428,
+      "stdout": "Saved C26 swarm consensus benchmark to /workspace/scratch/4ac5dda24d06/DynNav/results/contribution_suite/c26/artifacts/c26_swarm_consensus.csv\nsuccess_rate=1.000, mean_accuracy=1.000, mean_detection_recall=0.465, mean_messages=35.2\nscale_5_honest       n=5  byz=0  participants=5  acc=1.000 success=True method=bft_weighted_median\nscale_5_bft_bound    n=5  byz=1  participants=5  acc=0.999 success=True method=bft_weighted_median\nscale_10_honest      n=10 byz=0  participants=10 acc=1.000 success=True method=bft_weighted_median\nscale_10_bft_bound   n=10 byz=3  participants=10 acc=1.000 success=True method=bft_weighted_median\nscale_20_honest      n=20 byz=0  participants=20 acc=1.000 success=True method=bft_weighted_median\nscale_20_bft_bound   n=20 byz=6  participants=20 acc=1.000 success=True method=bft_weighted_median\nscale_50_honest      n=50 byz=0  participants=50 acc=1.000 success=True method=bft_weighted_median\nscale_50_bft_bound   n=50 byz=16 participants=50 acc=1.000 success=True method=bft_weighted_median\nrandom_byzantine     n=12 byz=3  participants=12 acc=1.000 success=True method=bft_weighted_median\nsilent_faults        n=12 byz=2  participants=10 acc=1.000 success=True method=bft_weighted_median\npacket_loss_20pct    n=12 byz=3  participants=10 acc=1.000 success=True method=bft_weighted_median\npacket_loss_35pct    n=12 byz=4  participants=9  acc=1.000 success=True method=bft_weighted_median\n",
+      "stderr": "",
+      "artifact_sha256": "c843d949c5b47267bc9373ed229170558fe015beb62b90deed927ff2576241a8",
+      "artifact_rows": 12,
+      "artifact_bytes": 2370
+    }
+  ]
+}

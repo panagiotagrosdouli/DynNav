@@ -15,6 +15,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
+import math
 from typing import Mapping
 
 
@@ -39,6 +40,15 @@ class IDSResponseConfig:
     critical_ratio: float = 2.50
     high_flag_rate: float = 0.25
     critical_streak: int = 5
+
+    def __post_init__(self) -> None:
+        values = (self.watch_ratio, self.warning_ratio, self.critical_ratio, self.high_flag_rate)
+        if not all(math.isfinite(value) and value >= 0 for value in values):
+            raise ValueError("IDS thresholds must be finite and nonnegative")
+        if not self.watch_ratio <= self.warning_ratio <= self.critical_ratio:
+            raise ValueError("IDS ratio thresholds must be ordered")
+        if self.high_flag_rate > 1 or self.critical_streak < 1:
+            raise ValueError("high_flag_rate must be <= 1 and critical_streak positive")
 
 
 @dataclass(frozen=True)
@@ -69,10 +79,19 @@ def compute_trust_score(d2_ratio: float, flag_rate: float, triggered: bool) -> f
 def classify_ids_response(monitor_output: Mapping[str, float | int | bool], cfg: IDSResponseConfig | None = None) -> IDSResponse:
     cfg = cfg or IDSResponseConfig()
     d2 = float(monitor_output.get("d2", 0.0))
-    thr = max(float(monitor_output.get("thr", 1.0)), 1e-9)
+    thr = float(monitor_output.get("thr", 1.0))
     flag_rate = float(monitor_output.get("flag_rate", 0.0))
-    triggered = bool(monitor_output.get("triggered", False))
+    triggered_value = monitor_output.get("triggered", False)
     streak = int(monitor_output.get("streak", 0))
+    if not math.isfinite(d2) or d2 < 0:
+        raise ValueError("d2 must be finite and nonnegative")
+    if not math.isfinite(thr) or thr <= 0:
+        raise ValueError("thr must be finite and positive")
+    if not math.isfinite(flag_rate) or not 0 <= flag_rate <= 1:
+        raise ValueError("flag_rate must be finite and in [0, 1]")
+    if streak < 0 or not isinstance(triggered_value, bool):
+        raise ValueError("streak must be nonnegative and triggered must be boolean")
+    triggered = triggered_value
     ratio = d2 / thr
 
     if ratio >= cfg.critical_ratio or streak >= cfg.critical_streak:

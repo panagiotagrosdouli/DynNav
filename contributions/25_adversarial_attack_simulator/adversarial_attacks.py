@@ -57,6 +57,21 @@ class AttackConfig:
     odom_drift_rate: float = 0.02  # metres drift per step
     blind_region_frac: float = 0.3 # fraction of sensor to blind
     targeted: bool = False         # targeted vs untargeted attack
+    seed: int = 0                  # controls simulator randomness
+
+    def __post_init__(self) -> None:
+        if self.epsilon < 0 or not np.isfinite(self.epsilon):
+            raise ValueError("epsilon must be finite and nonnegative")
+        if self.pgd_steps < 0 or self.pgd_step_size < 0 or not np.isfinite(self.pgd_step_size):
+            raise ValueError("PGD steps and step size must be nonnegative")
+        if self.lidar_n_phantoms < 0:
+            raise ValueError("lidar_n_phantoms must be nonnegative")
+        if not 0 <= self.lidar_remove_frac <= 1:
+            raise ValueError("lidar_remove_frac must be in [0, 1]")
+        if self.odom_drift_rate < 0 or not np.isfinite(self.odom_drift_rate):
+            raise ValueError("odom_drift_rate must be finite and nonnegative")
+        if not 0 <= self.blind_region_frac <= 1:
+            raise ValueError("blind_region_frac must be in [0, 1]")
 
 
 # ---------------------------------------------------------------------------
@@ -89,10 +104,15 @@ class GradientAttacker:
         """
         PGD: iterative FGSM with projection onto L∞ ball.
         """
-        if x_nat is None:
-            x_nat = obs.copy()
+        obs = np.asarray(obs, dtype=float)
+        x_nat = obs.copy() if x_nat is None else np.asarray(x_nat, dtype=float)
+        if obs.shape != x_nat.shape or not np.isfinite(obs).all() or not np.isfinite(x_nat).all():
+            raise ValueError("obs and x_nat must be finite arrays with matching shapes")
+        if self.cfg.pgd_steps < 1:
+            raise ValueError("PGD requires at least one iteration")
 
-        x_adv = obs.copy() + np.random.default_rng().uniform(
+        rng = np.random.default_rng(self.cfg.seed)
+        x_adv = obs.copy() + rng.uniform(
             -self.cfg.epsilon, self.cfg.epsilon, obs.shape
         )
 
@@ -131,7 +151,7 @@ class LiDARAttacker:
 
     def __init__(self, cfg: AttackConfig):
         self.cfg = cfg
-        self._rng = np.random.default_rng(42)
+        self._rng = np.random.default_rng(cfg.seed)
 
     def spoof_add(self, point_cloud: np.ndarray,
                   robot_pos: np.ndarray,
@@ -200,7 +220,7 @@ class OdometrySpoofer:
     def __init__(self, cfg: AttackConfig):
         self.cfg = cfg
         self._cumulative_drift = np.zeros(3)   # (x, y, yaw)
-        self._rng = np.random.default_rng(0)
+        self._rng = np.random.default_rng(cfg.seed)
         self._active = False
 
     def activate(self):

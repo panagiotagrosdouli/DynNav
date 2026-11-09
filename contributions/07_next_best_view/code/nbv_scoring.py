@@ -11,6 +11,7 @@ reachable, reasonably low-risk, and preserve the robot's ability to recover.
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
 from typing import Iterable
 
 
@@ -22,6 +23,18 @@ class ViewCandidate:
     path_risk: float
     returnability: float
     connectivity: float = 1.0
+
+    def __post_init__(self) -> None:
+        if not self.name:
+            raise ValueError("candidate name must not be empty")
+        values = (self.information_gain, self.travel_cost, self.path_risk,
+                  self.returnability, self.connectivity)
+        if not all(math.isfinite(value) for value in values):
+            raise ValueError("candidate values must be finite")
+        if self.information_gain < 0 or self.travel_cost < 0 or self.path_risk < 0:
+            raise ValueError("information gain, travel cost, and path risk must be nonnegative")
+        if not 0 <= self.returnability <= 1 or not 0 <= self.connectivity <= 1:
+            raise ValueError("returnability and connectivity must be in [0, 1]")
 
 
 @dataclass(frozen=True)
@@ -47,6 +60,13 @@ class NBVWeights:
     returnability_weight: float = 1.0
     connectivity_weight: float = 0.25
     epsilon: float = 1e-9
+
+    def __post_init__(self) -> None:
+        if not all(math.isfinite(value) and value >= 0 for value in
+                   (self.risk_weight, self.returnability_weight, self.connectivity_weight)):
+            raise ValueError("NBV weights must be finite and nonnegative")
+        if not math.isfinite(self.epsilon) or self.epsilon <= 0:
+            raise ValueError("epsilon must be finite and positive")
 
 
 def classic_nbv_score(candidate: ViewCandidate, epsilon: float = 1e-9) -> float:

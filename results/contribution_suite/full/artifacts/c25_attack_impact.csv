@@ -1,0 +1,7 @@
+attack_name,detected,true_attack,severity_score,min_distance_before,min_distance_after,min_distance_degradation,geometry_change,odometry_error_m,mitigation
+fgsm,False,True,0.31646976881118083,0.0,0.0,0.0,0.0,0.0,increase_trust_monitoring
+pgd,False,True,0.3046052586590353,0.0,0.0,0.0,0.0,0.0,increase_trust_monitoring
+lidar_spoof_add,True,True,1.0,1.5628492695148808,0.5695582792409919,0.9932909902738889,0.8079934542119347,0.0,emergency_stop_and_request_operator
+lidar_spoof_remove,True,True,0.345442172292895,1.5628492695148808,1.5628492695148808,0.0,1.38176868917158,0.0,increase_trust_monitoring
+sensor_blind,True,True,0.7435644766187726,1.5628492695148808,1.5628492695148808,0.0,2.9742579064750903,0.0,safe_mode_and_sensor_cross_check
+odom_drift,False,True,0.20990486168378875,0.0,0.0,0.0,0.0,0.2518858340205465,increase_trust_monitoring

@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-21-purple)](.) [![Type](https://img.shields.io/badge/Type-Reinforcement%20Learning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Evidence correction:** This module has a PPO-shaped NumPy actor/critic and rollout/GAE utilities, but no gradient optimizer or trained checkpoint. The safety benchmark uses an untrained random-weight actor; these rows are not PPO learning results. `PPOAgent.train()` now raises `NotImplementedError` rather than logging non-updating losses as training.
+
 ## Plain-language summary
 
 A reinforcement-learning navigation policy should not be judged only by training reward.
@@ -112,7 +114,7 @@ It reports:
 
 ## Quick Start
 
-Train the PPO skeleton:
+Inspect or collect a rollout from the untrained prototype:
 
 ```python
 from contributions.21_ppo_navigation_agent.ppo_nav_agent import PPOAgent, PPOConfig, NavEnv
@@ -120,10 +122,11 @@ from contributions.21_ppo_navigation_agent.ppo_nav_agent import PPOAgent, PPOCon
 cfg = PPOConfig(obs_dim=14, hidden_dim=128, rollout_len=512)
 agent = PPOAgent(cfg)
 env = NavEnv(cfg)
-
-training_log = agent.train(env, n_updates=100)
-print(f"Final reward: {training_log[-1]['mean_ep_reward']:.2f}")
+obs = env.reset()
+action, log_prob, value = agent.select_action(obs)
 ```
+
+The policy is untrained. `agent.train(...)` raises `NotImplementedError` until a genuine gradient-based PPO update is available.
 
 Run the new policy-safety benchmark:
 

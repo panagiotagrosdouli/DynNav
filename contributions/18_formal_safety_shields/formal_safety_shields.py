@@ -1,15 +1,16 @@
 """
 Contribution 18: Formal Safety Shields — STL + Control Barrier Functions
 =========================================================================
-Provides runtime-verifiable safety guarantees by wrapping any navigation
+Provides runtime monitoring and a single-integrator barrier-filter prototype by wrapping any navigation
 planner with two complementary mechanisms:
 
 1. Signal Temporal Logic (STL) monitor: evaluates temporal safety
    specifications over the robot's state trajectory and flags violations.
 
-2. Control Barrier Function (CBF) filter: modifies velocity commands in
-   real-time to guarantee obstacle avoidance with formal Lyapunov-style
-   safety certificates.
+2. Control Barrier Function (CBF) filter: projects velocity commands against
+   static-obstacle half-space constraints under a point-robot, continuous-time
+   single-integrator model. This prototype does not establish a physical safety
+   guarantee.
 
 Research Question (RQ-Formal): Do STL+CBF safety shields reduce constraint
 violations without significantly degrading navigation efficiency?
@@ -160,9 +161,15 @@ class STLMonitor:
 class CBFConfig:
     safety_radius: float = 0.4       # minimum distance to obstacle (metres)
     alpha: float = 1.5               # CBF class-K function gain
-    gamma: float = 0.95              # margin relaxation factor
-    max_iter: int = 20               # QP solver iterations (gradient projection)
-    step_size: float = 0.05          # gradient projection step
+    max_iter: int = 20               # cyclic half-space projection iterations
+
+    def __post_init__(self) -> None:
+        if not np.isfinite(self.safety_radius) or self.safety_radius <= 0:
+            raise ValueError("safety_radius must be finite and positive")
+        if not np.isfinite(self.alpha) or self.alpha <= 0:
+            raise ValueError("alpha must be finite and positive")
+        if self.max_iter < 1:
+            raise ValueError("max_iter must be positive")
 
 
 class CBFSafetyFilter:
@@ -170,8 +177,9 @@ class CBFSafetyFilter:
     Control Barrier Function filter for a unicycle / point robot.
 
     Given a desired velocity command u_des and a set of obstacle positions,
-    returns a minimally modified u_safe that provably maintains h(x) ≥ 0
-    where h(x) = ‖x - x_obs‖² - r²  (sphere safety set).
+    projects a desired command onto static-obstacle half-spaces for
+    h(x) = ||x - x_obs|| - r under x_dot = u. This is a sampled command-level
+    check, not a proof of safety for a physical/dynamic robot.
     """
 
     def __init__(self, cfg: CBFConfig | None = None):
@@ -191,28 +199,37 @@ class CBFSafetyFilter:
                robot_pos: np.ndarray,
                obstacles: list[np.ndarray]) -> np.ndarray:
         """
-        QP-based CBF filter (gradient projection for simplicity).
-        Finds u_safe ≈ argmin ‖u − u_des‖² s.t. Lf_h + alpha*h ≥ 0 ∀ obs.
+        Cyclically project onto the linearized CBF half-spaces.
+
+        For static obstacles and x_dot=u, each constraint is
+        grad(h_i)·u >= -alpha*h_i. Feasibility is checked separately by
+        ``batch_filter``; this method alone cannot certify a command.
         """
-        u = u_des.copy().astype(float)
+        u = np.asarray(u_des, dtype=float).reshape(-1).copy()
+        pos = np.asarray(robot_pos, dtype=float).reshape(-1)
+        obs_array = [np.asarray(obs, dtype=float).reshape(-1) for obs in obstacles]
+        if u.size != 2 or pos.size != 2 or not np.all(np.isfinite(u)) or not np.all(np.isfinite(pos)):
+            raise ValueError("desired command and robot position must be finite 2D vectors")
+        if any(obs.size != 2 or not np.all(np.isfinite(obs)) for obs in obs_array):
+            raise ValueError("obstacles must be finite 2D vectors")
 
-        for obs in obstacles:
-            for _ in range(self.cfg.max_iter):
-                h_val = self.h(robot_pos, obs)
-                grad = self.dh_dx(robot_pos, obs)
+        constraints = []
+        for obs in obs_array:
+            h_val = self.h(pos, obs)
+            grad = self.dh_dx(pos, obs)
+            rhs = -self.cfg.alpha * h_val
+            constraints.append((grad, rhs))
 
-                # CBF condition: grad · u + alpha * h ≥ 0
-                lf_h = float(grad @ u)
-                constraint = lf_h + self.cfg.alpha * h_val
-
-                if constraint >= 0:
-                    break  # satisfied
-
-                # Project u onto the constraint boundary
-                violation = -constraint
-                u = u + self.cfg.step_size * violation * grad
-                logger.debug("CBF correction applied | h=%.3f lf_h=%.3f", h_val, lf_h)
-
+        for _ in range(self.cfg.max_iter):
+            max_violation = 0.0
+            for grad, rhs in constraints:
+                residual = float(grad @ u - rhs)
+                if residual < 0 and float(grad @ grad) > 1e-16:
+                    u += (-residual / float(grad @ grad)) * grad
+                max_violation = max(max_violation, -residual)
+            if max_violation <= 1e-8:
+                break
+        logger.debug("CBF projection complete | command=%s", u)
         return u
 
     def batch_filter(self, u_des: np.ndarray,
@@ -223,16 +240,24 @@ class CBFSafetyFilter:
         """
         Filter command and return diagnostics.
         """
-        u_safe = self.filter(u_des, robot_pos, obstacles)
+        u_des = np.asarray(u_des, dtype=float).reshape(-1)
+        robot_pos = np.asarray(robot_pos, dtype=float).reshape(-1)
+        obs_array = [np.asarray(obs, dtype=float).reshape(-1) for obs in obstacles]
+        u_safe = self.filter(u_des, robot_pos, obs_array)
         correction = np.linalg.norm(u_safe - u_des)
         min_dist = min(
-            np.linalg.norm(robot_pos - obs) for obs in obstacles
-        ) if obstacles else np.inf
+            np.linalg.norm(robot_pos - obs) for obs in obs_array
+        ) if obs_array else np.inf
+        residuals = [float(self.dh_dx(robot_pos, obs) @ u_safe + self.cfg.alpha * self.h(robot_pos, obs))
+                     for obs in obs_array]
+        min_residual = min(residuals) if residuals else np.inf
 
         info = {
             "correction_norm": round(float(correction), 5),
             "min_obstacle_dist": round(float(min_dist), 5),
             "safety_violated": min_dist < self.cfg.safety_radius,
+            "cbf_constraints_satisfied": min_residual >= -1e-8,
+            "min_cbf_residual": round(float(min_residual), 8),
         }
         if info["safety_violated"]:
             logger.warning(
