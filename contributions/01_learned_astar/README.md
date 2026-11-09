@@ -16,6 +16,8 @@
 
 > **New executed ROS 2 closed-loop evidence:** [ROS2_CLOSED_LOOP_EVIDENCE.md](ROS2_CLOSED_LOOP_EVIDENCE.md) documents a successfully executed `rclpy` C01 `GetPlan` → ROS2 Twist → simulated differential-drive robot → ROS2 Odometry → goal feedback experiment, with actual CI traces for Manhattan, raw learned and clipped learned A*. All three **completed navigation in an isolated kinematic simulation**, with zero grid-cell collisions in this one test. **This was NOT a physical Dingo, NOT Nav2 controller execution, and NOT Gazebo physics.** The original Dingo recording cannot retroactively show C01 control, and 0 physically executed C01 trials are verified.
 
+> **Complete C01 source/model/artifact audit:** [FULL_EXECUTION_AUDIT.md](FULL_EXECUTION_AUDIT.md) records an actual GitHub Actions run checking every C01 file, loading saved checkpoints, executing legacy search/training/ERGO/admissibility experiments, and running all C01 tests. The matrix distinguishes source compilation from actual execution, model structure from efficacy, and ROS2 simulation from physical robot trials. The historical script fixes leave the original trained checkpoint unchanged.
+
 This contribution investigates **learning-augmented heuristic search** for grid-based navigation. The central question is whether a neural estimate of cost-to-go can reduce the number of states expanded by A* without obscuring the conditions under which classical optimality guarantees hold.
 
 The implementation deliberately distinguishes between:

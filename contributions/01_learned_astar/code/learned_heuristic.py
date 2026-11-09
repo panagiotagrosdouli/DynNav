@@ -15,7 +15,9 @@ class HeuristicNet(nn.Module):
         # Συμβατότητα με παλιό κώδικα
         if input_dim is None and in_dim is not None:
             input_dim = in_dim
-        if hidden_dim is None and hidden is not None:
+        if hidden is not None:
+            if hidden_dim not in (None, 64) and hidden_dim != hidden:
+                raise ValueError("Conflicting hidden_dim and hidden arguments.")
             hidden_dim = hidden
 
         if input_dim is None:

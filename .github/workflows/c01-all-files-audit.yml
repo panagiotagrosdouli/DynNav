@@ -1,0 +1,150 @@
+name: C01 every-file integrity and executable regression matrix
+
+on:
+  pull_request:
+    paths:
+      - "contributions/01_learned_astar/**"
+      - ".github/workflows/c01-all-files-audit.yml"
+  workflow_dispatch:
+
+jobs:
+  every-c01-file:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install actual PyTorch and research dependencies
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pip install numpy pandas matplotlib pillow pyyaml pytest
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Audit EVERY C01 source/checkpoint/document/artifact
+        run: |
+          python contributions/01_learned_astar/experiments/audit_all_c01_files.py \
+            --output results/c01_full_audit/all_files.json
+      - name: Execute all C01 unit/regression tests
+        run: python -m pytest -q contributions/01_learned_astar/tests
+      - name: Run existing original and statistical C01 experiments with real checkpoint
+        run: |
+          mkdir -p results/c01_full_audit/benchmarks
+          python contributions/01_learned_astar/experiments/eval_astar_learned.py \
+            --trials 4 --out results/c01_full_audit/benchmarks/legacy_eval.csv
+          python contributions/01_learned_astar/experiments/statistical_validation.py \
+            --grid-size 16 --min-distance 4 --trials-per-density 2 \
+            --trials-out results/c01_full_audit/benchmarks/statistical_trials.csv \
+            --summary-out results/c01_full_audit/benchmarks/statistical_summary.csv
+          python contributions/01_learned_astar/experiments/admissibility_audit.py \
+            --grid-size 16 --min-reachable 5 --states-per-task 6 --tasks-per-density 1 \
+            --audit-out results/c01_full_audit/benchmarks/admissibility_trials.csv \
+            --summary-out results/c01_full_audit/benchmarks/admissibility_summary.csv
+          python contributions/01_learned_astar/experiments/ergo_pilot.py \
+            --episodes 2 --size 12 --model contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            --out results/c01_full_audit/benchmarks/ergo
+      - name: Execute training paths on explicitly labelled synthetic fixtures
+        run: |
+          python - <<'PY'
+          import pathlib
+          import numpy as np
+          root=pathlib.Path("/tmp/c01_all_legacy_training")
+          root.mkdir(parents=True,exist_ok=True)
+          rng=np.random.default_rng(42)
+          x=rng.normal(size=(32,4)).astype("float32")
+          y=(abs(x[:,0])+abs(x[:,1])).astype("float32")
+          np.savez(root/"planner_dataset.npz",X=x,y=y)
+          curriculum=root/"data_curriculum"
+          curriculum.mkdir()
+          for n in (8,16,32):
+              np.savez(curriculum/f"planner_dataset_size{n}.npz",X=x,y=y)
+          print("SYNTHETIC 4-feature fixture; NOT REAL TRAINING DATA")
+          PY
+          python - <<'PY'
+          import os,sys
+          from pathlib import Path
+          root=Path.cwd()
+          target=Path("/tmp/c01_all_legacy_training")
+          sys.path.insert(0,str(root/"contributions/01_learned_astar/code"))
+          os.chdir(target)
+          from train_heuristic import train
+          from train_heuristic_ablation import train_for_hidden
+          from train_heuristic_data_sweep import train_for_fraction
+          from train_heuristic_curriculum import train_curriculum
+          from train_heuristic_uncertainty import train as train_uncertainty
+          train(epochs=1,batch_size=16,out_path=str(target/"four_feature.pt"))
+          train_for_hidden(32,epochs=1)
+          train_for_hidden(128,epochs=1)
+          train_for_fraction(0.5,epochs=1)
+          train_curriculum(epochs_per_stage=1,batch_size=16)
+          train_uncertainty()
+          print("SYNTHETIC smoke training scripts completed; do not claim learned efficacy")
+          PY
+          python contributions/01_learned_astar/code/train_heuristic_demo.py \
+            --use_dummy --csv /tmp/c01_all_legacy_training/demo.csv \
+            --out /tmp/c01_all_legacy_training/demo.pt --epochs 1
+          python contributions/01_learned_astar/code/train_heuristic_from_npz.py \
+            --npz contributions/01_learned_astar/models/heuristic_logs.npz \
+            --out /tmp/c01_all_legacy_training/rich_from_existing_npz.pt \
+            --epochs 1 --batch_size 256
+      - name: Verify training outputs without labeling as generalization
+        run: |
+          python - <<'PY'
+          import pathlib,torch
+          root=pathlib.Path("/tmp/c01_all_legacy_training")
+          assert (root/"four_feature.pt").exists()
+          assert (root/"heuristic_net_h32.pt").exists()
+          assert (root/"heuristic_net_h128.pt").exists()
+          state=torch.load(root/"heuristic_net_h32.pt",map_location="cpu",weights_only=True)
+          assert state["net.0.weight"].shape==(32,4),state["net.0.weight"].shape
+          state=torch.load(root/"heuristic_net_h128.pt",map_location="cpu",weights_only=True)
+          assert state["net.0.weight"].shape==(128,4),state["net.0.weight"].shape
+          for model in root.glob("*.pt"):
+              state=torch.load(model,map_location="cpu",weights_only=True)
+              assert all(torch.isfinite(p).all() for p in state.values()),model
+              print("checkpoint structurally valid",model.name)
+          PY
+      - name: Run original visual A* demo without GUI or tracked artifact mutation
+        env:
+          MPLBACKEND: Agg
+        run: |
+          mkdir -p /tmp/c01_historical_astar
+          cp contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            /tmp/c01_historical_astar/heuristic_net_rich.pt
+          (cd /tmp/c01_historical_astar && python "$GITHUB_WORKSPACE/contributions/01_learned_astar/code/astar_learned_heuristic.py")
+          test -s /tmp/c01_historical_astar/heuristic_logs.npz
+      - name: Run non-destructive historical online update against copied checkpoint
+        run: |
+          python contributions/01_learned_astar/results/autotune_heuristic.py \
+            --model contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            --out-dir results/c01_full_audit/legacy_autotune \
+            --iterations 1 --epochs 1
+      - name: Execute historical C07 / multiobjective timing with explicit synthetic inputs
+        run: |
+          python - <<'PY'
+          import numpy as np
+          import pandas as pd
+          from pathlib import Path
+          out=Path("/tmp/c01_timing_fixture")
+          out.mkdir(exist_ok=True)
+          coverage=pd.DataFrame([
+              {"row":i,"col":j,"covered":int((i+j)%2==0),"uncertainty":float((i+j)/8)}
+              for i in range(5) for j in range(5)
+          ])
+          coverage.to_csv(out/"coverage.csv",index=False)
+          pd.DataFrame([{"x":1.0,"y":1.0},{"x":3.0,"y":3.0}]).to_csv(out/"centroids.csv",index=False)
+          print("HISTORICAL CROSS-CONTRIBUTION TIMING FIXTURE IS SYNTHETIC")
+          PY
+          python contributions/01_learned_astar/experiments/timing_benchmark.py \
+            --coverage /tmp/c01_timing_fixture/coverage.csv \
+            --centroids /tmp/c01_timing_fixture/centroids.csv \
+            --out results/c01_full_audit/benchmarks/historical_cross_contribution_timing.csv \
+            --runs 2
+      - name: Upload source/model/data/benchmark verification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c01-every-file-and-execution-matrix
+          path: results/c01_full_audit/
+          if-no-files-found: warn
