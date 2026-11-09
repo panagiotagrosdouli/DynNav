@@ -8,9 +8,9 @@ planner.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from enum import Enum
-from collections.abc import Iterable
 
 
 class GoalDecision(str, Enum):
