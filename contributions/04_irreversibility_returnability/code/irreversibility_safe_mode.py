@@ -1,6 +1,7 @@
 # irreversibility_safe_mode.py
 from __future__ import annotations
 from dataclasses import dataclass
+import math
 from typing import List, Optional, Tuple, Dict
 import numpy as np
 
@@ -69,6 +70,19 @@ def run_irreversibility_with_safe_mode(
     if cfg is None:
         cfg = SafeModeConfig()
 
+    values = (float(tau0), float(cfg.tau_max), float(cfg.tau_step),
+              float(cfg.max_tau_gap), float(step_cost))
+    if not all(math.isfinite(v) for v in values):
+        raise ValueError("C04 safe-mode parameters must be finite")
+    if not 0.0 <= tau0 <= cfg.tau_max <= 1.0:
+        raise ValueError("Require 0 <= tau0 <= tau_max <= 1")
+    if cfg.tau_step <= 0.0 or cfg.max_tau_gap < 0.0 or step_cost <= 0.0:
+        raise ValueError("Require positive tau_step/step_cost and nonnegative max_tau_gap")
+    if free_mask.shape != I_grid.shape or free_mask.ndim != 2:
+        raise ValueError("C04 free-mask and irreversibility map shapes must agree")
+    if not np.isfinite(I_grid).all() or np.any(I_grid < 0.0) or np.any(I_grid > 1.0):
+        raise ValueError("C04 irreversibility map must be finite in [0,1]")
+
     # 1) try requested tau
     res0 = astar_irreversibility_constrained(
         free_mask=free_mask,
@@ -125,7 +139,10 @@ def run_irreversibility_with_safe_mode(
     if tau_step <= 0:
         raise ValueError("tau_step must be > 0")
 
+    # Always include the explicit tau_max endpoint: np.arange can omit it
+    # whenever the interval is not an exact integer multiple of tau_step.
     taus = np.arange(tau0, tau_max + 1e-12, tau_step)
+    taus = np.unique(np.append(taus[taus <= tau_max], tau_max))
     best_tau = None
     best_res = None
 
