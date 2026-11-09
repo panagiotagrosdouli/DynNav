@@ -59,3 +59,65 @@ jobs:
           name: c01-real-dingo-recorded-rosbag-inspection
           path: results/c01_real_rosbag/
           if-no-files-found: warn
+
+  ros2-jazzy-real-recording-replay:
+    needs: real-recorded-rosbag
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    container: ros:jazzy-ros-base-noble
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual ROS 2 runtime and conversion tools
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            python3-pip python3-venv \
+            ros-jazzy-ros2bag ros-jazzy-rosbag2-transport \
+            ros-jazzy-rosbag2-storage-default-plugins \
+            ros-jazzy-nav-msgs ros-jazzy-sensor-msgs ros-jazzy-tf2-msgs
+          python3 -m venv --system-site-packages /tmp/c01-ros-venv
+          /tmp/c01-ros-venv/bin/pip install "rosbags>=0.10,<0.11"
+      - name: Download official real Dingo sensor bag again
+        run: |
+          /tmp/c01-ros-venv/bin/python - <<'PY'
+          import pathlib
+          import urllib.request
+          import shutil
+          url = "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          out = pathlib.Path("/tmp/c01-dingo-dynamics_0.bag")
+          with urllib.request.urlopen(url, timeout=180) as src, out.open("wb") as dst:
+              shutil.copyfileobj(src, dst)
+          if out.stat().st_size != 38063988:
+              raise RuntimeError("Official Dingo bag file size unexpectedly changed")
+          PY
+      - name: Convert actual ROS 1 sensor recording into ROS 2 bag
+        run: |
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          rosbags-convert --src /tmp/c01-dingo-dynamics_0.bag --dst /tmp/c01-dingo-ros2-bag
+          ros2 bag info /tmp/c01-dingo-ros2-bag
+      - name: Actually replay ROS 2 bag and receive recorded LiDAR and odometry messages
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          python contributions/01_learned_astar/experiments/ros2_verify_recorded_replay.py \
+            --seconds 40 \
+            --output results/c01_real_rosbag/ros2_jazzy_recorded_replay.json &
+          OBSERVER_PID=$!
+          sleep 3
+          timeout 50 ros2 bag play /tmp/c01-dingo-ros2-bag --rate 30 &
+          PLAYER_PID=$!
+          wait "$OBSERVER_PID"
+          kill "$PLAYER_PID" 2>/dev/null || true
+          wait "$PLAYER_PID" 2>/dev/null || true
+      - name: Upload ROS2 real-recording replay report (not raw bag)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c01-ros2-jazzy-real-dingo-recording-replay
+          path: results/c01_real_rosbag/
+          if-no-files-found: warn
