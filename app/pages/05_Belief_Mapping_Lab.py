@@ -1,10 +1,17 @@
 from __future__ import annotations
 
 from dataclasses import replace
+from hashlib import sha256
+from pathlib import Path
+from tempfile import TemporaryDirectory
 
 import numpy as np
 import plotly.graph_objects as go
 import streamlit as st
+import yaml
+
+from dynnav.mapping.ros_map import load_ros_map
+from dynnav.planners.astar import astar
 
 from dynnav_dashboard.config import DEFAULT_SCENARIO
 from dynnav_dashboard.simulation import build_environment
@@ -17,6 +24,116 @@ st.info(
     "Synthetic interactive research environment. This page demonstrates deterministic Bayesian occupancy updates; "
     "it is not a ROS2 SLAM or hardware-validation result."
 )
+
+source_mode = st.radio(
+    "Map source",
+    ["Generated synthetic map", "Upload a real ROS occupancy map"],
+    horizontal=True,
+)
+if source_mode == "Upload a real ROS occupancy map":
+    st.markdown(
+        "Upload the map-server YAML file and its referenced PGM/PNG image. "
+        "Unknown cells are blocked by default; the route is a static-map A* baseline."
+    )
+    yaml_file = st.file_uploader("ROS map metadata (.yaml)", type=["yaml", "yml"])
+    image_file = st.file_uploader("Occupancy image (.pgm or .png)", type=["pgm", "png"])
+    if yaml_file is None or image_file is None:
+        st.info("Choose both files to inspect a map.")
+        st.link_button(
+            "Open the LILocBench dataset page",
+            "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/",
+        )
+        st.stop()
+
+    try:
+        metadata = yaml.safe_load(yaml_file.getvalue())
+        if not isinstance(metadata, dict):
+            raise ValueError("map YAML must contain a metadata mapping")
+        image_suffix = Path(image_file.name).suffix.lower()
+        if image_suffix not in {".pgm", ".png"}:
+            raise ValueError("map image must be a PGM or PNG file")
+        with TemporaryDirectory(prefix="dynnav-ros-map-") as temp_dir:
+            image_path = Path(temp_dir) / f"uploaded_map{image_suffix}"
+            yaml_path = Path(temp_dir) / "uploaded_map.yaml"
+            image_bytes = image_file.getvalue()
+            image_path.write_bytes(image_bytes)
+            metadata["image"] = image_path.name
+            yaml_path.write_text(yaml.safe_dump(metadata), encoding="utf-8")
+            ros_map = load_ros_map(yaml_path, unknown_as_obstacle=True)
+            image_digest = sha256(image_bytes).hexdigest()
+    except Exception as exc:
+        st.error(f"Could not load this ROS map: {exc}")
+        st.stop()
+
+    grid = ros_map.grid
+    if grid.width * grid.height > 1_000_000:
+        st.error("This viewer is limited to maps with at most one million cells.")
+        st.stop()
+
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Map size", f"{grid.width} × {grid.height} cells")
+    m2.metric("Resolution", f"{ros_map.resolution:.3f} m/cell")
+    m3.metric("Occupied or unknown", f"{len(grid.obstacles):,} cells")
+    m4.metric("Image SHA-256", image_digest[:12] + "…")
+    st.caption(
+        "The uploaded image is interpreted using the YAML origin, resolution, negate flag, and trinary thresholds. "
+        "Unknown cells remain blocked. This is map and baseline-route validation, not a physical-robot result."
+    )
+
+    with st.sidebar:
+        st.header("Route on uploaded map")
+        start_x = st.slider("Start cell x", 0, grid.width - 1, min(grid.width - 2, max(0, grid.width // 10)))
+        start_y = st.slider("Start cell y", 0, grid.height - 1, min(grid.height - 2, max(0, grid.height // 2)))
+        goal_x = st.slider("Goal cell x", 0, grid.width - 1, min(grid.width - 1, max(0, grid.width * 9 // 10)))
+        goal_y = st.slider("Goal cell y", 0, grid.height - 1, min(grid.height - 1, max(0, grid.height // 2)))
+
+    start, goal = (start_x, start_y), (goal_x, goal_y)
+    route = None
+    if not grid.passable(start):
+        st.warning("The start cell is occupied or unknown.")
+    elif not grid.passable(goal):
+        st.warning("The goal cell is occupied or unknown.")
+    else:
+        route = astar(grid, start, goal)
+        if route.success:
+            st.success(
+                f"Static route found: {route.cost * ros_map.resolution:.2f} m, "
+                f"{route.nodes_expanded:,} cells expanded, {route.planning_time_ms:.2f} ms."
+            )
+        else:
+            st.warning("No static route connects the selected cells.")
+
+    occupancy = np.zeros((grid.height, grid.width), dtype=np.uint8)
+    for cell_x, cell_y in grid.obstacles:
+        occupancy[cell_y, cell_x] = 1
+    fig = go.Figure(
+        go.Heatmap(
+            z=occupancy,
+            x=list(range(grid.width)),
+            y=list(range(grid.height)),
+            zmin=0,
+            zmax=1,
+            colorscale=[[0, "#f2f4f7"], [1, "#263445"]],
+            showscale=False,
+            hovertemplate="cell (%{x}, %{y})<extra></extra>",
+        )
+    )
+    if route and route.success:
+        path_x, path_y = zip(*route.path)
+        fig.add_trace(go.Scatter(x=path_x, y=path_y, mode="lines", name="A* path", line={"color": "#16a394", "width": 3}))
+    fig.add_trace(go.Scatter(x=[start_x], y=[start_y], mode="markers", name="Start", marker={"color": "#2563eb", "size": 10}))
+    fig.add_trace(go.Scatter(x=[goal_x], y=[goal_y], mode="markers", name="Goal", marker={"color": "#dc2626", "size": 12, "symbol": "star"}))
+    fig.update_layout(title="ROS occupancy map and baseline route", xaxis_title="Cell x", yaxis_title="Cell y", yaxis={"scaleanchor": "x"})
+    st.plotly_chart(fig, use_container_width=True)
+    st.link_button(
+        "Open the LILocBench dataset page",
+        "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/",
+    )
+    st.caption(
+        "LILocBench data are licensed CC BY-NC-SA. Attribute the dataset, retain its license terms, "
+        "and do not commit the downloaded files to this repository."
+    )
+    st.stop()
 
 with st.sidebar:
     st.header("Observation model")
