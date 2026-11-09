@@ -15,7 +15,7 @@ spec.loader.exec_module(module)
 def fixture(tmp_path):
     bag = tmp_path / "record.mcap"
     trace = tmp_path / "planner_trace.jsonl"
-    bag.write_bytes(b"synthetic file; NOT an actual ROS bag")
+    bag.write_bytes(bytes.fromhex("894d434150300d0a") + b"synthetic format-header fixture only")
     trace.write_text("synthetic test only\n")
     hash_file = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
     data = dict(
@@ -77,3 +77,14 @@ def test_non_json_rejected(tmp_path):
     path = tmp_path / "manifest.json"
     path.write_text("{this is broken")
     assert module.validate_manifest(path)["status"] == "INVALID_EVIDENCE"
+
+
+def test_fake_rosbag_bytes_rejected(tmp_path):
+    path, data = fixture(tmp_path)
+    fake = tmp_path / data["rosbag_path"]
+    fake.write_bytes(b"arbitrary blob pretending to be an MCAP bag")
+    data["rosbag_sha256"] = hashlib.sha256(fake.read_bytes()).hexdigest()
+    path.write_text(json.dumps(data), encoding="utf-8")
+    result = module.validate_manifest(path)
+    assert result["status"] == "INVALID_EVIDENCE"
+    assert "MCAP" in " ".join(result["errors"])
