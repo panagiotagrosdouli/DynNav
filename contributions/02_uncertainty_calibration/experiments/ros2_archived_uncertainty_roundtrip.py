@@ -56,6 +56,9 @@ def main():
     subscription=consumer.create_subscription(Float64MultiArray,"/c02/archived_grid_calibration",callback,10)
 
     def tick():
+        # Do not publish until DDS has discovered the subscriber.
+        if pub.get_subscription_count() < 1:
+            return
         if sent[0]<len(records):
             msg=Float64MultiArray()
             msg.data=list(records[sent[0]])
