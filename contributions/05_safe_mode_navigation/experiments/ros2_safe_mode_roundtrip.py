@@ -46,10 +46,21 @@ def main():
             state=responses[index]["state"]
             if state!=expected[index]:
                 raise AssertionError(f"Incorrect C05 state step={index}: got {state}, expected {expected[index]}")
+        # After the final NaN input the publisher intentionally stops;
+        # the real supervisor watchdog must produce an additional diagnostic.
+        deadline=time.monotonic()+6
+        while len(responses)<len(sequence)+1 and time.monotonic()<deadline:
+            rclpy.spin_once(node,timeout_sec=.1)
+        if len(responses)<len(sequence)+1:
+            raise RuntimeError("C05 stale-input watchdog did not trigger")
+        stale=responses[len(sequence)]
+        if stale["state"]!="EMERGENCY_STOP" or stale["speed_scale"]!=0 or stale["transition"]!="INVALID_RISK->EMERGENCY_STOP":
+            raise AssertionError(f"Unsafe stale-feed response: {stale}")
         assert all(not x["actuation_commanded"] and x["physical_robot_trials"]==0 for x in responses)
         result=dict(evidence="actual_ros2_pubsub_with_synthetic_scalar_risk_sequence",
                     messages_sent=len(sequence),messages_received=len(responses),
-                    expected_states=expected,actual_states=[x["state"] for x in responses],
+                    watchdog_messages=1,watchdog_emergency_stop=True,
+                    expected_states=expected,actual_states=[x["state"] for x in responses[:len(sequence)]],
                     final_speed_scale=responses[-1]["speed_scale"],
                     emergency_stop_on_nan=responses[-1]["emergency_stop"],
                     physical_robot_trials=0,robot_movement=False)
