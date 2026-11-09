@@ -14,17 +14,21 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--expected-mode", choices=["astar_manhattan", "learned_raw", "learned_manhattan_clipped"], default="astar_manhattan")
     args = parser.parse_args()
 
     import rclpy
     from rclpy.node import Node
     from nav_msgs.msg import OccupancyGrid
     from nav_msgs.srv import GetPlan
+    from std_msgs.msg import String
 
     rclpy.init()
     node = Node("c01_get_plan_actual_ros2_roundtrip_test")
     pub = node.create_publisher(OccupancyGrid, "/c01/test_grid", 10)
     client = node.create_client(GetPlan, "/c01/get_plan")
+    received_diagnostics = []
+    diag_sub = node.create_subscription(String, "/c01/diagnostics", lambda msg: received_diagnostics.append(json.loads(msg.data)), 10)
     try:
         start_wait = time.monotonic()
         while not client.wait_for_service(timeout_sec=0.25):
@@ -70,12 +74,27 @@ def main() -> int:
         if (abs(first.pose.position.x-req.start.pose.position.x) > .13 or
             abs(last.pose.position.x-req.goal.pose.position.x) > .13):
             raise AssertionError("C01 grid-to-world endpoints wrong")
+        for _ in range(20):
+            if received_diagnostics:
+                break
+            rclpy.spin_once(node, timeout_sec=0.1)
+        if not received_diagnostics:
+            raise RuntimeError("C01 ROS2 diagnostics were not received")
+        diagnostic = received_diagnostics[-1]
+        if diagnostic.get("mode") != args.expected_mode:
+            raise AssertionError(f"Expected {args.expected_mode}, got {diagnostic}")
+        if args.expected_mode.startswith("learned_"):
+            if not diagnostic.get("checkpoint_sha256"):
+                raise AssertionError("Learned ROS2 planner did not report a loaded checkpoint")
+        if diagnostic.get("evidence") != "planning_only_not_robot_motion":
+            raise AssertionError("ROS2 diagnostics evidence type missing or misleading")
         out = {
             "evidence_type": "actual_ros2_jazzy_getplan_message_roundtrip_synthetic_map",
             "ros2_get_plan_success": True,
             "number_path_poses": len(response.plan.poses),
             "frame_id": response.plan.header.frame_id,
-            "selected_mode": "astar_manhattan",
+            "selected_mode": args.expected_mode,
+            "diagnostics": diagnostic,
             "recorded_sensor_bag_input_to_this_test": False,
             "robot_motion_commanded": False,
             "physical_robot_trial": False,
