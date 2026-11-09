@@ -1,0 +1,88 @@
+{
+  "coordinate_alignment": {
+    "basis": "LILocBench documents ground-truth base_link poses in a common global frame and the occupancy map generated using ground-truth poses; empirical cell check supplements this provenance.",
+    "known_free_fraction": 1.0,
+    "map_ground_truth_transform": "identity between dataset global pose coordinates and map global coordinates; map origin/resolution applied by ROS map transform",
+    "map_origin_frame_transform": [
+      -25.0,
+      -25.0,
+      0.0
+    ],
+    "points_tested": 3194,
+    "trajectory_points_in_known_free_cells": 3194,
+    "wrong_image_y_orientation_points_free": 0
+  },
+  "dataset": "LILocBench",
+  "evidence_status": "real recorded map + ground-truth trajectory; static map baseline only",
+  "license": {
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  },
+  "map": {
+    "blocked_cells": 894999,
+    "height_cells": 1000,
+    "image": "map_office.png",
+    "origin": [
+      -25.0,
+      -25.0,
+      0.0
+    ],
+    "resolution_m": 0.05,
+    "unknown_policy": "blocked",
+    "width_cells": 1000,
+    "yaml": "map_office.yaml"
+  },
+  "provenance": {
+    "dataset_page": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/",
+    "ground_truth_bytes": 518851,
+    "ground_truth_sha256": "606f9392c1a992c9acdb5e680a9108ef7647ba8943d747435c90dfa56feaa38f",
+    "ground_truth_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt",
+    "map_archive_bytes": 17415,
+    "map_archive_sha256": "941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0",
+    "map_archive_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",
+    "map_image_bytes": 19473,
+    "map_image_sha256": "8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf",
+    "map_yaml_sha256": "6e61ed85520c2e4638684734c738daf63c17de830a535cd8458cee14cd1fb11e",
+    "ros1_bag_bytes": 38063988,
+    "ros1_bag_sha256": "df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58",
+    "ros1_bag_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+  },
+  "retrieved_date": "2026-11-09",
+  "sequence": "dynamics_0",
+  "static_astar": {
+    "goal_cell": [
+      651,
+      425
+    ],
+    "goal_map_frame_m": [
+      7.585787412422368,
+      -3.7221946614105783
+    ],
+    "goal_source": "last dynamics_0 ground-truth pose",
+    "interpretation": "static-map shortest-path baseline; not a planner-vs-planner or closed-loop performance result",
+    "nodes_expanded": 6891,
+    "observed_trajectory_length_m": 53.966714849768415,
+    "path_cells": 225,
+    "path_cost_cells": 224.0,
+    "path_length_m": 11.200000000000001,
+    "planner": "DynNav four-neighbour A* with Manhattan heuristic and unit cell costs",
+    "planning_time_ms": 10.877209000227595,
+    "reachable": true,
+    "start_cell": [
+      507,
+      359
+    ],
+    "start_map_frame_m": [
+      0.35972713321232214,
+      -7.046162905973054
+    ],
+    "start_source": "first dynamics_0 ground-truth pose"
+  },
+  "trajectory": {
+    "duration_s": 159.95133876800537,
+    "mean_sampling_hz": 19.962321194642524,
+    "pose_count": 3194,
+    "xy_displacement_m": 7.953911745150113,
+    "xy_path_length_m": 53.966714849768415
+  }
+}

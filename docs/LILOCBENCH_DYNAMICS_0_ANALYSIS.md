@@ -1,6 +1,6 @@
 # LILocBench `dynamics_0` Ground-Truth Trajectory Analysis
 
-This is a descriptive analysis of the public recorded ground-truth poses for the LILocBench `dynamics_0` sequence. The sequence is a real Clearpath Dingo indoor recording with moving people. LILocBench reports this sequence as approximately 10 people moving near the robot and provides ground-truth poses for it. Ground truth is obtained with ceiling AprilTags and is expressed in the common global frame.
+This is a descriptive analysis of the public recorded ground-truth poses for the LILocBench `dynamics_0` sequence. The sequence is a real Clearpath Dingo indoor recording with moving people. LILocBench reports this sequence as approximately 10 people moving near the robot and provides ground-truth poses for it. Ground truth is obtained with ceiling AprilTags and is expressed in the common global frame. The map overlay, static A* baseline, and ROS1 bag audit are now documented in the [full real-data validation report](LILOCBENCH_REAL_DATA_REPORT.md); this file retains the trajectory-only summary.
 
 ## Measured summary
 
@@ -32,7 +32,7 @@ python scripts/analyze_lilocbench_ground_truth.py /path/to/gt_poses.txt \
 
 The JSON records the SHA-256 digest of the exact input file, sample timing, spatial bounds, and trajectory statistics. The source file is distributed by LILocBench under CC BY-NC-SA 4.0. Do not commit or redistribute the raw dataset file; include the attribution and license terms when sharing adaptations.
 
-The plot below shows the recorded XY path only. It is not drawn over the LILocBench occupancy grid.
+The plot below shows the recorded XY path only. The separate [verified occupancy-map overlay](../website/public/lilocbench-dynamics-0-verified-overlay.svg) includes the static A* baseline and reports the provenance basis and evidence limitations.
 
 ## Attribution and source
 

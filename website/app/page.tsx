@@ -5,7 +5,7 @@ const evidence = [
   ["Contribution suite", "Controlled smoke experiment registered for each C01–C26 track", "CI"],
   ["Python research core", "Unit and integration checks run in GitHub Actions", "CI"],
   ["ROS map intake", "ROS map-server YAML + PGM/PNG upload and static A* route viewer", "available"],
-  ["Public dataset trial", "LILocBench map/sequence analysis with recorded provenance", "pending"],
+  ["LILocBench real-data baseline", "Map ingestion, static A*, GT overlay, and offline ROS1 bag audit", "verified"],
   ["Gazebo / physical robot", "Paired dynamic-scene and hardware trials with traceable logs", "pending"],
 ] as const;
 
@@ -124,7 +124,7 @@ export default function Home() {
         <div className="section-heading compact">
           <p className="eyebrow"><span /> Scientific boundary</p>
           <h2>Evidence is separated by maturity tier.</h2>
-          <p>“Available” means the interface can process supplied map files. It does not mean a dataset benchmark has been run.</p>
+          <p>The LILocBench map, static route, ground-truth overlay, and offline bag audit are verified. This does not establish dynamic planner efficacy or closed-loop execution.</p>
         </div>
         <div className="evidence-grid">
           {evidence.map(([name, detail, status]) => (
