@@ -56,6 +56,28 @@ jobs:
             --output-dir results/c02_c26_exhaustive/file_audit
       - name: Verify strict inventory and malformed-data rejection
         run: python -m pytest -q tests/test_contributions_c02_c26_audit.py
+      - name: Run C02 instance-separated archived neural calibration tests
+        run: |
+          python -m pytest -q contributions/02_uncertainty_calibration/tests
+          python contributions/02_uncertainty_calibration/experiments/eval_archived_instance_holdout.py \
+            --input contributions/02_uncertainty_calibration/results/uncertainty_error_data.csv \
+            --out results/c02_c26_exhaustive/c02_real_archived_grid_instance_holdout.json
+      - name: Verify C02 provenance and no map leakage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("results/c02_c26_exhaustive/c02_real_archived_grid_instance_holdout.json")
+          data=json.loads(p.read_text())
+          assert data["source_sha256"] and len(data["source_sha256"])==64
+          assert set(data["train_instance_ids"]).isdisjoint(data["heldout_instance_ids"])
+          assert data["train_samples"] > 1000 and data["heldout_samples"] > 1000
+          assert data["dataset_evidence"]=="archived_generated_grid_instances_not_real_robot"
+          for name, metrics in data["heldout_reports"].items():
+              assert metrics["n"] > 1000
+              assert 0<=metrics["coverage_1sigma"]<=1
+              print(name,metrics["ece_abs_error"],metrics["coverage_1sigma"])
+          PY
       - name: Validate registered contribution paths and declarations
         run: python scripts/validate_contribution_registry.py
       - name: Run all 25 contributions individually IN ORDER, fail on any skipped dependency
