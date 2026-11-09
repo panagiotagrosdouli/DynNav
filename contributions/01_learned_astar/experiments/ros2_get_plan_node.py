@@ -32,6 +32,11 @@ from astar_learned_heuristic import (  # noqa: E402
     LearnedHeuristicWrapper, astar_classic, astar_learned,
 )
 
+# Fail closed instead of silently importing a similarly named legacy module.
+import astar_learned_heuristic as _c01_implementation
+if Path(_c01_implementation.__file__).resolve().parent != THIS:
+    raise RuntimeError("Wrong C01 A* module selected; experiments implementation is required")
+
 
 def main() -> None:
     try:
