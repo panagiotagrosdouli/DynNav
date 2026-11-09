@@ -28,6 +28,6 @@
 
 ## Blockers
 
-`pytest` and `torch` are missing in this runtime; no ROS 2/Gazebo or physical robot run was performed. Raw LILocBench pose input was absent, so its merged descriptive analysis was not recomputed. PR #213 remains open against main. Targeted follow-up changes are in commits `7c163ec98af0339e8751a075bdadc749c480015b`, `1b29c5d1df9e51d001abafb56390e7b6e06a7607`, and `cb1cb3ae82986653f7ef89d7d023fb9305a2093a`; CI on the current head must pass before merge.
+`pytest` and `torch` are missing in this runtime; no fresh Gazebo or physical-robot run was performed. Raw LILocBench pose input was absent, so its merged descriptive analysis was not recomputed. PR #213 remains open against main. Targeted follow-up changes are in commits `7c163ec98af0339e8751a075bdadc749c480015b`, `1b29c5d1df9e51d001abafb56390e7b6e06a7607`, `cb1cb3ae82986653f7ef89d7d023fb9305a2093a`, `446c2bd7feac8e11a0d9c16398af812113274923`, and `7eda1ed1f1258b46dca1d9f395d37e8a994fb6fd`; all 10 applicable checks passed on the latest head.
 
 No newly trained model, physical experiment, formal proof, or hardware validation is claimed. All new smoke results are controlled synthetic evidence.
