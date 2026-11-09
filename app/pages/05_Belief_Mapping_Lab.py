@@ -126,7 +126,11 @@ if source_mode == "Upload a real ROS occupancy map":
     fig.update_layout(title="ROS occupancy map and baseline route (pink occupancy)", xaxis_title="Cell x", yaxis_title="Cell y", yaxis={"scaleanchor": "x"})
     st.plotly_chart(fig, use_container_width=True)
     st.link_button(
-        "Open the LILocBench dataset page",
+        "Download the official LILocBench occupancy-map ZIP",
+        "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",
+    )
+    st.link_button(
+        "Read the dataset details and license",
         "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/",
     )
     st.caption(
