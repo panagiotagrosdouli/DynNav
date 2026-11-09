@@ -16,7 +16,9 @@ from pathlib import Path
 
 THIS = Path(__file__).resolve().parent
 CODE = THIS.parent / "code"
-for folder in (THIS, CODE):
+# Preserve the canonical experiments/ A* module ahead of historical code/.
+# It keeps Manhattan mode functional without installing PyTorch.
+for folder in (CODE, THIS):
     if str(folder) not in sys.path:
         sys.path.insert(0, str(folder))
 
