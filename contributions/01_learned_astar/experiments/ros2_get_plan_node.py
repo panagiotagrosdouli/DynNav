@@ -19,8 +19,11 @@ CODE = THIS.parent / "code"
 # Preserve the canonical experiments/ A* module ahead of historical code/.
 # It keeps Manhattan mode functional without installing PyTorch.
 for folder in (CODE, THIS):
-    if str(folder) not in sys.path:
-        sys.path.insert(0, str(folder))
+    # When run as a script, Python already adds THIS to sys.path.
+    # Remove any prior occurrence before re-inserting so THIS remains first.
+    if str(folder) in sys.path:
+        sys.path.remove(str(folder))
+    sys.path.insert(0, str(folder))
 
 from ros2_grid_geometry import (  # noqa: E402
     GridGeometry, grid_from_occupancy, quaternion_yaw, validated_plan,
