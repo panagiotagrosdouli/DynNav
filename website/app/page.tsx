@@ -1,9 +1,11 @@
+import { ContributionExplorer } from "../components/contribution-explorer";
+
 const evidence = [
-  ["Python research core", "504 tests passed", "verified"],
-  ["ROS 2 Jazzy / Nav2", "Build, tests, plugin discovery", "verified"],
-  ["C01–C26 programme", "26 registered experiments", "verified"],
-  ["Gazebo execution", "Static + dynamic protocols", "pending"],
-  ["Physical robot", "Traceable bags and logs", "pending"],
+  ["Contribution suite", "Controlled smoke experiment registered for each C01–C26 track", "CI"],
+  ["Python research core", "Unit and integration checks run in GitHub Actions", "CI"],
+  ["ROS map intake", "ROS map-server YAML + PGM/PNG upload and static A* route viewer", "available"],
+  ["Public dataset trial", "LILocBench map/sequence analysis with recorded provenance", "pending"],
+  ["Gazebo / physical robot", "Paired dynamic-scene and hardware trials with traceable logs", "pending"],
 ] as const;
 
 const pipeline = [
@@ -14,6 +16,7 @@ const pipeline = [
 ] as const;
 
 const researcherHref = `${process.env.DYNNAV_SITE_BASE_PATH ?? ""}/researcher`;
+const mappingLabHref = `${process.env.DYNNAV_SITE_BASE_PATH ?? ""}/researcher`;
 
 export default function Home() {
   return (
@@ -25,8 +28,8 @@ export default function Home() {
         </a>
         <div className="nav-links">
           <a href="#architecture">Architecture</a>
+          <a href="#contributions">Contributions</a>
           <a href="#evidence">Evidence</a>
-          <a href="#interfaces">Interfaces</a>
         </div>
         <a className="nav-cta" href={researcherHref}>Open Researcher</a>
       </nav>
@@ -41,24 +44,19 @@ export default function Home() {
             invalidates the route ahead.
           </p>
           <div className="hero-actions">
-            <a className="button button-primary" href={researcherHref}>Explore the Researcher</a>
-            <a
-              className="button button-secondary"
-              href="https://github.com/panagiotagrosdouli/DynNav"
-            >
-              Inspect the source
-            </a>
+            <a className="button button-primary" href="#contributions">Explore 26 contributions</a>
+            <a className="button button-secondary" href="https://github.com/panagiotagrosdouli/DynNav">Inspect the source</a>
           </div>
-          <div className="hero-meta" aria-label="Verified project metrics">
-            <div><strong>26</strong><span>auditable contributions</span></div>
+          <div className="hero-meta" aria-label="Project scope">
+            <div><strong>26</strong><span>numbered contribution tracks</span></div>
             <div><strong>4</strong><span>canonical planner objectives</span></div>
-            <div><strong>ROS 2</strong><span>Jazzy / Nav2 plugin verified in CI</span></div>
+            <div><strong>ROS 2</strong><span>Jazzy / Nav2 integration checks in CI</span></div>
           </div>
         </div>
 
         <div className="route-card" aria-label="Illustrative recoverability-aware route comparison">
-          <div className="card-header"><span>Synthetic route vignette</span><em>route invalidation</em></div>
-          <svg viewBox="0 0 620 390" role="img" aria-label="Risky short route and recoverability-aware route">
+          <div className="card-header"><span>Synthetic route vignette</span><em>illustrative</em></div>
+          <svg viewBox="0 0 620 390" role="img" aria-label="Illustrative risky short route and recoverability-aware route">
             <defs>
               <pattern id="grid" width="52" height="52" patternUnits="userSpaceOnUse">
                 <path d="M 52 0 L 0 0 0 52" fill="none" stroke="#203248" strokeWidth="1" />
@@ -86,11 +84,26 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="briefs" aria-label="Project summary for decision makers and engineers">
+        <article>
+          <p className="eyebrow"><span /> Executive brief</p>
+          <h2>What is being built and what is proven?</h2>
+          <p>Research software for navigation decisions in environments that can change after planning. The current verified scope is executable code, registered controlled experiments, and reproducible CI. External-world efficacy is still a validation milestone.</p>
+          <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/CLAIM_EVIDENCE_MATRIX.md">Read the claim-to-evidence matrix →</a>
+        </article>
+        <article>
+          <p className="eyebrow"><span /> Engineering brief</p>
+          <h2>ROS maps, planners, evidence artifacts.</h2>
+          <p>Import a ROS map-server YAML and its PGM/PNG occupancy image, inspect occupancy semantics, and run a static A* reachability baseline. The interface labels this as map validation; it does not imply live ROS control or physical-robot results.</p>
+          <a href={mappingLabHref}>Open the Researcher and map tools →</a>
+        </article>
+      </section>
+
       <section className="architecture" id="architecture">
         <div className="section-heading">
           <p className="eyebrow"><span /> Executable architecture</p>
           <h2>One research question, traceable from decision to artifact.</h2>
-          <p>Every reported result is connected to a configuration, command, metric contract and stored output.</p>
+          <p>Every reported result should connect to a configuration, command, metric contract and stored output.</p>
         </div>
         <div className="pipeline">
           {pipeline.map(([number, title, detail]) => (
@@ -103,35 +116,38 @@ export default function Home() {
         </div>
       </section>
 
+      <ContributionExplorer />
+
       <section className="evidence" id="evidence">
         <div className="section-heading compact">
           <p className="eyebrow"><span /> Scientific boundary</p>
           <h2>Evidence is separated by maturity tier.</h2>
+          <p>“Available” means the interface can process supplied map files. It does not mean a dataset benchmark has been run.</p>
         </div>
         <div className="evidence-grid">
           {evidence.map(([name, detail, status]) => (
             <div className="evidence-row" key={name}>
               <div><strong>{name}</strong><span>{detail}</span></div>
-              <em className={status}>{status}</em>
+              <em className={status === "pending" ? "pending" : status === "available" ? "available" : "verified"}>{status}</em>
             </div>
           ))}
         </div>
         <p className="boundary-copy">
-          The hosted interfaces communicate implementation and reproducibility status.
-          They are not Gazebo recordings, physical-robot evidence or certified-safety claims.
+          C01–C26 smoke suite results are implementation and reproducibility evidence, mostly controlled/synthetic.
+          Public-dataset paired trials, Gazebo dynamic-scene evidence and physical-robot evidence remain separate and pending.
         </p>
       </section>
 
       <section className="interfaces" id="interfaces">
         <div className="section-heading compact">
-          <p className="eyebrow"><span /> Two interfaces</p>
-          <h2>Presentation outside. Experimental control inside.</h2>
+          <p className="eyebrow"><span /> Research workflow</p>
+          <h2>Read the science. Inspect the implementation. Run the protocol.</h2>
         </div>
         <div className="interface-grid">
           <article>
             <span className="surface-label">Research site</span>
             <h3>Project narrative and evidence map</h3>
-            <p>This page presents the focused research claim, executable architecture and current validation state.</p>
+            <p>Research question, architecture, contribution registry and evidence boundaries in one public overview.</p>
             <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/README.md">Open technical documentation →</a>
           </article>
           <article className="accent-card">
