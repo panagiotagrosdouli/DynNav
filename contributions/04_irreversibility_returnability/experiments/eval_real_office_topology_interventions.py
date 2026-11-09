@@ -56,7 +56,7 @@ def choose_fragile_states(graph,n_cases):
     considered=0
     # Each candidate must genuinely disconnect a previously connected
     # component when the simulated passage is removed.
-    for pivot in nx.articulation_points(graph):
+    for pivot in list(nx.articulation_points(graph)):
         neighbours=list(graph.neighbors(pivot))
         graph.remove_node(pivot)
         components=sorted(nx.connected_components(graph),key=len,reverse=True)
