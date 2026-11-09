@@ -54,8 +54,8 @@ export function RealDataTrajectory() {
           </div>
           <p className="real-method">
             Mean sample rate: 19.962 Hz. Median speed: 0.378 m/s; 95th percentile:
-            0.440 m/s. Path length sums consecutive XY displacements from recorded
-            ground-truth poses.
+            0.440 m/s. Five timestamp gaps exceed the nominal 0.05 s: four are about
+            0.10 s and one is about 0.15 s. Path length sums consecutive XY displacements.
           </p>
           <p className="real-boundary">
             These measurements describe one recorded trajectory. They do not measure
