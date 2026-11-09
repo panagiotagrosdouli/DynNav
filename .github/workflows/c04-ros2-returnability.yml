@@ -1,0 +1,71 @@
+name: C04 actual ROS2 Jazzy returnability GetPlan and fail closed
+
+on:
+  pull_request:
+    paths:
+      - "contributions/04_irreversibility_returnability/**"
+      - ".github/workflows/c04-ros2-returnability.yml"
+  workflow_dispatch:
+
+jobs:
+  ros2-returnability-service:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy-ros-base-noble
+    timeout-minutes: 25
+    env:
+      ROS_DOMAIN_ID: "158"
+      PYTHONPATH: .
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual Jazzy message types and scientific dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-numpy python3-scipy \
+            python3-yaml python3-pil ros-jazzy-nav-msgs ros-jazzy-geometry-msgs ros-jazzy-std-msgs
+      - name: Execute three REAL ROS2 GetPlan safe-mode parameter cases
+        run: |
+          set -eo pipefail
+          source /opt/ros/jazzy/setup.bash
+          mkdir -p results/c04_ros2
+          for CONFIG in "0.08:1.0:SAFE_RELAX_TAU" "1.0:0.0:NORMAL" "0.08:0.0:SAFE_STOP"; do
+            IFS=: read -r TAU GAP EXPECT <<< "$CONFIG"
+            python3 contributions/04_irreversibility_returnability/experiments/ros2_returnability_get_plan.py \
+              --ros-args -p map_topic:=/c04/test_grid -p tau_requested:="$TAU" -p maximum_relaxation:="$GAP" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            timeout 70 python3 contributions/04_irreversibility_returnability/experiments/ros2_returnability_service_test.py \
+              --tau "$TAU" --expect-mode "$EXPECT" \
+              --output "results/c04_ros2/mode_${EXPECT}.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+      - name: Verify ROS2 transport and strict stop
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("results/c04_ros2")
+          for mode in ("SAFE_RELAX_TAU","NORMAL","SAFE_STOP"):
+              report=json.loads((root/f"mode_{mode}.json").read_text())
+              assert report["message_delivery"]
+              assert report["diagnostics"]["mode"]==mode
+              assert report["physical_robot_trials"]==0
+              assert report["diagnostics"]["calibrated_risk_probability"] is False
+              if mode=="SAFE_STOP":
+                  assert report["path_poses"]==0
+              else:
+                  assert report["path_poses"]>=2
+          print("C04 ROS2 GetPlan normal, minimum relaxation, safe stop all passed")
+          PY
+      - name: Upload real ROS2 software returnability evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c04-real-ros2-jazzy-minimax-getplan-safe-stop
+          path: results/c04_ros2/
+          if-no-files-found: warn
