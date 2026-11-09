@@ -10,6 +10,8 @@
 
 <p align="center"><em>Conceptual overview of Contribution 03. The figure is explanatory and does not constitute experimental evidence or a formal safety guarantee.</em></p>
 
+> **Executed real-data/ROS2 C03 evidence:** [REAL_MAP_RISK_EVALUATION.md](REAL_MAP_RISK_EVALUATION.md) records the completed LILocBench real-office-map five-pair baseline vs risk-weighted A* study, verified actual ROS2 Jazzy `GetPlan` requests, and both successful isolated **kinematic simulation** goal completions. The map is real, but obstacle proximity is an analytic risk **proxy**; no physically controlled Dingo trial or calibrated collision-risk probability is claimed.
+
 A geometrically shortest path is not necessarily the safest path. Contribution 03 studies navigation as an explicit **safety–efficiency trade-off**, combining path length with uncertainty-derived risk measures.
 
 The module receives calibrated uncertainty from Contribution 02, constructs or consumes a spatial risk representation, evaluates candidate routes, and selects a route according to a declared risk preference.
