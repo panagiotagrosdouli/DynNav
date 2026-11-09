@@ -16,7 +16,7 @@ const pipeline = [
 ] as const;
 
 const researcherHref = `${process.env.DYNNAV_SITE_BASE_PATH ?? ""}/researcher`;
-const mappingLabHref = `${process.env.DYNNAV_SITE_BASE_PATH ?? ""}/researcher`;
+const mappingLabHref = "https://github.com/panagiotagrosdouli/DynNav/blob/main/app/pages/05_Belief_Mapping_Lab.py";
 
 export default function Home() {
   return (
@@ -95,7 +95,7 @@ export default function Home() {
           <p className="eyebrow"><span /> Engineering brief</p>
           <h2>ROS maps, planners, evidence artifacts.</h2>
           <p>Import a ROS map-server YAML and its PGM/PNG occupancy image, inspect occupancy semantics, and run a static A* reachability baseline. The interface labels this as map validation; it does not imply live ROS control or physical-robot results.</p>
-          <a href={mappingLabHref}>Open the Researcher and map tools →</a>
+          <a href={mappingLabHref}>Open the ROS map lab source →</a>
         </article>
       </section>
 
