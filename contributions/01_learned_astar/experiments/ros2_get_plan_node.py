@@ -32,7 +32,7 @@ def main() -> None:
     try:
         import rclpy
         from rclpy.node import Node
-        from rclpy.qos import qos_profile_map
+        from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
         from nav_msgs.msg import OccupancyGrid, Path as RosPath
         from nav_msgs.srv import GetPlan
         from geometry_msgs.msg import PoseStamped
@@ -71,7 +71,7 @@ def main() -> None:
             self.latest_map = None
             self.map_sub = self.create_subscription(
                 OccupancyGrid, str(self.get_parameter("map_topic").value),
-                self.on_map, qos_profile_map,
+                self.on_map, QoSProfile(depth=1, reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE),
             )
             self.plan_pub = self.create_publisher(RosPath, "c01/plan", 10)
             self.diag_pub = self.create_publisher(String, "c01/diagnostics", 10)
