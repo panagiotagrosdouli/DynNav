@@ -78,7 +78,7 @@ jobs:
             ros-jazzy-ros2bag ros-jazzy-rosbag2-transport \
             ros-jazzy-rosbag2-storage-default-plugins \
             ros-jazzy-nav-msgs ros-jazzy-sensor-msgs ros-jazzy-tf2-msgs \
-            python3-numpy python3-matplotlib
+            python3-numpy python3-matplotlib python3-yaml python3-pil
           python3 -m venv --system-site-packages /tmp/c01-ros-venv
           /tmp/c01-ros-venv/bin/pip install "rosbags>=0.10,<0.11"
       - name: Download official real Dingo sensor bag again
@@ -147,6 +147,59 @@ jobs:
             python contributions/01_learned_astar/experiments/ros2_get_plan_roundtrip_test.py \
               --expected-mode "$MODE" \
               --output "results/c01_real_rosbag/c01_ros2_${MODE}_roundtrip.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+
+      - name: Acquire the official physical-world LILocBench occupancy map
+        run: |
+          source /tmp/c01-ros-venv/bin/activate
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request
+          import zipfile
+          import yaml
+          root = Path("/tmp/c01_official_map")
+          root.mkdir(parents=True, exist_ok=True)
+          url = "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip"
+          archive = root / "official_office_map.zip"
+          with urllib.request.urlopen(url, timeout=90) as src, archive.open("wb") as dst:
+              import shutil
+              shutil.copyfileobj(src,dst)
+          with zipfile.ZipFile(archive) as z:
+              for entry in z.infolist():
+                  if not (root / entry.filename).resolve().is_relative_to(root.resolve()):
+                      raise ValueError("unsafe original-map archive entry")
+              z.extractall(root)
+          valid = []
+          for candidate in root.rglob("*.yaml"):
+              metadata = yaml.safe_load(candidate.read_text(encoding="utf-8"))
+              if isinstance(metadata,dict) and isinstance(metadata.get("image"),str):
+                  if (candidate.parent / metadata["image"]).is_file():
+                      valid.append(candidate)
+          if len(valid)!=1:
+              raise RuntimeError(f"expected one original map YAML; found {valid}")
+          Path("/tmp/c01-official-map-yaml").write_text(str(valid[0]),encoding="utf-8")
+          print("Official original ROS occupancy map: "+str(valid[0]))
+          PY
+      - name: Execute genuine ROS2 C01 planner on recorded-world office occupancy map
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          MODEL="$PWD/contributions/01_learned_astar/models/heuristic_net_rich.pt"
+          MAP_YAML="$(cat /tmp/c01-official-map-yaml)"
+          for MODE in astar_manhattan learned_raw; do
+            python contributions/01_learned_astar/experiments/ros2_get_plan_node.py \
+              --ros-args -p mode:="$MODE" -p map_topic:=/c01/test_grid -p checkpoint:="$MODEL" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            python contributions/01_learned_astar/experiments/ros2_get_plan_roundtrip_test.py \
+              --ros-map-yaml "$MAP_YAML" \
+              --expected-mode "$MODE" \
+              --output "results/c01_real_rosbag/c01_ros2_real_map_${MODE}.json"
             kill "$SERVER_PID" 2>/dev/null || true
             wait "$SERVER_PID" 2>/dev/null || true
             trap - EXIT
