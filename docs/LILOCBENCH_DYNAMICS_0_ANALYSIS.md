@@ -9,7 +9,7 @@ This is a descriptive analysis of the public recorded ground-truth poses for the
 | Ground-truth pose samples | 3,194 |
 | Duration | 159.951 s |
 | Mean sample frequency | 19.962 Hz |
-| Sample interval | 0.050 s minimum; 0.050 s median; 0.150 s maximum |
+| Sample interval | 0.050 s minimum; 0.050 s median; 0.150 s maximum; five longer intervals (four at 0.100 s, one at 0.150 s) |
 | XY path length | 53.967 m |
 | Start-to-end XY displacement | 7.954 m |
 | Mean XY speed (path length / duration) | 0.337 m/s |
