@@ -92,6 +92,15 @@ export function ContributionExplorer() {
         <strong>{visible.length} of 26</strong>
         <span>registered tracks shown · filter updates immediately</span>
       </div>
+      {view === "first-eleven" && (
+        <article className="core-card">
+          <div className="contribution-card-top"><span className="contribution-id">C00 · CORE</span><span className="maturity-pill">Research hypothesis</span></div>
+          <p className="contribution-category">Core research question</p>
+          <h3>Dynamic navigation with recoverability</h3>
+          <p className="contribution-summary">When a route changes or becomes blocked, can online replanning account for risk while preserving a feasible way to recover?</p>
+          <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/README.md">Project hypothesis and protocol ↗</a>
+        </article>
+      )}
       <div className="contribution-grid">
         {visible.map((item) => (
           <article className="contribution-card" key={item.id}>
