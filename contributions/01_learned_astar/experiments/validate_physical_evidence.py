@@ -35,6 +35,17 @@ def file_hash(path: Path) -> str:
     return h.hexdigest()
 
 
+def bag_header_valid(path: Path) -> bool:
+    """Recognize MCAP/SQLite storage header, without claiming physical origin."""
+    with path.open("rb") as stream:
+        magic = stream.read(16)
+    if path.suffix == ".mcap":
+        return magic == bytes.fromhex("894d434150300d0a") or magic.startswith(bytes.fromhex("894d434150300d0a"))
+    if path.suffix == ".db3":
+        return magic.startswith(bytes.fromhex("53514c69746520666f726d6174203300"))
+    return False
+
+
 def validate_manifest(manifest_path: Path) -> dict[str, Any]:
     errors: list[str] = []
     try:
@@ -89,6 +100,8 @@ def validate_manifest(manifest_path: Path) -> dict[str, Any]:
                 errors.append(f"{digest_key} does not match actual file bytes")
             if path.stat().st_size == 0:
                 errors.append(f"{name} file is empty")
+            if name == "rosbag" and not bag_header_valid(path):
+                errors.append("rosbag_path does not have a supported MCAP or SQLite ROS bag header")
 
     # A ROS bag commonly consists of an MCAP/DB3 plus metadata.yaml. This
     # gate requires a single specified sensor record file and never presumes
