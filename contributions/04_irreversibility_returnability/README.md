@@ -10,6 +10,8 @@
 
 <p align="center"><em>Conceptual overview of Contribution 04. The figure is explanatory and does not constitute experimental evidence or a formal safety certificate.</em></p>
 
+> **Verified C04 executable real-office-map experiment and actual ROS 2 Jazzy GetPlan guardrails:** [REAL_MAP_RETURNABILITY_EVIDENCE.md](REAL_MAP_RETURNABILITY_EVIDENCE.md). Includes the four-task strict tau=0.08 failure/recovery comparison, actual source map hashes, test artifacts, and honest limitations of static geometric scores and nonphysical software execution.
+
 A path can be collision-free and immediately feasible while still reducing the robot's ability to escape, return, or recover later. Contribution 04 introduces planning signals that evaluate **future recovery freedom before commitment**.
 
 The module distinguishes binary returnability from continuous recoverability and interprets irreversibility as the progressive loss of future recovery options.
