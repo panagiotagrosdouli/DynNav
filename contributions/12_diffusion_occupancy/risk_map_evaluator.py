@@ -40,8 +40,13 @@ def _validate_maps(predicted_prob: np.ndarray, observed: np.ndarray) -> tuple[np
         raise ValueError(f"predicted and observed maps must have same shape, got {p.shape} and {y.shape}")
     if p.size == 0:
         raise ValueError("maps must not be empty")
+    if not np.all(np.isfinite(p)) or not np.all(np.isfinite(y)):
+        raise ValueError("maps must contain only finite values")
+    if np.any((p < 0.0) | (p > 1.0)):
+        raise ValueError("predicted occupancy probabilities must be in [0, 1]")
+    if np.any((y < 0.0) | (y > 1.0)):
+        raise ValueError("observed occupancy targets must be in [0, 1]")
     p = np.clip(p, 1e-6, 1.0 - 1e-6)
-    y = np.clip(y, 0.0, 1.0)
     return p, y
 
 
@@ -60,6 +65,8 @@ def high_risk_precision_recall(
     observed: np.ndarray,
     threshold: float = 0.65,
 ) -> tuple[float, float]:
+    if not np.isfinite(threshold) or not 0 <= threshold <= 1:
+        raise ValueError("threshold must be finite and in [0, 1]")
     p, y = _validate_maps(predicted_prob, observed)
     pred_mask = p >= threshold
     obs_mask = y >= 0.5
@@ -81,7 +88,10 @@ def evaluate_risk_map(
     cvar = np.asarray(cvar_map, dtype=float) if cvar_map is not None else p
     if cvar.shape != p.shape:
         raise ValueError("cvar_map must have the same shape as predicted_prob")
-    cvar = np.clip(cvar, 0.0, 1.0)
+    if not np.all(np.isfinite(cvar)) or np.any((cvar < 0.0) | (cvar > 1.0)):
+        raise ValueError("cvar_map values must be finite and in [0, 1]")
+    if not np.isfinite(high_risk_threshold) or not 0 <= high_risk_threshold <= 1:
+        raise ValueError("high_risk_threshold must be finite and in [0, 1]")
     pred_binary = p >= 0.5
     obs_binary = y >= 0.5
     precision, recall = high_risk_precision_recall(p, y, threshold=high_risk_threshold)

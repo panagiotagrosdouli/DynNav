@@ -1,7 +1,9 @@
 """
 Contribution 12: Diffusion Occupancy Maps
 ==========================================
-Score-based diffusion model for probabilistic occupancy prediction.
+Untrained NumPy diffusion-shaped occupancy prototype for probabilistic
+occupancy prediction. Its score network has no training routine or checkpoint;
+it is not an evaluated learned diffusion model.
 Instead of a single deterministic occupancy grid, the model produces a
 *distribution* over future occupancy maps by running reverse diffusion
 from Gaussian noise conditioned on the current sensor history.
@@ -40,6 +42,13 @@ class DiffusionOccupancyConfig:
     n_samples: int = 10            # particles for Monte-Carlo risk
     history_len: int = 5           # frames of occupancy history as conditioning
     device: str = "cpu"            # "cuda" if available
+    seed: int = 42
+
+    def __post_init__(self) -> None:
+        if min(self.grid_h, self.grid_w, self.T, self.n_samples, self.history_len) < 1:
+            raise ValueError("grid dimensions, diffusion steps, samples, and history must be positive")
+        if not 0 < self.beta_start < 1 or not 0 < self.beta_end < 1:
+            raise ValueError("beta schedule parameters must be in (0, 1)")
 
 
 # ---------------------------------------------------------------------------
@@ -49,6 +58,8 @@ class DiffusionOccupancyConfig:
 def cosine_beta_schedule(T: int,
                           s: float = 0.008) -> tuple[np.ndarray, np.ndarray]:
     """Cosine beta schedule (Nichol & Dhariwal 2021)."""
+    if T < 1 or not np.isfinite(s) or s < 0:
+        raise ValueError("T must be positive and s must be finite and nonnegative")
     steps = np.arange(T + 1) / T
     alpha_bar = np.cos((steps + s) / (1 + s) * np.pi / 2) ** 2
     alpha_bar = alpha_bar / alpha_bar[0]
@@ -70,12 +81,12 @@ class ScoreNetwork:
     Here we use a single-layer MLP stub for correctness testing.
     """
 
-    def __init__(self, grid_h: int, grid_w: int):
+    def __init__(self, grid_h: int, grid_w: int, seed: int = 0):
         self.h = grid_h
         self.w = grid_w
         d = grid_h * grid_w
-        rng = np.random.default_rng(0)
-        self.W1 = rng.standard_normal((d + 1, 128)) * 0.01   # +1 for timestep
+        rng = np.random.default_rng(seed)
+        self.W1 = rng.standard_normal((2 * d + 1, 128)) * 0.01  # x, condition, timestep
         self.W2 = rng.standard_normal((128, d)) * 0.01
 
     def forward(self, x: np.ndarray, t: int,
@@ -87,7 +98,14 @@ class ScoreNetwork:
         Returns score estimate (H, W).
         """
         flat = x.flatten()
-        inp = np.append(flat, t / 1000.0)
+        cond_flat = np.asarray(cond, dtype=float).reshape(-1)
+        if flat.size != self.h * self.w or cond_flat.size != self.h * self.w:
+            raise ValueError("x and cond must match the configured grid shape")
+        if not np.all(np.isfinite(flat)) or not np.all(np.isfinite(cond_flat)):
+            raise ValueError("x and cond must contain finite values")
+        if not np.isfinite(t):
+            raise ValueError("t must be finite")
+        inp = np.concatenate([flat, cond_flat, [t / 1000.0]])
         h = np.tanh(inp @ self.W1)
         score = (h @ self.W2).reshape(self.h, self.w)
         return score
@@ -107,8 +125,8 @@ class DiffusionOccupancyPredictor:
         self.cfg = config or DiffusionOccupancyConfig()
         self.betas, self.alphas_bar = cosine_beta_schedule(self.cfg.T)
         self.alphas = 1.0 - self.betas
-        self.score_net = ScoreNetwork(self.cfg.grid_h, self.cfg.grid_w)
-        self._rng = np.random.default_rng(42)
+        self.score_net = ScoreNetwork(self.cfg.grid_h, self.cfg.grid_w, seed=self.cfg.seed)
+        self._rng = np.random.default_rng(self.cfg.seed)
 
     # ------------------------------------------------------------------
     # Forward (training) pass  — adds noise
@@ -119,6 +137,11 @@ class DiffusionOccupancyPredictor:
         Diffuse x0 to timestep t.
         Returns (x_t, noise).
         """
+        x0 = np.asarray(x0, dtype=float)
+        if x0.shape != (self.cfg.grid_h, self.cfg.grid_w) or not np.all(np.isfinite(x0)):
+            raise ValueError("x0 must be a finite map matching the configured grid")
+        if not 0 <= t < self.cfg.T:
+            raise ValueError("t must be in [0, T)")
         noise = self._rng.standard_normal(x0.shape)
         alpha_bar_t = self.alphas_bar[t]
         x_t = np.sqrt(alpha_bar_t) * x0 + np.sqrt(1 - alpha_bar_t) * noise
@@ -170,8 +193,14 @@ class DiffusionOccupancyPredictor:
         """
         if not history:
             raise ValueError("Need at least one occupancy frame in history")
-
-        cond = history[-1].astype(float)
+        if len(history) > self.cfg.history_len:
+            raise ValueError("history exceeds configured history_len")
+        frames = [np.asarray(frame, dtype=float) for frame in history]
+        expected_shape = (self.cfg.grid_h, self.cfg.grid_w)
+        if any(frame.shape != expected_shape or not np.all(np.isfinite(frame))
+               or np.any((frame < 0) | (frame > 1)) for frame in frames):
+            raise ValueError("history frames must be finite occupancy maps in [0, 1] with configured shape")
+        cond = frames[-1]
         samples = np.stack(
             [self.sample(cond) for _ in range(self.cfg.n_samples)], axis=0
         )  # (N, H, W)
@@ -204,8 +233,14 @@ class DiffusionOccupancyPredictor:
         cost = path_length + lambda_risk * sum(cvar along path cells)
         """
         cvar = risk_maps["cvar_95"]
-        risk_sum = sum(
-            cvar[r, c] for r, c in path
-            if 0 <= r < cvar.shape[0] and 0 <= c < cvar.shape[1]
-        )
+        cvar = np.asarray(cvar, dtype=float)
+        if cvar.ndim != 2 or not np.all(np.isfinite(cvar)) or np.any((cvar < 0) | (cvar > 1)):
+            raise ValueError("cvar_95 must be a finite 2D map in [0, 1]")
+        if not np.isfinite(lambda_risk) or lambda_risk < 0:
+            raise ValueError("lambda_risk must be finite and nonnegative")
+        if not path:
+            raise ValueError("path must contain at least one grid cell")
+        if any(not (0 <= r < cvar.shape[0] and 0 <= c < cvar.shape[1]) for r, c in path):
+            raise ValueError("path contains a cell outside the risk map")
+        risk_sum = sum(cvar[r, c] for r, c in path)
         return float(len(path)) + lambda_risk * risk_sum

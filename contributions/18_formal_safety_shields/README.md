@@ -1,6 +1,8 @@
 # Contribution 18 — Formal Safety Shields
 
-[![Module](https://img.shields.io/badge/Module-18-purple)](.) [![Type](https://img.shields.io/badge/Type-Formal%20Methods-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
+[![Module](https://img.shields.io/badge/Module-18-purple)](.) [![Type](https://img.shields.io/badge/Type-Formal%20Methods-blue)](.) [![Status](https://img.shields.io/badge/Status-Barrier%20Prototype-orange)](.)
+
+> **Evidence correction:** The repository contains an STL monitor and a point-robot, single-integrator CBF prototype. It has no formal proof, physical controller integration, actuator limits, or verified safety guarantee. The filter now reports whether its modeled half-space constraints are satisfied; callers must handle infeasible cases.
 
 ## Plain-language summary
 
@@ -45,7 +47,7 @@ STL monitor evaluates trajectory safety
       ↓
 CBF filter checks immediate obstacle safety
       ↓
-unsafe command is minimally corrected
+command is projected against modeled CBF half-spaces
       ↓
 safe command sent to robot
 ```
@@ -83,7 +85,7 @@ where:
 h(x) = ||robot - obstacle|| - safety_radius
 ```
 
-If the condition is violated, the velocity command is corrected toward the safe set.
+For static obstacles and continuous-time point-robot dynamics `x_dot = u`, this defines a linear half-space for the command. The implementation uses cyclic projections and reports residual feasibility. A satisfied residual is only a model-level numerical check; sampled execution, moving obstacles, sensing error, actuator bounds, and robot dynamics are not covered.
 
 ---
 

@@ -10,7 +10,7 @@
 - Preserved CSVs, commands, stdout/stderr, rows and SHA-256 under `results/contribution_suite/`.
 - Added the C01-C26 evidence matrix and the C00/C27, reproducibility, real-data, ROS/Gazebo, statistical, dependency, integration, website, and publication reports.
 - Updated website contribution cards to link to source/runner and added a separate C27 proposal card.
-- Follow-up repaired C07 scoring validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C16 client-delta central-DP simulation, and C26 centralized proposal-selection semantics. Added 16 focused unit tests across these five modules.
+- Follow-up repaired C07 scoring validation, C12 conditioned prototype and metric validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C16 client-delta central-DP simulation, C18 CBF projection diagnostics, and C26 centralized proposal-selection semantics. Added 23 focused unit tests across these seven modules.
 
 ## C00-C27 status
 
