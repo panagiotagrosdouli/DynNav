@@ -15,6 +15,14 @@ Recommended first download:
 
 The no-camera bags for the first three recommended sequences are much smaller than the full dataset. Download the exact files from the upstream page; do not commit the dataset or redistribute derived copies. LILocBench uses CC BY-NC-SA 4.0, so cite Trekel et al. (IROS 2025) and retain the non-commercial/share-alike conditions for any adapted dataset material.
 
+After installing DynNav with `python -m pip install -e .`, inspect the supplied occupancy map and optionally check a route whose endpoints are given in map-frame metres:
+
+```bash
+python scripts/inspect_ros_map.py /path/to/map.yaml --start 1.0,2.0 --goal 7.0,4.0
+```
+
+The command prints the map image SHA-256, geometry, unknown-cell policy, and (when endpoints are supplied) baseline A* reachability and path length. Record the chosen endpoints and keep the upstream map unchanged for a reproducible comparison.
+
 ## What this dataset can establish
 
 - Whether DynNav can ingest the real occupancy map with correct origin, resolution, image-axis direction, and conservative unknown-cell handling.
