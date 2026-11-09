@@ -20,17 +20,29 @@ export function RealDataTrajectory() {
         </p>
       </div>
       <div className="real-data-layout">
-        <figure className="trajectory-figure">
-          <img
-            src={`${basePath}/lilocbench-dynamics-0-ground-truth.svg`}
-            alt="XY plot of the LILocBench dynamics_0 ground-truth robot trajectory, without an occupancy-map background"
-            width="960"
-            height="620"
-          />
-          <figcaption>
-            Recorded XY positions in the LILocBench global frame. No occupancy grid or planned route is overlaid.
-          </figcaption>
-        </figure>
+        <div className="real-data-visuals">
+          <figure className="trajectory-figure">
+            <img
+              src={`${basePath}/lilocbench-dynamics-0-ground-truth.svg`}
+              alt="XY plot of the LILocBench dynamics_0 ground-truth robot trajectory, without an occupancy-map background"
+              width="960"
+              height="620"
+            />
+            <figcaption>
+              Recorded XY positions in the LILocBench global frame. No occupancy grid or planned route is overlaid.
+            </figcaption>
+          </figure>
+          <figure className="trajectory-figure map-preview">
+            <img
+              src="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/static/images/map_office.png"
+              alt="Official LILocBench office occupancy-map preview"
+              loading="lazy"
+            />
+            <figcaption>
+              Official occupancy-map preview from LILocBench. The pose plot above has not been transformed or overlaid on this map.
+            </figcaption>
+          </figure>
+        </div>
         <div className="real-data-side">
           <div className="real-metrics">
             {metrics.map(([value, label]) => (
@@ -52,7 +64,7 @@ export function RealDataTrajectory() {
           </p>
           <div className="real-links">
             <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md">Methods, numbers, and reproduction steps ↗</a>
-            <a href="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt">Official ground-truth pose file ↗</a>
+            <a href="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt">Official ground-truth pose file ↗</a>\n            <a href="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip">Official occupancy-map ZIP ↗</a>
           </div>
           <p className="real-license">
             Dataset: CC BY-NC-SA 4.0 · Trekel et al., IROS 2025. See attribution and terms in the analysis notes.
