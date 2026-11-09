@@ -1,0 +1,68 @@
+name: C03 ROS2 Jazzy real GetPlan risk integration
+
+on:
+  pull_request:
+    paths:
+      - "contributions/03_belief_risk_planning/**"
+      - ".github/workflows/c03-ros2-risk-getplan.yml"
+  workflow_dispatch:
+
+jobs:
+  real-ros2-risk-service:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy-ros-base-noble
+    timeout-minutes: 25
+    env:
+      ROS_DOMAIN_ID: "157"
+      PYTHONPATH: .
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install C03 actual ROS2, graph search and risk dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-numpy python3-scipy \
+            python3-yaml python3-pil ros-jazzy-nav-msgs ros-jazzy-geometry-msgs ros-jazzy-std-msgs
+      - name: Execute actual ROS2 GetPlan for baseline and risk weighted C03
+        run: |
+          set -euo pipefail
+          source /opt/ros/jazzy/setup.bash
+          mkdir -p results/c03_actual_ros2
+          for W in 0 8; do
+            python3 contributions/03_belief_risk_planning/experiments/ros2_get_plan_risk.py \
+              --ros-args -p map_topic:=/c03/test_grid -p risk_weight:="$W" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            timeout 75 python3 contributions/03_belief_risk_planning/experiments/ros2_risk_plan_roundtrip_test.py \
+              --risk-weight "$W" \
+              --output "results/c03_actual_ros2/weight_${W}_roundtrip.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+      - name: Independently verify ROS2 topic evidence and no hardware actuation
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("results/c03_actual_ros2")
+          for weight in (0,8):
+              report=json.loads((root/f"weight_{weight}_roundtrip.json").read_text())
+              assert report["ros2_request_response_success"]
+              assert report["path_poses"]>2
+              assert report["planner_diagnostics"]["risk_weight"]==weight
+              assert report["planner_diagnostics"]["cvar_is_optimization_objective"] is False
+              assert report["physical_robot_control"] is False
+              assert report["physical_robot_trials"]==0
+              print("Actual ROS2 GetPlan success:",weight,report["planner_diagnostics"])
+          PY
+      - name: Upload C03 actual ROS2 baseline and risk mode messages
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c03-ros2-jazzy-risk-getplan-roundtrips
+          path: results/c03_actual_ros2/
+          if-no-files-found: warn
