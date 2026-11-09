@@ -14,6 +14,7 @@ from pathlib import Path
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--ros-map-yaml", type=Path, default=None, help="official real ROS map.yaml with image next to it")
     parser.add_argument("--expected-mode", choices=["astar_manhattan", "learned_raw", "learned_manhattan_clipped"], default="astar_manhattan")
     args = parser.parse_args()
 
@@ -36,23 +37,51 @@ def main() -> int:
                 raise RuntimeError("C01 ROS2 GetPlan service unavailable")
         grid = OccupancyGrid()
         grid.header.frame_id = "map"
-        grid.info.width = 12
-        grid.info.height = 12
-        grid.info.resolution = 0.25
-        grid.info.origin.orientation.w = 1.0
-        matrix = [0]*144
-        for y in range(12):
-            if y != 6:
-                matrix[y*12 + 6] = 100
-        grid.data = matrix
+        if args.ros_map_yaml:
+            import math
+            import sys
+            repo_root = Path(__file__).resolve().parents[3]
+            experiments = Path(__file__).resolve().parent
+            for root in (str(repo_root), str(experiments)):
+                if root not in sys.path:
+                    sys.path.insert(0, root)
+            from dynnav.mapping.ros_map import load_ros_map
+            from eval_real_ros_map import map_to_array, free_components, sample_tasks
+            real_map = load_ros_map(args.ros_map_yaml, unknown_as_obstacle=True)
+            numpy_grid = map_to_array(real_map)
+            start_cell, goal_cell = sample_tasks(free_components(numpy_grid), 1, 8, 17)[0]
+            grid.info.width = int(real_map.grid.width)
+            grid.info.height = int(real_map.grid.height)
+            grid.info.resolution = float(real_map.resolution)
+            grid.info.origin.position.x = float(real_map.origin_x)
+            grid.info.origin.position.y = float(real_map.origin_y)
+            grid.info.origin.orientation.z = math.sin(real_map.origin_yaw/2)
+            grid.info.origin.orientation.w = math.cos(real_map.origin_yaw/2)
+            grid.data = (numpy_grid.astype("int16") * 100).ravel().tolist()
+            start_x, start_y = real_map.cell_center(start_cell)
+            goal_x, goal_y = real_map.cell_center(goal_cell)
+            evidence_label = "actual_ros2_getplan_real_office_map_offline_generated_query"
+        else:
+            grid.info.width = 12
+            grid.info.height = 12
+            grid.info.resolution = 0.25
+            grid.info.origin.orientation.w = 1.0
+            matrix = [0]*144
+            for y in range(12):
+                if y != 6:
+                    matrix[y*12 + 6] = 100
+            grid.data = matrix
+            start_x, start_y = (1+.5)*.25, (1+.5)*.25
+            goal_x, goal_y = (10+.5)*.25, (10+.5)*.25
+            evidence_label = "actual_ros2_jazzy_getplan_message_roundtrip_synthetic_map"
         req = GetPlan.Request()
         req.start.header.frame_id = "map"
-        req.start.pose.position.x = (1+.5)*.25
-        req.start.pose.position.y = (1+.5)*.25
+        req.start.pose.position.x = start_x
+        req.start.pose.position.y = start_y
         req.start.pose.orientation.w = 1.0
         req.goal.header.frame_id = "map"
-        req.goal.pose.position.x = (10+.5)*.25
-        req.goal.pose.position.y = (10+.5)*.25
+        req.goal.pose.position.x = goal_x
+        req.goal.pose.position.y = goal_y
         req.goal.pose.orientation.w = 1.0
 
         # ROS message delivery is asynchronous; publish the actual grid
@@ -61,7 +90,7 @@ def main() -> int:
             pub.publish(grid)
             rclpy.spin_once(node, timeout_sec=0.15)
         fut = client.call_async(req)
-        deadline = time.monotonic()+25
+        deadline = time.monotonic()+(120 if args.ros_map_yaml else 25)
         while rclpy.ok() and not fut.done() and time.monotonic() < deadline:
             pub.publish(grid)
             rclpy.spin_once(node, timeout_sec=0.1)
@@ -89,7 +118,8 @@ def main() -> int:
         if diagnostic.get("evidence") != "planning_only_not_robot_motion":
             raise AssertionError("ROS2 diagnostics evidence type missing or misleading")
         out = {
-            "evidence_type": "actual_ros2_jazzy_getplan_message_roundtrip_synthetic_map",
+            "evidence_type": evidence_label,
+            "official_map_yaml": str(args.ros_map_yaml) if args.ros_map_yaml else None,
             "ros2_get_plan_success": True,
             "number_path_poses": len(response.plan.poses),
             "frame_id": response.plan.header.frame_id,
