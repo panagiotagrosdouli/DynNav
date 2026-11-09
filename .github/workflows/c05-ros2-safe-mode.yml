@@ -1,0 +1,63 @@
+name: C05 ROS2 actual hysteresis and emergency state evidence
+
+on:
+  pull_request:
+    paths:
+      - "contributions/05_safe_mode_navigation/**"
+      - ".github/workflows/c05-ros2-safe-mode.yml"
+  workflow_dispatch:
+
+jobs:
+  c05-real-ros2-state-machine:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy-ros-base-noble
+    timeout-minutes: 20
+    env:
+      ROS_DOMAIN_ID: "159"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual ROS2 message packages
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends ros-jazzy-std-msgs python3-pytest
+      - name: Execute non-ROS C05 safety regressions
+        run: |
+          python3 -m pytest -q contributions/05_safe_mode_navigation/tests/test_safety_finite_state_machine.py
+      - name: Actually publish and subscribe to the real ROS2 C05 state machine
+        run: |
+          set -eo pipefail
+          source /opt/ros/jazzy/setup.bash
+          mkdir -p results/c05_ros2
+          python3 contributions/05_safe_mode_navigation/experiments/ros2_safe_mode_supervisor.py --timeout-seconds 1 &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          timeout 70 python3 contributions/05_safe_mode_navigation/experiments/ros2_safe_mode_roundtrip.py \
+            --output results/c05_ros2/safe_mode_actual_pubsub.json
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+          trap - EXIT
+      - name: Verify explicit safe-stop on invalid risk and no actuation
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("results/c05_ros2/safe_mode_actual_pubsub.json")
+          data=json.loads(p.read_text())
+          assert data["messages_sent"]==11 and data["messages_received"]==12
+          assert data["watchdog_messages"]==1 and data["watchdog_emergency_stop"] is True
+          assert data["final_speed_scale"]==0
+          assert data["actual_states"]==data["expected_states"]
+          assert data["emergency_stop_on_nan"] is True
+          assert data["physical_robot_trials"]==0
+          print("11 live ROS2 inputs and 12 responses including stale-feed emergency; all verified")
+          PY
+      - name: Upload actual ROS2 risk and diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c05-jazzy-actual-safe-mode-hysteresis-and-estop
+          path: results/c05_ros2/
+          if-no-files-found: warn

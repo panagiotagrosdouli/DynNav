@@ -12,6 +12,8 @@
 
 <p align="center"><em>Conceptual overview. The figure is not experimental evidence, a formal safety proof, or a certified emergency-stop implementation.</em></p>
 
+> **C05 executed real recorded Dingo LiDAR and real ROS2 Jazzy supervision:** [REAL_RECORDED_LIDAR_AND_ROS2_EVIDENCE.md](REAL_RECORDED_LIDAR_AND_ROS2_EVIDENCE.md) documents 480 actual recorded LaserScan-derived risk observations, finite-state decisions, actual ROS2 hysteresis and stale-feed watchdog, reproducible CI artifacts and clear evidence boundaries. Physical robot C05 control was **not** performed.
+
 ## Overview
 
 Contribution 05 implements an auditable runtime supervisor that adapts navigation behaviour when risk becomes elevated or critical. The controller does not replace the planner. It changes operational commands—speed, obstacle inflation, replanning, operator alerts, and stopping—according to an explicit finite-state policy.
