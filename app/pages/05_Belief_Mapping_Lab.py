@@ -40,7 +40,11 @@ if source_mode == "Upload a real ROS occupancy map":
     if yaml_file is None or image_file is None:
         st.info("Choose both files to inspect a map.")
         st.link_button(
-            "Open the LILocBench dataset page",
+            "Download the official LILocBench occupancy-map ZIP",
+            "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",
+        )
+        st.link_button(
+            "Read the dataset details and license",
             "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/",
         )
         st.stop()
