@@ -51,7 +51,7 @@ jobs:
         run: |
           python contributions/04_irreversibility_returnability/experiments/eval_real_office_returnability.py \
             "$(cat /tmp/c04-map-yaml)" \
-            --output-dir results/c04_real_office --tasks 4 --seed 17 --tau .22
+            --output-dir results/c04_real_office --tasks 4 --seed 17 --tau .08
       - name: Independently validate recorded real-map study
         run: |
           python - <<'PY'
@@ -69,6 +69,8 @@ jobs:
               assert len(by)==3
               assert by["distance_only"]["successful"]=="True"
               assert by["minimax_feasible_cap"]["successful"]=="True"
+              assert by["hard_cap"]["successful"]=="False", "Strict threshold should reject these sampled routes"
+              assert float(by["minimax_feasible_cap"]["used_tau"])>info["nominal_tau"]
               base=by["distance_only"];safe=by["minimax_feasible_cap"]
               assert int(safe["steps"])>=int(base["steps"])
               assert float(safe["max_I"])<=float(safe["used_tau"])+1e-7
