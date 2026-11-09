@@ -1,0 +1,69 @@
+name: C05 actual recorded Dingo LiDAR safe-mode decisions
+
+on:
+  pull_request:
+    paths:
+      - "contributions/05_safe_mode_navigation/**"
+      - ".github/workflows/c05-real-recorded-dingo-lidar.yml"
+  workflow_dispatch:
+
+jobs:
+  recorded-dingo-laserscan:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install genuine ROS1 recording decoder and C05 numeric dependencies
+        run: python -m pip install "rosbags>=0.10,<0.11" numpy pytest
+      - name: Run C05 genuine LiDAR preprocessing and fail-closed tests
+        run: python -m pytest -q contributions/05_safe_mode_navigation/tests/test_recorded_lidar_proxy.py contributions/05_safe_mode_navigation/tests/test_safety_finite_state_machine.py
+      - name: Download physical Dingo ORIGINAL ROS1 dataset from official source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request,hashlib,shutil
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          p=Path("/tmp/c05-original-dingo-dynamics0.bag")
+          with urllib.request.urlopen(urllib.request.Request(url,headers={"User-Agent":"DynNav-C05-real-recorded-LiDAR-validation"}),timeout=180) as src,p.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          if p.stat().st_size!=38063988:
+              raise RuntimeError(f"Official real Dingo bag changed size: {p.stat().st_size}")
+          print("Official real Dingo recording SHA256",hashlib.sha256(p.read_bytes()).hexdigest())
+          PY
+      - name: Actually decode recorded LiDAR frames and run C05 state machine on observations
+        run: |
+          python contributions/05_safe_mode_navigation/experiments/eval_recorded_dingo_lidar_safe_mode.py \
+            /tmp/c05-original-dingo-dynamics0.bag \
+            --max-scans 500 --stride 10 \
+            --output-dir results/c05_real_dingo_lidar
+      - name: Independently verify actual data, finite-speed and honest provenance
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv,json,math
+          root=Path("results/c05_real_dingo_lidar")
+          report=json.loads((root/"summary.json").read_text())
+          rows=list(csv.DictReader((root/"recorded_lidar_state_transitions.csv").open()))
+          assert report["scans_evaluated"]==len(rows) and len(rows)>=50
+          assert len(report["bag_sha256"])==64
+          assert report["source_bag_size_bytes"]==38063988
+          assert report["physical_robot_executed_c05"] is False
+          assert report["physical_robot_trials"]==0
+          assert report["proxy_not_probability"] is True
+          assert report["c05_safety_statistics"]["n_steps"]==len(rows)
+          assert all(0<=float(x["risk_proxy"])<=1 for x in rows)
+          assert all(0<=float(x["speed_scale"])<=1 for x in rows)
+          assert all(float(x["speed_scale"])==0 for x in rows if x["state"]=="EMERGENCY_STOP")
+          print("C05 consumed actual original Dingo LaserScan messages:",len(rows))
+          print("C05 state summary:",report["c05_safety_statistics"])
+          PY
+      - name: Upload recorded-world C05 decisions, not copyrighted raw bag
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c05-genuine-dingo-lidar-offline-safe-mode-decisions
+          path: results/c05_real_dingo_lidar/
+          if-no-files-found: warn
