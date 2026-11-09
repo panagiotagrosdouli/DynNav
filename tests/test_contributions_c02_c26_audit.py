@@ -43,3 +43,16 @@ def test_failed_npz_array_rejected(tmp_path):
     np.savez(path,values=np.array([0.0,float("nan")]))
     result=audit.inspect_file(path,tmp_path)
     assert result["status"]=="FAILED"
+
+def test_nested_real_checkpoint_metadata_and_weights_are_checked():
+    torch=pytest.importorskip("torch")
+    path=ROOT/"contributions"/"02_uncertainty_calibration"/"models"/"drift_uncertainty_net.pt"
+    result=audit.inspect_file(path,ROOT,torch)
+    assert result["status"]=="PT_TENSORS_AND_METADATA_VALID",result
+    assert "model_state_dict" in result["checkpoint_schema"]
+    assert "feature_cols" in result["checkpoint_schema"]
+
+def test_nested_nonfinite_tensor_rejected():
+    torch=pytest.importorskip("torch")
+    with pytest.raises(ValueError,match="Nonfinite"):
+        audit.inspect_checkpoint_payload({"model_state_dict":{"bad":torch.tensor([float("nan")])}},torch)
