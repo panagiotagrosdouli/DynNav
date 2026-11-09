@@ -105,6 +105,42 @@ jobs:
               assert all(torch.isfinite(p).all() for p in state.values()),model
               print("checkpoint structurally valid",model.name)
           PY
+      - name: Run original visual A* demo without GUI or tracked artifact mutation
+        env:
+          MPLBACKEND: Agg
+        run: |
+          mkdir -p /tmp/c01_historical_astar
+          cp contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            /tmp/c01_historical_astar/heuristic_net_rich.pt
+          (cd /tmp/c01_historical_astar && python "$GITHUB_WORKSPACE/contributions/01_learned_astar/code/astar_learned_heuristic.py")
+          test -s /tmp/c01_historical_astar/heuristic_logs.npz
+      - name: Run non-destructive historical online update against copied checkpoint
+        run: |
+          python contributions/01_learned_astar/results/autotune_heuristic.py \
+            --model contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            --out-dir results/c01_full_audit/legacy_autotune \
+            --iterations 1 --epochs 1
+      - name: Execute historical C07 / multiobjective timing with explicit synthetic inputs
+        run: |
+          python - <<'PY'
+          import numpy as np
+          import pandas as pd
+          from pathlib import Path
+          out=Path("/tmp/c01_timing_fixture")
+          out.mkdir(exist_ok=True)
+          coverage=pd.DataFrame([
+              {"row":i,"col":j,"covered":int((i+j)%2==0),"uncertainty":float((i+j)/8)}
+              for i in range(5) for j in range(5)
+          ])
+          coverage.to_csv(out/"coverage.csv",index=False)
+          pd.DataFrame([{"x":1.0,"y":1.0},{"x":3.0,"y":3.0}]).to_csv(out/"centroids.csv",index=False)
+          print("HISTORICAL CROSS-CONTRIBUTION TIMING FIXTURE IS SYNTHETIC")
+          PY
+          python contributions/01_learned_astar/experiments/timing_benchmark.py \
+            --coverage /tmp/c01_timing_fixture/coverage.csv \
+            --centroids /tmp/c01_timing_fixture/centroids.csv \
+            --out results/c01_full_audit/benchmarks/historical_cross_contribution_timing.csv \
+            --runs 2
       - name: Upload source/model/data/benchmark verification evidence
         if: always()
         uses: actions/upload-artifact@v4
