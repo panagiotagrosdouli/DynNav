@@ -78,6 +78,10 @@ jobs:
               assert 0<=metrics["coverage_1sigma"]<=1
               print(name,metrics["ece_abs_error"],metrics["coverage_1sigma"])
           PY
+      - name: Execute C03 ethical-risk and human-preference integration tests
+        run: |
+          python -m pytest -q contributions/03_belief_risk_planning/tests
+
       - name: Validate registered contribution paths and declarations
         run: python scripts/validate_contribution_registry.py
       - name: Run all 25 contributions individually IN ORDER, fail on any skipped dependency
