@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import numpy as np
-import yaml
+import yaml  # type: ignore[import-untyped]
 from PIL import Image
 
 from dynnav.planners.grid_map import GridCell, GridMap
