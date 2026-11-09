@@ -203,7 +203,7 @@ def main() -> None:
 
     rng = random.Random(args.seed)
     raw_h = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=False)
-    clipped_h = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=True)
+    clipped_h = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=False)
     zero_h = LearnedHeuristicWrapper(model_path=args.model, mode="zero", allow_missing_model=True)
 
     methods = [
