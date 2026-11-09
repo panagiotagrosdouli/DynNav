@@ -10,7 +10,7 @@
 - Preserved CSVs, commands, stdout/stderr, rows and SHA-256 under `results/contribution_suite/`.
 - Added the C01-C26 evidence matrix and the C00/C27, reproducibility, real-data, ROS/Gazebo, statistical, dependency, integration, website, and publication reports.
 - Updated website contribution cards to link to source/runner and added a separate C27 proposal card.
-- Follow-up repaired C05 cooldown semantics, C07 scoring validation, C08 IDS validation, C09 team-plan validation, C10 negated safety-language handling, C12 conditioned prototype and metric validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C15 seeded event simulation, C16 client-delta central-DP simulation, C17 stable semantic hashing, C18 CBF projection diagnostics, C19 mission-schema validation, C20 report validation, C21 PPO training evidence scope, C22 curriculum evidence scope, and C26 centralized proposal-selection semantics. Added 41 focused unit tests across 16 modules.
+- Follow-up repaired C05 cooldown semantics, C07 scoring validation, C08 IDS validation, C09 team-plan validation, C10 negated safety-language handling, C12 conditioned prototype and metric validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C15 seeded event simulation, C16 client-delta central-DP simulation, C17 stable semantic hashing, C18 CBF projection diagnostics, C19 mission-schema validation, C20 report validation, C21 PPO training evidence scope, C22 curriculum evidence scope, C23 covariance/input validation, C24 seeded MC-dropout and input validation, C25 seeded/config-validated attack simulation, and C26 centralized proposal-selection semantics. Added 47 focused unit tests across 19 modules (C22 was documentation-only).
 
 ## C00-C27 status
 
@@ -22,8 +22,8 @@
 - **C19:** `CONCEPT_ONLY` — deterministic mission-plan fixtures, not a real LLM.
 - **C20:** `PARTIAL` — synthetic explainer fixture.
 - **C21-C22:** `SCIENTIFICALLY_UNVERIFIED` — fixture labels do not establish trained PPO/curriculum; outputs show poor/no improvement.
-- **C23-C24:** `CONCEPT_ONLY` — 2D Gaussian proxy and synthetic uncertainty field, not actual 3D Gaussian Splatting or trained/rendered NeRF.
-- **C25-C26:** `PARTIAL` — numerical fault injections and centralized C26 proposal selection, not ROS 2 attacks or distributed consensus/network evidence.
+- **C23-C24:** `CONCEPT_ONLY` — improved reproducibility/input handling, but still a 2D Gaussian proxy and random-weight NeRF-shaped code, not actual 3D Gaussian Splatting or trained/rendered NeRF.
+- **C25-C26:** `PARTIAL` — reproducible numerical fault injections and centralized C26 proposal selection, not ROS 2 attacks or distributed consensus/network evidence.
 - **C27:** `CONCEPT_ONLY` — standalone theory agenda; one 16-realization counterexample runner verifies an optimistic cut bound on a tiny synthetic graph; no general proof or registered experiment.
 
 ## Blockers

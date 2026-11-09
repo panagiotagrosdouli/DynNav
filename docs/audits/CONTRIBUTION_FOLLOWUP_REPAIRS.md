@@ -1,6 +1,6 @@
 # Contribution Follow-up Repairs
 
-**Scope:** Targeted source review and engineering corrections for C05, C07–C10, C12–C22 (selected modules listed below), and C26. This follow-up does not claim that all modules have equivalent evidence.
+**Scope:** Targeted source review and engineering corrections for C05, C07–C10, C12–C26 (selected modules listed below). This follow-up does not claim that all modules have equivalent evidence.
 
 ## Changes and evidence
 
@@ -22,11 +22,14 @@
 | C20 | Validate explanation confidence, timestamp, and causal score finiteness before computing rubric metrics. | `python -m unittest discover -s contributions/20_multimodal_failure_explainer/tests -v`; C20 canonical experiment passed. | 2 tests pass; rubric fixture only, not expert review. |
 | C21 | Prevent the NumPy PPO skeleton's loss logging from being called training; label evaluation rows as untrained actor outcomes. | `python -m unittest discover -s contributions/21_ppo_navigation_agent/tests -v`; C21 canonical experiment passed. | 1 test passes; no optimizer or trained checkpoint, so no PPO learning result. |
 | C22 | Correct documentation to identify random-action curriculum runs as scheduler simulations rather than policy training. | C22 canonical experiment passed. | Synthetic random-policy scheduler metrics only; no trained PPO agent or matched-budget curriculum comparison. |
+| C23 | Validate finite point/color arrays and homogeneous transform shape; correct merged covariance to use the pre-update mean and symmetric covariance update. | `python -m unittest discover -s contributions/23_gaussian_splatting_mapper/tests -v`; C23 canonical experiment passed. | 2 tests pass; 2D occupancy projection from point-cloud Gaussian proxies, not a trained/rendered 3D Gaussian Splatting system. |
+| C24 | Seed MC-dropout sampling, activate dropout only during uncertainty passes, validate sampling/grid configuration and query shapes. | `python -m unittest discover -s contributions/24_nerf_uncertainty/tests -v`; C24 canonical experiment passed. | 2 tests pass; random-weight NumPy NeRF-shaped proxy, not a trained NeRF or calibrated scene uncertainty model. |
+| C25 | Validate attack budgets, add one explicit seed for PGD/LiDAR/odometry simulation, and validate the PGD natural-example contract. | `python -m unittest discover -s contributions/25_adversarial_attack_simulator/tests -v`; C25 canonical experiment passed. | 2 tests pass; deterministic synthetic perturbations, not closed-loop navigation or validated IDS detection. |
 | C26 | Correct scope to centralized median/MAD proposal selection; remove self-reported confidence weighting; validate proposals; abstain below quorum; return path-cost pair from one proposal; validate returned paths; define one selection pass and approximate upload/broadcast counts. | `python -m unittest discover -s contributions/26_swarm_consensus/tests -v`; `python contributions/26_swarm_consensus/experiments/eval_swarm_consensus.py --out /tmp/c26_followup.csv` | 4 tests pass. One-map synthetic batch: success 1.00, cost accuracy 1.00, cost-outlier recall proxy 0.465, estimated messages mean 35.2. Perfect scores apply only to the fixed scenarios; no distributed agreement or BFT property is established. |
 
 ## Canonical suite
 
-`python scripts/validate_contribution_registry.py` reports exactly 26 registered contributions and 26 experiment records with no errors or warnings. The final full suite completed with C02–C26 passing and C01 skipped because PyTorch is unavailable. The suite ran to `/tmp/dynnav_followup_16modules`. Forty-one focused unit tests passed across 16 contributions. No real dataset, ROS 2/Gazebo, or physical robot evidence was added by this follow-up.
+`python scripts/validate_contribution_registry.py` reports exactly 26 registered contributions and 26 experiment records with no errors or warnings. The latest full suite completed with C02–C26 passing and C01 skipped because PyTorch is unavailable. The latest invocation requested `/tmp/dynnav_remaining_modules_2026-11-09`; its stdout confirmed the statuses, but the temporary directory was not retained in the workspace. Forty-seven focused unit tests passed across 19 contributions (C22 was a documentation-only correction). No real dataset, ROS 2/Gazebo, or physical robot evidence was added by this follow-up.
 
 ## Remaining scientific limits
 
@@ -35,5 +38,8 @@
 - C14 evaluates attribution only against its own assumed synthetic structural causal model.
 - C16's central client-level mechanism depends on fixed full-cohort participation, replace-one adjacency, uniform aggregation, and basic composition. It is not local DP, secure aggregation, or a production accountant.
 - C26 is centralized and synthetic. The name `BFTConsensus` is retained for compatibility, with explicit scope correction in code and docs.
+- C23's incremental Gaussian structure is a 2D planning proxy; it does not implement differentiable 3DGS rendering/training.
+- C24's deterministic seed makes the proxy repeatable, not learned; all network weights remain fixed random initialization.
+- C25's seeded attack operators validate perturbation mechanics only. Its robustness evaluator does not establish attack detection rates on a deployed navigation stack.
 
 **Source revisions:** [`7c163ec98af0339e8751a075bdadc749c480015b`](https://github.com/panagiotagrosdouli/DynNav/commit/7c163ec98af0339e8751a075bdadc749c480015b), [`1b29c5d1df9e51d001abafb56390e7b6e06a7607`](https://github.com/panagiotagrosdouli/DynNav/commit/1b29c5d1df9e51d001abafb56390e7b6e06a7607) (C12/C18), and [`cb1cb3ae82986653f7ef89d7d023fb9305a2093a`](https://github.com/panagiotagrosdouli/DynNav/commit/cb1cb3ae82986653f7ef89d7d023fb9305a2093a) (C05/C08/C09/C10/C15/C17/C19/C20/C21/C22).
