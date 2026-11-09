@@ -1,0 +1,78 @@
+name: C01 isolated ROS 2 closed-loop navigation proof
+
+on:
+  pull_request:
+    paths:
+      - "contributions/01_learned_astar/experiments/ros2_isolated_closed_loop.py"
+      - ".github/workflows/c01-closed-loop.yml"
+  workflow_dispatch:
+
+jobs:
+  ros2-closed-loop:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    container: ros:jazzy-ros-base-noble
+    defaults:
+      run:
+        shell: bash
+    env:
+      ROS_DOMAIN_ID: "155"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install ROS 2 and Python dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-venv python3-pip python3-numpy python3-matplotlib python3-yaml python3-pil \
+            ros-jazzy-nav-msgs ros-jazzy-geometry-msgs ros-jazzy-std-msgs
+          python3 -m venv --system-site-packages /tmp/c01-ros-venv
+          source /tmp/c01-ros-venv/bin/activate
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Execute three C01 ROS2 planning and simulated robot closed loops
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          MODEL="$PWD/contributions/01_learned_astar/models/heuristic_net_rich.pt"
+          mkdir -p results/c01_ros2_closed_loop
+          for MODE in astar_manhattan learned_raw learned_manhattan_clipped; do
+            python contributions/01_learned_astar/experiments/ros2_get_plan_node.py \
+              --ros-args -p mode:="$MODE" -p map_topic:=/c01/isolated_sim/map -p checkpoint:="$MODEL" &
+            SERVER_PID=$!
+            trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+            timeout 115 python contributions/01_learned_astar/experiments/ros2_isolated_closed_loop.py \
+              --mode "$MODE" --output "results/c01_ros2_closed_loop/${MODE}.json"
+            kill "$SERVER_PID" 2>/dev/null || true
+            wait "$SERVER_PID" 2>/dev/null || true
+            trap - EXIT
+            sleep 1
+          done
+      - name: Independently verify simulation outcomes and non-hardware evidence
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          methods=("astar_manhattan","learned_raw","learned_manhattan_clipped")
+          for mode in methods:
+              doc=json.loads((Path("results/c01_ros2_closed_loop")/f"{mode}.json").read_text())
+              assert doc["ros2_closed_loop_completed"], doc
+              assert doc["ros2_getplan_received"],doc
+              assert doc["ros2_twist_messages_received"] > 0 and doc["ros2_odometry_messages_received"] > 0
+              assert doc["grid_collision_count"] == 0
+              assert doc["distance_from_goal_m"] < .12
+              assert doc["planner_diagnostics"] is not None
+              assert doc["planner_diagnostics"]["mode"] == mode
+              if mode.startswith("learned_"):
+                  assert len(doc["planner_diagnostics"]["checkpoint_sha256"])==64
+              assert doc["hardware_motion_commanded"] is False and doc["actual_dingo_navigation"] is False
+              assert doc["physical_robot_trial"] is False
+              print(mode,"simulated_success", doc["ros2_closed_loop_completed"],
+                    "simulated_duration_seconds",doc["simulated_duration_seconds"],
+                    "executed_distance_m",doc["executed_distance_m"])
+          PY
+      - name: Upload genuine ROS2 integration and simulated-robot navigation traces
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c01-ros2-isolated-kinematic-closed-loop
+          path: results/c01_ros2_closed_loop/
+          if-no-files-found: warn
