@@ -211,3 +211,16 @@ checkpoint training provenance, and controlled evaluation.
 
 **Current verdict: C01 has real-map offline evidence but no physical-robot
 efficacy evidence.**
+
+## 10. Robot-run evidence validation tool (read-only)
+
+The new `experiments/validate_physical_evidence.py` audits a supplied, operator-created trial manifest against actual evidence-file bytes. It checks required provenance fields, SHA-256 digests, path containment, explicit safety attestation, and trial outcome vocabulary. It cannot prove that the telemetry came from a physical robot or that the selected C01 algorithm controlled motion. It intentionally labels structurally valid records `STRUCTURAL_EVIDENCE_PASS_HUMAN_REVIEW_REQUIRED`, **not** `PHYSICAL_ROBOT_VALIDATED`.
+
+```bash
+python -m pytest -q contributions/01_learned_astar/tests/test_validate_physical_evidence.py
+python contributions/01_learned_astar/experiments/validate_physical_evidence.py \
+  /absolute/path/to/actual_robot_trial/manifest.json \
+  --output /absolute/path/to/actual_robot_trial/validation.json
+```
+
+The manifest must point to an actual locally retained bag data file and actual C01 planner trace, with hash integrity, task/robot provenance, checkpoint identity, operator safety approval and outcome. The tool is **not a substitute** for ROS bag decoding, synchronized time/TF review, robot identity verification or a human hardware safety gate. No trial evidence was supplied in this review; **zero physical C01 runs are claimed**.
