@@ -224,3 +224,21 @@ python contributions/01_learned_astar/experiments/validate_physical_evidence.py 
 ```
 
 The manifest must point to an actual locally retained bag data file and actual C01 planner trace, with hash integrity, task/robot provenance, checkpoint identity, operator safety approval and outcome. The tool is **not a substitute** for ROS bag decoding, synchronized time/TF review, robot identity verification or a human hardware safety gate. No trial evidence was supplied in this review; **zero physical C01 runs are claimed**.
+
+## 11. C01 ROS 2 planning interface work
+
+Added `experiments/ros2_get_plan_node.py`, a planning-only ROS 2
+`nav_msgs/srv/GetPlan` service using the **actual C01 Manhattan/raw/clipped
+algorithms**; `experiments/ros2_grid_geometry.py` for ROS OccupancyGrid
+geometry and obstacle handling; and `tests/test_ros2_grid_geometry.py` for
+geometry and path sanity tests.
+
+Read [ROS2_PLANNING_INTERFACE.md](ROS2_PLANNING_INTERFACE.md) before trying
+the node. It does **not** publish velocity commands, perform navigation, act
+as a Nav2 global planner plugin or establish physical robot efficacy.
+Message-level ROS integration and any robot-specific bridge remain unverified.
+
+The physical-evidence validator was strengthened to reject files that lack
+an MCAP or SQLite bag-file header, even if the supplied SHA-256 matches. File
+format recognition is **not** proof of actual physical robot origin: human and
+sensor-trace verification remain required.
