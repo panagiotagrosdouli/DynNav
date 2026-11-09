@@ -15,7 +15,7 @@ def test_actual_xy_translation_integrated_and_invalid_jumps_rejected():
     assert result["observed_planar_odometry_distance_m"]==pytest.approx(1.5)
 
 def test_invalid_and_nonmonotonic_samples_not_counted():
-    rows=[(1.,0.,0.),(2.,float("nan"),0.),(1.5,.3,.4),(3.,.6,.8)]
+    rows=[(1.,0.,0.),(2.,float("nan"),0.),(.5,.3,.4),(3.,.6,.8)]
     result=m.integrate_deltas(rows,max_step_m=2.)
     assert result["rejected_steps"]>=2
 
