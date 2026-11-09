@@ -58,7 +58,7 @@ export function RealDataTrajectory() {
             closed-loop control, or physical-robot run is claimed.
           </p>
           <div className="real-links">
-            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/real-data-validation/docs/LILOCBENCH_REAL_DATA_REPORT.md">Full methods and limitations ↗</a>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/real-data-lilocbench-validation/docs/LILOCBENCH_REAL_DATA_REPORT.md">Full methods and limitations ↗</a>
             <a href={`${basePath}/results/real_data/lilocbench_map_and_trajectory_provenance.json`}>Map, trajectory, and A* provenance JSON ↗</a>
             <a href={`${basePath}/results/real_data/lilocbench_dynamics_0_static_astar_config.json`}>Static A* run configuration ↗</a>
             <a href={`${basePath}/results/real_data/lilocbench_dynamics_0_ros1_bag_audit.json`}>ROS1 bag audit JSON ↗</a>
