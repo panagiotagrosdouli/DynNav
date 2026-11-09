@@ -70,11 +70,15 @@ def generate_overlay(
         raise ValueError("ground-truth timestamps must increase and all pose fields must be finite")
 
     gt_cells = [ros_map.world_to_cell(float(row[1]), float(row[2])) for row in poses]
-    if any(not ros_map.grid.passable(cell) for cell in gt_cells):
-        blocked = sum(not ros_map.grid.passable(cell) for cell in gt_cells)
+    invalid_cells = [
+        cell
+        for cell in gt_cells
+        if not ros_map.grid.in_bounds(cell) or not ros_map.grid.passable(cell)
+    ]
+    if invalid_cells:
         raise ValueError(
-            f"refusing to create a verified overlay: {blocked}/{len(gt_cells)} ground-truth samples "
-            "map to occupied or unknown cells"
+            f"refusing to create a verified overlay: {len(invalid_cells)}/{len(gt_cells)} "
+            "ground-truth samples map outside the map or to occupied or unknown cells"
         )
     route: AStarResult = astar(ros_map.grid, gt_cells[0], gt_cells[-1])
     if not route.success:

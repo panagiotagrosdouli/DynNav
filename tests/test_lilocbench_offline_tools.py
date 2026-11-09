@@ -108,6 +108,42 @@ def test_overlay_generator_fails_if_ground_truth_hits_blocked_cell(tmp_path: Pat
         raise AssertionError("overlay generation must reject a trajectory sample in an occupied cell")
 
 
+def test_overlay_generator_rejects_ground_truth_outside_map(tmp_path: Path) -> None:
+    image_path = tmp_path / "map.png"
+    Image.fromarray(np.full((12, 12), 255, dtype=np.uint8)).save(image_path)
+    yaml_path = tmp_path / "map.yaml"
+    yaml_path.write_text(
+        yaml.safe_dump(
+            {
+                "image": image_path.name,
+                "resolution": 1.0,
+                "origin": [0.0, 0.0, 0.0],
+                "occupied_thresh": 0.65,
+                "free_thresh": 0.196,
+                "negate": 0,
+            }
+        ),
+        encoding="utf-8",
+    )
+    poses = tmp_path / "poses.txt"
+    poses.write_text(
+        "0 1.5 1.5 0 0 0 0 1\\n"
+        "1 50.5 50.5 0 0 0 0 1\\n"
+        "2 5.5 5.5 0 0 0 0 1\\n",
+        encoding="utf-8",
+    )
+    output = tmp_path / "overlay.svg"
+
+    try:
+        generate_overlay(yaml_path, poses, output)
+    except ValueError as exc:
+        assert "outside the map" in str(exc)
+        assert "1/3" in str(exc)
+    else:
+        raise AssertionError("overlay generation must reject out-of-bounds trajectory samples")
+    assert not output.exists()
+
+
 def test_overlay_generator_creates_licensed_reproducible_svg(tmp_path: Path) -> None:
     image_path = tmp_path / "map.png"
     Image.fromarray(np.full((12, 12), 255, dtype=np.uint8)).save(image_path)
