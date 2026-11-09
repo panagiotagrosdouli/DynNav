@@ -27,7 +27,7 @@ jobs:
             python3-yaml python3-pil ros-jazzy-nav-msgs ros-jazzy-geometry-msgs ros-jazzy-std-msgs
       - name: Execute actual ROS2 GetPlan for baseline and risk weighted C03
         run: |
-          set -euo pipefail
+          set -eo pipefail
           source /opt/ros/jazzy/setup.bash
           mkdir -p results/c03_actual_ros2
           for W in 0 8; do
