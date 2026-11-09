@@ -1,0 +1,88 @@
+name: C01 official LILocBench real-map evaluation
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "contributions/01_learned_astar/experiments/eval_real_ros_map.py"
+      - "contributions/01_learned_astar/tests/test_real_ros_map_eval.py"
+      - "contributions/01_learned_astar/models/heuristic_net_rich.pt"
+      - ".github/workflows/c01-real-ros-map.yml"
+
+jobs:
+  real-map:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install DynNav and test dependencies
+        run: python -m pip install -e ".[dev]"
+
+      - name: Test real-map evaluation code on local fixture
+        run: python -m pytest -q contributions/01_learned_astar/tests/test_real_ros_map_eval.py
+
+      - name: Download official LILocBench map (do not commit dataset)
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import pathlib
+          import urllib.request
+          import zipfile
+          root = pathlib.Path("/tmp/dynnav-lilocbench-map")
+          root.mkdir(parents=True, exist_ok=True)
+          url = "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip"
+          data = urllib.request.urlopen(url, timeout=90).read()
+          archive = root / "map_office.zip"
+          archive.write_bytes(data)
+          with zipfile.ZipFile(archive) as z:
+              for member in z.infolist():
+                  dest = (root / member.filename).resolve()
+                  if not dest.is_relative_to(root.resolve()):
+                      raise ValueError(f"Unsafe archive path: {member.filename}")
+              z.extractall(root)
+          maps = []
+          for candidate in root.rglob("*.yaml"):
+              import yaml
+              document = yaml.safe_load(candidate.read_text(encoding="utf-8"))
+              if isinstance(document, dict) and isinstance(document.get("image"), str):
+                  image = (candidate.parent / document["image"]).resolve()
+                  if image.is_file():
+                      maps.append(str(candidate))
+          if len(maps) != 1:
+              raise RuntimeError(f"Expected exactly one valid map YAML in official archive, found {maps}")
+          pathlib.Path("/tmp/dynnav-map-path").write_text(maps[0], encoding="utf-8")
+          print(json.dumps({"source": url, "zip_sha256": hashlib.sha256(data).hexdigest(), "map_yaml": maps[0]}, indent=2))
+          PY
+
+      - name: Run real-map geometry and optimal baselines
+        run: |
+          MAP_YAML="$(cat /tmp/dynnav-map-path)"
+          python scripts/inspect_ros_map.py "$MAP_YAML"
+          python contributions/01_learned_astar/experiments/eval_real_ros_map.py "$MAP_YAML" \
+            --output-dir results/c01_lilocbench_real_map/baselines \
+            --n-tasks 8 --seed 17 --min-distance 8
+
+      - name: Install CPU PyTorch for actual saved neural model
+        run: python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+      - name: Run real-map neural comparisons (no fallback)
+        run: |
+          MAP_YAML="$(cat /tmp/dynnav-map-path)"
+          python contributions/01_learned_astar/experiments/eval_real_ros_map.py "$MAP_YAML" \
+            --model contributions/01_learned_astar/models/heuristic_net_rich.pt \
+            --output-dir results/c01_lilocbench_real_map/neural \
+            --n-tasks 5 --seed 17 --min-distance 8
+
+      - name: Publish real-map evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c01-lilocbench-official-real-map-evaluation
+          path: results/c01_lilocbench_real_map/
+          if-no-files-found: warn
