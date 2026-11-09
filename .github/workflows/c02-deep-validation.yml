@@ -19,7 +19,7 @@ jobs:
           cache: pip
       - name: Install calibration dependencies and genuine checkpoint reader
         run: |
-          python -m pip install numpy pytest pillow pyyaml
+          python -m pip install numpy pandas pytest pillow pyyaml
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Execute C02 source, dataset and checkpoint integrity audit
         run: |
@@ -28,6 +28,26 @@ jobs:
       - name: Execute every C02 focused test
         run: |
           python -m pytest -q contributions/02_uncertainty_calibration/tests
+      - name: Actually retrain C02 neural drift uncertainty on archived synthetic data
+        run: |
+          python contributions/02_uncertainty_calibration/code/train_drift_uncertainty_net.py \
+            --csv contributions/02_uncertainty_calibration/results/drift_dataset.csv \
+            --model-out results/c02_deep_validation/c02_retrained_2epochs.pt \
+            --stats-out results/c02_deep_validation/c02_trainonly_norm.npz \
+            --epochs 2 --seed 2026
+          python - <<'PY'
+          import torch
+          import numpy as np
+          from pathlib import Path
+          root=Path("results/c02_deep_validation")
+          state=torch.load(root/"c02_retrained_2epochs.pt",map_location="cpu",weights_only=True)
+          assert state["input_dim"]==3
+          assert all(torch.isfinite(x).all() for x in state["model_state_dict"].values())
+          with np.load(root/"c02_trainonly_norm.npz",allow_pickle=False) as d:
+              assert np.all(np.isfinite(d["x_mean"]))
+              assert np.all(d["x_std"]>0)
+          print("C02 trained two epochs with train-only normalizer and non-destructive model outputs")
+          PY
       - name: Execute original C02 calibrated-vs-raw baseline
         run: |
           python contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py \
