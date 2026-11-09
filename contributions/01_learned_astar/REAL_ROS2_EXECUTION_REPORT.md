@@ -96,8 +96,34 @@ real-map queries. The source robot did not execute those generated paths.
   and a real `GetPlan` service call.
 - `.github/workflows/c01-real-rosbag.yml`: dedicated CI running recorded
   sensor decoding, ROS 1-to-ROS 2 conversion/playback, and ROS 2 GetPlan
-  roundtrip. Its **latest** GetPlan step must be inspected before marking
-  that particular integration as verified.
+  roundtrip. Its GetPlan step has been verified successful on the recorded run.
+
+### Verified actual C01 ROS 2 GetPlan message-level execution
+
+[Successful workflow run #42689113705](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42689113705)
+executed **all three C01 planner modes in a real ROS 2 Jazzy container**
+using a running `rclpy` server, an actual `nav_msgs/srv/GetPlan` client,
+and checkpoint-identity diagnostics. The request map for this specific
+roundtrip was **synthetic (12×12 grid)**, clearly separate from the
+official real-map planning experiment and from the genuine Dingo replay.
+
+| C01 ROS 2 service mode | Expanded nodes | Measured planning latency (ms) | Result |
+|---|---:|---:|---|
+| `astar_manhattan` | 71 | 0.773 | Valid 19 poses; 18 grid steps |
+| `learned_raw` | 59 | 7.958 | Valid 19 poses; 18 grid steps |
+| `learned_manhattan_clipped` | 71 | 7.596 | Valid 19 poses; 18 grid steps |
+
+The learned service logged model SHA-256
+`640ec68fcf1a04b3fc3abbc146ff5aaaee58a5a170ec5770c39459cce972b19a`,
+proving the saved checkpoint rather than a fallback was used in the
+ROS 2 GetPlan execution. Both ROS 2 real sensor playback and ROS 2
+planner roundtrip jobs passed.
+
+**Statistical boundary:** These 12×12-grid times are one CI-run
+measurement per mode, not repeated timing distributions. They are
+software and ROS 2 service-integration evidence, not real-robot
+efficacy, not actual Dingo planner control, and not evidence that
+its recorded scans were used by the C01 path computation.
 
 ROS 2 GetPlan roundtrip and ROS 2 recorded bag playback are distinct tests:
 the roundtrip fixture does **not** assert that the recorded Dingo trajectory
@@ -110,7 +136,7 @@ was produced by C01 or that the C01 service consumed its LiDAR data.
 | Official physical robot map geometry + offline C01 planning | Verified |
 | Authentic physical robot ROS 1 LiDAR/odom recording decoded | Verified |
 | Authentic recorded sensor messages replayed as ROS 2 Jazzy messages | Verified |
-| C01 actual ROS 2 GetPlan service roundtrip | CI execution status to verify |
+| C01 actual ROS 2 GetPlan service, three planner modes | **Verified in real ROS 2 Jazzy, synthetic fixture map** |
 | C01 real-time obstacle handling under closed-loop ROS 2 Nav2 | NOT VERIFIED |
 | Real physical robot movement controlled by C01 | **0 verified trials** |
 | Properly paired C01-vs-baseline hardware navigation outcomes | **0 verified trials** |
