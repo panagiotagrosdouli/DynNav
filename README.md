@@ -454,4 +454,4 @@ Citation metadata is provided in [`CITATION.cff`](CITATION.cff). Please use that
 
 ## Policies and supporting documents
 
-[Repository guide](docs/REPOSITORY_GUIDE.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Current protocol](EXPERIMENT_PROTOCOL_V3.md) · [Failure cases](FAILURE_CASES.md) · [Research archive](docs/archive/README.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [Security](SECURITY.md) · [License](LICENSE)
+[Repository guide](docs/REPOSITORY_GUIDE.md) · [Real-data validation](docs/REAL_DATA_VALIDATION.md) · [Claims](CLAIM_EVIDENCE_MATRIX.md) · [Current protocol](EXPERIMENT_PROTOCOL_V3.md) · [Failure cases](FAILURE_CASES.md) · [Research archive](docs/archive/README.md) · [Contributing](CONTRIBUTING.md) · [Citation](CITATION.cff) · [Security](SECURITY.md) · [License](LICENSE)

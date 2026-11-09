@@ -14,7 +14,7 @@
 | C08 | Security IDS | `security` | Experimental | [English](../contributions/08_security_ids/README.md) | — | [`c08_security_ids.py`](../src/dynnav_dashboard/contributions/c08_security_ids.py) |
 | C09 | Multi-Robot Navigation | `multi_robot` | Experimental | [English](../contributions/09_multi_robot/README.md) | — | Not discovered |
 | C10 | Human, Language, and Ethics | `human_robot_interaction` | Experimental | [English](../contributions/10_human_language_ethics/README.md) | — | Not discovered |
-| C11 | VLM Navigation Agent | `multimodal_learning` | Experimental | [English](../contributions/11_vlm_navigation_agent/README.md) | — | Not discovered |
+| C11 | VLM Navigation Agent | `multimodal_learning` | Experimental | [English](../contributions/11_vlm_navigation_agent/README.md) | — | [`c11_vlm_goal_validation.py`](../src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py) |
 | C12 | Diffusion Occupancy | `prediction` | Experimental | [English](../contributions/12_diffusion_occupancy/README.md) | — | [`c12_diffusion_occupancy.py`](../src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py) |
 | C13 | Latent World Model | `world_models` | Experimental | [English](../contributions/13_latent_world_model/README.md) | — | Not discovered |
 | C14 | Causal Risk Attribution | `explainability` | Experimental | [English](../contributions/14_causal_risk_attribution/README.md) | — | Not discovered |
