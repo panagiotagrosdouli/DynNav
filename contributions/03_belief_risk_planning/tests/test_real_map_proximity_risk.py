@@ -5,6 +5,8 @@ from pathlib import Path
 import numpy as np
 import pytest
 
+pytest.importorskip('scipy', reason='C03 real-map distance transform requires optional SciPy')
+
 ROOT=Path(__file__).resolve().parents[3]
 SRC=Path(__file__).resolve().parents[1]/"experiments"/"eval_real_map_proximity_risk.py"
 spec=importlib.util.spec_from_file_location("c03_real_risk",SRC)
