@@ -2,11 +2,11 @@ import { ContributionExplorer } from "../components/contribution-explorer";
 import { RealDataTrajectory } from "../components/real-data-trajectory";
 
 const evidence = [
-  ["Contribution suite", "Controlled smoke experiment registered for each C01–C26 track", "CI"],
-  ["Python research core", "Unit and integration checks run in GitHub Actions", "CI"],
-  ["ROS map intake", "ROS map-server YAML + PGM/PNG upload and static A* route viewer", "available"],
-  ["Public dataset trial", "LILocBench map/sequence analysis with recorded provenance", "pending"],
-  ["Gazebo / physical robot", "Paired dynamic-scene and hardware trials with traceable logs", "pending"],
+  ["C01–C26 smoke suite", "All tracks have registered controlled smoke experiments; this is not a live pass badge.", "registered", "https://github.com/panagiotagrosdouli/DynNav/blob/main/configs/contributions/experiments.yaml"],
+  ["Python CI", "Open GitHub Actions for current run results; this static site does not cache a status.", "linked", "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml"],
+  ["ROS map lab", "The Streamlit app supports ROS YAML + PGM/PNG intake and a static A* baseline.", "available", "https://github.com/panagiotagrosdouli/DynNav/blob/main/app/pages/05_Belief_Mapping_Lab.py"],
+  ["LILocBench", "A recorded trajectory has been analyzed; paired DynNav benchmark trials remain open.", "pending", "https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md"],
+  ["Gazebo / physical robot", "Simulation and hardware evidence require their own verified runs and artifacts.", "pending", "https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/GAZEBO_BENCHMARK_PROTOCOL.md"],
 ] as const;
 
 const pipeline = [
@@ -28,6 +28,7 @@ export default function Home() {
           <span>DynNav</span>
         </a>
         <div className="nav-links">
+          <a href="#research-question">Research question</a>
           <a href="#architecture">Architecture</a>
           <a href="#contributions">Contributions</a>
           <a href="#evidence">Evidence</a>
@@ -90,7 +91,7 @@ export default function Home() {
           <p className="eyebrow"><span /> Executive brief</p>
           <h2>What is being built and what is proven?</h2>
           <p>Research software for navigation decisions in environments that can change after planning. The current verified scope is executable code, registered controlled experiments, and reproducible CI. External-world efficacy is still a validation milestone.</p>
-          <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/CLAIM_EVIDENCE_MATRIX.md">Read the claim-to-evidence matrix →</a>
+          <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/CLAIM_EVIDENCE_MATRIX.md">Read the claim-to-evidence matrix →</a>
         </article>
         <article>
           <p className="eyebrow"><span /> Engineering brief</p>
@@ -117,6 +118,39 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="history-question" id="research-question">
+        <div className="section-heading">
+          <p className="eyebrow"><span /> History-conditioned recoverability</p>
+          <h2>The same position can represent a different planning state.</h2>
+          <p>A traversed action can activate a possible future topology change. If that activation changes which return routes may close, the planner conditions recoverability on the executed history as well as the current position.</p>
+        </div>
+        <div className="history-grid">
+          <figure className="history-card">
+            <figcaption><strong>Executed history H₁</strong><span>An action has activated a possible closure.</span></figcaption>
+            <svg viewBox="0 0 430 180" role="img" aria-label="Schematic history one: a trigger action activates a possible closure on a return edge before arriving at the same current position">
+              <path className="history-route" d="M42 132 L156 132 L270 132 L386 132" />
+              <path className="history-return" d="M270 104 L156 104 L42 104" />
+              <path className="history-hazard-edge" d="M156 104 L156 48 L270 48 L270 104" />
+              <circle className="history-node" cx="42" cy="132" r="12" /><circle className="history-node" cx="156" cy="132" r="12" /><circle className="history-current" cx="270" cy="132" r="15" /><circle className="history-goal" cx="386" cy="132" r="12" />
+              <text x="27" y="165">safe</text><text x="141" y="165">trigger</text><text x="250" y="165">current x</text><text x="371" y="165">goal</text><text x="184" y="36">possible closure</text>
+            </svg>
+            <p className="history-equation">H₁ includes the activated hazard; return risk is conditioned on H₁.</p>
+          </figure>
+          <figure className="history-card">
+            <figcaption><strong>Executed history H₂</strong><span>The triggering action was not taken.</span></figcaption>
+            <svg viewBox="0 0 430 180" role="img" aria-label="Schematic history two: a different route reaches the same current position without activating the possible closure">
+              <path className="history-route history-route-alt" d="M42 132 L156 132 L270 132 L386 132" />
+              <path className="history-return history-return-open" d="M270 104 L156 104 L42 104" />
+              <path className="history-hazard-edge history-hazard-inactive" d="M156 104 L156 48 L270 48 L270 104" />
+              <circle className="history-node" cx="42" cy="132" r="12" /><circle className="history-node" cx="156" cy="132" r="12" /><circle className="history-current" cx="270" cy="132" r="15" /><circle className="history-goal" cx="386" cy="132" r="12" />
+              <text x="27" y="165">safe</text><text x="141" y="165">bypass</text><text x="250" y="165">current x</text><text x="371" y="165">goal</text><text x="186" y="36">not activated</text>
+            </svg>
+            <p className="history-equation">H₂ differs from H₁, so R(x,H₂) may differ from R(x,H₁).</p>
+          </figure>
+        </div>
+        <p className="history-boundary">Conceptual topology diagram, not a measured map or probability result. Hazard activation is tied to executed transitions; planning a route alone does not activate it. The model's conditional return probability must be supported by the specified hazard distribution and experiment.</p>
+      </section>
+
       <ContributionExplorer />
       <RealDataTrajectory />
 
@@ -127,10 +161,10 @@ export default function Home() {
           <p>“Available” means the interface can process supplied map files. It does not mean a dataset benchmark has been run.</p>
         </div>
         <div className="evidence-grid">
-          {evidence.map(([name, detail, status]) => (
+          {evidence.map(([name, detail, status, href]) => (
             <div className="evidence-row" key={name}>
               <div><strong>{name}</strong><span>{detail}</span></div>
-              <em className={status === "pending" ? "pending" : status === "available" ? "available" : "verified"}>{status}</em>
+              <a className={`evidence-status ${status}`} href={href}>{status}</a>
             </div>
           ))}
         </div>
@@ -148,15 +182,39 @@ export default function Home() {
         <div className="interface-grid">
           <article>
             <span className="surface-label">Research site</span>
-            <h3>Project narrative and evidence map</h3>
-            <p>Research question, architecture, contribution registry and evidence boundaries in one public overview.</p>
-            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/README.md">Open technical documentation →</a>
+            <h3>Full research overview</h3>
+            <p>The repository README preserves the detailed model, retained results, negative findings, ROS 2 architecture and scientific limitations.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/README.md">Open the research guide on GitHub →</a>
           </article>
           <article className="accent-card">
             <span className="surface-label">DynNav Researcher</span>
             <h3>Protocol design and experiment execution</h3>
             <p>Compile a research question into an editable four-planner protocol and expose results only after execution.</p>
             <a href={researcherHref}>Open the Researcher interface →</a>
+          </article>
+          <article>
+            <span className="surface-label">Protocol</span>
+            <h3>Reproduce the controlled studies</h3>
+            <p>Use the frozen experiment protocol and generated C01–C26 catalog to inspect commands, metrics, dependencies, and claim boundaries.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/EXPERIMENT_PROTOCOL_V3.md">Open protocol V3 →</a>
+          </article>
+          <article>
+            <span className="surface-label">Publication</span>
+            <h3>Manuscript and evidence provenance</h3>
+            <p>Inspect the manuscript source, citation metadata, claim-evidence matrix, and paper-facing artifact manifest.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/paper/dynnav_r/evidence_manifest.json">Open evidence manifest →</a>
+          </article>
+          <article>
+            <span className="surface-label">Robotics stack</span>
+            <h3>ROS 2, Nav2, and Gazebo</h3>
+            <p>Read the plugin integration guide and frozen action-triggered Gazebo protocol. Integration checks do not establish physical-robot efficacy.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/ROS2_NAV2_INTEGRATION.md">Open ROS 2 / Nav2 guide →</a>
+          </article>
+          <article>
+            <span className="surface-label">Real data</span>
+            <h3>Trajectory analysis and limits</h3>
+            <p>Review the LILocBench trajectory measurements and the separate plan for map, bag replay, and matched planner validation.</p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/REAL_DATA_VALIDATION.md">Open real-data validation record →</a>
           </article>
         </div>
       </section>
