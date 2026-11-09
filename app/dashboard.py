@@ -45,7 +45,7 @@ CONTRIBUTIONS = {
     "C08": ("Security IDS", "Navigation anomaly and intrusion detection"),
     "C09": ("Multi-robot", "Coordination, belief sharing, and allocation"),
     "C10": ("Human-aware navigation", "Social costs and personal-space reasoning"),
-    "C11": ("Twin-critic RL", "Dual-value reinforcement-learning analysis"),
+    "C11": ("VLM navigation agent", "Validate semantic goals before metric navigation"),
     "C12": ("Diffusion occupancy", "Future occupancy prediction"),
     "C13": ("World model", "Latent dynamics and imagined rollouts"),
     "C14": ("Causal risk", "Structural causal risk attribution"),
