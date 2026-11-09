@@ -760,6 +760,17 @@ website/public
 ```
 
 
+## Automated dependency and duplicate-source inventory
+
+Run from a clean checkout:
+
+```bash
+python scripts/audit_repository_dependencies.py --output results/repository_dependency_audit.json
+python -m pytest -q tests/test_repository_dependency_audit.py
+```
+
+The tool enumerates tracked paths from `git ls-files`, reports local static Python import edges and SHA-256-identical source candidates, and emits machine-readable JSON. The unified `CI` workflow uploads this as `repository-dependency-audit`. **Static import references are approximate:** dynamic imports, JavaScript/TypeScript dependencies, ROS ament/CMake dependencies, and HTTP runtime calls require separate analysis. No path is deemed safe to delete based on this audit alone.
+
 ## Reproduction
 
 From any authenticated GitHub REST client, request the pinned commit tree:
