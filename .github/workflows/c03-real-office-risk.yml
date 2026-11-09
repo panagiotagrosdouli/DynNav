@@ -1,0 +1,93 @@
+name: C03 real office map risk-aware A-star validation
+
+on:
+  pull_request:
+    paths:
+      - "contributions/03_belief_risk_planning/**"
+      - ".github/workflows/c03-real-office-risk.yml"
+  workflow_dispatch:
+
+jobs:
+  paired-real-map-risk-study:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install real ROS map decoding and risk-planning dependencies
+        run: python -m pip install numpy scipy pillow pyyaml pytest
+      - name: Execute C03 risk and ethical integration regression tests
+        run: python -m pytest -q contributions/03_belief_risk_planning/tests
+      - name: Download authentic LILocBench office occupancy map
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import shutil,zipfile,urllib.request,yaml,hashlib
+          root=Path("/tmp/c03_office")
+          root.mkdir(parents=True,exist_ok=True)
+          archive=root/"official_office.zip"
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip"
+          with urllib.request.urlopen(url,timeout=100) as source, archive.open("wb") as target:
+              shutil.copyfileobj(source,target)
+          if hashlib.sha256(archive.read_bytes()).hexdigest()!="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0":
+              raise RuntimeError("Real map source SHA256 mismatch")
+          with zipfile.ZipFile(archive) as z:
+              for f in z.infolist():
+                  if not (root/f.filename).resolve().is_relative_to(root.resolve()):
+                      raise ValueError("Unsafe archive path")
+              z.extractall(root)
+          candidates=[]
+          for path in root.rglob("*.yaml"):
+              doc=yaml.safe_load(path.read_text())
+              if isinstance(doc,dict) and isinstance(doc.get("image"),str) and (path.parent/doc["image"]).is_file():
+                  candidates.append(path)
+          if len(candidates)!=1:
+              raise ValueError(f"Unexpected office map YAML files: {candidates}")
+          Path("/tmp/c03-map-yaml").write_text(str(candidates[0]))
+          print("Verified official physical-world map:",candidates[0])
+          PY
+      - name: Execute real-map C03 Manhattan and risk-weighted A-star on paired tasks
+        run: |
+          python contributions/03_belief_risk_planning/experiments/eval_real_map_proximity_risk.py \
+            "$(cat /tmp/c03-map-yaml)" --output-dir results/c03_real_map \
+            --seed 17 --n-tasks 5 --risk-weight 8 --alpha .9
+      - name: Independently validate path metrics and risk claim boundaries
+        run: |
+          python - <<'PY'
+          import csv,json,hashlib
+          from pathlib import Path
+          root=Path("results/c03_real_map")
+          meta=json.loads((root/"summary.json").read_text())
+          rows=list(csv.DictReader((root/"trials.csv").open()))
+          assert len(rows)==10
+          assert meta["n_queries"]==5
+          assert meta["map_dimensions"]==[1000,1000]
+          assert meta["original_map_image_sha256"]=="8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf"
+          assert meta["cvar_is_posthoc_metric_not_optimization_target"] is True
+          assert meta["physical_robot_trials"]==0
+          for task in range(5):
+              pair=[v for v in rows if int(v["task"])==task]
+              assert len(pair)==2
+              by={v["method"]:v for v in pair}
+              base=by["distance_only"]
+              risk=by["additive_proximity_risk"]
+              assert base["path_valid"]=="True" and risk["path_valid"]=="True"
+              assert float(risk["length_cells"])>=float(base["length_cells"])
+              baseline_weighted=float(base["length_cells"])+meta["risk_weight"]*float(base["total_proximity_risk"])
+              assert float(risk["objective"]) <= baseline_weighted+1e-6
+              for row in pair:
+                  assert 0 <= float(row["cvar_proximity_risk"]) <= 1
+          print("Validated",len(rows),"paired REAL-MAP generated-route benchmark records")
+          PY
+      - name: Upload real-map risk route research evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c03-lilocbench-real-office-proximity-risk-astar
+          path: results/c03_real_map/
+          if-no-files-found: warn
