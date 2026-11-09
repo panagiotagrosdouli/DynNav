@@ -26,6 +26,27 @@ def inventory(root):
         result[f"C{n:02d}"] = matches
     return result
 
+def inspect_checkpoint_payload(value, torch, name="root"):
+    """Validate nested torch checkpoint tensors plus restricted metadata safely."""
+    if isinstance(value, torch.Tensor):
+        if not torch.isfinite(value).all().item():
+            raise ValueError(f"Nonfinite saved tensor: {name}")
+        return {"kind":"tensor", "shape":list(value.shape)}
+    if isinstance(value, dict):
+        if not value:
+            raise ValueError(f"Empty checkpoint dictionary: {name}")
+        if not all(isinstance(k,str) for k in value):
+            raise ValueError(f"Non-string checkpoint metadata keys: {name}")
+        return {k:inspect_checkpoint_payload(v,torch,name+"."+k) for k,v in value.items()}
+    if isinstance(value,(list,tuple)):
+        return [inspect_checkpoint_payload(v,torch,name) for v in value]
+    if isinstance(value,(str,int,float,bool)) or value is None:
+        import math
+        if isinstance(value,float) and not math.isfinite(value):
+            raise ValueError(f"Nonfinite checkpoint metadata: {name}")
+        return value
+    raise ValueError(f"Unsupported checkpoint metadata type: {name}: {type(value).__name__}")
+
 def inspect_file(path, root, torch=None):
     h = hashlib.sha256()
     with path.open("rb") as f:
@@ -66,10 +87,8 @@ def inspect_file(path, root, torch=None):
                 state=torch.load(path,map_location="cpu",weights_only=True)
                 if not isinstance(state,dict) or not state:
                     raise ValueError("Not a populated state_dict")
-                for name,tensor in state.items():
-                    if not hasattr(tensor,"shape") or not torch.isfinite(tensor).all().item():
-                        raise ValueError(f"Invalid tensor: {name}")
-                result.update(status="PT_TENSORS_FINITE",layers={k:list(v.shape) for k,v in state.items()})
+                schema=inspect_checkpoint_payload(state,torch)
+                result.update(status="PT_TENSORS_AND_METADATA_VALID",checkpoint_schema=schema)
         elif suffix == ".png":
             from PIL import Image
             with Image.open(path) as image:
