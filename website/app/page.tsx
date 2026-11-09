@@ -106,6 +106,11 @@ export default function Home() {
           <p className="eyebrow"><span /> Executable architecture</p>
           <h2>One research question, traceable from decision to artifact.</h2>
           <p>Every reported result should connect to a configuration, command, metric contract and stored output.</p>
+          <p>
+            <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/FULL_REPOSITORY_TOPOLOGY_2026-11-09.md">
+              Inspect the complete 381-folder repository topology and architecture boundaries →
+            </a>
+          </p>
         </div>
         <div className="pipeline">
           {pipeline.map(([number, title, detail]) => (
@@ -191,6 +196,12 @@ export default function Home() {
             <h3>Protocol design and experiment execution</h3>
             <p>Compile a research question into an editable four-planner protocol and expose results only after execution.</p>
             <a href={researcherHref}>Open the Researcher interface →</a>
+            <p>
+              Experiments require the separate Python API service; GitHub Pages hosts the frontend only.
+              <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/dynnav/researcher/api.py">
+                {" "}Inspect the actual FastAPI endpoints →
+              </a>
+            </p>
           </article>
           <article>
             <span className="surface-label">Protocol</span>

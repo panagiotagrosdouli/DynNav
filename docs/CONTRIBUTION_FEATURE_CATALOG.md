@@ -56,7 +56,7 @@ The following modules remain in the repository as independent exploratory direct
 - **C08** — Security and Intrusion Detection
 - **C09** — Multi-Robot Coordination
 - **C10** — Human-Aware Navigation
-- **C11** — Twin-Critic Reinforcement Learning
+- **C11** — VLM Navigation Agent
 - **C13** — Latent World Model
 - **C15** — Neuromorphic Sensing
 - **C16** — Federated Navigation Learning
