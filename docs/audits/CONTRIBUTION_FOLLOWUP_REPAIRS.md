@@ -26,4 +26,4 @@
 - C16's central client-level mechanism depends on fixed full-cohort participation, replace-one adjacency, uniform aggregation, and basic composition. It is not local DP, secure aggregation, or a production accountant.
 - C26 is centralized and synthetic. The name `BFTConsensus` is retained for compatibility, with explicit scope correction in code and docs.
 
-**Source revisions:** [`7c163ec98af0339e8751a075bdadc749c480015b`](https://github.com/panagiotagrosdouli/DynNav/commit/7c163ec98af0339e8751a075bdadc749c480015b), plus the follow-up C12/C18 corrections in the subsequent commit.
+**Source revisions:** [`7c163ec98af0339e8751a075bdadc749c480015b`](https://github.com/panagiotagrosdouli/DynNav/commit/7c163ec98af0339e8751a075bdadc749c480015b) and [`1b29c5d1df9e51d001abafb56390e7b6e06a7607`](https://github.com/panagiotagrosdouli/DynNav/commit/1b29c5d1df9e51d001abafb56390e7b6e06a7607) (C12/C18).
