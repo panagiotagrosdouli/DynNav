@@ -81,7 +81,8 @@ def load_ros_map(yaml_path: str | Path, *, unknown_as_obstacle: bool = True) -> 
     if any(not math.isfinite(value) for value in (origin_x, origin_y, origin_yaw)):
         raise ValueError("ROS map origin values must be finite")
 
-    pixels = np.asarray(Image.open(image_path).convert("L"), dtype=np.float64)
+    with Image.open(image_path) as image:
+        pixels = np.asarray(image.convert("L"), dtype=np.float64)
     occupancy = pixels / 255.0 if bool(metadata.get("negate", 0)) else (255.0 - pixels) / 255.0
     occupancy = np.flipud(occupancy)
     occupied = occupancy >= occupied_threshold
