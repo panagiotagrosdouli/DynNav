@@ -196,13 +196,13 @@ def main() -> None:
     parser.add_argument("--states-per-task", type=int, default=100)
     parser.add_argument("--min-reachable", type=int, default=250)
     parser.add_argument("--seed", type=int, default=11)
-    parser.add_argument("--model", type=Path, default=Path("heuristic_net_rich.pt"))
+    parser.add_argument("--model", type=Path, default=Path(__file__).resolve().parents[1] / "models" / "heuristic_net_rich.pt")
     parser.add_argument("--audit-out", type=Path, default=DEFAULT_AUDIT_OUT)
     parser.add_argument("--summary-out", type=Path, default=DEFAULT_SUMMARY_OUT)
     args = parser.parse_args()
 
     rng = random.Random(args.seed)
-    raw_h = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=True)
+    raw_h = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=False)
     clipped_h = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=True)
     zero_h = LearnedHeuristicWrapper(model_path=args.model, mode="zero", allow_missing_model=True)
 
