@@ -77,7 +77,8 @@ jobs:
             python3-pip python3-venv \
             ros-jazzy-ros2bag ros-jazzy-rosbag2-transport \
             ros-jazzy-rosbag2-storage-default-plugins \
-            ros-jazzy-nav-msgs ros-jazzy-sensor-msgs ros-jazzy-tf2-msgs
+            ros-jazzy-nav-msgs ros-jazzy-sensor-msgs ros-jazzy-tf2-msgs \
+            python3-numpy python3-matplotlib
           python3 -m venv --system-site-packages /tmp/c01-ros-venv
           /tmp/c01-ros-venv/bin/pip install "rosbags>=0.10,<0.11"
       - name: Download official real Dingo sensor bag again
@@ -114,6 +115,20 @@ jobs:
           wait "$OBSERVER_PID"
           kill "$PLAYER_PID" 2>/dev/null || true
           wait "$PLAYER_PID" 2>/dev/null || true
+      - name: Actually exercise the C01 GetPlan service inside ROS 2 Jazzy
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/c01-ros-venv/bin/activate
+          python contributions/01_learned_astar/experiments/ros2_get_plan_node.py \
+            --ros-args -p mode:=astar_manhattan -p map_topic:=/c01/test_grid &
+          SERVER_PID=$!
+          trap 'kill "$SERVER_PID" 2>/dev/null || true' EXIT
+          python contributions/01_learned_astar/experiments/ros2_get_plan_roundtrip_test.py \
+            --output results/c01_real_rosbag/c01_ros2_get_plan_roundtrip.json
+          kill "$SERVER_PID" 2>/dev/null || true
+          wait "$SERVER_PID" 2>/dev/null || true
+
       - name: Upload ROS2 real-recording replay report (not raw bag)
         if: always()
         uses: actions/upload-artifact@v4
