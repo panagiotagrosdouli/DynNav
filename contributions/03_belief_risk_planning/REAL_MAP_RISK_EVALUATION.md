@@ -45,6 +45,22 @@ The workflow artifact `c03-lilocbench-real-office-proximity-risk-astar` contains
 
 Regression tests in `tests/test_real_map_proximity_risk.py` verify fractional empirical CVaR, cost-optimal route search on a synthetic test grid and disconnected path rejection. Existing C03/C10 cost and ethical-risk composition tests run in the same workflow.
 
+## Actually completed ROS 2 Jazzy software navigation
+
+[Verified GitHub Actions run #42709497121](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42709497121) **passed** two completely independent C03 ROS2 software scenarios:
+
+1. Actual `nav_msgs/srv/GetPlan` request/response against the C03 planner for additive risk weights **0** and **8** on a controlled synthetic 12×12 OccupancyGrid; verified diagnostics, 19 poses, 18 grid steps, and recorded expansions (71 and 108) and planner cost.
+2. Actual ROS2 `GetPlan` → ROS2 `Twist` → simulated 2D differential-drive plant → ROS2 `Odometry` → waypoint-feedback → **goal arrival** on the same synthetic environment, with isolation to `/c03/isolated_sim/cmd_vel`.
+
+| ROS2 closed-loop method | Simulated target achieved | Simulated distance | Simulated time | Final goal deviation | Grid collisions |
+|---|---|---:|---:|---:|---:|
+| Distance-only C03 A* (risk_weight=0) | YES | 4.31195 m | 13.2 s | 0.06726 m | 0 |
+| Additive proximity-risk C03 A* (risk_weight=8) | YES | 4.35543 m | 12.6 s | 0.06721 m | 0 |
+
+Both runs produced nonzero ROS2 Twist and odometry traffic, valid C03 planning diagnostics, and a full stepwise simulated trajectory retained in the `c03-ros2-jazzy-risk-getplan-roundtrips` workflow artifact.
+
+These measurements demonstrate **actual ROS2 middleware and a simulated kinematic closed-loop**. They are NOT Nav2 global-planner plugin/controller execution, not Gazebo physics, not a real Dingo, and not physical robot efficacy. The actual office real-map A* study above is a **different offline experiment** and must not be presented as a combined closed-loop real-map/real-robot demonstration.
+
 ## Remaining scientific and hardware barriers
 
 - The original Dingo data collection did NOT select routes using C03.
