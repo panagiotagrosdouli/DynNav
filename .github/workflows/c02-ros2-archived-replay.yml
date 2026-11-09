@@ -1,0 +1,55 @@
+name: C02 actual ROS2 DDS archived calibration replay
+
+on:
+  pull_request:
+    paths:
+      - "contributions/02_uncertainty_calibration/**"
+      - ".github/workflows/c02-ros2-archived-replay.yml"
+  workflow_dispatch:
+
+jobs:
+  ros2-c02-actual-subscription:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy-ros-base-noble
+    timeout-minutes: 20
+    env:
+      ROS_DOMAIN_ID: "156"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual ROS2 Jazzy and NumPy dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-numpy ros-jazzy-std-msgs
+      - name: Publish and subscribe to actual ROS2 uncertainty values
+        run: |
+          set -e
+          source /opt/ros/jazzy/setup.bash
+          python3 contributions/02_uncertainty_calibration/experiments/ros2_archived_uncertainty_roundtrip.py \
+            --observations 120 \
+            --output results/c02_ros2/archived_grid_uncertainty_ros2.json
+      - name: Verify middleware received all archived grid observations
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("results/c02_ros2/archived_grid_uncertainty_ros2.json")
+          r=json.loads(p.read_text())
+          assert r["ros2_subscription_success"]
+          assert r["ros2_messages_sent"]==r["ros2_messages_received"]==120
+          assert 0<=r["heldout_replayed_state_coverage"]<=1
+          assert r["dataset"]=="generated_gridworld_archive_not_physical_dingo"
+          assert r["physical_sensor_ground_truth"] is False
+          assert r["physical_robot_movement"] is False
+          assert r["actuation_topic_published"] is False
+          print("Actual ROS2 DDS uncertainty stream passed with honest evidence labels")
+          PY
+      - name: Upload actual ROS2 DDS message receipt and calibration report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c02-actual-ros2-archived-uncertainty-subscription
+          path: results/c02_ros2/
+          if-no-files-found: warn
