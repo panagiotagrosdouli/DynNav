@@ -10,7 +10,7 @@
 - Preserved CSVs, commands, stdout/stderr, rows and SHA-256 under `results/contribution_suite/`.
 - Added the C01-C26 evidence matrix and the C00/C27, reproducibility, real-data, ROS/Gazebo, statistical, dependency, integration, website, and publication reports.
 - Updated website contribution cards to link to source/runner and added a separate C27 proposal card.
-- Follow-up repaired C07 scoring validation, C12 conditioned prototype and metric validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C16 client-delta central-DP simulation, C18 CBF projection diagnostics, and C26 centralized proposal-selection semantics. Added 23 focused unit tests across these seven modules.
+- Follow-up repaired C05 cooldown semantics, C07 scoring validation, C08 IDS validation, C09 team-plan validation, C10 negated safety-language handling, C12 conditioned prototype and metric validation, C13 reproducibility/input validation, C14 paired-noise counterfactuals, C15 seeded event simulation, C16 client-delta central-DP simulation, C17 stable semantic hashing, C18 CBF projection diagnostics, C19 mission-schema validation, C20 report validation, C21 PPO training evidence scope, C22 curriculum evidence scope, and C26 centralized proposal-selection semantics. Added 41 focused unit tests across 16 modules.
 
 ## C00-C27 status
 

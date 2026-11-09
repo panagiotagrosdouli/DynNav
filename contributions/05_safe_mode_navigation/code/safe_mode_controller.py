@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
+import math
 
 
 class SafeModeState(str, Enum):
@@ -45,6 +46,9 @@ class SafeModeConfig:
     safe_inflation_radius: float = 2.0
 
     def __post_init__(self) -> None:
+        thresholds = (self.risk_on_threshold, self.risk_off_threshold, self.critical_threshold)
+        if not all(math.isfinite(value) and 0 <= value <= 1 for value in thresholds):
+            raise ValueError("risk thresholds must be finite and in [0, 1]")
         if self.risk_off_threshold >= self.risk_on_threshold:
             raise ValueError("risk_off_threshold must be lower than risk_on_threshold for hysteresis.")
         if self.critical_threshold < self.risk_on_threshold:
@@ -53,6 +57,10 @@ class SafeModeConfig:
             raise ValueError("activation/recovery step requirements must be >= 1.")
         if self.cooldown_steps < 0:
             raise ValueError("cooldown_steps must be >= 0.")
+        if not all(math.isfinite(value) and value >= 0 for value in
+                   (self.normal_speed, self.safe_speed, self.normal_inflation_radius,
+                    self.safe_inflation_radius)):
+            raise ValueError("speeds and inflation radii must be finite and nonnegative")
 
 
 @dataclass(frozen=True)
@@ -111,9 +119,12 @@ class SafeModeController:
 
     def update(self, risk: float) -> SafeModeOutput:
         risk = float(risk)
+        if not math.isfinite(risk) or not 0 <= risk <= 1:
+            raise ValueError("risk must be finite and in [0, 1]")
         prev_state = self.state
         transition = "none"
 
+        cooling_down = self.cooldown_remaining > 0
         if self.cooldown_remaining > 0:
             self.cooldown_remaining -= 1
 
@@ -125,7 +136,7 @@ class SafeModeController:
 
         elif self.state == SafeModeState.NORMAL:
             self.recovery_counter = 0
-            if risk >= self.cfg.risk_on_threshold and self.cooldown_remaining == 0:
+            if risk >= self.cfg.risk_on_threshold and not cooling_down:
                 self.activation_counter += 1
             else:
                 self.activation_counter = 0

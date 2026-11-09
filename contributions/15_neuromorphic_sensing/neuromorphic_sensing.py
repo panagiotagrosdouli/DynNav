@@ -52,6 +52,19 @@ class DVSSimulatorConfig:
     threshold_neg: float = 0.15    # log-intensity change to fire OFF event
     noise_rate: float = 0.001      # fraction of pixels firing spurious events/frame
     refractory_us: float = 500.0   # refractory period in µs
+    seed: int = 0
+
+    def __post_init__(self) -> None:
+        if self.height < 1 or self.width < 1:
+            raise ValueError("sensor dimensions must be positive")
+        if not np.isfinite(self.threshold_pos) or self.threshold_pos <= 0:
+            raise ValueError("threshold_pos must be finite and positive")
+        if not np.isfinite(self.threshold_neg) or self.threshold_neg <= 0:
+            raise ValueError("threshold_neg must be finite and positive")
+        if not np.isfinite(self.noise_rate) or not 0 <= self.noise_rate <= 1:
+            raise ValueError("noise_rate must be finite and in [0, 1]")
+        if not np.isfinite(self.refractory_us) or self.refractory_us < 0:
+            raise ValueError("refractory_us must be finite and nonnegative")
 
 
 class DVSSimulator:
@@ -69,6 +82,7 @@ class DVSSimulator:
             (self.cfg.height, self.cfg.width)
         )
         self._t_us = 0.0
+        self._rng = np.random.default_rng(self.cfg.seed)
 
     def process_frame(self, frame: np.ndarray,
                       dt_us: float = 10_000.0) -> list[DVSEvent]:
@@ -76,14 +90,19 @@ class DVSSimulator:
         Process one greyscale frame. dt_us = inter-frame gap in microseconds.
         Returns list of DVSEvent fired since the last frame.
         """
-        assert frame.shape == (self.cfg.height, self.cfg.width), \
-            f"Frame shape mismatch: got {frame.shape}"
+        frame = np.asarray(frame, dtype=float)
+        if frame.shape != (self.cfg.height, self.cfg.width):
+            raise ValueError(f"Frame shape mismatch: got {frame.shape}")
+        if not np.all(np.isfinite(frame)) or np.any((frame < 0) | (frame > 1)):
+            raise ValueError("frame must contain finite grayscale values in [0, 1]")
+        if not np.isfinite(dt_us) or dt_us <= 0:
+            raise ValueError("dt_us must be finite and positive")
 
         self._t_us += dt_us
         log_frame = np.log(np.clip(frame, 1e-6, 1.0))
 
         events: list[DVSEvent] = []
-        rng = np.random.default_rng()
+        rng = self._rng
 
         # Determine which pixels have a valid reference
         has_ref = self._log_ref > -np.inf
@@ -130,11 +149,18 @@ def event_to_time_surface(events: list[DVSEvent],
     Channel 0: ON polarity exponential decay surface.
     Channel 1: OFF polarity exponential decay surface.
     """
+    if h < 1 or w < 1 or not np.isfinite(tau_us) or tau_us <= 0:
+        raise ValueError("surface dimensions and tau_us must be positive")
+    for event in events:
+        if (not 0 <= event.x < w or not 0 <= event.y < h
+                or event.polarity not in {-1, 1}
+                or not np.isfinite(event.timestamp_us)):
+            raise ValueError("event contains invalid coordinates, polarity, or timestamp")
     surface = np.zeros((h, w, 2), dtype=np.float32)
     if not events:
         return surface
 
-    t_ref = events[-1].timestamp_us
+    t_ref = max(event.timestamp_us for event in events)
     for ev in events:
         ch = 0 if ev.polarity == 1 else 1
         v = np.exp(-(t_ref - ev.timestamp_us) / tau_us)

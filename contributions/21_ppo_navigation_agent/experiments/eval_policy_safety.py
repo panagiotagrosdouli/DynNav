@@ -49,8 +49,8 @@ def main() -> None:
     ppo_action, shielded_action, greedy_action = make_policy_actions(agent)
 
     results = [
-        evaluate_policy("ppo", ppo_action, cfg=cfg, n_episodes=args.episodes, seed=123),
-        evaluate_policy("ppo_shielded", shielded_action, cfg=cfg, n_episodes=args.episodes, seed=123),
+        evaluate_policy("untrained_random_actor", ppo_action, cfg=cfg, n_episodes=args.episodes, seed=123),
+        evaluate_policy("untrained_random_actor_shielded", shielded_action, cfg=cfg, n_episodes=args.episodes, seed=123),
         evaluate_policy("greedy_goal", greedy_action, cfg=cfg, n_episodes=args.episodes, seed=123),
     ]
     rows = [r.to_dict() for r in results]

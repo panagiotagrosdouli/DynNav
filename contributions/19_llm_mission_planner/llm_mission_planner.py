@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import re
 from dataclasses import dataclass, field
 from typing import Optional
@@ -91,6 +92,18 @@ class LLMPlannerConfig:
         "]}"
     )
 
+    def __post_init__(self) -> None:
+        if not self.model or not self.endpoint:
+            raise ValueError("model and endpoint must not be empty")
+        if not math.isfinite(self.temperature) or self.temperature < 0:
+            raise ValueError("temperature must be finite and nonnegative")
+        if self.max_tokens < 1:
+            raise ValueError("max_tokens must be positive")
+        if not math.isfinite(self.confidence_threshold) or not 0 <= self.confidence_threshold <= 1:
+            raise ValueError("confidence_threshold must be in [0, 1]")
+        if not self.known_zones or any(not zone.strip() for zone in self.known_zones):
+            raise ValueError("known_zones must contain nonempty labels")
+
 
 # ---------------------------------------------------------------------------
 # LLM Mission Planner
@@ -114,6 +127,8 @@ class LLMMissionPlanner:
         Main entry: parse a natural-language instruction into a Mission.
         Tries LLM first, falls back to keyword extractor.
         """
+        if not instruction or not instruction.strip():
+            raise ValueError("instruction must not be empty")
         raw = self._query_llm(instruction)
         if raw:
             mission = self._parse_llm_response(instruction, raw)
@@ -182,6 +197,12 @@ class LLMMissionPlanner:
         try:
             text = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
             data = json.loads(text)
+            if not isinstance(data, dict) or not isinstance(data.get("waypoints"), list):
+                return None
+            confidence = float(data.get("confidence", 0.7))
+            if not math.isfinite(confidence) or not 0 <= confidence <= 1:
+                return None
+            allowed_zones = {z.lower().replace(" ", "_") for z in self.cfg.known_zones}
             wps = [
                 Waypoint(
                     label=str(w["label"]).lower().replace(" ", "_"),
@@ -191,13 +212,24 @@ class LLMMissionPlanner:
                 )
                 for i, w in enumerate(data.get("waypoints", []))
             ]
+            if any(
+                not wp.label or wp.label not in allowed_zones
+                or wp.action not in {"navigate", "inspect", "wait"}
+                or wp.priority < 1
+                or not math.isfinite(wp.duration_s) or wp.duration_s < 0
+                for wp in wps
+            ):
+                return None
+            priorities = [wp.priority for wp in wps]
+            if len(set(priorities)) != len(priorities):
+                return None
             wps.sort(key=lambda w: w.priority)
             return Mission(
                 raw_instruction=instruction,
                 waypoints=wps,
-                confidence=float(data.get("confidence", 0.7)),
+                confidence=confidence,
             )
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
+        except (json.JSONDecodeError, KeyError, TypeError, ValueError) as e:
             logger.error("Failed to parse LLM response: %s", e)
             return None
 

@@ -12,6 +12,7 @@ Implementation:
 """
 
 from dataclasses import dataclass
+import math
 from typing import Dict, List
 
 
@@ -21,6 +22,14 @@ class LanguageSafetyConfig:
     base_uncertainty: float = 1.0
     max_risk_scale: float = 3.0
     max_uncertainty_scale: float = 2.5
+
+    def __post_init__(self) -> None:
+        values = (self.base_risk, self.base_uncertainty,
+                  self.max_risk_scale, self.max_uncertainty_scale)
+        if not all(math.isfinite(value) and value > 0 for value in values):
+            raise ValueError("language safety scales must be finite and positive")
+        if self.max_risk_scale < self.base_risk or self.max_uncertainty_scale < self.base_uncertainty:
+            raise ValueError("maximum scales must not be below their base scales")
 
 
 @dataclass
@@ -56,6 +65,9 @@ class LanguageSafetyPolicy:
             (keywords, risk_multiplier, uncertainty_multiplier, description)
         """
         self._rules: List[tuple[list[str], float, float, str]] = [
+            # Explicitly unsafe language must not be mistaken for neutral text.
+            (["not safe", "unsafe", "dangerous", "not secure", "μη ασφαλές", "μη ασφαλες"],
+             2.0, 1.5, "explicitly unsafe condition"),
             # Crowding / many people
             (
                 [
@@ -150,7 +162,6 @@ class LanguageSafetyPolicy:
         self._neutral_markers: List[str] = [
             "nothing special",
             "normal",
-            "safe",
             "ισορροπημένος διάδρομος",
             "ισορροπημενος διαδρομος",
         ]
@@ -169,10 +180,12 @@ class LanguageSafetyPolicy:
         -------
         LanguageSafetyDecision
         """
-        text = (message or "").lower().strip()
+        if not isinstance(message, str):
+            raise TypeError("message must be a string")
+        text = message.lower().strip()
 
         # Neutral checks
-        if any(marker in text for marker in self._neutral_markers):
+        if text in self._neutral_markers:
             return LanguageSafetyDecision(
                 risk_scale=self.config.base_risk,
                 uncertainty_scale=self.config.base_uncertainty,

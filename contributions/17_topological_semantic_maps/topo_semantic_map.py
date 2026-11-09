@@ -21,6 +21,7 @@ References:
 from __future__ import annotations
 
 import logging
+import hashlib
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -45,8 +46,17 @@ class SemanticNode:
         """Cosine similarity to a query embedding."""
         if self.embedding is None:
             return 0.0
-        a = self.embedding / (np.linalg.norm(self.embedding) + 1e-8)
-        b = query_emb / (np.linalg.norm(query_emb) + 1e-8)
+        a = np.asarray(self.embedding, dtype=float).reshape(-1)
+        b = np.asarray(query_emb, dtype=float).reshape(-1)
+        if a.size != b.size or a.size == 0:
+            raise ValueError("node and query embeddings must have matching nonempty dimensions")
+        if not np.all(np.isfinite(a)) or not np.all(np.isfinite(b)):
+            raise ValueError("embeddings must be finite")
+        anorm, bnorm = np.linalg.norm(a), np.linalg.norm(b)
+        if anorm == 0 or bnorm == 0:
+            return 0.0
+        a = a / anorm
+        b = b / bnorm
         return float(np.dot(a, b))
 
 
@@ -87,6 +97,13 @@ class TopologicalSemanticMap:
                  centroid_xy: tuple[float, float],
                  embedding: Optional[np.ndarray] = None,
                  **props) -> int:
+        centroid = np.asarray(centroid_xy, dtype=float)
+        if not label or centroid.shape != (2,) or not np.all(np.isfinite(centroid)):
+            raise ValueError("node label must be nonempty and centroid must be a finite 2D point")
+        if embedding is not None:
+            embedding = np.asarray(embedding, dtype=float).reshape(-1)
+            if embedding.size == 0 or not np.all(np.isfinite(embedding)):
+                raise ValueError("embedding must be a nonempty finite vector")
         nid = self._next_id
         self._next_id += 1
         self.nodes[nid] = SemanticNode(nid, label, centroid_xy,
@@ -99,7 +116,13 @@ class TopologicalSemanticMap:
                  weight: float = 1.0,
                  bidirectional: bool = True,
                  transition_type: str = "open") -> None:
-        e = SemanticEdge(src, dst, weight, True, transition_type)
+        if src not in self.nodes or dst not in self.nodes:
+            raise ValueError("edge endpoints must already exist in the map")
+        if not np.isfinite(weight) or weight <= 0:
+            raise ValueError("edge weight must be finite and positive")
+        if transition_type not in {"open", "door", "narrow"}:
+            raise ValueError("unsupported transition_type")
+        e = SemanticEdge(src, dst, float(weight), True, transition_type)
         self.edges.append(e)
         self._adj[src].append(e)
         if bidirectional:
@@ -124,6 +147,11 @@ class TopologicalSemanticMap:
         Find top-k nodes whose embedding best matches a query.
         Returns list of (node_id, label, similarity).
         """
+        query_embedding = np.asarray(query_embedding, dtype=float).reshape(-1)
+        if top_k < 1:
+            raise ValueError("top_k must be positive")
+        if query_embedding.size == 0 or not np.all(np.isfinite(query_embedding)):
+            raise ValueError("query embedding must be a nonempty finite vector")
         scored = [
             (nid, node.label, node.similarity(query_embedding))
             for nid, node in self.nodes.items()
@@ -136,7 +164,9 @@ class TopologicalSemanticMap:
         Stub CLIP embedding: uses a deterministic hash of the label string.
         Replace with: clip_model.encode_text(label).cpu().numpy()
         """
-        rng = np.random.default_rng(hash(label) % (2 ** 32))
+        digest = hashlib.sha256(label.encode("utf-8")).digest()
+        seed = int.from_bytes(digest[:8], byteorder="little", signed=False)
+        rng = np.random.default_rng(seed)
         emb = rng.standard_normal(512)
         return emb / (np.linalg.norm(emb) + 1e-8)
 
@@ -212,15 +242,17 @@ class TopologicalSemanticMap:
 
     @classmethod
     def from_dict(cls, data: dict) -> "TopologicalSemanticMap":
+        if not isinstance(data, dict) or not isinstance(data.get("nodes"), list) or not isinstance(data.get("edges"), list):
+            raise ValueError("serialized map must contain node and edge lists")
         m = cls()
         for n in data["nodes"]:
             nid = m.add_node(n["label"], tuple(n["centroid"]), **n.get("properties", {}))
-            assert nid == n["id"]
+            if nid != n["id"]:
+                raise ValueError("serialized node IDs must be contiguous and ordered")
         for e in data["edges"]:
-            edge = SemanticEdge(e["src"], e["dst"], e["weight"],
-                                e["passable"], e["type"])
-            m.edges.append(edge)
-            m._adj[e["src"]].append(edge)
+            m.add_edge(e["src"], e["dst"], e["weight"], bidirectional=False,
+                       transition_type=e["type"])
+            m._adj[e["src"]][-1].passable = bool(e["passable"])
         return m
 
     def summary(self) -> str:

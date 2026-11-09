@@ -12,6 +12,8 @@ coordination quality measurable by checking:
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
+import math
+from numbers import Integral
 from typing import Iterable
 
 Node = tuple[int, int]
@@ -25,6 +27,19 @@ class RobotPlan:
     risk: float
     allocated_risk_budget: float
     belief_hash: str = ""
+
+    def __post_init__(self) -> None:
+        if not self.robot_id:
+            raise ValueError("robot_id must not be empty")
+        if not self.path:
+            raise ValueError("robot path must not be empty")
+        if any(not isinstance(node, (tuple, list)) or len(node) != 2
+               or any(not isinstance(v, Integral) for v in node) for node in self.path):
+            raise ValueError("path nodes must be integer (row, column) pairs")
+        if not math.isfinite(self.risk) or not 0 <= self.risk <= 1:
+            raise ValueError("risk must be finite and in [0, 1]")
+        if not math.isfinite(self.allocated_risk_budget) or not 0 <= self.allocated_risk_budget <= 1:
+            raise ValueError("allocated_risk_budget must be finite and in [0, 1]")
 
 
 @dataclass(frozen=True)
@@ -65,6 +80,7 @@ def detect_path_conflicts(plans: Iterable[RobotPlan]) -> list[ConflictEvent]:
     plans = list(plans)
     if not plans:
         return []
+    _validate_unique_robot_ids(plans)
     horizon = max(len(p.path) for p in plans)
     events: list[ConflictEvent] = []
 
@@ -87,6 +103,8 @@ def detect_path_conflicts(plans: Iterable[RobotPlan]) -> list[ConflictEvent]:
 
 
 def count_belief_disagreements(plans: Iterable[RobotPlan]) -> int:
+    plans = list(plans)
+    _validate_unique_robot_ids(plans)
     hashes = [p.belief_hash for p in plans if p.belief_hash]
     if not hashes:
         return 0
@@ -96,6 +114,7 @@ def count_belief_disagreements(plans: Iterable[RobotPlan]) -> int:
 
 def summarize_team_coordination(plans: Iterable[RobotPlan]) -> TeamCoordinationReport:
     plans = list(plans)
+    _validate_unique_robot_ids(plans)
     conflicts = detect_path_conflicts(plans)
     vertex = sum(c.conflict_type == "vertex" for c in conflicts)
     edge = sum(c.conflict_type == "edge_swap" for c in conflicts)
@@ -116,3 +135,9 @@ def summarize_team_coordination(plans: Iterable[RobotPlan]) -> TeamCoordinationR
         belief_disagreement_count=int(disagreements),
         feasible=bool(feasible),
     )
+
+
+def _validate_unique_robot_ids(plans: list[RobotPlan]) -> None:
+    ids = [plan.robot_id for plan in plans]
+    if len(set(ids)) != len(ids):
+        raise ValueError("robot_id values must be unique within a team")
