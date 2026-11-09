@@ -1,0 +1,6 @@
+name,information_gain,travel_cost,path_risk,returnability,connectivity,classic_score,safe_score,selected_by_classic,selected_by_safe
+near_low_gain,18.0,5.0,0.1,0.9,0.9,3.6,7.617272727272726,False,False
+far_high_gain,42.0,9.0,0.55,0.35,0.5,4.666666666666667,4.57258064516129,False,False
+bottleneck_frontier,36.0,6.5,0.7,0.2,0.4,5.538461538461538,4.300452488687783,True,False
+balanced_safe_frontier,31.0,7.0,0.25,0.82,0.8,4.428571428571429,7.7376,False,True
+relay_supported_frontier,28.0,7.5,0.22,0.76,0.98,3.7333333333333334,6.705311475409837,False,False

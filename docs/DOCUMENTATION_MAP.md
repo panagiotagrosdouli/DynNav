@@ -49,11 +49,27 @@
 - [`contributions/24_nerf_uncertainty/README.md`](../contributions/24_nerf_uncertainty/README.md) — Contribution guidance; maturity: **Planned**
 - [`contributions/25_adversarial_attack_simulator/README.md`](../contributions/25_adversarial_attack_simulator/README.md) — Contribution guidance; maturity: **Unclassified**
 - [`contributions/26_swarm_consensus/README.md`](../contributions/26_swarm_consensus/README.md) — Contribution guidance; maturity: **Unclassified**
-- [`contributions/27_Recoverability_Theory/README.md`](../contributions/27_Recoverability_Theory/README.md) — Directory or subsystem overview; maturity: **Unclassified**
+- [`contributions/27_Recoverability_Theory/README.md`](../contributions/27_Recoverability_Theory/README.md) — Contribution guidance; maturity: **Planned**
 - [`contributions/hybrid_learned_astar/README.md`](../contributions/hybrid_learned_astar/README.md) — Experiment documentation; maturity: **Research Prototype**
 - [`contributions/learned_uncertainty_astar/experiments/README.md`](../contributions/learned_uncertainty_astar/experiments/README.md) — Contribution guidance; maturity: **Unclassified**
-- [`contributions/README.md`](../contributions/README.md) — Contribution guidance; maturity: **Planned**
+- [`contributions/README.md`](../contributions/README.md) — Contribution guidance; maturity: **Documentation Concept**
 - [`docs/Abstract_and_Contributions.md`](../docs/Abstract_and_Contributions.md) — Contribution guidance; maturity: **Experimental**
+- [`docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md`](../docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md) — Experiment documentation; maturity: **Unclassified**
+- [`docs/archive/README.md`](../docs/archive/README.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/archive/RESEARCH_AUDIT_2026-08-18.md`](../docs/archive/RESEARCH_AUDIT_2026-08-18.md) — Audit report; maturity: **Experimental**
+- [`docs/audits/C00_CORE_RESEARCH_AUDIT.md`](../docs/audits/C00_CORE_RESEARCH_AUDIT.md) — Audit report; maturity: **Implemented**
+- [`docs/audits/C01_C26_EXECUTION_MATRIX.md`](../docs/audits/C01_C26_EXECUTION_MATRIX.md) — Audit report; maturity: **Documentation Concept**
+- [`docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md`](../docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md) — Directory or subsystem overview; maturity: **Unclassified**
+- [`docs/audits/CONTRIBUTION_DEPENDENCY_REVIEW.md`](../docs/audits/CONTRIBUTION_DEPENDENCY_REVIEW.md) — Contribution guidance; maturity: **Experimental**
+- [`docs/audits/CONTRIBUTION_INTEGRATION_REPORT.md`](../docs/audits/CONTRIBUTION_INTEGRATION_REPORT.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/CONTRIBUTION_PUBLICATION_READINESS.md`](../docs/audits/CONTRIBUTION_PUBLICATION_READINESS.md) — Contribution guidance; maturity: **Documentation Concept**
+- [`docs/audits/CONTRIBUTION_STATISTICAL_ANALYSIS.md`](../docs/audits/CONTRIBUTION_STATISTICAL_ANALYSIS.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/CONTRIBUTION_WEBSITE_INTEGRATION.md`](../docs/audits/CONTRIBUTION_WEBSITE_INTEGRATION.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/CONTRIBUTIONS_FULL_AUDIT.md`](../docs/audits/CONTRIBUTIONS_FULL_AUDIT.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md`](../docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/FINAL_CONTRIBUTIONS_REPORT.md`](../docs/audits/FINAL_CONTRIBUTIONS_REPORT.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/REAL_DATA_EVIDENCE_MATRIX.md`](../docs/audits/REAL_DATA_EVIDENCE_MATRIX.md) — Contribution guidance; maturity: **Unclassified**
+- [`docs/audits/ROS2_GAZEBO_CONTRIBUTION_VALIDATION.md`](../docs/audits/ROS2_GAZEBO_CONTRIBUTION_VALIDATION.md) — Contribution guidance; maturity: **Unclassified**
 - [`docs/AUTONOMOUS_REPAIR_AUDIT.md`](../docs/AUTONOMOUS_REPAIR_AUDIT.md) — Reproducibility report; maturity: **Experimental**
 - [`docs/BENCHMARK_PROTOCOL.md`](../docs/BENCHMARK_PROTOCOL.md) — Contribution guidance; maturity: **Unclassified**
 - [`docs/BENCHMARK_RESULTS_SUMMARY.md`](../docs/BENCHMARK_RESULTS_SUMMARY.md) — Experiment documentation; maturity: **Unclassified**
@@ -65,28 +81,31 @@
 - [`docs/CONTRIBUTION_READINESS_CHECKLIST.md`](../docs/CONTRIBUTION_READINESS_CHECKLIST.md) — Contribution guidance; maturity: **Planned**
 - [`docs/CONTRIBUTION_VISUAL_GALLERY.md`](../docs/CONTRIBUTION_VISUAL_GALLERY.md) — Contribution guidance; maturity: **Experimental**
 - [`docs/CONTRIBUTIONS_26_EXPERIMENTS.md`](../docs/CONTRIBUTIONS_26_EXPERIMENTS.md) — Contribution guidance; maturity: **Documentation Concept**
-- [`docs/DYNAMIC_EXECUTION_PROTOCOL.md`](../docs/DYNAMIC_EXECUTION_PROTOCOL.md) — Technical documentation; maturity: **Experimental**
+- [`docs/DYNAMIC_EXECUTION_PROTOCOL.md`](../docs/DYNAMIC_EXECUTION_PROTOCOL.md) — ROS2 integration documentation; maturity: **Experimental**
 - [`docs/DYNNAV_RESEARCHER_ARCHITECTURE.md`](../docs/DYNNAV_RESEARCHER_ARCHITECTURE.md) — Audit report; maturity: **Unclassified**
 - [`docs/DYNNAV_V2_RESEARCH_ROADMAP.md`](../docs/DYNNAV_V2_RESEARCH_ROADMAP.md) — Roadmap; maturity: **Experimental**
 - [`docs/ENGINEERING_AND_SCIENTIFIC_AUDIT.md`](../docs/ENGINEERING_AND_SCIENTIFIC_AUDIT.md) — Audit report; maturity: **Planned**
 - [`docs/EVALUATION_PROTOCOL.md`](../docs/EVALUATION_PROTOCOL.md) — Reproducibility report; maturity: **Unclassified**
 - [`docs/Frontier-Restricted NBV Benchmark.md`](../docs/Frontier-Restricted%20NBV%20Benchmark.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/GAZEBO_BENCHMARK_PROTOCOL.md`](../docs/GAZEBO_BENCHMARK_PROTOCOL.md) — ROS2 integration documentation; maturity: **Experimental**
+- [`docs/HARDWARE_VALIDATION_CHECKLIST.md`](../docs/HARDWARE_VALIDATION_CHECKLIST.md) — LiDAR integration documentation; maturity: **Unclassified**
 - [`docs/Human Preference–Aware Risk Navigation.md`](../docs/Human%20Preference%E2%80%93Aware%20Risk%20Navigation.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/Irreversibility_Aware_Navigation_New_Contribution.md`](../docs/Irreversibility_Aware_Navigation_New_Contribution.md) — Contribution guidance; maturity: **Experimental**
+- [`docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md`](../docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/MAPPING.md`](../docs/MAPPING.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/MARKDOWN_AUDIT.md`](../docs/MARKDOWN_AUDIT.md) — Contribution guidance; maturity: **Planned**
 - [`docs/MARKDOWN_STYLE_GUIDE.md`](../docs/MARKDOWN_STYLE_GUIDE.md) — Experiment documentation; maturity: **Planned**
 - [`docs/MATHEMATICAL_FORMULATION.md`](../docs/MATHEMATICAL_FORMULATION.md) — Experiment documentation; maturity: **Unclassified**
 - [`docs/Multi-Robot Safe Mode Navigation under Uncertainty.md`](../docs/Multi-Robot%20Safe%20Mode%20Navigation%20under%20Uncertainty.md) — Reproducibility report; maturity: **Experimental**
 - [`docs/NAVIGATION_PIPELINE.md`](../docs/NAVIGATION_PIPELINE.md) — Technical documentation; maturity: **Unclassified**
-- [`docs/PHD_APPLICATION_READINESS.md`](../docs/PHD_APPLICATION_READINESS.md) — Experiment documentation; maturity: **Planned**
+- [`docs/PHD_APPLICATION_READINESS.md`](../docs/PHD_APPLICATION_READINESS.md) — Contribution guidance; maturity: **Experimental**
 - [`docs/PRESENTATION_GUIDE.md`](../docs/PRESENTATION_GUIDE.md) — Reproducibility report; maturity: **Documentation Concept**
+- [`docs/PROJECT_OVERVIEW.md`](../docs/PROJECT_OVERVIEW.md) — Contribution guidance; maturity: **Planned**
 - [`docs/Proposition_Irreversibility_vs_Risk_Weighting.md`](../docs/Proposition_Irreversibility_vs_Risk_Weighting.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/README Irreversibility-Aware Navigation Planning.md`](../docs/README%20Irreversibility-Aware%20Navigation%20Planning.md) — Directory or subsystem overview; maturity: **Unclassified**
 - [`docs/README Self-Healing Navigation & Language-Driven Safety.md`](../docs/README%20Self-Healing%20Navigation%20&%20Language-Driven%20Safety.md) — Experiment documentation; maturity: **Unclassified**
 - [`docs/README-large info.md`](../docs/README-large%20info.md) — Directory or subsystem overview; maturity: **Experimental**
-- [`docs/README.md`](../docs/README.md) — Reproducibility report; maturity: **Experimental**
+- [`docs/README.md`](../docs/README.md) — Contribution guidance; maturity: **Experimental**
 - [`docs/README_Energy_Connectivity_SafeMode.md`](../docs/README_Energy_Connectivity_SafeMode.md) — Directory or subsystem overview; maturity: **Experimental**
 - [`docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md`](../docs/README_Innovation-Based_IDS_for_UKF_Sensor_Fusion.md) — Directory or subsystem overview; maturity: **Experimental**
 - [`docs/README_Irreversibility_Aware_Planning results.md`](../docs/README_Irreversibility_Aware_Planning%20results.md) — Directory or subsystem overview; maturity: **Planned**
@@ -96,7 +115,9 @@
 - [`docs/README_TF_Attack_Aware_IDS.md`](../docs/README_TF_Attack_Aware_IDS.md) — Directory or subsystem overview; maturity: **Experimental**
 - [`docs/README_trust_navigation.md`](../docs/README_trust_navigation.md) — Directory or subsystem overview; maturity: **Unclassified**
 - [`docs/READMEResults: Self-Healing + Language Safety + Trust + Ethical Navigation.md`](../docs/READMEResults:%20Self-Healing%20%2B%20Language%20Safety%20%2B%20Trust%20%2B%20Ethical%20Navigation.md) — Directory or subsystem overview; maturity: **Unclassified**
-- [`docs/REPOSITORY_AUDIT.md`](../docs/REPOSITORY_AUDIT.md) — Contribution guidance; maturity: **Planned**
+- [`docs/REAL_DATA_VALIDATION.md`](../docs/REAL_DATA_VALIDATION.md) — Technical documentation; maturity: **Planned**
+- [`docs/REPOSITORY_AUDIT.md`](../docs/REPOSITORY_AUDIT.md) — Audit report; maturity: **Planned**
+- [`docs/REPOSITORY_GUIDE.md`](../docs/REPOSITORY_GUIDE.md) — Technical documentation; maturity: **Planned**
 - [`docs/REPRODUCIBILITY.md`](../docs/REPRODUCIBILITY.md) — Reproducibility report; maturity: **Unclassified**
 - [`docs/RESEARCH_CONTRIBUTION.md`](../docs/RESEARCH_CONTRIBUTION.md) — Contribution guidance; maturity: **Unclassified**
 - [`docs/RESEARCH_FOCUS.md`](../docs/RESEARCH_FOCUS.md) — Technical documentation; maturity: **Unclassified**
@@ -104,30 +125,26 @@
 - [`docs/Returnability- & Irreversibility-Aware Frontier NBV.md`](../docs/Returnability-%20&%20Irreversibility-Aware%20Frontier%20NBV.md) — Technical documentation; maturity: **Unclassified**
 - [`docs/RISK_ESTIMATION.md`](../docs/RISK_ESTIMATION.md) — Technical documentation; maturity: **Planned**
 - [`docs/ROADMAP.md`](../docs/ROADMAP.md) — Roadmap; maturity: **Implemented**
+- [`docs/ROS2_HISTORY_VALIDATION_PROTOCOL.md`](../docs/ROS2_HISTORY_VALIDATION_PROTOCOL.md) — ROS2 integration documentation; maturity: **Unclassified**
 - [`docs/ROS2_NAV2_INTEGRATION.md`](../docs/ROS2_NAV2_INTEGRATION.md) — ROS2 integration documentation; maturity: **Implemented**
 - [`docs/SelfHealing_LanguageSafety_README.md`](../docs/SelfHealing_LanguageSafety_README.md) — Directory or subsystem overview; maturity: **Unclassified**
 - [`docs/SYSTEM_ARCHITECTURE.md`](../docs/SYSTEM_ARCHITECTURE.md) — Experiment documentation; maturity: **Unclassified**
 - [`docs/UNCERTAINTY_MODEL.md`](../docs/UNCERTAINTY_MODEL.md) — Reproducibility report; maturity: **Unclassified**
-- [`lidar_ros2/readme`](../lidar_ros2/readme) — ROS2 integration documentation; maturity: **Unclassified**
-- [`lidar_ros2/README (4).md`](../lidar_ros2/README%20%284%29.md) — LiDAR integration documentation; maturity: **Unclassified**
-- [`paper/dynnav_r/README.md`](../paper/dynnav_r/README.md) — Experiment documentation; maturity: **Experimental**
+- [`paper/dynnav_r/README.md`](../paper/dynnav_r/README.md) — Reproducibility report; maturity: **Unclassified**
 - [`paper/README.md`](../paper/README.md) — Contribution guidance; maturity: **Planned**
-- [`README.md`](../README.md) — Contribution guidance; maturity: **Experimental**
-- [`readme_full.md`](../readme_full.md) — Experiment documentation; maturity: **Experimental**
-- [`README_GR.md`](../README_GR.md) — Contribution guidance; maturity: **Unclassified**
-- [`README_GREEK.md`](../README_GREEK.md) — Directory or subsystem overview; maturity: **Unclassified**
-- [`READMEbig.md`](../READMEbig.md) — Audit report; maturity: **Planned**
+- [`README.md`](../README.md) — Directory or subsystem overview; maturity: **Planned**
+- [`README_GR.md`](../README_GR.md) — Directory or subsystem overview; maturity: **Planned**
 - [`research_experiments/trust_aware_cvar/README.md`](../research_experiments/trust_aware_cvar/README.md) — Experiment documentation; maturity: **Experimental**
 - [`results/README.md`](../results/README.md) — Experiment documentation; maturity: **Experimental**
+- [`results/ros2_gazebo/README.md`](../results/ros2_gazebo/README.md) — Directory or subsystem overview; maturity: **Unclassified**
 - [`ros2_ws/lidar_slam_tb3/readme`](../ros2_ws/lidar_slam_tb3/readme) — ROS2 integration documentation; maturity: **Unclassified**
-- [`ros2_ws/lidar_slam_tb3/README (4).md`](../ros2_ws/lidar_slam_tb3/README%20%284%29.md) — LiDAR integration documentation; maturity: **Unclassified**
 - [`ros2_ws/lidar_slam_tb3/README_LiDAR_SLAM_TurtleBot3_ROS2.md`](../ros2_ws/lidar_slam_tb3/README_LiDAR_SLAM_TurtleBot3_ROS2.md) — ROS2 integration documentation; maturity: **Unclassified**
 - [`ros2_ws/src/dynnav_nav2/README.md`](../ros2_ws/src/dynnav_nav2/README.md) — Directory or subsystem overview; maturity: **Planned**
 - [`ros2_ws/src/dynnav_nav2_benchmark/README.md`](../ros2_ws/src/dynnav_nav2_benchmark/README.md) — ROS2 integration documentation; maturity: **Unclassified**
 - [`ros2_ws/src/dynnav_nav2_cpp/README.md`](../ros2_ws/src/dynnav_nav2_cpp/README.md) — Directory or subsystem overview; maturity: **Implemented**
 - [`scripts/README.md`](../scripts/README.md) — Experiment documentation; maturity: **Implemented**
 - [`src/dynnav/README.md`](../src/dynnav/README.md) — Directory or subsystem overview; maturity: **Unclassified**
-- [`src/README.md`](../src/README.md) — Directory or subsystem overview; maturity: **Unclassified**
+- [`src/README.md`](../src/README.md) — Directory or subsystem overview; maturity: **Implemented**
 - [`tests/README.md`](../tests/README.md) — ROS2 integration documentation; maturity: **Implemented**
 - [`website/README.md`](../website/README.md) — Audit report; maturity: **Experimental**
 
@@ -135,19 +152,15 @@
 
 - `.github/ISSUE_TEMPLATE/benchmark_result.md`
 - `.github/ISSUE_TEMPLATE/research_module_upgrade.md`
-- `AUDIT.md`
-- `BLOCKERS.md`
 - `CODE_OF_CONDUCT.md`
-- `CONTRIBUTING.md`
-- `README_GREEK.md`
-- `READMEbig.md`
+- `EXPERIMENT_PROTOCOL_V2.md`
+- `HOSTILE_REVIEW.md`
+- `PUBLICATION_PLAN.md`
 - `RELEASE_NOTES.md`
 - `REPRODUCIBILITY_REPORT.md`
-- `SECURITY.md`
 - `STATUS.yaml`
-- `WORK_LOG.md`
-- `apps/web/AGENTS.md`
-- `apps/web/CLAUDE.md`
+- `VENUE_FIT.md`
+- `app/README.md`
 - `assets/contributions/README.md`
 - `benchmarks/README.md`
 - `benchmarks/dynamic_self_aware_astar/RANDOMIZED_DYNAMIC_README.md`
@@ -158,6 +171,8 @@
 - `benchmarks/self_aware_astar/README.md`
 - `benchmarks/self_aware_astar/STATISTICAL_EVALUATION_README.md`
 - `benchmarks/self_aware_navigation/README.md`
+- `contributions/01_learned_astar/C01_BASELINE_AUDIT.md`
+- `contributions/01_learned_astar/ERGO_NOVELTY_BOUNDARIES.md`
 - `contributions/01_learned_astar/docs/SCIENTIFIC_UPGRADE.md`
 - `contributions/02_uncertainty_calibration/CLAIMS_EVIDENCE.md`
 - `contributions/02_uncertainty_calibration/docs/SCIENTIFIC_UPGRADE.md`
@@ -202,7 +217,6 @@
 - `contributions/25_adversarial_attack_simulator/docs/SCIENTIFIC_UPGRADE.md`
 - `contributions/26_swarm_consensus/docs/SCIENTIFIC_UPGRADE.md`
 - `contributions/27_Recoverability_Theory/README.md`
-- `contributions/README.md`
 - `contributions/hybrid_learned_astar/README.md`
 - `contributions/learned_uncertainty_astar/experiments/README.md`
 - `docs/AUTONOMOUS_REPAIR_AUDIT.md`
@@ -210,18 +224,19 @@
 - `docs/BENCHMARK_PROTOCOL.md`
 - `docs/BENCHMARK_RESULTS_SUMMARY.md`
 - `docs/CLAIMS_EVIDENCE.md`
-- `docs/CONTRIBUTION_DEPENDENCY_GRAPH.md`
-- `docs/CONTRIBUTION_INDEX.md`
-- `docs/CONTRIBUTION_MATURITY_MATRIX.md`
 - `docs/CONTRIBUTION_READINESS_CHECKLIST.md`
 - `docs/CONTRIBUTION_VISUAL_GALLERY.md`
+- `docs/DYNNAV_RESEARCHER_ARCHITECTURE.md`
+- `docs/DYNNAV_V2_RESEARCH_ROADMAP.md`
 - `docs/ENGINEERING_AND_SCIENTIFIC_AUDIT.md`
 - `docs/Frontier-Restricted NBV Benchmark.md`
 - `docs/Human Preference–Aware Risk Navigation.md`
 - `docs/Irreversibility_Aware_Navigation_New_Contribution.md`
 - `docs/MAPPING.md`
 - `docs/Multi-Robot Safe Mode Navigation under Uncertainty.md`
+- `docs/PHD_APPLICATION_READINESS.md`
 - `docs/PRESENTATION_GUIDE.md`
+- `docs/PROJECT_OVERVIEW.md`
 - `docs/README Irreversibility-Aware Navigation Planning.md`
 - `docs/README Self-Healing Navigation & Language-Driven Safety.md`
 - `docs/README-large info.md`
@@ -236,78 +251,51 @@
 - `docs/README_trust_navigation.md`
 - `docs/RESEARCH_CONTRIBUTION.md`
 - `docs/RESEARCH_FOCUS.md`
+- `docs/RESEARCH_OVERVIEW.md`
+- `docs/RISK_ESTIMATION.md`
 - `docs/ROADMAP.md`
 - `docs/ROS2_NAV2_INTEGRATION.md`
 - `docs/Returnability- & Irreversibility-Aware Frontier NBV.md`
 - `docs/SelfHealing_LanguageSafety_README.md`
-- `lidar_ros2/README (4).md`
-- `lidar_ros2/readme`
+- `docs/UNCERTAINTY_MODEL.md`
+- `docs/archive/RESEARCH_AUDIT_2026-08-18.md`
+- `docs/audits/C00_CORE_RESEARCH_AUDIT.md`
+- `docs/audits/C01_C26_EXECUTION_MATRIX.md`
+- `docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md`
+- `docs/audits/CONTRIBUTIONS_FULL_AUDIT.md`
+- `docs/audits/CONTRIBUTION_DEPENDENCY_REVIEW.md`
+- `docs/audits/CONTRIBUTION_INTEGRATION_REPORT.md`
+- `docs/audits/CONTRIBUTION_PUBLICATION_READINESS.md`
+- `docs/audits/CONTRIBUTION_STATISTICAL_ANALYSIS.md`
+- `docs/audits/CONTRIBUTION_WEBSITE_INTEGRATION.md`
+- `docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md`
+- `docs/audits/FINAL_CONTRIBUTIONS_REPORT.md`
+- `docs/audits/REAL_DATA_EVIDENCE_MATRIX.md`
+- `docs/audits/ROS2_GAZEBO_CONTRIBUTION_VALIDATION.md`
 - `paper/LITERATURE_GAP_ANALYSIS.md`
 - `paper/MANUSCRIPT_DRAFT.md`
+- `paper/README.md`
 - `paper/RECOVERABILITY_METRIC.md`
 - `paper/RESEARCH_PLAN.md`
 - `paper/abstract.md`
 - `paper/contributions.md`
-- `paper/dynnav_r/README.md`
+- `paper/dynnav_r/FINAL_REVIEW_PROMPT.md`
+- `paper/dynnav_r/GEOMETRIC_PARETO_PROTOCOL.md`
+- `paper/dynnav_r/HISTORY_ALIASING_NOTE.md`
+- `paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md`
+- `paper/dynnav_r/RELEASE_GATE_2026-11-01.md`
+- `paper/dynnav_r/REVIEWER_AUDIT_2026-09.md`
+- `paper/dynnav_r/SUBMISSION_READINESS.md`
 - `paper/future_work.md`
-- `pytest-of-root/pytest-14/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-14/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-14/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-14/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-16/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-16/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-16/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-16/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-2/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-24/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-24/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-24/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-24/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-26/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-26/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-26/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-26/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-26/test_suite_runs_mixed_schema_a0/summary.md`
-- `pytest-of-root/pytest-27/test_generated_and_transient_d0/README.md`
-- `pytest-of-root/pytest-28/test_generated_and_transient_d0/README.md`
-- `pytest-of-root/pytest-3/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-3/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-5/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-5/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-5/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-5/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-6/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-6/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-6/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-6/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-7/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-7/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-7/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-7/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `pytest-of-root/pytest-8/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md`
-- `pytest-of-root/pytest-8/test_benchmark_writes_outputs0/summary.md`
-- `pytest-of-root/pytest-8/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-8/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md`
-- `pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/evaluation_report.md`
-- `pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/reproducibility_report.md`
-- `readme_full.md`
 - `research_experiments/trust_aware_cvar/README.md`
 - `research_experiments/trust_aware_cvar/paper/paper.md`
-- `ros2_ws/lidar_slam_tb3/README (4).md`
+- `results/contribution_suite/c26/summary.md`
+- `results/contribution_suite/first_eleven/summary.md`
+- `results/contribution_suite/full/summary.md`
+- `results/fragile_commitment_v2/MANIFEST.md`
+- `results/ros2_gazebo/README.md`
+- `results/ros2_gazebo/dynamic_run_31488640894/RUN.md`
+- `results/ros2_gazebo/static_run_31488640827/RUN.md`
 - `ros2_ws/lidar_slam_tb3/README_LiDAR_SLAM_TurtleBot3_ROS2.md`
 - `ros2_ws/lidar_slam_tb3/readme`
 - `ros2_ws/src/dynnav_nav2/README.md`
@@ -315,7 +303,4 @@
 - `ros2_ws/src/dynnav_nav2/docs/OCCUPANCY_GRID_CONVERSION.md`
 - `ros2_ws/src/dynnav_nav2/docs/PLANNING_REQUEST_INTERFACE.md`
 - `src/README.md`
-- `src/dynnav/README.md`
-- `website/AGENTS.md`
-- `website/CLAUDE.md`
 - `website/README.md`

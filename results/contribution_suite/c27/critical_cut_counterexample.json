@@ -1,0 +1,10 @@
+{
+  "evidence_level": "exhaustive finite synthetic model check",
+  "realizations_enumerated": 16,
+  "independent_reference_return_probability": 0.4375,
+  "dynnav_exact_oracle_probability": 0.4375,
+  "single_vertex_critical_cut_upper_bound": 1.0,
+  "critical_hazard_cells": [],
+  "result": "counterexample_confirmed_bound_is_optimistic_for_joint_cutsets",
+  "claim_boundary": "One finite counterexample; not a general proof or independent C27 validation."
+}

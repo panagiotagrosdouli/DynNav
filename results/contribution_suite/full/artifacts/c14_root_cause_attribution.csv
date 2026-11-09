@@ -1,0 +1,6 @@
+case_name,true_root_cause,predicted_root_cause,true_cause_rank,top1_correct,baseline_outcome,counterfactual_outcome,counterfactual_reduction,ranking
+sensor_noise_failure,sensor_noise,sensor_noise,1,True,0.9091,0.03870000000000001,0.8704000000000001,sensor_noise:0.8550;path_risk:0.5974;localization_error:0.4719;map_accuracy:-0.0548;obstacle_detection:-0.0437
+localization_drift_failure,localization_error,localization_error,1,True,0.48660000000000003,0.11699999999999998,0.36960000000000004,localization_error:0.3705;map_accuracy:-0.2740;path_risk:0.2296;sensor_noise:0.2199;obstacle_detection:-0.1952
+map_accuracy_failure,map_accuracy,map_accuracy,1,True,0.3385,0.188,0.15050000000000002,map_accuracy:-0.2858;obstacle_detection:-0.2850;path_risk:0.2341;localization_error:0.1316;sensor_noise:0.1284
+obstacle_detection_failure,obstacle_detection,map_accuracy,3,False,0.36140000000000005,0.22000000000000003,0.14140000000000003,map_accuracy:-0.3298;path_risk:0.2444;obstacle_detection:-0.2302;sensor_noise:0.1901;localization_error:0.1512
+path_risk_failure,path_risk,map_accuracy,3,False,0.21719999999999998,0.059,0.15819999999999998,map_accuracy:-0.3999;obstacle_detection:-0.3362;path_risk:0.1245;localization_error:0.0654;sensor_noise:0.0373

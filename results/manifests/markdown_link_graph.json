@@ -45,6 +45,14 @@
       "target": "research_suite.yaml"
     },
     {
+      "source": "CONTRIBUTING.md",
+      "target": "CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "CONTRIBUTING.md",
+      "target": "docs/REPOSITORY_GUIDE.md"
+    },
+    {
       "source": "contributions/01_learned_astar/README.md",
       "target": "assets/learned_astar_pipeline.svg"
     },
@@ -505,6 +513,34 @@
       "target": "https://img.shields.io/badge/Type-Multi--Robot%20%2F%20Distributed-blue"
     },
     {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../../paper/dynnav_r/main.tex"
+    },
+    {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../03_belief_risk_planning/"
+    },
+    {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../04_irreversibility_returnability/"
+    },
+    {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../05_safe_mode_navigation/"
+    },
+    {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../06_energy_connectivity/"
+    },
+    {
+      "source": "contributions/27_Recoverability_Theory/README.md",
+      "target": "../README.md"
+    },
+    {
+      "source": "contributions/CONTRIBUTIONS_README.md",
+      "target": "README.md"
+    },
+    {
       "source": "contributions/hybrid_learned_astar/README.md",
       "target": "../../README.md"
     },
@@ -514,7 +550,187 @@
     },
     {
       "source": "contributions/README.md",
+      "target": "../configs/contributions/experiments.yaml"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "../configs/contributions/registry.yaml"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "../docs/CONTRIBUTIONS_26_EXPERIMENTS.md"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "../docs/CONTRIBUTION_DEPENDENCY_GRAPH.md"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "../docs/CONTRIBUTION_INDEX.md"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "../docs/CONTRIBUTION_MATURITY_MATRIX.md"
+    },
+    {
+      "source": "contributions/README.md",
       "target": "../docs/REPOSITORY_AUDIT.md"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "01_learned_astar/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "02_uncertainty_calibration/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "03_belief_risk_planning/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "04_irreversibility_returnability/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "05_safe_mode_navigation/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "06_energy_connectivity/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "07_nbv_exploration/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "07_next_best_view/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "08_security_ids/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "09_multi_robot/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "10_human_language_ethics/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "11_vlm_navigation_agent/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "12_diffusion_occupancy/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "13_latent_world_model/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "14_causal_risk_attribution/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "15_neuromorphic_sensing/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "16_federated_nav_learning/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "17_topological_semantic_maps/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "18_formal_safety_shields/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "19_llm_mission_planner/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "20_multimodal_failure_explainer/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "21_ppo_navigation_agent/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "22_curriculum_rl/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "23_gaussian_splatting_mapper/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "24_nerf_uncertainty/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "25_adversarial_attack_simulator/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "26_swarm_consensus/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "27_Recoverability_Theory/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "_unsorted/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "ablation_study/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "benchmarking/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "hybrid_learned_astar/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "hybrid_planner/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "learned_uncertainty_astar/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "realtime_replanning/"
+    },
+    {
+      "source": "contributions/README.md",
+      "target": "tests/"
+    },
+    {
+      "source": "docs/AUTONOMOUS_REPAIR_AUDIT.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "docs/AUTONOMOUS_REPAIR_AUDIT.md",
+      "target": "../PUBLICATION_READINESS.md"
+    },
+    {
+      "source": "docs/AUTONOMOUS_REPAIR_AUDIT.md",
+      "target": "REPOSITORY_GUIDE.md"
     },
     {
       "source": "docs/CLAIMS_EVIDENCE.md",
@@ -611,6 +827,10 @@
     {
       "source": "docs/CONTRIBUTION_FEATURE_CATALOG.md",
       "target": "../src/dynnav_dashboard/contribution_registry.yaml"
+    },
+    {
+      "source": "docs/CONTRIBUTION_FEATURE_CATALOG.md",
+      "target": "archive/README.md"
     },
     {
       "source": "docs/CONTRIBUTION_INDEX.md",
@@ -755,6 +975,10 @@
     {
       "source": "docs/CONTRIBUTION_INDEX.md",
       "target": "../src/dynnav_dashboard/contributions/c08_security_ids.py"
+    },
+    {
+      "source": "docs/CONTRIBUTION_INDEX.md",
+      "target": "../src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py"
     },
     {
       "source": "docs/CONTRIBUTION_INDEX.md",
@@ -978,6 +1202,10 @@
     },
     {
       "source": "docs/DYNAMIC_EXECUTION_PROTOCOL.md",
+      "target": "../results/ros2_gazebo/dynamic_run_31488640894/"
+    },
+    {
+      "source": "docs/DYNAMIC_EXECUTION_PROTOCOL.md",
       "target": "https://github.com/gazebosim/ros_gz/blob/jazzy/ros_gz_bridge/CHANGELOG.rst"
     },
     {
@@ -995,6 +1223,10 @@
     {
       "source": "docs/DYNNAV_V2_RESEARCH_ROADMAP.md",
       "target": "CONTRIBUTION_FEATURE_CATALOG.md"
+    },
+    {
+      "source": "docs/GAZEBO_BENCHMARK_PROTOCOL.md",
+      "target": "../results/ros2_gazebo/static_run_31488640827/"
     },
     {
       "source": "docs/GAZEBO_BENCHMARK_PROTOCOL.md",
@@ -1022,11 +1254,23 @@
     },
     {
       "source": "docs/GAZEBO_BENCHMARK_PROTOCOL.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/31488640827"
+    },
+    {
+      "source": "docs/GAZEBO_BENCHMARK_PROTOCOL.md",
       "target": "https://github.com/ros-navigation/nav2_minimal_turtlebot_simulation"
     },
     {
       "source": "docs/Irreversibility_Aware_Navigation_New_Contribution.md",
       "target": "Proposition_Irreversibility_vs_Risk_Weighting.md"
+    },
+    {
+      "source": "docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md",
+      "target": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/"
+    },
+    {
+      "source": "docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md",
+      "target": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt"
     },
     {
       "source": "docs/MARKDOWN_STYLE_GUIDE.md",
@@ -1035,6 +1279,82 @@
     {
       "source": "docs/MARKDOWN_STYLE_GUIDE.md",
       "target": "MARKDOWN_AUDIT.md"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../CORE_CONTRIBUTION.md"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../README.md"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../dynnav/commitment_hazard.py"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../paper/dynnav_r/evidence_manifest.json"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../paper/dynnav_r/main.tex"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../ros2_ws/src/dynnav_nav2_benchmark/"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "../ros2_ws/src/dynnav_nav2_cpp/"
+    },
+    {
+      "source": "docs/PHD_APPLICATION_READINESS.md",
+      "target": "REPOSITORY_GUIDE.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../CORE_CONTRIBUTION.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../EXPERIMENT_PROTOCOL_V3.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../FAILURE_CASES.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../README.md"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../paper/dynnav_r/evidence_manifest.json"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../ros2_ws/src/dynnav_nav2_benchmark"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "../ros2_ws/src/dynnav_nav2_cpp"
+    },
+    {
+      "source": "docs/PROJECT_OVERVIEW.md",
+      "target": "REPOSITORY_GUIDE.md"
     },
     {
       "source": "docs/Proposition_Irreversibility_vs_Risk_Weighting.md",
@@ -1058,23 +1378,31 @@
     },
     {
       "source": "docs/README.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "../CORE_CONTRIBUTION.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "../EXPERIMENT_PROTOCOL_V3.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "../FAILURE_CASES.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "../PUBLICATION_READINESS.md"
+    },
+    {
+      "source": "docs/README.md",
       "target": "../README.md"
     },
     {
       "source": "docs/README.md",
-      "target": "../README_GR.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "../configs/README.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "../scripts/README.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "../tests/README.md"
+      "target": "../paper/dynnav_r/evidence_manifest.json"
     },
     {
       "source": "docs/README.md",
@@ -1082,15 +1410,7 @@
     },
     {
       "source": "docs/README.md",
-      "target": "DYNNAV_V2_RESEARCH_ROADMAP.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "EVALUATION_PROTOCOL.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "MARKDOWN_AUDIT.md"
+      "target": "GAZEBO_BENCHMARK_PROTOCOL.md"
     },
     {
       "source": "docs/README.md",
@@ -1106,7 +1426,7 @@
     },
     {
       "source": "docs/README.md",
-      "target": "REPOSITORY_AUDIT.md"
+      "target": "REPOSITORY_GUIDE.md"
     },
     {
       "source": "docs/README.md",
@@ -1114,11 +1434,7 @@
     },
     {
       "source": "docs/README.md",
-      "target": "RESEARCH_OVERVIEW.md"
-    },
-    {
-      "source": "docs/README.md",
-      "target": "RISK_ESTIMATION.md"
+      "target": "ROS2_HISTORY_VALIDATION_PROTOCOL.md"
     },
     {
       "source": "docs/README.md",
@@ -1126,7 +1442,11 @@
     },
     {
       "source": "docs/README.md",
-      "target": "UNCERTAINTY_MODEL.md"
+      "target": "archive/EXPERIMENT_PROTOCOL_V2_J0J3.md"
+    },
+    {
+      "source": "docs/README.md",
+      "target": "archive/README.md"
     },
     {
       "source": "docs/README_Irreversibility_Aware_Planning results.md",
@@ -1165,20 +1485,156 @@
       "target": "https://latex.codecogs.com/svg.image?J(%5Cpi)=%5Csum%20c(s)%2B%5Clambda%5Csum%20I(s)"
     },
     {
+      "source": "docs/REAL_DATA_VALIDATION.md",
+      "target": "../website/public/lilocbench-dynamics-0-ground-truth.svg"
+    },
+    {
+      "source": "docs/REAL_DATA_VALIDATION.md",
+      "target": "HARDWARE_VALIDATION_CHECKLIST.md"
+    },
+    {
+      "source": "docs/REAL_DATA_VALIDATION.md",
+      "target": "LILOCBENCH_DYNAMICS_0_ANALYSIS.md"
+    },
+    {
+      "source": "docs/REAL_DATA_VALIDATION.md",
+      "target": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/"
+    },
+    {
+      "source": "docs/REPOSITORY_AUDIT.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "docs/REPOSITORY_AUDIT.md",
+      "target": "../PUBLICATION_READINESS.md"
+    },
+    {
+      "source": "docs/REPOSITORY_AUDIT.md",
+      "target": "REPOSITORY_GUIDE.md"
+    },
+    {
       "source": "docs/ROS2_NAV2_INTEGRATION.md",
       "target": "../ros2_ws/src/dynnav_nav2_cpp/README.md"
     },
     {
       "source": "docs/ROS2_NAV2_INTEGRATION.md",
-      "target": "GAZEBO_BENCHMARK_PROTOCOL.md"
+      "target": "DYNAMIC_EXECUTION_PROTOCOL.md"
     },
     {
-      "source": "lidar_ros2/readme",
-      "target": "../README.md"
+      "source": "EXPERIMENT_PROTOCOL_V2.md",
+      "target": "EXPERIMENT_PROTOCOL_V3.md"
+    },
+    {
+      "source": "EXPERIMENT_PROTOCOL_V2.md",
+      "target": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "PROPOSED_DISCRIMINATING_EXPERIMENT.md"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://arxiv.org/abs/2405.11402"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://arxiv.org/abs/2603.26995"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://arxiv.org/abs/2605.26348"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1007/s10514-024-10172-6"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1016/0921-8890(95"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1016/j.jocs.2023.102156"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1109/ICRA48506.2021.9561111"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1109/LRA.2020.2974434"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1109/LRA.2026.3656776"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.1109/TAC.2023.3244884"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://doi.org/10.4230/LIPIcs.ISAAC.2025.28"
+    },
+    {
+      "source": "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+      "target": "https://proceedings.mlr.press/v283/jung25a.html"
+    },
+    {
+      "source": "paper/dynnav_r/README.md",
+      "target": "../../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "paper/dynnav_r/README.md",
+      "target": "evidence_manifest.json"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "../../CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "evidence_manifest.json"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "https://2027.ieee-icra.org/announcements/call-for-technical-papers/"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/39019793338"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/pull/205"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "https://www.ieee-ras.org/event/2027-ieee-rsj-international-conference-on-intelligent-robots-and-systems-iros-70525/"
+    },
+    {
+      "source": "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+      "target": "https://www.ieee-ras.org/publications/ieee-robotics-and-automation-letters/"
+    },
+    {
+      "source": "paper/LITERATURE_GAP_ANALYSIS.md",
+      "target": "dynnav_r/main.tex"
+    },
+    {
+      "source": "paper/MANUSCRIPT_DRAFT.md",
+      "target": "dynnav_r/main.tex"
+    },
+    {
+      "source": "paper/README.md",
+      "target": "../CLAIM_EVIDENCE_MATRIX.md"
     },
     {
       "source": "paper/README.md",
       "target": "../README.md"
+    },
+    {
+      "source": "paper/README.md",
+      "target": "../RESEARCH_DISCOVERY.md"
     },
     {
       "source": "paper/README.md",
@@ -1193,172 +1649,244 @@
       "target": "../results/README.md"
     },
     {
+      "source": "paper/README.md",
+      "target": "dynnav_r/NOVELTY_BOUNDARIES.md"
+    },
+    {
+      "source": "paper/README.md",
+      "target": "dynnav_r/README.md"
+    },
+    {
+      "source": "paper/README.md",
+      "target": "dynnav_r/main.tex"
+    },
+    {
+      "source": "README.md",
+      "target": "CITATION.cff"
+    },
+    {
+      "source": "README.md",
+      "target": "CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "README.md",
+      "target": "CONTRIBUTING.md"
+    },
+    {
+      "source": "README.md",
+      "target": "EXPERIMENT_PROTOCOL_V3.md"
+    },
+    {
+      "source": "README.md",
+      "target": "FAILURE_CASES.md"
+    },
+    {
       "source": "README.md",
       "target": "LICENSE"
     },
     {
       "source": "README.md",
-      "target": "app/README.md"
-    },
-    {
-      "source": "README.md",
-      "target": "assets/dynnav_system_overview.gif"
-    },
-    {
-      "source": "README.md",
-      "target": "assets/dynnav_system_overview.mp4"
-    },
-    {
-      "source": "README.md",
-      "target": "contributions/CONTRIBUTIONS_README.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/CONTRIBUTIONS_26_EXPERIMENTS.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/CONTRIBUTION_FEATURE_CATALOG.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/DYNAMIC_EXECUTION_PROTOCOL.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/DYNNAV_RESEARCHER_ARCHITECTURE.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/DYNNAV_V2_RESEARCH_ROADMAP.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/GAZEBO_BENCHMARK_PROTOCOL.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/PHD_APPLICATION_READINESS.md"
-    },
-    {
-      "source": "README.md",
-      "target": "docs/README.md"
-    },
-    {
-      "source": "README.md",
-      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg"
-    },
-    {
-      "source": "README.md",
-      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/contribution-experiments.yml/badge.svg"
-    },
-    {
-      "source": "README.md",
-      "target": "https://img.shields.io/badge/License-Apache--2.0-4C1.svg"
-    },
-    {
-      "source": "README.md",
-      "target": "https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white"
-    },
-    {
-      "source": "README.md",
-      "target": "results/manifests/"
-    },
-    {
-      "source": "README.md",
-      "target": "ros2_ws/src/dynnav_nav2_cpp/"
-    },
-    {
-      "source": "README.md",
-      "target": "ros2_ws/src/dynnav_nav2_cpp/README.md"
-    },
-    {
-      "source": "README.md",
-      "target": "tests/"
-    },
-    {
-      "source": "README.md",
-      "target": "vercel.json"
-    },
-    {
-      "source": "README_GR.md",
       "target": "README.md"
     },
     {
-      "source": "README_GR.md",
-      "target": "docs/CONTRIBUTION_FEATURE_CATALOG.md"
-    },
-    {
-      "source": "README_GR.md",
-      "target": "docs/DYNNAV_V2_RESEARCH_ROADMAP.md"
-    },
-    {
-      "source": "README_GR.md",
-      "target": "docs/README.md"
-    },
-    {
-      "source": "README_GR.md",
-      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg"
-    },
-    {
-      "source": "README_GR.md",
-      "target": "https://img.shields.io/badge/License-Apache--2.0-4C1.svg"
-    },
-    {
-      "source": "README_GR.md",
-      "target": "https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white"
-    },
-    {
-      "source": "README_GREEK.md",
-      "target": "README.md"
-    },
-    {
-      "source": "README_GREEK.md",
+      "source": "README.md",
       "target": "README_GR.md"
     },
     {
-      "source": "README_GREEK.md",
-      "target": "assets/readme/dynnav_living_map.svg"
+      "source": "README.md",
+      "target": "SECURITY.md"
     },
     {
-      "source": "READMEbig.md",
+      "source": "README.md",
+      "target": "docs/REAL_DATA_VALIDATION.md"
+    },
+    {
+      "source": "README.md",
+      "target": "docs/REPOSITORY_GUIDE.md"
+    },
+    {
+      "source": "README.md",
+      "target": "docs/archive/"
+    },
+    {
+      "source": "README.md",
+      "target": "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md"
+    },
+    {
+      "source": "README.md",
+      "target": "docs/archive/README.md"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/experiments/"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/recoverability_cut.py"
+    },
+    {
+      "source": "README.md",
+      "target": "dynnav/recoverability_estimation.py"
+    },
+    {
+      "source": "README.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/ci.yml/badge.svg"
+    },
+    {
+      "source": "README.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/workflows/paper-build.yml/badge.svg"
+    },
+    {
+      "source": "README.md",
+      "target": "https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12-3776AB"
+    },
+    {
+      "source": "README.md",
+      "target": "https://img.shields.io/badge/ROS_2-Jazzy-22314E"
+    },
+    {
+      "source": "README.md",
+      "target": "https://img.shields.io/badge/license-Apache--2.0-4C1.svg"
+    },
+    {
+      "source": "README.md",
+      "target": "paper/dynnav_r/evidence_manifest.json"
+    },
+    {
+      "source": "README.md",
+      "target": "paper/dynnav_r/main.tex"
+    },
+    {
+      "source": "README.md",
+      "target": "ros2_ws/src/dynnav_nav2_benchmark"
+    },
+    {
+      "source": "README.md",
+      "target": "ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md"
+    },
+    {
+      "source": "README.md",
+      "target": "ros2_ws/src/dynnav_nav2_benchmark/config/sandbox_history_triggered_events.yaml"
+    },
+    {
+      "source": "README.md",
+      "target": "ros2_ws/src/dynnav_nav2_cpp"
+    },
+    {
+      "source": "README.md",
+      "target": "scripts/"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "CITATION.cff"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "CLAIM_EVIDENCE_MATRIX.md"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "CONTRIBUTING.md"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "EXPERIMENT_PROTOCOL_V3.md"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "FAILURE_CASES.md"
+    },
+    {
+      "source": "README_GR.md",
+      "target": "LICENSE"
+    },
+    {
+      "source": "README_GR.md",
       "target": "README.md"
     },
     {
-      "source": "READMEbig.md",
-      "target": "contributions/CONTRIBUTIONS_README.md"
+      "source": "README_GR.md",
+      "target": "README_GR.md"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/"
+      "source": "README_GR.md",
+      "target": "docs/REPOSITORY_GUIDE.md"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/EVALUATION_PROTOCOL.md"
+      "source": "README_GR.md",
+      "target": "dynnav/commitment_hazard.py"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/MATHEMATICAL_FORMULATION.md"
+      "source": "README_GR.md",
+      "target": "dynnav/planners/commitment_aware_astar.py"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/README.md"
+      "source": "README_GR.md",
+      "target": "paper/dynnav_r/evidence_manifest.json"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/REPOSITORY_AUDIT.md"
+      "source": "README_GR.md",
+      "target": "paper/dynnav_r/main.tex"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/REPRODUCIBILITY.md"
+      "source": "README_GR.md",
+      "target": "ros2_ws/src/dynnav_nav2_benchmark"
     },
     {
-      "source": "READMEbig.md",
-      "target": "docs/RESEARCH_OVERVIEW.md"
+      "source": "README_GR.md",
+      "target": "ros2_ws/src/dynnav_nav2_cpp"
     },
     {
-      "source": "READMEbig.md",
-      "target": "paper/README.md"
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://arxiv.org/abs/2107.07599"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://arxiv.org/abs/2509.19559"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://doi.org/10.1109/ICRA48506.2021.9561111"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://doi.org/10.1109/LRA.2020.2974434"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://doi.org/10.1109/TAC.2023.3244884"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://doi.org/10.15607/RSS.2017.XIII.023"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "https://doi.org/10.1609/icaps.v19i1.13359"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "results/noisy_activation/noisy_activation_summary.csv"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "results/noisy_activation/noisy_activation_summary.json"
+    },
+    {
+      "source": "RESEARCH_DISCOVERY.md",
+      "target": "results/noisy_activation/run_metadata.json"
     },
     {
       "source": "results/README.md",
@@ -1375,6 +1903,30 @@
     {
       "source": "results/README.md",
       "target": "../docs/REPRODUCIBILITY.md"
+    },
+    {
+      "source": "results/ros2_gazebo/dynamic_run_31488640894/RUN.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/31488640894"
+    },
+    {
+      "source": "results/ros2_gazebo/README.md",
+      "target": "dynamic_run_31488640894/"
+    },
+    {
+      "source": "results/ros2_gazebo/README.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/31488640827"
+    },
+    {
+      "source": "results/ros2_gazebo/README.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/31488640894"
+    },
+    {
+      "source": "results/ros2_gazebo/README.md",
+      "target": "static_run_31488640827/"
+    },
+    {
+      "source": "results/ros2_gazebo/static_run_31488640827/RUN.md",
+      "target": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/31488640827"
     },
     {
       "source": "ros2_ws/lidar_slam_tb3/readme",
@@ -1418,11 +1970,23 @@
     },
     {
       "source": "src/README.md",
-      "target": "../dynnav"
+      "target": "../README.md"
+    },
+    {
+      "source": "src/README.md",
+      "target": "../docs/SYSTEM_ARCHITECTURE.md"
     },
     {
       "source": "src/README.md",
       "target": "../pyproject.toml"
+    },
+    {
+      "source": "src/README.md",
+      "target": "dynnav/"
+    },
+    {
+      "source": "src/README.md",
+      "target": "dynnav/README.md"
     },
     {
       "source": "tests/README.md",
@@ -1466,12 +2030,9 @@
     ".github/ISSUE_TEMPLATE/benchmark_result.md",
     ".github/ISSUE_TEMPLATE/research_module_upgrade.md",
     "app/README.md",
-    "apps/web/AGENTS.md",
-    "apps/web/CLAUDE.md",
     "assets/contributions/README.md",
     "assets/README.md",
     "assets/styleguide/README.md",
-    "AUDIT.md",
     "benchmarks/dynamic_self_aware_astar/RANDOMIZED_DYNAMIC_README.md",
     "benchmarks/dynamic_self_aware_astar/README.md",
     "benchmarks/fragile_commitment/README.md",
@@ -1481,11 +2042,13 @@
     "benchmarks/self_aware_astar/README.md",
     "benchmarks/self_aware_astar/STATISTICAL_EVALUATION_README.md",
     "benchmarks/self_aware_navigation/README.md",
-    "BLOCKERS.md",
+    "CLAIM_EVIDENCE_MATRIX.md",
     "CODE_OF_CONDUCT.md",
     "configs/README.md",
     "CONTRIBUTING.md",
+    "contributions/01_learned_astar/C01_BASELINE_AUDIT.md",
     "contributions/01_learned_astar/docs/SCIENTIFIC_UPGRADE.md",
+    "contributions/01_learned_astar/ERGO_NOVELTY_BOUNDARIES.md",
     "contributions/01_learned_astar/README.md",
     "contributions/01_learned_astar/README_GR.md",
     "contributions/02_uncertainty_calibration/CLAIMS_EVIDENCE.md",
@@ -1565,7 +2128,24 @@
     "contributions/hybrid_learned_astar/README.md",
     "contributions/learned_uncertainty_astar/experiments/README.md",
     "contributions/README.md",
+    "CORE_CONTRIBUTION.md",
     "docs/Abstract_and_Contributions.md",
+    "docs/archive/EXPERIMENT_PROTOCOL_V2_J0J3.md",
+    "docs/archive/README.md",
+    "docs/archive/RESEARCH_AUDIT_2026-08-18.md",
+    "docs/audits/C00_CORE_RESEARCH_AUDIT.md",
+    "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md",
+    "docs/audits/CONTRIBUTION_DEPENDENCY_REVIEW.md",
+    "docs/audits/CONTRIBUTION_INTEGRATION_REPORT.md",
+    "docs/audits/CONTRIBUTION_PUBLICATION_READINESS.md",
+    "docs/audits/CONTRIBUTION_STATISTICAL_ANALYSIS.md",
+    "docs/audits/CONTRIBUTION_WEBSITE_INTEGRATION.md",
+    "docs/audits/CONTRIBUTIONS_FULL_AUDIT.md",
+    "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
+    "docs/audits/FINAL_CONTRIBUTIONS_REPORT.md",
+    "docs/audits/REAL_DATA_EVIDENCE_MATRIX.md",
+    "docs/audits/ROS2_GAZEBO_CONTRIBUTION_VALIDATION.md",
     "docs/AUTONOMOUS_REPAIR_AUDIT.md",
     "docs/BENCHMARK_PROTOCOL.md",
     "docs/BENCHMARK_RESULTS_SUMMARY.md",
@@ -1584,8 +2164,10 @@
     "docs/EVALUATION_PROTOCOL.md",
     "docs/Frontier-Restricted NBV Benchmark.md",
     "docs/GAZEBO_BENCHMARK_PROTOCOL.md",
+    "docs/HARDWARE_VALIDATION_CHECKLIST.md",
     "docs/Human Preference\u2013Aware Risk Navigation.md",
     "docs/Irreversibility_Aware_Navigation_New_Contribution.md",
+    "docs/LILOCBENCH_DYNAMICS_0_ANALYSIS.md",
     "docs/MAPPING.md",
     "docs/MARKDOWN_AUDIT.md",
     "docs/MARKDOWN_STYLE_GUIDE.md",
@@ -1594,6 +2176,7 @@
     "docs/NAVIGATION_PIPELINE.md",
     "docs/PHD_APPLICATION_READINESS.md",
     "docs/PRESENTATION_GUIDE.md",
+    "docs/PROJECT_OVERVIEW.md",
     "docs/Proposition_Irreversibility_vs_Risk_Weighting.md",
     "docs/README Irreversibility-Aware Navigation Planning.md",
     "docs/README Self-Healing Navigation & Language-Driven Safety.md",
@@ -1608,7 +2191,9 @@
     "docs/README_TF_Attack_Aware_IDS.md",
     "docs/README_trust_navigation.md",
     "docs/READMEResults: Self-Healing + Language Safety + Trust + Ethical Navigation.md",
+    "docs/REAL_DATA_VALIDATION.md",
     "docs/REPOSITORY_AUDIT.md",
+    "docs/REPOSITORY_GUIDE.md",
     "docs/REPRODUCIBILITY.md",
     "docs/RESEARCH_CONTRIBUTION.md",
     "docs/RESEARCH_FOCUS.md",
@@ -1616,92 +2201,57 @@
     "docs/Returnability- & Irreversibility-Aware Frontier NBV.md",
     "docs/RISK_ESTIMATION.md",
     "docs/ROADMAP.md",
+    "docs/ROS2_HISTORY_VALIDATION_PROTOCOL.md",
     "docs/ROS2_NAV2_INTEGRATION.md",
     "docs/SelfHealing_LanguageSafety_README.md",
     "docs/SYSTEM_ARCHITECTURE.md",
     "docs/UNCERTAINTY_MODEL.md",
-    "lidar_ros2/readme",
-    "lidar_ros2/README (4).md",
+    "EXPERIMENT_PROTOCOL_V2.md",
+    "EXPERIMENT_PROTOCOL_V3.md",
+    "FAILURE_CASES.md",
+    "HOSTILE_REVIEW.md",
     "paper/abstract.md",
     "paper/contributions.md",
+    "paper/dynnav_r/FINAL_REVIEW_PROMPT.md",
+    "paper/dynnav_r/GEOMETRIC_PARETO_PROTOCOL.md",
+    "paper/dynnav_r/HISTORY_ALIASING_NOTE.md",
+    "paper/dynnav_r/NOVELTY_BOUNDARIES.md",
+    "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+    "paper/dynnav_r/PROPOSED_DISCRIMINATING_EXPERIMENT.md",
     "paper/dynnav_r/README.md",
+    "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+    "paper/dynnav_r/REVIEWER_AUDIT_2026-09.md",
+    "paper/dynnav_r/SUBMISSION_READINESS.md",
     "paper/future_work.md",
     "paper/LITERATURE_GAP_ANALYSIS.md",
     "paper/MANUSCRIPT_DRAFT.md",
     "paper/README.md",
     "paper/RECOVERABILITY_METRIC.md",
     "paper/RESEARCH_PLAN.md",
-    "pytest-of-root/pytest-14/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-14/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-14/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-14/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-16/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-16/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-16/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-16/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-2/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-24/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-24/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-24/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-24/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-26/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-26/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-26/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-26/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-26/test_suite_runs_mixed_schema_a0/summary.md",
-    "pytest-of-root/pytest-27/test_generated_and_transient_d0/README.md",
-    "pytest-of-root/pytest-28/test_generated_and_transient_d0/README.md",
-    "pytest-of-root/pytest-3/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-3/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-5/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-5/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-6/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-6/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-6/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-6/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-7/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-7/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-7/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-7/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-8/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-8/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-8/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-8/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
+    "PUBLICATION_PLAN.md",
+    "PUBLICATION_READINESS.md",
     "README.md",
-    "readme_full.md",
     "README_GR.md",
-    "README_GREEK.md",
-    "READMEbig.md",
     "RELEASE_NOTES.md",
     "REPRODUCIBILITY_REPORT.md",
+    "RESEARCH_DISCOVERY.md",
     "research_experiments/trust_aware_cvar/paper/paper.md",
     "research_experiments/trust_aware_cvar/README.md",
+    "results/contribution_suite/c26/summary.md",
+    "results/contribution_suite/first_eleven/summary.md",
+    "results/contribution_suite/full/summary.md",
+    "results/fragile_commitment_v2/MANIFEST.md",
     "results/README.md",
+    "results/ros2_gazebo/dynamic_run_31488640894/RUN.md",
+    "results/ros2_gazebo/README.md",
+    "results/ros2_gazebo/static_run_31488640827/RUN.md",
     "ros2_ws/lidar_slam_tb3/readme",
-    "ros2_ws/lidar_slam_tb3/README (4).md",
     "ros2_ws/lidar_slam_tb3/README_LiDAR_SLAM_TurtleBot3_ROS2.md",
     "ros2_ws/src/dynnav_nav2/docs/NAV2_PLUGIN_ARCHITECTURE.md",
     "ros2_ws/src/dynnav_nav2/docs/OCCUPANCY_GRID_CONVERSION.md",
     "ros2_ws/src/dynnav_nav2/docs/PLANNING_REQUEST_INTERFACE.md",
     "ros2_ws/src/dynnav_nav2/README.md",
+    "ros2_ws/src/dynnav_nav2_benchmark/ACTION_TRIGGER_PROTOCOL.md",
     "ros2_ws/src/dynnav_nav2_benchmark/README.md",
     "ros2_ws/src/dynnav_nav2_cpp/README.md",
     "scripts/README.md",
@@ -1710,27 +2260,21 @@
     "src/README.md",
     "STATUS.yaml",
     "tests/README.md",
-    "website/AGENTS.md",
-    "website/CLAUDE.md",
-    "website/README.md",
-    "WORK_LOG.md"
+    "VENUE_FIT.md",
+    "website/README.md"
   ],
   "orphans": [
     ".github/ISSUE_TEMPLATE/benchmark_result.md",
     ".github/ISSUE_TEMPLATE/research_module_upgrade.md",
-    "AUDIT.md",
-    "BLOCKERS.md",
     "CODE_OF_CONDUCT.md",
-    "CONTRIBUTING.md",
-    "README_GREEK.md",
-    "READMEbig.md",
+    "EXPERIMENT_PROTOCOL_V2.md",
+    "HOSTILE_REVIEW.md",
+    "PUBLICATION_PLAN.md",
     "RELEASE_NOTES.md",
     "REPRODUCIBILITY_REPORT.md",
-    "SECURITY.md",
     "STATUS.yaml",
-    "WORK_LOG.md",
-    "apps/web/AGENTS.md",
-    "apps/web/CLAUDE.md",
+    "VENUE_FIT.md",
+    "app/README.md",
     "assets/contributions/README.md",
     "benchmarks/README.md",
     "benchmarks/dynamic_self_aware_astar/RANDOMIZED_DYNAMIC_README.md",
@@ -1741,6 +2285,8 @@
     "benchmarks/self_aware_astar/README.md",
     "benchmarks/self_aware_astar/STATISTICAL_EVALUATION_README.md",
     "benchmarks/self_aware_navigation/README.md",
+    "contributions/01_learned_astar/C01_BASELINE_AUDIT.md",
+    "contributions/01_learned_astar/ERGO_NOVELTY_BOUNDARIES.md",
     "contributions/01_learned_astar/docs/SCIENTIFIC_UPGRADE.md",
     "contributions/02_uncertainty_calibration/CLAIMS_EVIDENCE.md",
     "contributions/02_uncertainty_calibration/docs/SCIENTIFIC_UPGRADE.md",
@@ -1785,7 +2331,6 @@
     "contributions/25_adversarial_attack_simulator/docs/SCIENTIFIC_UPGRADE.md",
     "contributions/26_swarm_consensus/docs/SCIENTIFIC_UPGRADE.md",
     "contributions/27_Recoverability_Theory/README.md",
-    "contributions/README.md",
     "contributions/hybrid_learned_astar/README.md",
     "contributions/learned_uncertainty_astar/experiments/README.md",
     "docs/AUTONOMOUS_REPAIR_AUDIT.md",
@@ -1793,18 +2338,19 @@
     "docs/BENCHMARK_PROTOCOL.md",
     "docs/BENCHMARK_RESULTS_SUMMARY.md",
     "docs/CLAIMS_EVIDENCE.md",
-    "docs/CONTRIBUTION_DEPENDENCY_GRAPH.md",
-    "docs/CONTRIBUTION_INDEX.md",
-    "docs/CONTRIBUTION_MATURITY_MATRIX.md",
     "docs/CONTRIBUTION_READINESS_CHECKLIST.md",
     "docs/CONTRIBUTION_VISUAL_GALLERY.md",
+    "docs/DYNNAV_RESEARCHER_ARCHITECTURE.md",
+    "docs/DYNNAV_V2_RESEARCH_ROADMAP.md",
     "docs/ENGINEERING_AND_SCIENTIFIC_AUDIT.md",
     "docs/Frontier-Restricted NBV Benchmark.md",
     "docs/Human Preference\u2013Aware Risk Navigation.md",
     "docs/Irreversibility_Aware_Navigation_New_Contribution.md",
     "docs/MAPPING.md",
     "docs/Multi-Robot Safe Mode Navigation under Uncertainty.md",
+    "docs/PHD_APPLICATION_READINESS.md",
     "docs/PRESENTATION_GUIDE.md",
+    "docs/PROJECT_OVERVIEW.md",
     "docs/README Irreversibility-Aware Navigation Planning.md",
     "docs/README Self-Healing Navigation & Language-Driven Safety.md",
     "docs/README-large info.md",
@@ -1819,78 +2365,51 @@
     "docs/README_trust_navigation.md",
     "docs/RESEARCH_CONTRIBUTION.md",
     "docs/RESEARCH_FOCUS.md",
+    "docs/RESEARCH_OVERVIEW.md",
+    "docs/RISK_ESTIMATION.md",
     "docs/ROADMAP.md",
     "docs/ROS2_NAV2_INTEGRATION.md",
     "docs/Returnability- & Irreversibility-Aware Frontier NBV.md",
     "docs/SelfHealing_LanguageSafety_README.md",
-    "lidar_ros2/README (4).md",
-    "lidar_ros2/readme",
+    "docs/UNCERTAINTY_MODEL.md",
+    "docs/archive/RESEARCH_AUDIT_2026-08-18.md",
+    "docs/audits/C00_CORE_RESEARCH_AUDIT.md",
+    "docs/audits/C01_C26_EXECUTION_MATRIX.md",
+    "docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md",
+    "docs/audits/CONTRIBUTIONS_FULL_AUDIT.md",
+    "docs/audits/CONTRIBUTION_DEPENDENCY_REVIEW.md",
+    "docs/audits/CONTRIBUTION_INTEGRATION_REPORT.md",
+    "docs/audits/CONTRIBUTION_PUBLICATION_READINESS.md",
+    "docs/audits/CONTRIBUTION_STATISTICAL_ANALYSIS.md",
+    "docs/audits/CONTRIBUTION_WEBSITE_INTEGRATION.md",
+    "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
+    "docs/audits/FINAL_CONTRIBUTIONS_REPORT.md",
+    "docs/audits/REAL_DATA_EVIDENCE_MATRIX.md",
+    "docs/audits/ROS2_GAZEBO_CONTRIBUTION_VALIDATION.md",
     "paper/LITERATURE_GAP_ANALYSIS.md",
     "paper/MANUSCRIPT_DRAFT.md",
+    "paper/README.md",
     "paper/RECOVERABILITY_METRIC.md",
     "paper/RESEARCH_PLAN.md",
     "paper/abstract.md",
     "paper/contributions.md",
-    "paper/dynnav_r/README.md",
+    "paper/dynnav_r/FINAL_REVIEW_PROMPT.md",
+    "paper/dynnav_r/GEOMETRIC_PARETO_PROTOCOL.md",
+    "paper/dynnav_r/HISTORY_ALIASING_NOTE.md",
+    "paper/dynnav_r/NOVELTY_LITERATURE_AUDIT_2026-11-01.md",
+    "paper/dynnav_r/RELEASE_GATE_2026-11-01.md",
+    "paper/dynnav_r/REVIEWER_AUDIT_2026-09.md",
+    "paper/dynnav_r/SUBMISSION_READINESS.md",
     "paper/future_work.md",
-    "pytest-of-root/pytest-14/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-14/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-14/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-14/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-14/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-16/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-16/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-16/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-16/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-16/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-2/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-24/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-24/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-24/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-24/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-24/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-26/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-26/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-26/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-26/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-26/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-26/test_suite_runs_mixed_schema_a0/summary.md",
-    "pytest-of-root/pytest-27/test_generated_and_transient_d0/README.md",
-    "pytest-of-root/pytest-28/test_generated_and_transient_d0/README.md",
-    "pytest-of-root/pytest-3/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-3/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-5/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-5/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-5/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-6/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-6/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-6/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-6/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-6/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-7/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-7/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-7/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-7/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-7/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "pytest-of-root/pytest-8/test_api_protocol_execution_re0/exp_21a073981ecab7e3/report.md",
-    "pytest-of-root/pytest-8/test_benchmark_writes_outputs0/summary.md",
-    "pytest-of-root/pytest-8/test_partial_run_failure_is_is0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-8/test_real_four_planner_run_gen0/exp_74c179b1d6350849/report.md",
-    "pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/evaluation_report.md",
-    "pytest-of-root/pytest-8/test_run_all_smoke_outputs0/reports/reproducibility_report.md",
-    "readme_full.md",
     "research_experiments/trust_aware_cvar/README.md",
     "research_experiments/trust_aware_cvar/paper/paper.md",
-    "ros2_ws/lidar_slam_tb3/README (4).md",
+    "results/contribution_suite/c26/summary.md",
+    "results/contribution_suite/first_eleven/summary.md",
+    "results/contribution_suite/full/summary.md",
+    "results/fragile_commitment_v2/MANIFEST.md",
+    "results/ros2_gazebo/README.md",
+    "results/ros2_gazebo/dynamic_run_31488640894/RUN.md",
+    "results/ros2_gazebo/static_run_31488640827/RUN.md",
     "ros2_ws/lidar_slam_tb3/README_LiDAR_SLAM_TurtleBot3_ROS2.md",
     "ros2_ws/lidar_slam_tb3/readme",
     "ros2_ws/src/dynnav_nav2/README.md",
@@ -1898,9 +2417,6 @@
     "ros2_ws/src/dynnav_nav2/docs/OCCUPANCY_GRID_CONVERSION.md",
     "ros2_ws/src/dynnav_nav2/docs/PLANNING_REQUEST_INTERFACE.md",
     "src/README.md",
-    "src/dynnav/README.md",
-    "website/AGENTS.md",
-    "website/CLAUDE.md",
     "website/README.md"
   ]
 }

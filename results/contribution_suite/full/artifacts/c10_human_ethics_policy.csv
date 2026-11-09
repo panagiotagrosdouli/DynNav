@@ -1,0 +1,10 @@
+scenario,zone_type,distance_to_human_m,operator_trust,language_confidence,action,max_speed,autonomy_level,path_allowed,requires_announcement,requires_operator_confirmation,ethical_cost_multiplier,explanation
+normal_corridor,none,6.0,0.95,0.9,NORMAL,1.0,0.975,True,False,False,1.0,no human-aware or ethical constraint requires intervention
+human_nearby,none,1.8,0.9,0.9,SLOW_DOWN,0.45,0.95,True,False,False,1.3,human nearby; reduce speed and increase clearance
+personal_space,none,0.8,0.9,0.9,SLOW_DOWN,0.2,0.5,True,False,False,2.5,robot is inside personal-space distance of a human
+no_go_zone,no_go,5.0,0.9,0.9,BLOCK_PATH,0.0,0.0,False,False,True,inf,candidate path enters a hard no-go ethical zone
+slow_zone,slow_zone,4.0,0.9,0.9,SLOW_DOWN,0.2,0.95,True,False,False,1.5,candidate path enters a slow-zone ethical region
+announce_zone,announce,4.0,0.9,0.9,ANNOUNCE_AND_SLOW,0.45,0.95,True,True,False,1.2,robot should announce presence and proceed cautiously
+low_operator_trust,none,5.0,0.2,0.9,ASK_OPERATOR,0.45,0.35,True,False,True,2.0,operator trust or language confidence is too low for full autonomy
+ambiguous_language,none,5.0,0.9,0.3,ASK_OPERATOR,0.45,0.35,True,False,True,2.0,operator trust or language confidence is too low for full autonomy
+soft_ethical_zone,avoid_if_possible,4.0,0.9,0.9,AVOID_ZONE,0.45,0.95,True,False,False,2.0,soft ethical zone should be avoided unless needed

@@ -1,0 +1,32 @@
+# Final Contributions Report
+
+**Repository base:** `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `753a5f8251994b18bf4979005073257af337c038`. **Audit branch:** `audit/contributions-complete-2026-11-09`.
+
+## Verified work
+
+- Verified PR #210 merge and main CI/workflow state.
+- Validated exactly 26 canonical registry entries and 26 experiment records.
+- Fixed C11 standalone import failure. Final full run: 25 passed, 1 skipped (C01: PyTorch unavailable), 0 failed. First-eleven: 10 passed, 1 skipped. C26 standalone: passed.
+- Preserved CSVs, commands, stdout/stderr, rows and SHA-256 under `results/contribution_suite/`.
+- Added the C01-C26 evidence matrix and the C00/C27, reproducibility, real-data, ROS/Gazebo, statistical, dependency, integration, website, and publication reports.
+- Updated website contribution cards to link to source/runner and added a separate C27 proposal card.
+
+## C00-C27 status
+
+- **C00:** `PARTIAL` — exact independent-closure oracle and history-augmented planner exist; no fresh full C00, ROS 2/Gazebo, or hardware run in this audit.
+- **C01:** `BLOCKED` in this runtime — checkpoint files exist, but no PyTorch and no fresh learned-vs-classical metrics.
+- **C02-C10:** `PARTIAL` — synthetic experiment commands pass; no independent real-data or closed-loop evidence from this suite.
+- **C11:** `PARTIAL` — structured-goal validator passes after import fix; no VLM invocation.
+- **C12-C18:** `PARTIAL` — controlled/proxy runners pass; no trained diffusion model, event camera, federated privacy/attack study, or formal proof claimed.
+- **C19:** `CONCEPT_ONLY` — deterministic mission-plan fixtures, not a real LLM.
+- **C20:** `PARTIAL` — synthetic explainer fixture.
+- **C21-C22:** `SCIENTIFICALLY_UNVERIFIED` — fixture labels do not establish trained PPO/curriculum; outputs show poor/no improvement.
+- **C23-C24:** `CONCEPT_ONLY` — 2D Gaussian proxy and synthetic uncertainty field, not actual 3D Gaussian Splatting or trained/rendered NeRF.
+- **C25-C26:** `PARTIAL` — numerical fault injections and in-process consensus, not ROS 2 attacks or distributed network evidence.
+- **C27:** `CONCEPT_ONLY` — standalone theory agenda; one 16-realization counterexample runner verifies an optimistic cut bound on a tiny synthetic graph; no general proof or registered experiment.
+
+## Blockers
+
+`pytest` and `torch` are missing in this runtime; no ROS 2/Gazebo or physical robot run was performed. Raw LILocBench pose input was absent, so its merged descriptive analysis was not recomputed. A web build has not yet been run after branch changes. A PR has not yet been opened; run branch-specific checks, push this feature branch, then open the requested PR.
+
+No newly trained model, physical experiment, formal proof, or hardware validation is claimed. All new smoke results are controlled synthetic evidence.
