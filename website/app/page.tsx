@@ -1,4 +1,5 @@
 import { ContributionExplorer } from "../components/contribution-explorer";
+import { RealDataTrajectory } from "../components/real-data-trajectory";
 
 const evidence = [
   ["Contribution suite", "Controlled smoke experiment registered for each C01–C26 track", "CI"],
@@ -117,6 +118,7 @@ export default function Home() {
       </section>
 
       <ContributionExplorer />
+      <RealDataTrajectory />
 
       <section className="evidence" id="evidence">
         <div className="section-heading compact">
