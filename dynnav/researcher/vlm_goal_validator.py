@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
-from typing import Iterable
+from collections.abc import Iterable
 
 
 class GoalDecision(str, Enum):
