@@ -117,3 +117,32 @@ rotation, coordinate roundtrip, invalid inputs and path integrity.
 **Not yet performed:** real ROS Jazzy message-level integration tests,
 GetPlan service functional tests on a running robot, Nav2 plugin integration,
 Gazebo closed-loop C01 trials and physical-robot trials.
+
+## Read-only sensor-readiness probe for an actual ROS network
+
+From a machine connected to the *actual* robot's ROS 2 domain, an onsite
+operator can run:
+
+```bash
+source /opt/ros/jazzy/setup.bash
+python contributions/01_learned_astar/experiments/ros2_hardware_readiness.py \
+  --seconds 15 \
+  --output /absolute/path/to/trial_evidence/ros_readiness.json
+```
+
+This node **only subscribes** to `/scan`, `/odom` and `/tf`. It also
+inspects advertised topic names/types and returns a JSON report; it does
+not start Nav2 or send velocity, action or navigation commands. Receiving
+these topics is **not** proof that a real robot moved, that the data
+originated from hardware, that emergency-stop works, or that C01 was
+executed. A direct human safety review remains mandatory.
+
+The test command (which runs without a robot) is:
+
+```bash
+python -m pytest -q contributions/01_learned_astar/tests/test_ros2_hardware_readiness.py
+```
+
+An accessible physical platform and onsite operator are required before
+the live probe can produce real sensor evidence. No such probe has been
+executed on physical hardware during this review.
