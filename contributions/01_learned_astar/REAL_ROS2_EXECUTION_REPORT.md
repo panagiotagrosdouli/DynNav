@@ -129,6 +129,38 @@ ROS 2 GetPlan roundtrip and ROS 2 recorded bag playback are distinct tests:
 the roundtrip fixture does **not** assert that the recorded Dingo trajectory
 was produced by C01 or that the C01 service consumed its LiDAR data.
 
+## Completed ROS 2 GetPlan on the actual official LILocBench map
+
+[Workflow run #42690187837](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42690187837)
+**passed both GitHub Actions jobs**. The original official `map_office.zip`
+was downloaded in a ROS 2 Jazzy container, decoded with the canonical DynNav
+`load_ros_map` geometry and published as a real ROS 2
+`nav_msgs/msg/OccupancyGrid` (1000×1000 cells, 0.05 m per cell). The
+non-actuating C01 ROS 2 `nav_msgs/srv/GetPlan` endpoint received the grid and
+returned a path for one deterministic, connected start/goal query, using the
+identical map geometry for both planners.
+
+| Mode | Measured expansions | Measured query latency | Result |
+|---|---:|---:|---|
+| Manhattan A* | 1,782 | 10.030 ms | Valid path, 92 steps |
+| Saved raw Learned A* | 209 | 13.347 ms | Valid path, 92 steps |
+
+This single paired query showed approximately **88.3% fewer expansions** for
+raw learned than Manhattan, but **33.1% greater measured query latency**.
+Both paths contained 93 positions. The actual stored model was loaded and its
+SHA-256 was reported through ROS 2 diagnostics.
+
+**Do not generalize this isolated successful expansion reduction:** the
+previous five-task *offline* real-map pilot found raw learned A* had more
+expansions and worse runtime on average. One additional ROS 2 query does
+not establish superior speed, a generalization rate or admissibility of the
+raw heuristic. CI timing measurements are hardware/runner-specific.
+
+The ROS 2 real-map planning run and ROS 2 original-bag sensor replay were
+executed as separate software experiments in the same workflow. A recorded
+LiDAR scan was **not fed into a closed-loop C01 localization, controller or
+motion execution**. No source Dingo was controlled by C01.
+
 ## Evidence hierarchy and unresolved work
 
 | Evidence | Status |
@@ -137,6 +169,7 @@ was produced by C01 or that the C01 service consumed its LiDAR data.
 | Authentic physical robot ROS 1 LiDAR/odom recording decoded | Verified |
 | Authentic recorded sensor messages replayed as ROS 2 Jazzy messages | Verified |
 | C01 actual ROS 2 GetPlan service, three planner modes | **Verified in real ROS 2 Jazzy, synthetic fixture map** |
+| C01 actual ROS 2 GetPlan, original office occupancy map | **Verified (one paired query, Manhattan/raw learned)** |
 | C01 real-time obstacle handling under closed-loop ROS 2 Nav2 | NOT VERIFIED |
 | Real physical robot movement controlled by C01 | **0 verified trials** |
 | Properly paired C01-vs-baseline hardware navigation outcomes | **0 verified trials** |
