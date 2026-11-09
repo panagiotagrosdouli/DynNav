@@ -209,3 +209,6 @@ footer { display: flex; justify-content: space-between; gap: 24px; padding: 30px
   .real-data { width: min(100% - 28px, 1240px); }
   .real-metric strong { font-size: 19px; }
 }
+
+.real-data-visuals { display: grid; align-content: start; gap: 14px; min-width: 0; }
+.map-preview img { max-height: 300px; object-fit: contain; background: #f7f7f7; }
