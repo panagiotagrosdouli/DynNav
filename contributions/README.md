@@ -4,6 +4,26 @@ This directory contains DynNav's numbered research modules plus shared experimen
 
 The project-level publication claim is narrower than this directory. The current paper track is centered on history-conditioned recoverability under action-triggered topology hazards; the broader modules below are retained as independent research/engineering contributions and future experimental tracks.
 
+## Core platform and contribution counts
+
+The navigation platform itself is the **C00 core**: the canonical Python engine, ROS 2/Nav2 integration, and the focused DynNav-R research track. C00 is an informal project label, not an independently registered item in the numbered contribution registry.
+
+- **C01–C11** are the first eleven numbered research modules.
+- **C01–C26** are the 26 registered contributions. The canonical smoke suite can run all 26 or a selected subset.
+- **C26** is Swarm Consensus; use `--only C26` to select it. It is one module in the 26-item suite.
+- **C27** remains a theory proposal outside the executable registry.
+- The two historical C07 directories describe one research track, not two distinct contributions.
+
+Run the first eleven modules, all 26, or C26 alone from the repository root:
+
+```bash
+python scripts/run_contribution_suite.py --only C01,C02,C03,C04,C05,C06,C07,C08,C09,C10,C11 --output-dir results/contribution_suite/c01-c11
+python scripts/run_contribution_suite.py --output-dir results/contribution_suite/c01-c26
+python scripts/run_contribution_suite.py --only C26 --output-dir results/contribution_suite/c26
+```
+
+These registered runs are controlled smoke experiments, mostly on synthetic inputs. They verify executable contracts and emit traceable artifacts; they do not replace evaluation on real sensor logs, Gazebo, or a physical robot.
+
 ## How to read this directory
 
 Each numbered contribution should answer five questions in its local `README.md`: what problem it addresses, what is actually implemented, how to run it, what evidence exists, and what remains unvalidated. Synthetic tests, unit tests, or numerical demonstrations are evidence for those environments only; they are not hardware validation, formal certification, or proof of universal superiority.
