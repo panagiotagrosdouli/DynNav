@@ -128,7 +128,7 @@ def test_overlay_generator_rejects_ground_truth_outside_map(tmp_path: Path) -> N
     poses = tmp_path / "poses.txt"
     poses.write_text(
         "0 1.5 1.5 0 0 0 0 1\\n"
-        "1 50.5 50.5 0 0 0 0 1\\n"
+        "1 50.5 50.5 0 0 0 0 1\n"
         "2 5.5 5.5 0 0 0 0 1\\n",
         encoding="utf-8",
     )
