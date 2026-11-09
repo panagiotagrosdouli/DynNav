@@ -1,0 +1,62 @@
+name: C06 original Dingo physical odometry resource proxy audit
+
+on:
+  pull_request:
+    paths:
+      - "contributions/06_energy_connectivity/**"
+      - ".github/workflows/c06-real-dingo-odometry.yml"
+  workflow_dispatch:
+
+jobs:
+  real-odom-proxy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install genuine ROS1 bag decoding and C06 tests
+        run: python -m pip install "rosbags>=0.10,<0.11" numpy pytest
+      - name: Test odometry integration safeguards
+        run: python -m pytest -q contributions/06_energy_connectivity/tests
+      - name: Retrieve authentic recorded Dingo ROS 1 odometry
+        run: |
+          python - <<'PY'
+          import pathlib,urllib.request,shutil,hashlib
+          p=pathlib.Path("/tmp/c06-original-dingo.bag")
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          with urllib.request.urlopen(url,timeout=180) as source,p.open("wb") as dest:shutil.copyfileobj(source,dest)
+          assert p.stat().st_size==38063988
+          assert hashlib.sha256(p.read_bytes()).hexdigest()=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          print("Verified genuine Dingo recording SHA-256 and byte count")
+          PY
+      - name: Actually integrate original physical robot odometry with explicit energy assumption
+        run: |
+          python contributions/06_energy_connectivity/experiments/eval_real_dingo_odometry_resources.py \
+            /tmp/c06-original-dingo.bag \
+            --output results/c06_recorded_odometry/summary.json \
+            --joules-per-meter 20 --battery-budget-j 1000 --reserve-j 150
+      - name: Reject fabricated physical energy and wireless connectivity evidence
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          a=json.loads(Path("results/c06_recorded_odometry/summary.json").read_text())
+          assert a["bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          assert a["accepted_steps"]>50
+          assert a["observed_planar_odometry_distance_m"]>0
+          assert a["energy_measurement_real"] is False
+          assert a["real_link_quality_observed"] is False
+          assert a["mission_decision"]=="BLOCKED_NO_PHYSICAL_BATTERY_OR_LINK_MEASUREMENT"
+          assert a["physical_robot_trials"]==0
+          print("Actual observed Dingo odometry:",a["observed_planar_odometry_distance_m"],"m")
+          print("Modeled energy, NOT measured battery:",a["modeled_energy_j"],"J")
+          PY
+      - name: Upload authentic odometry evidence without redistributing original bag
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c06-original-dingo-odometry-energy-assumption-provenance
+          path: results/c06_recorded_odometry/
+          if-no-files-found: warn
