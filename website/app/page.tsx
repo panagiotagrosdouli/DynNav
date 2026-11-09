@@ -5,7 +5,7 @@ const evidence = [
   ["Contribution suite", "Controlled smoke experiment registered for each C01–C26 track", "CI"],
   ["Python research core", "Unit and integration checks run in GitHub Actions", "CI"],
   ["ROS map intake", "ROS map-server YAML + PGM/PNG upload and static A* route viewer", "available"],
-  ["Public dataset trial", "LILocBench map/sequence analysis with recorded provenance", "pending"],
+  ["C01 real-map offline pilot", "LILocBench official occupancy map, five paired A* planner tasks; no learned efficiency gain observed", "available"],
   ["Gazebo / physical robot", "Paired dynamic-scene and hardware trials with traceable logs", "pending"],
 ] as const;
 
@@ -91,6 +91,7 @@ export default function Home() {
           <h2>What is being built and what is proven?</h2>
           <p>Research software for navigation decisions in environments that can change after planning. The current verified scope is executable code, registered controlled experiments, and reproducible CI. External-world efficacy is still a validation milestone.</p>
           <a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/docs/CLAIM_EVIDENCE_MATRIX.md">Read the claim-to-evidence matrix →</a>
+          <p><a href="https://github.com/panagiotagrosdouli/DynNav/blob/main/contributions/01_learned_astar/REAL_DATA_PROTOCOL.md">C01 official real-map experiment and measured limitations →</a></p>
         </article>
         <article>
           <p className="eyebrow"><span /> Engineering brief</p>
