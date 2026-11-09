@@ -178,6 +178,15 @@ jobs:
           python-version: "3.12"
       - name: Audit every Markdown file
         run: python scripts/audit_markdown.py --root . --json-out results/markdown_audit.json
+      - name: Inventory tracked folders and static Python dependencies
+        run: python scripts/audit_repository_dependencies.py --output results/repository_dependency_audit.json
+      - name: Upload repository dependency audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: repository-dependency-audit
+          path: results/repository_dependency_audit.json
+          if-no-files-found: error
       - name: Upload Markdown audit
         if: always()
         uses: actions/upload-artifact@v4
