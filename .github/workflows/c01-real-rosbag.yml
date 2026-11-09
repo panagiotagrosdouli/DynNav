@@ -1,0 +1,61 @@
+name: C01 real recorded robot ROS bag audit
+
+on:
+  pull_request:
+    paths:
+      - "contributions/01_learned_astar/**"
+      - ".github/workflows/c01-real-rosbag.yml"
+  workflow_dispatch:
+
+jobs:
+  real-recorded-rosbag:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install ROS bag decoder
+        run: python -m pip install "rosbags>=0.10,<0.11"
+      - name: Download original physical Dingo recording (ROS 1 bag)
+        run: |
+          python - <<'PY'
+          import hashlib
+          import pathlib
+          import urllib.request
+          url = "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          out = pathlib.Path("/tmp/c01-dingo-dynamics_0.bag")
+          with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "DynNav-C01-scientific-reproducibility"}), timeout=180) as stream, out.open("wb") as sink:
+              import shutil
+              shutil.copyfileobj(stream, sink)
+          print(f"downloaded bytes={out.stat().st_size}")
+          if not 10_000_000 < out.stat().st_size < 100_000_000:
+              raise RuntimeError("unexpected downloaded dataset size")
+          print("original ROS1 bag sha256=" + hashlib.sha256(out.read_bytes()).hexdigest())
+          PY
+      - name: Decode actual recorded LiDAR, odometry and TF messages
+        run: |
+          python contributions/01_learned_astar/experiments/inspect_recorded_rosbag.py             /tmp/c01-dingo-dynamics_0.bag             --output results/c01_real_rosbag/dynamics_0_recorded_messages.json
+      - name: Verify raw decoded real-sensor evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p = Path("results/c01_real_rosbag/dynamics_0_recorded_messages.json")
+          data = json.loads(p.read_text())
+          assert data["decoded_message_count_total"] > 0
+          assert any("LaserScan" in s["type"] and s["decoded_message_count"] > 0 for s in data["topic_statistics"]), data["topic_statistics"]
+          assert any("Odometry" in s["type"] and s["decoded_message_count"] > 0 for s in data["topic_statistics"]), data["topic_statistics"]
+          assert data["physical_robot_validation"] is False
+          assert data["c01_controlled_source_robot"] is False
+          print("Real recorded sensor messages decoded. Original robot DID NOT run C01.")
+          PY
+      - name: Upload measured sensor inspection
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c01-real-dingo-recorded-rosbag-inspection
+          path: results/c01_real_rosbag/
+          if-no-files-found: warn
