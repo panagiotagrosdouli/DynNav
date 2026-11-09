@@ -1,0 +1,964 @@
+[
+  {
+    "id": "C01",
+    "title": "Learned A* Search",
+    "category": "planning",
+    "maturity": "Research Prototype",
+    "directory": "contributions/01_learned_astar",
+    "readme": "contributions/01_learned_astar/README.md",
+    "source": "contributions/01_learned_astar/code",
+    "renderer": "src/dynnav_dashboard/contributions/c01_learned_astar.py",
+    "tests": "contributions/01_learned_astar/tests",
+    "experiment": {
+      "contribution_id": "C01",
+      "experiment_id": "c01_learned_astar_comparison",
+      "hypothesis": "A learned heuristic can reduce A* node expansions without materially reducing success or increasing path length relative to classical A*.",
+      "runner": "contributions/01_learned_astar/experiments/eval_astar_learned.py",
+      "smoke_arguments": [
+        "--trials",
+        "8",
+        "--min-goal-distance",
+        "8"
+      ],
+      "output_argument": "--out",
+      "artifact": "c01_learned_astar.csv",
+      "optional_dependencies": [
+        "torch"
+      ],
+      "baselines": [
+        "Classical A*"
+      ],
+      "primary_metrics": [
+        "classic_success",
+        "learned_success",
+        "classic_expansions",
+        "learned_expansions",
+        "expansion_ratio",
+        "delta_path",
+        "runtime_ratio"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Requires the repository's local trained checkpoint and PyTorch; synthetic grids do not establish transfer to Nav2 or a physical robot."
+    },
+    "existing_results": "contributions/01_learned_astar/results"
+  },
+  {
+    "id": "C02",
+    "title": "Uncertainty Calibration",
+    "category": "uncertainty",
+    "maturity": "Research Prototype",
+    "directory": "contributions/02_uncertainty_calibration",
+    "readme": "contributions/02_uncertainty_calibration/README.md",
+    "source": "contributions/02_uncertainty_calibration/code",
+    "renderer": "src/dynnav_dashboard/contributions/c02_ekf_ukf.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C02",
+      "experiment_id": "c02_uncertainty_calibration",
+      "hypothesis": "Post-hoc calibration improves absolute-error calibration and empirical interval coverage relative to raw uncertainty estimates.",
+      "runner": "contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py",
+      "smoke_arguments": [
+        "--n",
+        "200",
+        "--seed",
+        "13"
+      ],
+      "output_argument": "--out",
+      "artifact": "c02_uncertainty_calibration.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Raw uncertainty",
+        "Affine calibration"
+      ],
+      "primary_metrics": [
+        "ece_abs_error",
+        "coverage_1sigma",
+        "coverage_2sigma",
+        "pearson_uncertainty_error",
+        "spearman_uncertainty_error"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The default generator is synthetic and cannot establish calibration under sensor drift or domain shift."
+    },
+    "existing_results": "contributions/02_uncertainty_calibration/results"
+  },
+  {
+    "id": "C03",
+    "title": "Belief and Risk Planning",
+    "category": "planning",
+    "maturity": "Research Prototype",
+    "directory": "contributions/03_belief_risk_planning",
+    "readme": "contributions/03_belief_risk_planning/README.md",
+    "source": "contributions/03_belief_risk_planning/code",
+    "renderer": "src/dynnav_dashboard/contributions/c03_cvar_astar.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C03",
+      "experiment_id": "c03_belief_risk_tradeoff",
+      "hypothesis": "CVaR-aware route selection reduces tail occupancy risk with a measurable path-length trade-off relative to risk-neutral routing.",
+      "runner": "contributions/03_belief_risk_planning/experiments/eval_risk_tradeoff.py",
+      "smoke_arguments": [
+        "--alpha",
+        "0.95",
+        "--objective-risk",
+        "cvar"
+      ],
+      "output_argument": "--out",
+      "artifact": "c03_belief_risk_tradeoff.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Risk-neutral route",
+        "Expected-risk route"
+      ],
+      "primary_metrics": [
+        "path_length",
+        "expected_risk",
+        "cvar_risk",
+        "max_risk",
+        "total_objective",
+        "dominated"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Route candidates and beliefs are controlled fixtures rather than live occupancy estimates."
+    },
+    "existing_results": "contributions/03_belief_risk_planning/results"
+  },
+  {
+    "id": "C04",
+    "title": "Irreversibility and Returnability",
+    "category": "safety",
+    "maturity": "Research Prototype",
+    "directory": "contributions/04_irreversibility_returnability",
+    "readme": "contributions/04_irreversibility_returnability/README.md",
+    "source": "contributions/04_irreversibility_returnability/code",
+    "renderer": "src/dynnav_dashboard/contributions/c04_returnability.py",
+    "tests": "contributions/04_irreversibility_returnability/tests",
+    "experiment": {
+      "contribution_id": "C04",
+      "experiment_id": "c04_recoverability_profile",
+      "hypothesis": "Recoverability loss and bottleneck exposure distinguish fragile paths that conventional path length alone treats as acceptable.",
+      "runner": "contributions/04_irreversibility_returnability/experiments/eval_recoverability_metrics.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c04_recoverability_profile.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Geometric path length"
+      ],
+      "primary_metrics": [
+        "min_recoverability",
+        "cumulative_recoverability_loss",
+        "bottleneck_exposure",
+        "max_irreversibility",
+        "all_returnable"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Recoverability is evaluated on discrete graph fixtures and is not yet a calibrated real-world failure probability."
+    },
+    "existing_results": "contributions/04_irreversibility_returnability/results"
+  },
+  {
+    "id": "C05",
+    "title": "Safe-Mode Navigation",
+    "category": "safety",
+    "maturity": "Research Prototype",
+    "directory": "contributions/05_safe_mode_navigation",
+    "readme": "contributions/05_safe_mode_navigation/README.md",
+    "source": "contributions/05_safe_mode_navigation/code",
+    "renderer": "src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C05",
+      "experiment_id": "c05_safe_mode_thresholds",
+      "hypothesis": "Hysteresis and persistence thresholds reduce mode chattering while escalating high-risk traces to safe mode or emergency stop.",
+      "runner": "contributions/05_safe_mode_navigation/experiments/eval_safe_mode_thresholds.py",
+      "smoke_arguments": [
+        "--n-steps",
+        "20"
+      ],
+      "output_argument": "--out",
+      "artifact": "c05_safe_mode_thresholds.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Single-threshold supervisor"
+      ],
+      "primary_metrics": [
+        "safe_mode_steps",
+        "emergency_stop_steps",
+        "transitions",
+        "replans",
+        "operator_alerts",
+        "mean_commanded_speed"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Controller outputs are policy decisions on scripted traces, not closed-loop velocity validation."
+    },
+    "existing_results": "contributions/05_safe_mode_navigation/results"
+  },
+  {
+    "id": "C06",
+    "title": "Energy and Connectivity",
+    "category": "resources",
+    "maturity": "Research Prototype",
+    "directory": "contributions/06_energy_connectivity",
+    "readme": "contributions/06_energy_connectivity/README.md",
+    "source": "contributions/06_energy_connectivity/code",
+    "renderer": "src/dynnav_dashboard/contributions/c06_energy_connectivity.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C06",
+      "experiment_id": "c06_resource_feasibility",
+      "hypothesis": "Explicit energy reserve and connectivity constraints reject mission routes that distance-only planning would incorrectly accept.",
+      "runner": "contributions/06_energy_connectivity/experiments/eval_resource_feasibility.py",
+      "smoke_arguments": [
+        "--battery-budget",
+        "26",
+        "--reserve-energy",
+        "2",
+        "--min-connectivity",
+        "0.35"
+      ],
+      "output_argument": "--out",
+      "artifact": "c06_resource_feasibility.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Distance-only feasibility"
+      ],
+      "primary_metrics": [
+        "energy_margin",
+        "connectivity_margin",
+        "feasible",
+        "selected_best",
+        "via_recharge",
+        "via_relay"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Energy and radio models are analytical proxies without hardware characterization."
+    },
+    "existing_results": "contributions/06_energy_connectivity/results"
+  },
+  {
+    "id": "C07",
+    "title": "Next-Best View",
+    "category": "active_perception",
+    "maturity": "Research Prototype",
+    "directory": "contributions/07_next_best_view",
+    "readme": "contributions/07_next_best_view/README.md",
+    "source": "contributions/07_next_best_view/code",
+    "renderer": "src/dynnav_dashboard/contributions/c07_next_best_view.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C07",
+      "experiment_id": "c07_returnability_aware_nbv",
+      "hypothesis": "Returnability-aware next-best-view scoring preserves safer retreat options than information-gain-only selection.",
+      "runner": "contributions/07_next_best_view/experiments/eval_returnability_aware_nbv.py",
+      "smoke_arguments": [
+        "--risk-weight",
+        "1.0",
+        "--returnability-weight",
+        "1.0",
+        "--connectivity-weight",
+        "0.25"
+      ],
+      "output_argument": "--out",
+      "artifact": "c07_returnability_aware_nbv.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Information-gain-only NBV"
+      ],
+      "primary_metrics": [
+        "information_gain",
+        "path_risk",
+        "returnability",
+        "connectivity",
+        "classic_score",
+        "safe_score"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Candidate views are hand-authored fixtures rather than sensor-derived frontiers."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C08",
+    "title": "Security IDS",
+    "category": "security",
+    "maturity": "Experimental",
+    "directory": "contributions/08_security_ids",
+    "readme": "contributions/08_security_ids/README.md",
+    "source": "contributions/08_security_ids/code",
+    "renderer": "src/dynnav_dashboard/contributions/c08_security_ids.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C08",
+      "experiment_id": "c08_ids_response_policy",
+      "hypothesis": "Severity- and trust-conditioned IDS response produces graded mitigations rather than a brittle binary alarm policy.",
+      "runner": "contributions/08_security_ids/experiments/eval_ids_response_policy.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c08_ids_response_policy.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Binary alarm-only response"
+      ],
+      "primary_metrics": [
+        "flag_rate",
+        "triggered",
+        "severity",
+        "mitigation",
+        "trust_score",
+        "d2_ratio"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Synthetic detector scores do not demonstrate detection performance against real ROS 2 attacks."
+    },
+    "existing_results": "contributions/08_security_ids/results"
+  },
+  {
+    "id": "C09",
+    "title": "Multi-Robot Navigation",
+    "category": "multi_robot",
+    "maturity": "Experimental",
+    "directory": "contributions/09_multi_robot",
+    "readme": "contributions/09_multi_robot/README.md",
+    "source": "contributions/09_multi_robot/code",
+    "renderer": "src/dynnav_dashboard/contributions/c09_multi_robot.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C09",
+      "experiment_id": "c09_team_coordination",
+      "hypothesis": "Joint conflict and risk-budget accounting identifies unsafe multi-robot plans missed by independent single-robot validation.",
+      "runner": "contributions/09_multi_robot/experiments/eval_team_coordination.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c09_team_coordination.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Independent robot plans"
+      ],
+      "primary_metrics": [
+        "n_conflicts",
+        "vertex_conflicts",
+        "edge_swap_conflicts",
+        "risk_budget_violations",
+        "belief_disagreement_count",
+        "feasible"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The benchmark audits predefined plans and does not exercise distributed ROS 2 communication."
+    },
+    "existing_results": "contributions/09_multi_robot/results"
+  },
+  {
+    "id": "C10",
+    "title": "Human, Language, and Ethics",
+    "category": "human_robot_interaction",
+    "maturity": "Experimental",
+    "directory": "contributions/10_human_language_ethics",
+    "readme": "contributions/10_human_language_ethics/README.md",
+    "source": "contributions/10_human_language_ethics/code",
+    "renderer": "src/dynnav_dashboard/contributions/c10_human_aware.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C10",
+      "experiment_id": "c10_human_ethics_policy",
+      "hypothesis": "Human distance, operator trust, zone semantics, and instruction confidence should produce auditable speed and autonomy restrictions.",
+      "runner": "contributions/10_human_language_ethics/experiments/eval_human_ethics_policy.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c10_human_ethics_policy.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Context-free navigation policy"
+      ],
+      "primary_metrics": [
+        "action",
+        "max_speed",
+        "autonomy_level",
+        "path_allowed",
+        "requires_operator_confirmation",
+        "ethical_cost_multiplier"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Policy fixtures do not constitute human-subject validation or normative proof."
+    },
+    "existing_results": "contributions/10_human_language_ethics/results"
+  },
+  {
+    "id": "C11",
+    "title": "VLM Navigation Agent",
+    "category": "multimodal_learning",
+    "maturity": "Experimental",
+    "directory": "contributions/11_vlm_navigation_agent",
+    "readme": "contributions/11_vlm_navigation_agent/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C11",
+      "experiment_id": "c11_vlm_goal_validation",
+      "hypothesis": "A deterministic safety validator rejects low-confidence, malformed, or out-of-bounds VLM goals before metric planning.",
+      "runner": "contributions/11_vlm_navigation_agent/experiments/eval_vlm_goal_validation.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c11_vlm_goal_validation.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Unvalidated VLM output"
+      ],
+      "primary_metrics": [
+        "decision",
+        "valid_confidence",
+        "valid_region",
+        "valid_pixel",
+        "valid_waypoint",
+        "reason"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "This validates structured outputs only; it does not call or benchmark a real vision-language model."
+    },
+    "existing_results": "contributions/11_vlm_navigation_agent/results"
+  },
+  {
+    "id": "C12",
+    "title": "Diffusion Occupancy",
+    "category": "prediction",
+    "maturity": "Experimental",
+    "directory": "contributions/12_diffusion_occupancy",
+    "readme": "contributions/12_diffusion_occupancy/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C12",
+      "experiment_id": "c12_risk_map_quality",
+      "hypothesis": "Probabilistic occupancy forecasts improve calibration and high-risk recall relative to deterministic persistence baselines.",
+      "runner": "contributions/12_diffusion_occupancy/experiments/eval_risk_map_quality.py",
+      "smoke_arguments": [
+        "--n-scenarios",
+        "4"
+      ],
+      "output_argument": "--out",
+      "artifact": "c12_risk_map_quality.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Deterministic persistence",
+        "Frequency forecast"
+      ],
+      "primary_metrics": [
+        "brier_score",
+        "nll",
+        "high_risk_precision",
+        "high_risk_recall",
+        "cvar_conservatism_gap"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The lightweight predictor is a controlled proxy and not evidence for a trained diffusion model."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C13",
+    "title": "Latent World Model",
+    "category": "world_models",
+    "maturity": "Experimental",
+    "directory": "contributions/13_latent_world_model",
+    "readme": "contributions/13_latent_world_model/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c13_world_model.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C13",
+      "experiment_id": "c13_rollout_audit",
+      "hypothesis": "Latent rollout auditing selects action sequences that balance predicted return with effort and recoverability penalties.",
+      "runner": "contributions/13_latent_world_model/experiments/eval_rollout_audit.py",
+      "smoke_arguments": [
+        "--horizon",
+        "6"
+      ],
+      "output_argument": "--out",
+      "artifact": "c13_rollout_audit.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Return-only rollout ranking"
+      ],
+      "primary_metrics": [
+        "imagined_return",
+        "action_effort",
+        "terminal_latent_norm",
+        "recoverability_proxy",
+        "irreversible",
+        "final_score"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The latent dynamics are untrained fixtures and cannot support world-model accuracy claims."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C14",
+    "title": "Causal Risk Attribution",
+    "category": "explainability",
+    "maturity": "Experimental",
+    "directory": "contributions/14_causal_risk_attribution",
+    "readme": "contributions/14_causal_risk_attribution/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c14_causal_scm.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C14",
+      "experiment_id": "c14_root_cause_attribution",
+      "hypothesis": "Counterfactual intervention ranking recovers the injected navigation failure cause more reliably than outcome magnitude alone.",
+      "runner": "contributions/14_causal_risk_attribution/experiments/eval_root_cause_attribution.py",
+      "smoke_arguments": [
+        "--n-samples",
+        "30"
+      ],
+      "output_argument": "--out",
+      "artifact": "c14_root_cause_attribution.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Outcome-magnitude ranking"
+      ],
+      "primary_metrics": [
+        "top1_correct",
+        "true_cause_rank",
+        "counterfactual_reduction",
+        "predicted_root_cause"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Correctness is relative to a hand-specified structural causal model."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C15",
+    "title": "Neuromorphic Sensing",
+    "category": "perception",
+    "maturity": "Experimental",
+    "directory": "contributions/15_neuromorphic_sensing",
+    "readme": "contributions/15_neuromorphic_sensing/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c15_neuromorphic.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C15",
+      "experiment_id": "c15_neuromorphic_latency",
+      "hypothesis": "Event-stream obstacle detection can reduce detection latency for moving targets while maintaining low false-negative rates relative to frame sampling.",
+      "runner": "contributions/15_neuromorphic_sensing/experiments/eval_neuromorphic_latency.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c15_neuromorphic_latency.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Frame-based detector"
+      ],
+      "primary_metrics": [
+        "detected",
+        "detection_time_us",
+        "latency_us",
+        "false_negative",
+        "event_rate_per_ms"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Simulated events and Python timing do not establish hardware event-camera latency."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C16",
+    "title": "Federated Navigation Learning",
+    "category": "distributed_learning",
+    "maturity": "Experimental",
+    "directory": "contributions/16_federated_nav_learning",
+    "readme": "contributions/16_federated_nav_learning/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c16_federated_learning.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C16",
+      "experiment_id": "c16_federated_tradeoffs",
+      "hypothesis": "Robust or privacy-aware aggregation exposes measurable accuracy, fairness, privacy, and communication trade-offs across robot clients.",
+      "runner": "contributions/16_federated_nav_learning/experiments/eval_federated_tradeoffs.py",
+      "smoke_arguments": [
+        "--rounds",
+        "3",
+        "--n-clients",
+        "4"
+      ],
+      "output_argument": "--out",
+      "artifact": "c16_federated_tradeoffs.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Centralized reference",
+        "FedAvg"
+      ],
+      "primary_metrics": [
+        "mean_client_mse",
+        "worst_client_mse",
+        "fairness_gap",
+        "communication_floats",
+        "final_server_val_mse"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Synthetic client objectives do not establish performance on heterogeneous robot datasets."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C17",
+    "title": "Topological Semantic Maps",
+    "category": "mapping",
+    "maturity": "Experimental",
+    "directory": "contributions/17_topological_semantic_maps",
+    "readme": "contributions/17_topological_semantic_maps/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c17_topological_maps.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C17",
+      "experiment_id": "c17_topological_semantic_navigation",
+      "hypothesis": "Sparse semantic grounding and edge invalidation support correct goal retrieval and route adaptation on a topological map.",
+      "runner": "contributions/17_topological_semantic_maps/experiments/eval_topo_semantic_navigation.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c17_topological_semantic_navigation.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Nominal topological route"
+      ],
+      "primary_metrics": [
+        "top1_correct",
+        "topk_correct",
+        "path_found",
+        "path_cost",
+        "blocked_edges"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Hash-based label embeddings are deterministic stubs, not open-vocabulary perception evidence."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C18",
+    "title": "Formal Safety Shields",
+    "category": "formal_methods",
+    "maturity": "Experimental",
+    "directory": "contributions/18_formal_safety_shields",
+    "readme": "contributions/18_formal_safety_shields/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C18",
+      "experiment_id": "c18_shield_stress_test",
+      "hypothesis": "Runtime shielding reduces safety violations and minimum-distance breaches relative to unshielded control under matched scenarios.",
+      "runner": "contributions/18_formal_safety_shields/experiments/eval_shield_stress_test.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c18_shield_stress_test.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Unshielded controller"
+      ],
+      "primary_metrics": [
+        "safety_violations",
+        "min_obstacle_distance",
+        "min_stl_robustness",
+        "intervention_rate",
+        "final_goal_distance"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Numerical stress tests are not a formal proof and do not cover full robot dynamics."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C19",
+    "title": "LLM Mission Planner",
+    "category": "language_planning",
+    "maturity": "Documentation Concept",
+    "directory": "contributions/19_llm_mission_planner",
+    "readme": "contributions/19_llm_mission_planner/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c19_llm_planner.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C19",
+      "experiment_id": "c19_mission_plan_quality",
+      "hypothesis": "Schema-constrained mission planning improves waypoint order, constraint satisfaction, and execution readiness over unchecked language output.",
+      "runner": "contributions/19_llm_mission_planner/experiments/eval_mission_plan_quality.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c19_mission_plan_quality.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Unchecked mission sequence"
+      ],
+      "primary_metrics": [
+        "ordering_accuracy",
+        "exact_sequence_match",
+        "unresolved_waypoints",
+        "forbidden_violations",
+        "execution_ready"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The benchmark uses deterministic fixtures and does not establish LLM reliability."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C20",
+    "title": "Multimodal Failure Explainer",
+    "category": "explainability",
+    "maturity": "Experimental",
+    "directory": "contributions/20_multimodal_failure_explainer",
+    "readme": "contributions/20_multimodal_failure_explainer/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c20_failure_explainer.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C20",
+      "experiment_id": "c20_failure_report_quality",
+      "hypothesis": "Structured multimodal failure reports increase root-cause coverage and operator-action relevance over minimal event summaries.",
+      "runner": "contributions/20_multimodal_failure_explainer/experiments/eval_failure_report_quality.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c20_failure_report_quality.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Minimal event summary"
+      ],
+      "primary_metrics": [
+        "completeness_score",
+        "root_cause_recall",
+        "action_relevance",
+        "stl_coverage",
+        "operator_readiness",
+        "total_score"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Automated rubric scores are not a substitute for blinded operator studies."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C21",
+    "title": "PPO Navigation Agent",
+    "category": "reinforcement_learning",
+    "maturity": "Experimental",
+    "directory": "contributions/21_ppo_navigation_agent",
+    "readme": "contributions/21_ppo_navigation_agent/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c21_ppo.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C21",
+      "experiment_id": "c21_policy_safety",
+      "hypothesis": "Policy-level safety evaluation reveals reward-safety trade-offs that aggregate return alone would conceal.",
+      "runner": "contributions/21_ppo_navigation_agent/experiments/eval_policy_safety.py",
+      "smoke_arguments": [
+        "--episodes",
+        "8"
+      ],
+      "output_argument": "--out",
+      "artifact": "c21_policy_safety.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Unshielded policy",
+        "Heuristic policy"
+      ],
+      "primary_metrics": [
+        "success_rate",
+        "collision_rate",
+        "mean_reward",
+        "mean_min_obstacle_distance",
+        "shield_intervention_rate"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The policies and environment are lightweight fixtures, not trained PPO deployment evidence."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C22",
+    "title": "Curriculum RL",
+    "category": "reinforcement_learning",
+    "maturity": "Experimental",
+    "directory": "contributions/22_curriculum_rl",
+    "readme": "contributions/22_curriculum_rl/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c22_curriculum_rl.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C22",
+      "experiment_id": "c22_curriculum_strategies",
+      "hypothesis": "Adaptive curriculum schedules reach hard scenarios with better stability and sample efficiency than fixed difficulty schedules.",
+      "runner": "contributions/22_curriculum_rl/experiments/eval_curriculum_strategies.py",
+      "smoke_arguments": [
+        "--episodes",
+        "40"
+      ],
+      "output_argument": "--out",
+      "artifact": "c22_curriculum_strategies.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Fixed curriculum",
+        "Linear curriculum"
+      ],
+      "primary_metrics": [
+        "episodes_to_hard",
+        "success_trend",
+        "stability_score",
+        "heldout_transfer_success",
+        "sample_efficiency_score"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Synthetic learning curves do not demonstrate sample efficiency for a trained navigation agent."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C23",
+    "title": "Gaussian Splatting Mapper",
+    "category": "neural_mapping",
+    "maturity": "Documentation Concept",
+    "directory": "contributions/23_gaussian_splatting_mapper",
+    "readme": "contributions/23_gaussian_splatting_mapper/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c23_gaussian_splatting.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C23",
+      "experiment_id": "c23_gaussian_mapping_quality",
+      "hypothesis": "Incremental Gaussian-map proxies expose occupancy quality, uncertainty separation, and frontier utility as observations accumulate.",
+      "runner": "contributions/23_gaussian_splatting_mapper/experiments/eval_gs_mapping_quality.py",
+      "smoke_arguments": [
+        "--frames",
+        "4"
+      ],
+      "output_argument": "--out",
+      "artifact": "c23_gaussian_mapping_quality.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Sparse occupancy proxy"
+      ],
+      "primary_metrics": [
+        "occupancy_iou",
+        "occupancy_precision",
+        "occupancy_recall",
+        "uncertainty_unknown_gap",
+        "frontier_precision_proxy"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "This is a 2D Gaussian proxy, not photorealistic 3D Gaussian Splatting reconstruction."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C24",
+    "title": "NeRF Uncertainty",
+    "category": "neural_mapping",
+    "maturity": "Documentation Concept",
+    "directory": "contributions/24_nerf_uncertainty",
+    "readme": "contributions/24_nerf_uncertainty/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c24_nerf_uncertainty.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C24",
+      "experiment_id": "c24_nerf_uncertainty",
+      "hypothesis": "Rendering-uncertainty proxies separate novel views from known space and improve risk-aware exploration decisions.",
+      "runner": "contributions/24_nerf_uncertainty/experiments/eval_nerf_uncertainty.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c24_nerf_uncertainty.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Uniform uncertainty",
+        "Uncertainty-agnostic planning"
+      ],
+      "primary_metrics": [
+        "brier_score",
+        "ece",
+        "ood_auroc",
+        "novel_view_uncertainty_gap",
+        "exploration_precision_at_k",
+        "planning_safety_gain"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "The evaluator uses synthetic uncertainty fields and does not train or render a NeRF."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C25",
+    "title": "Adversarial Attack Simulator",
+    "category": "security",
+    "maturity": "Experimental",
+    "directory": "contributions/25_adversarial_attack_simulator",
+    "readme": "contributions/25_adversarial_attack_simulator/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c25_adversarial.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C25",
+      "experiment_id": "c25_attack_impact",
+      "hypothesis": "Attack-specific impact scoring distinguishes geometry, odometry, and sensor degradation and selects proportionate mitigations.",
+      "runner": "contributions/25_adversarial_attack_simulator/experiments/eval_attack_impact.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c25_attack_impact.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "No-attack scenario"
+      ],
+      "primary_metrics": [
+        "detected",
+        "severity_score",
+        "min_distance_degradation",
+        "geometry_change",
+        "odometry_error_m",
+        "mitigation"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "Injected numerical attacks are not an end-to-end ROS 2 penetration test."
+    },
+    "existing_results": null
+  },
+  {
+    "id": "C26",
+    "title": "Swarm Consensus",
+    "category": "multi_robot",
+    "maturity": "Experimental",
+    "directory": "contributions/26_swarm_consensus",
+    "readme": "contributions/26_swarm_consensus/README.md",
+    "source": null,
+    "renderer": "src/dynnav_dashboard/contributions/c26_bft_swarm.py",
+    "tests": "tests/test_contribution_experiment_suite.py",
+    "experiment": {
+      "contribution_id": "C26",
+      "experiment_id": "c26_swarm_consensus",
+      "hypothesis": "Trust-aware robust consensus maintains agreement and mission success under Byzantine participants better than unweighted aggregation.",
+      "runner": "contributions/26_swarm_consensus/experiments/eval_swarm_consensus.py",
+      "smoke_arguments": [],
+      "output_argument": "--out",
+      "artifact": "c26_swarm_consensus.csv",
+      "optional_dependencies": [],
+      "baselines": [
+        "Mean consensus",
+        "Median consensus"
+      ],
+      "primary_metrics": [
+        "consensus_accuracy",
+        "mission_success",
+        "byzantine_detection_recall",
+        "communication_messages",
+        "trust_weighted_agreement"
+      ],
+      "evidence_level": "synthetic",
+      "limitation": "In-process simulation does not model real network delays, packet ordering, or ROS 2 DDS failure modes."
+    },
+    "existing_results": null
+  }
+]
