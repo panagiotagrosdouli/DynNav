@@ -45,7 +45,9 @@ Required run metadata: robot and sensor identifiers, ROS distribution and packag
 
 ## Evidence status
 
-Until real dataset artifacts or physical runs are retained with provenance, this document is a protocol only. Passing map-import or playback checks is engineering validation. A planner-efficacy claim requires valid paired trials on the physical robot under the frozen protocol.
+A first descriptive analysis of the public `dynamics_0` ground-truth trajectory has been completed and is recorded in [LILocBench dynamics_0 analysis](LILOCBENCH_DYNAMICS_0_ANALYSIS.md). It covers 3,194 poses over 159.951 seconds: 53.967 m of XY path and 0.337 m/s mean XY speed. The [website plot](../website/public/lilocbench-dynamics-0-ground-truth.svg) is the measured XY trajectory without an occupancy-map background.
+
+The analyzer records a SHA-256 digest when run against the downloaded original pose file. The map ZIP, ROS-bag replay, and planner comparisons have not yet been run or retained as result artifacts. The trajectory statistics describe the recorded robot motion; they do not show that DynNav caused, avoided, or recovered from any event. Passing map-import or playback checks is engineering validation. Planner-efficacy claims require valid controlled comparisons with traceable outcomes. Physical-robot efficacy remains pending matched trials under the frozen protocol.
 
 ## Citation
 
