@@ -22,7 +22,7 @@ jobs:
       - name: Install ROS 2 and Python dependencies
         run: |
           apt-get update
-          apt-get install -y --no-install-recommends python3-venv python3-pip python3-numpy \
+          apt-get install -y --no-install-recommends python3-venv python3-pip python3-numpy python3-matplotlib python3-yaml python3-pil \
             ros-jazzy-nav-msgs ros-jazzy-geometry-msgs ros-jazzy-std-msgs
           python3 -m venv --system-site-packages /tmp/c01-ros-venv
           source /tmp/c01-ros-venv/bin/activate
