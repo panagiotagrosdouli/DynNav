@@ -1,6 +1,6 @@
 # C01–C26 Execution Matrix
 
-**Run source:** `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `753a5f8251994b18bf4979005073257af337c038` · **Environment:** Python 3.12.14, Linux-6.18.57-x86_64-with-glibc2.39.
+**Run source:** `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `dd80146672d7330a57bfabbf51ea8e25caff12b1` · **Environment:** Python 3.12.14, Linux-6.18.57-x86_64-with-glibc2.39.
 
 The canonical suite wrote one manifest and individual CSVs only for commands that actually produced them. A skip is not a pass. All registered smoke experiments use controlled/synthetic evidence per the registry.
 

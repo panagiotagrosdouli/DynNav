@@ -1,10 +1,10 @@
 # DynNav Contributions Full Audit
 
-**Repository base:** `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `753a5f8251994b18bf4979005073257af337c038` (main HEAD, 2026-11-09). **Audit branch:** `audit/contributions-complete-2026-11-09`.
+**Repository base:** `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `dd80146672d7330a57bfabbf51ea8e25caff12b1` (main HEAD, 2026-11-09). **Audit branch:** `audit/contributions-complete-2026-11-09`.
 
 ## Repository state verified
 
-- Main HEAD is merge commit `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `753a5f8251994b18bf4979005073257af337c038`, merging PR #210 (`c150df741a2fd08a14e77da89fb45cf3388d45a5`) at 2026-11-09 13:27:15 UTC.
+- Main HEAD is merge commit `b626d6e9b5bf8b8cf1ec87906597d767224f5f37` (main base); audit code commit: `dd80146672d7330a57bfabbf51ea8e25caff12b1`, merging PR #210 (`c150df741a2fd08a14e77da89fb45cf3388d45a5`) at 2026-11-09 13:27:15 UTC.
 - PR #210 is closed and merged. It adds real LILocBench `dynamics_0` descriptive analysis and map/trajectory evidence tools.
 - At inspection, 12 PRs were open. Relevant open research PRs include #205, #195, #194, #193, #189, #187; ROS/Gazebo runner fixes #180, #177 and #176 remain open. They are not silently treated as merged work.
 - Current main CI runs associated with the merge were green for CI, documentation integrity, C01-C26 suite, web portal, Streamlit dashboard, Pages, and Vercel status. Local canonical execution differs: one optional skip and an initial C11 failure were reproduced, repaired, and rerun.

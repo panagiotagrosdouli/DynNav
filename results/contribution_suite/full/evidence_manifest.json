@@ -33,7 +33,7 @@
       "missing_dependencies": [
         "torch"
       ],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Requires the repository's local trained checkpoint and PyTorch; synthetic grids do not establish transfer to Nav2 or a physical robot.",
       "next_step": "Install/use a compatible PyTorch runtime and rerun against the named checkpoint with held-out maps and checkpoint provenance."
@@ -61,7 +61,7 @@
       "artifact_rows": 3,
       "artifact_sha256": "85d6b8aa5cc9d5aa3fb143bbeadf519fd2ecc9fec7c8ee46f5c72a1abe4f75cc",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The default generator is synthetic and cannot establish calibration under sensor drift or domain shift.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -90,7 +90,7 @@
       "artifact_rows": 9,
       "artifact_sha256": "843ee75749115e2c63082de54a392f66e3be9949ab2b049a6b82025ffa5f4235",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Route candidates and beliefs are controlled fixtures rather than live occupancy estimates.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -118,7 +118,7 @@
       "artifact_rows": 4,
       "artifact_sha256": "ff1256bfb9b60314c54bc1c4545b615d558b7c5c0c600b9b64ddea4cf661b6e0",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Recoverability is evaluated on discrete graph fixtures and is not yet a calibrated real-world failure probability.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -147,7 +147,7 @@
       "artifact_rows": 12,
       "artifact_sha256": "e29c85fbcaf14ae5d4d80bda08cc40ed72c3518aacf909af8fe8c54f0a342a81",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Controller outputs are policy decisions on scripted traces, not closed-loop velocity validation.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -176,7 +176,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "216d60c249f0e2f344eb4d14ab33fc035127b9e86709f6569b95dd41752e42db",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Energy and radio models are analytical proxies without hardware characterization.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -205,7 +205,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "7e990eb19474848bd89f2a5dd1e090a506fd98d8132b7ecd992af7d77997613f",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Candidate views are hand-authored fixtures rather than sensor-derived frontiers.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -234,7 +234,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "e51e633ae85c75a08b27edb693fbab428afe1d4cb7dd7ee0d284fc4b400f1a26",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Synthetic detector scores do not demonstrate detection performance against real ROS 2 attacks.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -263,7 +263,7 @@
       "artifact_rows": 4,
       "artifact_sha256": "9817e914df3c492e97a40c6d673eaec9b2b7291f55e30514780aa2b0b18c9d38",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The benchmark audits predefined plans and does not exercise distributed ROS 2 communication.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -292,7 +292,7 @@
       "artifact_rows": 9,
       "artifact_sha256": "a84e790b8621f8bf43345137f0f1185462ce537a6ea38584eb66b5f32e13fd09",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Policy fixtures do not constitute human-subject validation or normative proof.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -321,7 +321,7 @@
       "artifact_rows": 6,
       "artifact_sha256": "4cf9891c5b56fa2b2d9e385126fac79b9e6d9513d55f3dec98f6dc5b98d2149b",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "This validates structured outputs only; it does not call or benchmark a real vision-language model.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -349,7 +349,7 @@
       "artifact_rows": 8,
       "artifact_sha256": "a2201d8d1b7ca28a964d39a0d47d273ea15dff86f9c7d567e6f733cb491943fe",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The lightweight predictor is a controlled proxy and not evidence for a trained diffusion model.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -378,7 +378,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "e44e3053b2c39dc9c1b32cb83f1e9e59241f6867f93fc746479dc90916e82419",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The latent dynamics are untrained fixtures and cannot support world-model accuracy claims.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -405,7 +405,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "6d112b3b7e0ffab389c9227fb5692646e0957dc919ca1b1027a6474672a303bf",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Correctness is relative to a hand-specified structural causal model.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -433,7 +433,7 @@
       "artifact_rows": 6,
       "artifact_sha256": "18e6fa2345249196f5a080f2a03c913609cf0dd08d8ba97d0e3fe18c3e2963a3",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Simulated events and Python timing do not establish hardware event-camera latency.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -461,7 +461,7 @@
       "artifact_rows": 4,
       "artifact_sha256": "4822917c0cdb4f69be778be7236cd8a4b4b5bf2f9968f854d84f4b04f7b865ad",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Synthetic client objectives do not establish performance on heterogeneous robot datasets.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -489,7 +489,7 @@
       "artifact_rows": 8,
       "artifact_sha256": "bf5ad86d36bfca56be0e60d27ca700c9cda1589f4ede97f6b90321873153580f",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Hash-based label embeddings are deterministic stubs, not open-vocabulary perception evidence.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -517,7 +517,7 @@
       "artifact_rows": 6,
       "artifact_sha256": "975671f22da14e8d4db63f804accff004d5d5edc39e7645bea279125a5db081c",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Numerical stress tests are not a formal proof and do not cover full robot dynamics.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -545,7 +545,7 @@
       "artifact_rows": 5,
       "artifact_sha256": "7af6893c4e3c9cba6e97857756cb22169ac01b1d57f37d973f27863c676aa35d",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The benchmark uses deterministic fixtures and does not establish LLM reliability.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -574,7 +574,7 @@
       "artifact_rows": 3,
       "artifact_sha256": "c501e295ed4a7f15fbdd6a3495c0f7f3ed1a28230269f61d4ad7622b295f1306",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Automated rubric scores are not a substitute for blinded operator studies.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -602,7 +602,7 @@
       "artifact_rows": 3,
       "artifact_sha256": "b45f98ed9b85182854a7973e56d75ebf9ac39ff82ceaf19169f4d82cf7bc2364",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The policies and environment are lightweight fixtures, not trained PPO deployment evidence.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -630,7 +630,7 @@
       "artifact_rows": 3,
       "artifact_sha256": "4bdf516f914e764259745e8331621b51c570d02f4613425dc257f61c43f67335",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Synthetic learning curves do not demonstrate sample efficiency for a trained navigation agent.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -658,7 +658,7 @@
       "artifact_rows": 2,
       "artifact_sha256": "7825c316070e98212426730b167d39ea6364666cc3960c6bd0b91774b537e45f",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "This is a 2D Gaussian proxy, not photorealistic 3D Gaussian Splatting reconstruction.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -687,7 +687,7 @@
       "artifact_rows": 2,
       "artifact_sha256": "214eacb9d6df6fb1ccab64909b4b7331b4c518ed6794144c911e911c111610fe",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "The evaluator uses synthetic uncertainty fields and does not train or render a NeRF.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -716,7 +716,7 @@
       "artifact_rows": 6,
       "artifact_sha256": "98dce1b27c75ecfba745e9c863777a774a563c8ec55e06d9e380e31da887571a",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "Injected numerical attacks are not an end-to-end ROS 2 penetration test.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -744,7 +744,7 @@
       "artifact_rows": 12,
       "artifact_sha256": "c843d949c5b47267bc9373ed229170558fe015beb62b90deed927ff2576241a8",
       "missing_dependencies": [],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "synthetic controlled smoke benchmark",
       "claim_boundary": "In-process simulation does not model real network delays, packet ordering, or ROS 2 DDS failure modes.",
       "next_step": "Expand evaluation with independent held-out data or simulator scenarios appropriate to this module; preserve current synthetic status until then."
@@ -792,7 +792,7 @@
         "results/contribution_suite/c27/critical_cut_counterexample.json",
         "docs/audits/C27_RECOVERABILITY_THEORY_REVIEW.md"
       ],
-      "source_git_commit": "753a5f8251994b18bf4979005073257af337c038",
+      "source_git_commit": "dd80146672d7330a57bfabbf51ea8e25caff12b1",
       "evidence_level": "One exhaustive finite synthetic model check; counterexample, not general proof.",
       "remaining_limitations": "No general proof, diverse graph-family analysis, registered experiment, ROS 2/Gazebo, real data, or hardware evidence.",
       "next_step": "Formalize the independent-hazard exact identity and prove the critical-cut upper bound with conditioning assumptions explicit; add exhaustive model checking."

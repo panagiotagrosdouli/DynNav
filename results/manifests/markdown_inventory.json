@@ -3166,12 +3166,12 @@
     "git_tracking_status": "M",
     "images_referenced": [],
     "inbound_links": [],
-    "last_modification_commit": "753a5f8251994b18bf4979005073257af337c038",
+    "last_modification_commit": "1f93f1d6fcf8896d6a3f3bbf051cb35b80df419f",
     "line_count": 53,
     "linked_from_another_document": false,
     "outbound_links": [],
     "path": "docs/audits/C01_C26_EXECUTION_MATRIX.md",
-    "sha256": "b538e02004d5c50520e38da0b0676c6a237e074717c045c1b8985e766f679319",
+    "sha256": "d3e104a96a95858715288a3e9d0264a890c858fe811efcddf22acd96949d073d",
     "target_audience": "Researchers and reviewers"
   },
   {
@@ -3334,12 +3334,12 @@
     "git_tracking_status": "M",
     "images_referenced": [],
     "inbound_links": [],
-    "last_modification_commit": "753a5f8251994b18bf4979005073257af337c038",
+    "last_modification_commit": "1f93f1d6fcf8896d6a3f3bbf051cb35b80df419f",
     "line_count": 61,
     "linked_from_another_document": false,
     "outbound_links": [],
     "path": "docs/audits/CONTRIBUTIONS_FULL_AUDIT.md",
-    "sha256": "abaa8639459f89d04ef46882523ce8b4f4a72d422c9224fbea2c0f20fcaf761c",
+    "sha256": "81c6c7b325ba1697f2f6f3c4fe83f2d9481f2eb281cca042d38dfa6a8cd45a09",
     "target_audience": "Researchers and reviewers"
   },
   {
@@ -3363,12 +3363,12 @@
     "git_tracking_status": "M",
     "images_referenced": [],
     "inbound_links": [],
-    "last_modification_commit": "753a5f8251994b18bf4979005073257af337c038",
+    "last_modification_commit": "1f93f1d6fcf8896d6a3f3bbf051cb35b80df419f",
     "line_count": 21,
     "linked_from_another_document": false,
     "outbound_links": [],
     "path": "docs/audits/EXPERIMENT_REPRODUCIBILITY_REPORT.md",
-    "sha256": "6b3324eafff1490d591b2fcfcd6d7bb1e29624f3a46fb45fe853dee4baeddf22",
+    "sha256": "d085eb58a8a87a3f9554b5504ee64c888e602ababb71a1813b47456496e9785a",
     "target_audience": "Researchers and reviewers"
   },
   {
@@ -3387,12 +3387,12 @@
     "git_tracking_status": "M",
     "images_referenced": [],
     "inbound_links": [],
-    "last_modification_commit": "753a5f8251994b18bf4979005073257af337c038",
+    "last_modification_commit": "1f93f1d6fcf8896d6a3f3bbf051cb35b80df419f",
     "line_count": 32,
     "linked_from_another_document": false,
     "outbound_links": [],
     "path": "docs/audits/FINAL_CONTRIBUTIONS_REPORT.md",
-    "sha256": "0a989ace81f68ec2a71a5fc7dece8523d361c0c9849fa15bc5f448d87047f376",
+    "sha256": "d461c2b1385a1e65b6f299128cce9fa07c5d8872d9d05abbf01ab40431cb0a09",
     "target_audience": "Researchers and reviewers"
   },
   {

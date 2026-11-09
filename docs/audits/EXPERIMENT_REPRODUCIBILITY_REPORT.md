@@ -9,7 +9,7 @@ The registry validator reported 26 contributions, 26 experiments, no errors or w
 - This environment had no `pytest`; `pytest -q` and `python -m pytest -q` both could not start.
 - It had no `torch`, so C01 `.pt` files were not evaluated.
 - Runs are one configured smoke execution, not repeated multi-seed replications. Several use fixtures, not datasets.
-- C01-C27 audit implementation and evidence records identify code commit `753a5f8251994b18bf4979005073257af337c038`; unchanged C00 source is based on main commit `b626d6e9b5bf8b8cf1ec87906597d767224f5f37`.
+- C01-C27 audit implementation and evidence records identify code commit `dd80146672d7330a57bfabbf51ea8e25caff12b1`; unchanged C00 source is based on main commit `b626d6e9b5bf8b8cf1ec87906597d767224f5f37`.
 
 ## Reproduction
 
