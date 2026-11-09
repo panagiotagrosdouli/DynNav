@@ -113,17 +113,17 @@ if source_mode == "Upload a real ROS occupancy map":
             y=list(range(grid.height)),
             zmin=0,
             zmax=1,
-            colorscale=[[0, "#f2f4f7"], [1, "#263445"]],
+            colorscale=[[0, "#fff7fb"], [1, "#d63384"]],
             showscale=False,
             hovertemplate="cell (%{x}, %{y})<extra></extra>",
         )
     )
     if route and route.success:
         path_x, path_y = zip(*route.path)
-        fig.add_trace(go.Scatter(x=path_x, y=path_y, mode="lines", name="A* path", line={"color": "#16a394", "width": 3}))
+        fig.add_trace(go.Scatter(x=path_x, y=path_y, mode="lines", name="A* path", line={"color": "#6f42c1", "width": 3}))
     fig.add_trace(go.Scatter(x=[start_x], y=[start_y], mode="markers", name="Start", marker={"color": "#2563eb", "size": 10}))
     fig.add_trace(go.Scatter(x=[goal_x], y=[goal_y], mode="markers", name="Goal", marker={"color": "#dc2626", "size": 12, "symbol": "star"}))
-    fig.update_layout(title="ROS occupancy map and baseline route", xaxis_title="Cell x", yaxis_title="Cell y", yaxis={"scaleanchor": "x"})
+    fig.update_layout(title="ROS occupancy map and baseline route (pink occupancy)", xaxis_title="Cell x", yaxis_title="Cell y", yaxis={"scaleanchor": "x"})
     st.plotly_chart(fig, use_container_width=True)
     st.link_button(
         "Open the LILocBench dataset page",
