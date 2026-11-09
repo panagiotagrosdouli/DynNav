@@ -49,6 +49,14 @@ def _as_1d(values: ArrayLike, name: str) -> np.ndarray:
     return arr
 
 
+def _as_sigma(values: ArrayLike) -> np.ndarray:
+    """Validate a nonnegative uncertainty scale, retaining zero via epsilon."""
+    sigma = _as_1d(values, "sigma")
+    if np.any(sigma < 0.0):
+        raise ValueError("sigma must be nonnegative")
+    return np.maximum(sigma, 1e-12)
+
+
 def absolute_error(prediction: ArrayLike, target: ArrayLike) -> np.ndarray:
     pred = _as_1d(prediction, "prediction")
     tgt = _as_1d(target, "target")
@@ -88,7 +96,12 @@ def spearman_corr(x: ArrayLike, y: ArrayLike) -> float:
 
 def coverage(abs_error: ArrayLike, sigma: ArrayLike, k: float) -> float:
     err = _as_1d(abs_error, "abs_error")
-    sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+    sig = _as_sigma(sigma)
+    k = float(k)
+    if not np.isfinite(k) or k < 0.0:
+        raise ValueError("coverage multiplier k must be finite and nonnegative")
+    if np.any(err < 0.0):
+        raise ValueError("abs_error must be nonnegative")
     if err.shape != sig.shape:
         raise ValueError("abs_error and sigma must have the same shape.")
     return float(np.mean(err <= k * sig))
@@ -101,7 +114,9 @@ def ece_abs_error(abs_error: ArrayLike, sigma: ArrayLike, n_bins: int = 10) -> f
     with mean observed absolute error in each bin.
     """
     err = _as_1d(abs_error, "abs_error")
-    sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+    sig = _as_sigma(sigma)
+    if np.any(err < 0.0):
+        raise ValueError("abs_error must be nonnegative")
     if err.shape != sig.shape:
         raise ValueError("abs_error and sigma must have the same shape.")
     if n_bins < 1:
@@ -137,7 +152,9 @@ class GlobalScaleCalibrator:
 
     def fit(self, abs_error: ArrayLike, sigma: ArrayLike) -> "GlobalScaleCalibrator":
         err = _as_1d(abs_error, "abs_error")
-        sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+        sig = _as_sigma(sigma)
+        if np.any(err < 0.0):
+            raise ValueError("abs_error must be nonnegative")
         if err.shape != sig.shape:
             raise ValueError("abs_error and sigma must have the same shape.")
         self.scale = float(np.median(err / sig))
@@ -146,7 +163,7 @@ class GlobalScaleCalibrator:
         return self
 
     def transform(self, sigma: ArrayLike) -> np.ndarray:
-        sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+        sig = _as_sigma(sigma)
         return self.scale * sig
 
 
@@ -160,7 +177,9 @@ class QuantileBinCalibrator:
 
     def fit(self, abs_error: ArrayLike, sigma: ArrayLike) -> "QuantileBinCalibrator":
         err = _as_1d(abs_error, "abs_error")
-        sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+        sig = _as_sigma(sigma)
+        if np.any(err < 0.0):
+            raise ValueError("abs_error must be nonnegative")
         if err.shape != sig.shape:
             raise ValueError("abs_error and sigma must have the same shape.")
         if self.n_bins < 1:
@@ -188,7 +207,7 @@ class QuantileBinCalibrator:
     def transform(self, sigma: ArrayLike) -> np.ndarray:
         if self.edges_ is None or self.scales_ is None:
             raise RuntimeError("QuantileBinCalibrator must be fitted before transform().")
-        sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+        sig = _as_sigma(sigma)
         calibrated = np.empty_like(sig, dtype=float)
         for idx, value in enumerate(sig):
             bin_idx = int(np.searchsorted(self.edges_[1:-1], value, side="right"))
@@ -198,7 +217,7 @@ class QuantileBinCalibrator:
 
 def evaluate_calibration(prediction: ArrayLike, target: ArrayLike, sigma: ArrayLike, n_bins: int = 10) -> CalibrationReport:
     err = absolute_error(prediction, target)
-    sig = np.maximum(_as_1d(sigma, "sigma"), 1e-12)
+    sig = _as_sigma(sigma)
     if err.shape != sig.shape:
         raise ValueError("sigma must have the same shape as prediction and target.")
 

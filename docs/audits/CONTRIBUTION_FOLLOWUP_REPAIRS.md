@@ -1,12 +1,16 @@
 # Contribution Follow-up Repairs
 
-**Scope:** Targeted source review and engineering corrections for C05, C07–C10, C12–C26 (selected modules listed below). This follow-up does not claim that all modules have equivalent evidence.
+**Scope:** Targeted source review and engineering corrections for C02–C10, C12–C26 (selected modules listed below). This follow-up does not claim that all modules have equivalent evidence.
 
 ## Changes and evidence
 
 | ID | Repair | Tests / experiment | Result and evidence level |
 |---|---|---|---|
+| C02 | Reject negative predicted uncertainty and negative absolute-error inputs; require a finite nonnegative coverage multiplier so invalid scales are not silently converted to epsilon. | `python -m unittest discover -s contributions/02_uncertainty_calibration/tests -v`; C02 canonical experiment passed. | 2 tests pass; metrics remain on existing synthetic/proxy measurements, not a new real-data calibration study. |
+| C03 | Validate total and incremental risk as finite/nonnegative while preserving negative remaining budget as an explicit overspend signal. | `python -m unittest discover -s contributions/03_belief_risk_planning/tests -v`; C03 canonical experiment passed. | 2 tests pass; budget-tracker unit evidence only, no new route comparison. |
+| C04 | Reject malformed/nonfinite grids, noninteger node coordinates, nonfinite return-distance scales, and nonfinite/negative profile weights. | `python -m unittest discover -s contributions/04_irreversibility_returnability/tests -v`; C04 canonical experiment passed. | 6 tests pass; graph/grid metrics remain synthetic and are not a safety guarantee. |
 | C05 | Validate risk/configuration domains and correct cooldown accounting so all configured cooldown updates are blocked. | `python -m unittest discover -s contributions/05_safe_mode_navigation/tests -v`; C05 canonical experiment passed. | 2 tests pass; state-machine simulation only. |
+| C06 | Require finite/nonnegative energy parameters and risk inputs so analytical energy consumption cannot become negative or nonfinite. | `python -m unittest discover -s contributions/06_energy_connectivity/tests -v`; C06 canonical experiment passed. | 2 tests pass; analytical/synthetic energy model, not hardware-calibrated consumption. |
 | C07 | Validate candidate values and weights for finiteness, domain, and nonnegative scoring parameters. | `python -m unittest discover -s contributions/07_next_best_view/tests -v` | 2 tests pass; unit-level synthetic scoring only. |
 | C08 | Validate IDS response thresholds and monitor fields; reject invalid ratios and non-boolean trigger evidence. | `python -m unittest discover -s contributions/08_security_ids/tests -v`; C08 canonical experiment passed. | 2 tests pass; scripted anomaly response only. |
 | C09 | Validate unique robot IDs, risk/budget domains, and coordinate path inputs before conflict/fairness metrics. | `python -m unittest discover -s contributions/09_multi_robot/tests -v`; C09 canonical experiment passed. | 2 tests pass; in-process path fixtures only. |
@@ -29,7 +33,7 @@
 
 ## Canonical suite
 
-`python scripts/validate_contribution_registry.py` reports exactly 26 registered contributions and 26 experiment records with no errors or warnings. The latest full suite completed with C02–C26 passing and C01 skipped because PyTorch is unavailable. The latest invocation requested `/tmp/dynnav_remaining_modules_2026-11-09`; its stdout confirmed the statuses, but the temporary directory was not retained in the workspace. Forty-seven focused unit tests passed across 19 contributions (C22 was a documentation-only correction). No real dataset, ROS 2/Gazebo, or physical robot evidence was added by this follow-up.
+`python scripts/validate_contribution_registry.py` reports exactly 26 registered contributions and 26 experiment records with no errors or warnings. The latest full suite completed with C02–C26 passing and C01 skipped because PyTorch is unavailable. After the C02-C06 input-validation changes, the independent C02/C03/C04/C06 batch also passed. Fifty-five focused tests passed across 23 contributions (C22 was documentation-only; C04 had four existing tests and two new tests). No real dataset, ROS 2/Gazebo, or physical robot evidence was added by this follow-up.
 
 ## Remaining scientific limits
 

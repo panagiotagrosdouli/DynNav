@@ -75,6 +75,19 @@ class RecoverabilityProfileTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             profile.penalty(minimum_weight=-1.0)
 
+    def test_rejects_nonfinite_distance_and_malformed_grids(self) -> None:
+        with self.assertRaisesRegex(ValueError, "finite and positive"):
+            build_path_recoverability_profile(
+                self.grid, [self.base], self.base, max_return_distance=float("nan")
+            )
+        with self.assertRaisesRegex(ValueError, "2D"):
+            build_path_recoverability_profile(np.zeros((2, 2, 2)), [self.base], self.base)
+
+    def test_penalty_rejects_nonfinite_weights(self) -> None:
+        profile = build_path_recoverability_profile(self.grid, [self.base], self.base)
+        with self.assertRaisesRegex(ValueError, "finite"):
+            profile.penalty(bottleneck_weight=float("nan"))
+
 
 if __name__ == "__main__":
     unittest.main()
