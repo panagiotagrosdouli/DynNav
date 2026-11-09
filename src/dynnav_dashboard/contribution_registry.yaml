@@ -60,10 +60,10 @@ contributions:
     renderer: c10_human_aware
     maturity: Experimental
   - id: C11
-    title: Twin-Critic Reinforcement Learning
-    category: Learning
-    summary: Visualize actor-critic value estimates and policy trade-offs.
-    renderer: c11_twin_critic_rl
+    title: VLM Navigation Agent
+    category: Perception and navigation
+    summary: Validate semantic navigation goals before passing them to metric planning.
+    renderer: c11_vlm_goal_validation
     maturity: Experimental
   - id: C12
     title: Diffusion Occupancy Prediction
