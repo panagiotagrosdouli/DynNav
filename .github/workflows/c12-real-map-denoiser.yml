@@ -1,0 +1,86 @@
+name: C12 actual learned denoiser on original office map geometry
+
+on:
+  pull_request:
+    paths:
+      - "contributions/12_diffusion_occupancy/**"
+      - ".github/workflows/c12-real-map-denoiser.yml"
+  workflow_dispatch:
+
+jobs:
+  trained-conditional-denoiser:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install actual real-map decoding and CPU training
+        run: |
+          python -m pip install numpy pillow pyyaml pytest
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Execute C12 fail-closed and numerical regressions
+        run: python -m pytest -q contributions/12_diffusion_occupancy/tests
+      - name: Acquire and verify official LILocBench office map
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,shutil,urllib.request,zipfile,yaml
+          out=Path("/tmp/c12_real_office")
+          out.mkdir(parents=True,exist_ok=True)
+          p=out/"map_office.zip"
+          with urllib.request.urlopen("https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",timeout=120) as src,p.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          expected="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0"
+          assert hashlib.sha256(p.read_bytes()).hexdigest()==expected,"Original source map hash mismatch"
+          with zipfile.ZipFile(p) as z:
+              for entry in z.infolist():
+                  assert (out/entry.filename).resolve().is_relative_to(out.resolve())
+              z.extractall(out)
+          candidates=[]
+          for item in out.rglob("*.yaml"):
+              cfg=yaml.safe_load(item.read_text())
+              if isinstance(cfg,dict) and isinstance(cfg.get("image"),str) and (item.parent/cfg["image"]).is_file():
+                  candidates.append(item)
+          assert len(candidates)==1,candidates
+          Path("/tmp/c12-map-yaml").write_text(str(candidates[0]))
+          print("Actual original office ROS map source:",candidates[0])
+          PY
+      - name: Train actual C12 conditional diffusion denoiser on disjoint real-map tiles
+        run: |
+          python contributions/12_diffusion_occupancy/experiments/train_real_map_static_denoiser.py \
+            "$(cat /tmp/c12-map-yaml)" \
+            --output-dir results/c12_real_map_static \
+            --epochs 2 --steps 20 --tile-size 32 --seed 2026
+      - name: Verify generated real training checkpoint and independent spatial test
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import torch,json,math
+          d=Path("results/c12_real_map_static")
+          report=json.loads((d/"report.json").read_text())
+          checkpoint=torch.load(d/"c12_realmap_static_denoiser.pt",weights_only=True,map_location="cpu")
+          provenance=report["provenance"]
+          assert len(provenance["source_map_image_sha256"])==64
+          assert provenance["n_train_tiles"]>50
+          assert provenance["n_test_tiles"]>50
+          assert provenance["split"]=="disjoint_geographic_columns_with_one_column_gap"
+          assert len(report["training"])==2
+          assert all(torch.isfinite(t).all() for t in checkpoint["state_dict"].values())
+          for key in ("baseline","trained_noise_denoiser"):
+              assert all(math.isfinite(x) for x in report[key].values())
+          assert provenance["future_occupancy_prediction_verified"] is False
+          assert provenance["physical_robot_trial"] is False
+          print("Actual neural training complete; test Brier",report["trained_noise_denoiser"]["brier"],"baseline",report["baseline"]["brier"])
+          PY
+      - name: Upload actual model, heldout metrics and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c12-actual-trained-conditional-denoiser-real-static-map
+          path: results/c12_real_map_static/
+          if-no-files-found: warn
