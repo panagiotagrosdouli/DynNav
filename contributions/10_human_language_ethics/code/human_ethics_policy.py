@@ -12,6 +12,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
+import math
 
 
 class ZoneType(str, Enum):
@@ -77,6 +78,32 @@ def decide_human_ethics_policy(
     cfg: HumanEthicsConfig | None = None,
 ) -> HumanEthicsDecision:
     cfg = cfg or HumanEthicsConfig()
+    # Invalid upstream observations are UNKNOWN, never evidence of safe clearance.
+    # Reject nonfinite distances/trust and unrecognized zone types before
+    # permitting any autonomous motion. Physical controller still needs
+    # independent collision and emergency-stop safety enforcement.
+    observations=(context.distance_to_human_m,context.operator_trust,
+                  context.language_confidence,context.requested_autonomy)
+    try:
+        finite=all(math.isfinite(float(value)) for value in observations)
+        zone=ZoneType(context.zone_type)
+        plausible=(float(context.distance_to_human_m)>=0 and
+                   all(0<=float(v)<=1 for v in observations[1:]))
+    except (TypeError,ValueError):
+        finite=False
+        plausible=False
+        zone=None
+    if not finite or not plausible or zone is None:
+        return HumanEthicsDecision(
+            action=PlannerAction.BLOCK_PATH,
+            max_speed=0.0,
+            autonomy_level=0.0,
+            path_allowed=False,
+            requires_announcement=False,
+            requires_operator_confirmation=True,
+            ethical_cost_multiplier=float("inf"),
+            explanation="invalid or missing human safety context: fail closed",
+        )
     trust = clamp01(context.operator_trust)
     language_confidence = clamp01(context.language_confidence)
     requested_autonomy = clamp01(context.requested_autonomy)
@@ -98,9 +125,9 @@ def decide_human_ethics_policy(
     if trust < cfg.low_trust_threshold or language_confidence < cfg.low_language_confidence:
         return HumanEthicsDecision(
             action=PlannerAction.ASK_OPERATOR,
-            max_speed=cfg.caution_speed,
-            autonomy_level=min(autonomy, 0.35),
-            path_allowed=True,
+            max_speed=0.0,
+            autonomy_level=0.0,
+            path_allowed=False,
             requires_announcement=False,
             requires_operator_confirmation=True,
             ethical_cost_multiplier=2.0,
