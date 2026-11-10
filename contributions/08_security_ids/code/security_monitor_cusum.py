@@ -2,7 +2,15 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 import numpy as np
 
-from sequential_ids import CUSUMDetector, CUSUMConfig, EWMADetector, EWMAConfig, nis_from_innovation
+from pathlib import Path
+import sys
+
+# The original monitoring adapter imported an unqualified module that lives
+# under utils/, so it failed when C08 was imported from the repository root.
+_REPO = Path(__file__).resolve().parents[3]
+if str(_REPO) not in sys.path:
+    sys.path.insert(0,str(_REPO))
+from utils.sequential_ids import CUSUMDetector, CUSUMConfig, EWMADetector, EWMAConfig, nis_from_innovation
 
 
 @dataclass
