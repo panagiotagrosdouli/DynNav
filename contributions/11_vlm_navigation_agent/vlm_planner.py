@@ -211,7 +211,7 @@ class VLMNavigationPlanner:
         try:
             # Strip markdown fences if present
             text = raw.strip()
-            match = re.fullmatch(r"```(?:json)?\\s*([\\s\\S]*?)\\s*```", text, flags=re.IGNORECASE)
+            match = re.fullmatch(r"```(?:json)?\s*([\s\S]*?)\s*```", text, flags=re.IGNORECASE)
             if match:
                 text = match.group(1)
             data = json.loads(text)
