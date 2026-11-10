@@ -1,6 +1,6 @@
 # C15 — Time-aligned simulated event sensing versus frame baseline
 
-**Date:** 2026-11-10. **Verified final dedicated CI:** [C15 execution #42794020716](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42794020716), **passed** with 6 focused tests (including actual ON/OFF pixel events) and independently checked 12 method runs (6 paired scenarios).
+**Date:** 2026-11-10. **Verified final dedicated CI:** [C15 execution #42794325518](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42794325518), **passed** with 7 focused tests (including actual ON/OFF pixel events) and independently checked 12 method runs (6 paired scenarios).
 
 ## Why the original comparison was not scientifically fair
 
@@ -14,6 +14,8 @@ The new `experiments/eval_time_aligned_latency.py` passes the **same generated s
 |---|---|---:|---:|---:|
 | 3, 6, 10 px/frame | 10 ms, 33.333 ms | 6 | **6/6** | **0/6** |
 
+A separate deterministic **synthetic event-count control** was added to establish that signal-derived events contain enough information for a simple change detector: **6/6 detected** using a fixed >=10-event threshold. Because it necessarily relies on changes between frames, its detections follow the initial reference frame, whereas the image threshold can observe the already-visible object at time zero. The event-count baseline is not a trained SNN, a physical DVS device, or a robust semantic obstacle detector. Its independent results are saved in `event_count_controls.json`.
+
 The frame method sees the bright obstacle in the **first source frame** (reported index-time 0 μs). The event detector in the current implementation never crosses its configured threshold in these six paired trials. **No event-minus-frame latency should be calculated for trials where the event method failed to detect**; `null` is used instead of a fabricated time. A second defect was found and fixed: the simulator never initialized its per-pixel reference logarithmic intensity, so signal-triggered events could not fire at all with zero noise. New regression tests now show actual synthetic ON and OFF signals on changing pixel brightness, with initial static frames producing no change events. **After fixing this event-generation bug and rerunning the actual CI, the untrained SNN-style detector STILL fails to detect all six controlled obstacles**, while the frame threshold detects all six. This isolates a detector limitation from the original simulator implementation defect.
 
 This negative outcome is not proof that real event cameras are slower or worse than frame sensors. It disproves a claimed speed advantage for **this specific existing randomly initialized model on these frames**, with sampling-rate bias removed.
@@ -26,7 +28,7 @@ python contributions/15_neuromorphic_sensing/experiments/eval_time_aligned_laten
   --output-dir results/c15_fair_latency
 ```
 
-The dedicated `.github/workflows/c15-fair-dvs-latency.yml` additionally executes the original historical benchmark for contrast. The CI artifact `c15-fair-event-vs-frame-synthetic-timing` contains `paired_trials.csv`, `summary.json` and `legacy_cadence_confounded.csv`. Source and result identifiers are explicit so the two studies cannot be conflated.
+The dedicated `.github/workflows/c15-fair-dvs-latency.yml` additionally executes the original historical benchmark for contrast. The CI artifact `c15-fair-event-vs-frame-synthetic-timing` contains `paired_trials.csv`, `summary.json`, `event_count_controls.json` and `legacy_cadence_confounded.csv`. Source and result identifiers are explicit so the two studies cannot be conflated.
 
 ## Scientific evidence still missing
 
