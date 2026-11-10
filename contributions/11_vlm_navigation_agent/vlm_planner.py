@@ -17,6 +17,9 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import math
+import os
+import re
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -46,6 +49,7 @@ class VLMPlannerConfig:
     confidence_threshold: float = 0.55
     max_retries: int = 3
     image_resize: tuple[int, int] = (640, 480)
+    require_metric_waypoint: bool = False
     prompt_template: str = (
         "You are a robot navigation assistant. "
         "Analyse the image and identify: "
@@ -91,6 +95,12 @@ class VLMNavigationPlanner:
         """
         Main entry point. Feed an RGB (H×W×3 uint8) frame, get a SemanticGoal.
         """
+        if not isinstance(rgb_frame, np.ndarray) or rgb_frame.ndim != 3 or rgb_frame.shape[2] != 3 or rgb_frame.dtype != np.uint8:
+            raise ValueError("C11 requires an RGB HxWx3 uint8 image")
+        if not np.isfinite(rgb_frame).all():
+            raise ValueError("C11 RGB frame must be finite")
+        if depth_frame is not None and (depth_frame.ndim != 2 or depth_frame.shape != rgb_frame.shape[:2]):
+            raise ValueError("Depth shape must match RGB height and width")
         encoded = self._encode_frame(rgb_frame)
         raw = self._query_vlm(encoded)
         if raw is None:
@@ -101,11 +111,30 @@ class VLMNavigationPlanner:
             logger.warning("VLM goal below confidence threshold: %s", goal)
             return None
 
+        if goal.pixel_hint is not None:
+            u, v = goal.pixel_hint
+            if not (0 <= u < rgb_frame.shape[1] and 0 <= v < rgb_frame.shape[0]):
+                logger.warning("C11 rejected out-of-frame VLM pixel")
+                return None
         if depth_frame is not None and goal.pixel_hint is not None:
             goal.metric_waypoint = self._pixel_to_metric(
                 goal.pixel_hint, depth_frame, current_pose
             )
-
+            if goal.metric_waypoint is None:
+                return None
+        from vlm_goal_validator import GoalDecision, validate_vlm_goal
+        report = validate_vlm_goal(
+            description=goal.description, region_label=goal.region_label,
+            confidence=goal.confidence, pixel_hint=goal.pixel_hint,
+            image_shape=rgb_frame.shape[:2], metric_waypoint=goal.metric_waypoint,
+            robot_xy=current_pose[:2],
+        )
+        if report.decision != GoalDecision.ACCEPT:
+            logger.warning("C11 goal blocked by validation: %s", report.reason)
+            return None
+        if self.cfg.require_metric_waypoint and goal.metric_waypoint is None:
+            logger.warning("C11 rejected VLM goal without a verified metric waypoint")
+            return None
         self._session_goals.append(goal)
         logger.info("VLM goal accepted: %s (conf=%.2f)", goal.description, goal.confidence)
         return goal
@@ -137,34 +166,47 @@ class VLMNavigationPlanner:
             buf = io.BytesIO()
             img.save(buf, format="JPEG", quality=85)
             return base64.b64encode(buf.getvalue()).decode("utf-8")
-        except ImportError:
-            # Fallback: raw numpy bytes
-            return base64.b64encode(frame.tobytes()).decode("utf-8")
+        except ImportError as exc:
+            raise RuntimeError("Pillow is required to encode real JPEG image input for VLM APIs") from exc
 
     def _query_vlm(self, encoded_image: str) -> Optional[str]:
         """Send request to VLM endpoint; returns raw text response or None."""
         import urllib.request, urllib.error
 
-        payload = {
-            "model": self.cfg.model_name,
-            "messages": [
-                {"role": "system", "content": self.cfg.system_prompt},
-                {
-                    "role": "user",
-                    "content": self.cfg.prompt_template,
-                    "images": [encoded_image],
-                },
-            ],
-            "stream": False,
-        }
-        data = json.dumps(payload).encode("utf-8")
+        # Ollama /api/chat accepts separate image list; OpenAI-compatible
+        # /chat/completions requires multimodal image_url content parts.
+        is_openai_style = "/chat/completions" in self.cfg.api_endpoint
+        messages = [{"role": "system", "content": self.cfg.system_prompt}]
+        if is_openai_style:
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": self.cfg.prompt_template},
+                    {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,"+encoded_image}},
+                ],
+            })
+        else:
+            messages.append({
+                "role": "user", "content": self.cfg.prompt_template,
+                "images": [encoded_image],
+            })
+        data = json.dumps({
+            "model": self.cfg.model_name, "messages": messages,"stream": False
+        }).encode("utf-8")
+        headers={"Content-Type":"application/json"}
+        if is_openai_style:
+            token=os.getenv("C11_VLM_API_KEY")
+            if token:
+                headers["Authorization"]="Bearer "+token
+            elif self.cfg.api_endpoint.startswith("https://api.openai.com/"):
+                raise RuntimeError("C11_VLM_API_KEY required for OpenAI-hosted VLM; no anonymous calls")
 
         for attempt in range(self.cfg.max_retries):
             try:
                 req = urllib.request.Request(
                     self.cfg.api_endpoint,
                     data=data,
-                    headers={"Content-Type": "application/json"},
+                    headers=headers,
                 )
                 with urllib.request.urlopen(req, timeout=15) as resp:
                     result = json.loads(resp.read().decode("utf-8"))
@@ -182,15 +224,31 @@ class VLMNavigationPlanner:
         """Parse JSON from the VLM response."""
         try:
             # Strip markdown fences if present
-            text = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+            text = raw.strip()
+            match = re.fullmatch(r"```(?:json)?\s*([\s\S]*?)\s*```", text, flags=re.IGNORECASE)
+            if match:
+                text = match.group(1)
             data = json.loads(text)
+            if not isinstance(data, dict):
+                raise ValueError("VLM response must be JSON object")
+            if not isinstance(data.get("goal"), str) or not data["goal"].strip():
+                raise ValueError("Nonempty string goal required")
+            if not isinstance(data.get("region"), str) or not data["region"].strip():
+                raise ValueError("Nonempty semantic region required")
+            value = data.get("confidence")
+            if isinstance(value, bool) or not isinstance(value, (float, int)) or not math.isfinite(value) or not 0.0 <= value <= 1.0:
+                raise ValueError("Confidence must be a finite number in [0,1]")
+            if ("pixel_u" in data) != ("pixel_v" in data):
+                raise ValueError("Pixel coordinates must be supplied together")
+            pixel = None
+            if "pixel_u" in data:
+                u, v = data["pixel_u"], data["pixel_v"]
+                if type(u) is not int or type(v) is not int:
+                    raise ValueError("Pixel coordinates must be exact integers")
+                pixel = (u, v)
             return SemanticGoal(
-                description=str(data.get("goal", "")),
-                region_label=str(data.get("region", "unknown")),
-                confidence=float(data.get("confidence", 0.0)),
-                pixel_hint=(
-                    int(data["pixel_u"]), int(data["pixel_v"])
-                ) if "pixel_u" in data else None,
+                description=data["goal"].strip(),region_label=data["region"].strip(),
+                confidence=float(value),pixel_hint=pixel,
             )
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logger.error("Failed to parse VLM response: %s | raw=%s", e, raw[:200])
@@ -198,7 +256,7 @@ class VLMNavigationPlanner:
 
     def _pixel_to_metric(self, pixel: tuple[int, int],
                          depth: np.ndarray,
-                         pose: tuple[float, float, float]) -> tuple[float, float]:
+                         pose: tuple[float, float, float]) -> Optional[tuple[float, float]]:
         """
         Back-project a pixel (u, v) using the depth map to a (x, y) world point.
         Uses a simple pinhole model; replace with full camera intrinsics for accuracy.
@@ -209,9 +267,9 @@ class VLMNavigationPlanner:
         cx, cy = w / 2, h / 2
         d = float(depth[min(v, h - 1), min(u, w - 1)]) * self.depth_scale
 
-        if d < 0.05:
+        if not math.isfinite(d) or d < 0.05:
             logger.warning("Depth at pixel %s too small (%.3f m), skipping", pixel, d)
-            return (pose[0], pose[1])
+            return None
 
         # Camera-frame 3-D point
         x_cam = (u - cx) / fx * d
