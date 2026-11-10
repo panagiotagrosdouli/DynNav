@@ -1,6 +1,6 @@
 # C15 — Time-aligned simulated event sensing versus frame baseline
 
-**Date:** 2026-11-10. **Verified CI:** [C15 execution #42793602006](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42793602006), **passed** with 4 focused tests and independently checked 12 method runs (6 paired scenarios).
+**Date:** 2026-11-10. **Verified final dedicated CI:** [C15 execution #42794020716](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42794020716), **passed** with 6 focused tests (including actual ON/OFF pixel events) and independently checked 12 method runs (6 paired scenarios).
 
 ## Why the original comparison was not scientifically fair
 
@@ -14,7 +14,7 @@ The new `experiments/eval_time_aligned_latency.py` passes the **same generated s
 |---|---|---:|---:|---:|
 | 3, 6, 10 px/frame | 10 ms, 33.333 ms | 6 | **6/6** | **0/6** |
 
-The frame method sees the bright obstacle in the **first source frame** (reported index-time 0 μs). The event detector in the current implementation never crosses its configured threshold in these six paired trials. **No event-minus-frame latency should be calculated for trials where the event method failed to detect**; `null` is used instead of a fabricated time. The event input contains *synthetically generated* pixel events but the detector's random SNN-style weights have not been trained to recognize obstacles.
+The frame method sees the bright obstacle in the **first source frame** (reported index-time 0 μs). The event detector in the current implementation never crosses its configured threshold in these six paired trials. **No event-minus-frame latency should be calculated for trials where the event method failed to detect**; `null` is used instead of a fabricated time. A second defect was found and fixed: the simulator never initialized its per-pixel reference logarithmic intensity, so signal-triggered events could not fire at all with zero noise. New regression tests now show actual synthetic ON and OFF signals on changing pixel brightness, with initial static frames producing no change events. **After fixing this event-generation bug and rerunning the actual CI, the untrained SNN-style detector STILL fails to detect all six controlled obstacles**, while the frame threshold detects all six. This isolates a detector limitation from the original simulator implementation defect.
 
 This negative outcome is not proof that real event cameras are slower or worse than frame sensors. It disproves a claimed speed advantage for **this specific existing randomly initialized model on these frames**, with sampling-rate bias removed.
 
