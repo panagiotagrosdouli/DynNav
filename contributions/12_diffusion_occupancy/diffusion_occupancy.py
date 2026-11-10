@@ -105,6 +105,11 @@ class DiffusionOccupancyPredictor:
 
     def __init__(self, config: DiffusionOccupancyConfig | None = None):
         self.cfg = config or DiffusionOccupancyConfig()
+        if (self.cfg.grid_h<1 or self.cfg.grid_w<1 or self.cfg.T<2 or
+                self.cfg.n_samples<2 or self.cfg.history_len<1):
+            raise ValueError("C12 needs positive dimensions/steps and >=2 samples")
+        if not (0 < self.cfg.beta_start < self.cfg.beta_end < 1):
+            raise ValueError("Invalid diffusion noise schedule")
         self.betas, self.alphas_bar = cosine_beta_schedule(self.cfg.T)
         self.alphas = 1.0 - self.betas
         self.score_net = ScoreNetwork(self.cfg.grid_h, self.cfg.grid_w)
@@ -170,8 +175,16 @@ class DiffusionOccupancyPredictor:
         """
         if not history:
             raise ValueError("Need at least one occupancy frame in history")
-
-        cond = history[-1].astype(float)
+        if len(history)>self.cfg.history_len:
+            history=history[-self.cfg.history_len:]
+        checked=[]
+        for frame in history:
+            arr=np.asarray(frame,dtype=float)
+            if (arr.shape!=(self.cfg.grid_h,self.cfg.grid_w) or
+                not np.isfinite(arr).all() or np.any(arr<0) or np.any(arr>1)):
+                raise ValueError("C12 occupancy frames must be finite HxW values in [0,1]")
+            checked.append(arr)
+        cond=checked[-1]
         samples = np.stack(
             [self.sample(cond) for _ in range(self.cfg.n_samples)], axis=0
         )  # (N, H, W)
@@ -181,9 +194,16 @@ class DiffusionOccupancyPredictor:
 
         # CVaR at α=0.95: expected occupancy in worst 5% of samples
         alpha = 0.95
-        k = max(1, int((1 - alpha) * self.cfg.n_samples))
-        sorted_s = np.sort(samples, axis=0)   # ascending along sample axis
-        cvar_map = sorted_s[-k:].mean(axis=0)
+        # Exact empirical upper-tail mean, including fractional boundary
+        # for cases where 5% of the sample count is not an integer.
+        tail_mass=(1-alpha)*self.cfg.n_samples
+        whole=int(np.floor(tail_mass))
+        fraction=tail_mass-whole
+        sorted_s=np.sort(samples,axis=0)[::-1]
+        weighted=np.sum(sorted_s[:whole],axis=0)
+        if whole<self.cfg.n_samples:
+            weighted=weighted+fraction*sorted_s[whole]
+        cvar_map=weighted/tail_mass
 
         logger.debug(
             "Diffusion risk map | mean=%.3f std=%.3f cvar=%.3f",
@@ -204,8 +224,14 @@ class DiffusionOccupancyPredictor:
         cost = path_length + lambda_risk * sum(cvar along path cells)
         """
         cvar = risk_maps["cvar_95"]
-        risk_sum = sum(
-            cvar[r, c] for r, c in path
-            if 0 <= r < cvar.shape[0] and 0 <= c < cvar.shape[1]
-        )
+        if not np.isfinite(cvar).all() or np.any(cvar<0) or np.any(cvar>1):
+            raise ValueError("C12 risk map must contain finite probabilities")
+        if not np.isfinite(lambda_risk) or lambda_risk<0:
+            raise ValueError("C12 risk weight must be finite and nonnegative")
+        if not path:
+            raise ValueError("C12 route cannot be empty")
+        for r,c in path:
+            if not (0<=r<cvar.shape[0] and 0<=c<cvar.shape[1]):
+                raise ValueError("C12 route contains out-of-bounds grid cell")
+        risk_sum=sum(float(cvar[r,c]) for r,c in path)
         return float(len(path)) + lambda_risk * risk_sum
