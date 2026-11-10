@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-13-purple)](.) [![Type](https://img.shields.io/badge/Type-Model--Based%20RL-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Actual model training from physically recorded robot data:** [REAL_DINGO_TRAINED_DYNAMICS_EVIDENCE.md](REAL_DINGO_TRAINED_DYNAMICS_EVIDENCE.md) reports the successful training and independent chronological testing of an action-conditioned PyTorch GRU on genuine Dingo `Odometry` and `cmd_vel`. The GRU improved heading prediction, but was worse than a persistence baseline for one-step translation. This is **offline learned dynamics**, not a fully trained DreamerV3/RSSM, not validated multi-step imagination, and not C13-controlled physical motion.
+
 ## Plain-language summary
 
 A robot should not always learn from mistakes only after making them.

@@ -1,0 +1,81 @@
+name: C13 genuine Dingo recorded action-conditioned dynamics training
+
+on:
+  pull_request:
+    paths:
+      - "contributions/13_latent_world_model/**"
+      - ".github/workflows/c13-real-dingo-dynamics.yml"
+  workflow_dispatch:
+
+jobs:
+  real-dingo-supervised-model:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install true ROSbag decoder and CPU recurrent model tools
+        run: |
+          python -m pip install numpy pytest "rosbags>=0.10,<0.11"
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Test timestamp causality, coordinate transform and no split leakage
+        run: python -m pytest -q contributions/13_latent_world_model/tests
+      - name: Download and independently SHA-256 verify original physical Dingo recording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request,shutil,hashlib
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          out=Path("/tmp/c13_actual_dingo_recording.bag")
+          with urllib.request.urlopen(url,timeout=180) as source,out.open("wb") as target:
+              shutil.copyfileobj(source,target)
+          expected="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          digest=hashlib.sha256(out.read_bytes()).hexdigest()
+          if digest!=expected:
+              raise RuntimeError(f"Original physical Dingo bag SHA256 changed: {digest}")
+          assert out.stat().st_size==38063988
+          print("Verified real Dingo source recording",out.stat().st_size,digest)
+          PY
+      - name: Actually train GRU transition model and evaluate heldout physical odometry
+        run: |
+          python contributions/13_latent_world_model/experiments/train_real_dingo_action_dynamics.py \
+            /tmp/c13_actual_dingo_recording.bag \
+            --output-dir results/c13_actual_dingo \
+            --epochs 8 --history 8 --seed 2026
+      - name: Independent provenance, chronological test and checkpoint checks
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          import torch
+          root=Path("results/c13_actual_dingo")
+          report=json.loads((root/"report.json").read_text())
+          p=report["provenance"]
+          assert p["recorded_ros1_bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          assert p["observed_odom_messages"]>2000
+          assert p["observed_twist_messages"]>5000
+          assert p["valid_aligned_steps"]>1000
+          assert p["train_windows"]>300 and p["test_windows"]>100
+          assert len(report["training_history"])==8
+          regions=p["split_indices"]
+          assert regions["train"][1]<=regions["validation"][0]
+          assert regions["validation"][1]<=regions["test"][0]
+          assert p["original_commands_generated_by_c13"] is False
+          assert p["physical_robot_trials"]==0
+          artifact=torch.load(root/"c13_trained_real_dingo_dynamics.pt",weights_only=True,map_location="cpu")
+          assert all(torch.isfinite(value).all() for value in artifact["state_dict"].values())
+          for label,metrics in report["heldout_metrics"].items():
+              assert all(math.isfinite(value) and value>=0 for value in metrics.values())
+              print(label,metrics)
+          print("C13 real Dingo recorded action-supervised dynamics model trained and tested")
+          PY
+      - name: Upload truly trained model and physical recording heldout diagnostics, never the raw bag
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c13-original-dingo-recurrent-dynamics-model-and-evidence
+          path: results/c13_actual_dingo/
+          if-no-files-found: warn
