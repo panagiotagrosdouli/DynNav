@@ -21,6 +21,18 @@ The implementation rejects non-finite or incorrectly shaped robot states, obstac
 - 100 independently randomized obstacle configurations with direct numerical verification of every CBF inequality.
 - Re-execution of the original C18 synthetic stress benchmark, with six shielded/unshielded scenario outcomes and uploaded CSV.
 
+## Verified actual CI results
+
+[Successful GitHub Actions run #42801003690](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42801003690) passed **5/5 numerical CBF tests** and executed the original three stress scenarios with/without the shield.
+
+| Synthetic case | Unshielded constraint violations | Shielded violations | Final goal distance, unshielded | Final goal distance, shielded |
+|---|---:|---:|---:|---:|
+| Single direct obstacle | 6 | 0 | 0.100 m | **2.950 m** |
+| Narrow gap | 0 | 0 | 0.100 m | **2.500 m** |
+| Offset hazard | 6 | 0 | 0.075 m | 0.045 m |
+
+**Important negative performance result:** The shield eliminated sampled distance violations on two cases but prevented meaningful goal progress in the direct-obstacle and narrow-gap cases. This is a *safety-efficiency tradeoff*, not demonstrated superior autonomous navigation. The original benchmark is synthetic with simplified point dynamics, and its 0 sampled violations are not a formal continuous-time collision guarantee.
+
 ## Scientific limitation
 
 These tests address numerical feasibility of **instantaneous, 2D, point-robot, static-obstacle, linearized** CBF constraints. They do **NOT** prove discrete-time forward invariance, safety under actuator latency, wheel slip, a unicycle's nonholonomic dynamics, moving humans, sensor noise, robot radius variation, collisions between timesteps, uncertainty-aware risk bounds or formal system verification. The existing STL monitor checks a sampled finite history, not a complete temporal model-checking proof.
