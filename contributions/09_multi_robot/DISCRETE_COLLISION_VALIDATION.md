@@ -23,11 +23,11 @@ The revised scheduler:
 - Marks agents already at their goals as reached before starting.
 - Keeps `collision_events` as a historical compatibility field, but it measures **blocked/avoided intents**, not observed crashes.
 
-Tests cover swaps, a feasible two-agent mission, duplicate initial positions/IDs, obstacle goals and initial-at-goal behavior.
+Tests cover swaps, a feasible two-agent mission, duplicate initial positions/IDs, obstacle goals, initial-at-goal behavior, and **shared-goal priority**: if two robots want the same terminal cell, only the lower-ID robot can complete, while the other waits without overlapping it.
 
 ## Centralized comparison hardening
 
-The original `run_centralized` function claimed a centralized comparison but actually used **sequentially planned paths executed in parallel**, without checking for other robots' current occupied cells. That could produce collisions. The revised comparator now uses **sequential planning and sequential movement** with other agents' current positions as hard blocked cells. It is explicitly tagged `centralized_sequential_static_reservations`, **NOT an optimal joint multi-agent pathfinding solver**. A narrow corridor can still deadlock. Regression tests cover both safe refusal of a head-on swap and two nonconflicting successful routes.
+The original `run_centralized` function claimed a centralized comparison but actually used **sequentially planned paths executed in parallel**, without checking for other robots' current occupied cells. That could produce collisions. The revised comparator now uses **sequential planning and sequential movement** with other agents' current positions as hard blocked cells. The public result retains the legacy `strategy="centralized"` identifier for compatibility, but the implementation is now explicitly **sequential with static reservations** and is **NOT an optimal joint multi-agent pathfinding solver**. A narrow corridor can still deadlock. Regression tests cover both safe refusal of a head-on swap and two nonconflicting successful routes.
 
 ## Replication
 
