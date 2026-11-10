@@ -26,7 +26,17 @@
 
 ### Sensitivity comparison
 
-The follow-up executable `experiments/eval_dingo_injection_sensitivity.py` and workflow test five *explicitly artificial* post-baseline speed biases (+0.10, +0.20, +0.35, +0.50 and +1.00 m/s) on the **same original recorded stream**, writing `sensitivity/sensitivity.csv` and `sensitivity/summary.json`. Inspect its CI outcome and artifacts before treating any magnitude-dependent results as verified.
+[Successful run #42782628901](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42782628901) **executed** five explicitly synthetic in-memory biases on the same original recorded Dingo stream, with the same chronological baseline configuration and independently reported results:
+
+| Injected artificial speed bias | Post-onset detected? | Delay in samples |
+|---|---|---:|
+| +0.10 m/s | No | Not detected |
+| +0.20 m/s | No | Not detected |
+| +0.35 m/s | Yes | 521 |
+| +0.50 m/s | Yes | 367 |
+| +1.00 m/s | Yes | 176 |
+
+The result indicates a **weak IDS that misses both lower-level perturbations and reacts slowly to stronger ones**. These are **sample-count delays**, not seconds, and are not physically observed attacks. The same original unlabelled historical data were used for all tests; this does not establish external detection rates. Reproducible evidence is saved in `sensitivity/sensitivity.csv` and `sensitivity/summary.json`, included in the dedicated workflow artifact.
 
 ## Reproduction
 
