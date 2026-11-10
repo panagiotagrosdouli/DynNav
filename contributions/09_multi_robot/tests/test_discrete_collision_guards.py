@@ -60,3 +60,21 @@ def test_robot_initially_at_goal_does_not_move():
     assert result.all_reached
     assert robots[0].pos==(0,0)
     assert robots[0].steps==0
+
+def test_sequential_centralized_baseline_refuses_headon_swap():
+    grid=np.zeros((1,2),dtype=np.uint8)
+    agents=[module.RobotAgent(0,(0,0),(1,0)),
+            module.RobotAgent(1,(1,0),(0,0))]
+    result=module.run_centralized(grid,agents,max_steps=10)
+    assert not result.all_reached
+    assert [a.pos for a in agents]==[(0,0),(1,0)]
+    assert result.collision_events==2
+    assert "sequential" in result.strategy
+
+def test_sequential_centralized_baseline_reaches_separate_goals():
+    grid=np.zeros((5,9),dtype=np.uint8)
+    agents=[module.RobotAgent(0,(0,0),(0,3)),
+            module.RobotAgent(1,(8,0),(8,3))]
+    result=module.run_centralized(grid,agents,max_steps=10)
+    assert result.all_reached
+    assert len(set(a.pos for a in agents))==2
