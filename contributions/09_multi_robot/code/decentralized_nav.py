@@ -235,37 +235,46 @@ def run_centralized(
     max_steps: int = 300,
     lambda_risk: float = 0.5,
 ) -> DecentralizedResult:
-    """
-    Centralised baseline: sequential planning with full knowledge.
-    Robot i plans avoiding cells already claimed by robots 0..i-1.
-    """
-    reserved: set[tuple[int, int]] = set()
-    for robot in sorted(robots, key=lambda r: r.robot_id):
-        path = _astar_with_risk(grid, robot.pos, robot.goal, {}, reserved, lambda_risk)
-        robot.path = path or [robot.pos]
-        reserved.update(robot.path)
+    """Central sequential baseline (NOT optimal joint-state MAPF).
 
-    # Execute (same movement loop)
-    collision_events = 0
-    for step in range(max_steps):
-        if all(r.reached_goal for r in robots):
-            break
-        for robot in robots:
-            if robot.reached_goal:
-                continue
-            if robot.path and len(robot.path) > 1:
-                robot.pos = robot.path[1]
-                robot.path = robot.path[1:]
-                robot.steps += 1
-            if robot.pos == robot.goal:
-                robot.reached_goal = True
+    This implementation executes exactly one robot at a time, treating
+    all other robot positions as occupied static obstacles. This avoids
+    vertex overlap/head-on edge swaps but can deadlock on narrow passages
+    and cannot be called a globally optimal centralized MAPF solver.
+    """
+    H, W = grid.shape
+    if len({r.robot_id for r in robots}) != len(robots):
+        raise ValueError("Duplicate robot_id is unsafe")
+    if len({r.pos for r in robots}) != len(robots):
+        raise ValueError("Overlapping robot starts are unsafe")
+    for r in robots:
+        for x,y in (r.pos,r.goal):
+            if not (0<=x<W and 0<=y<H) or grid[y,x]:
+                raise ValueError("Robot start or goal is blocked/outside map")
+        r.reached_goal=r.pos==r.goal
 
-    all_reached = all(r.reached_goal for r in robots)
+    blocked_requests=0
+    for robot in sorted(robots,key=lambda r:r.robot_id):
+        if robot.reached_goal:
+            continue
+        occupied={r.pos for r in robots if r.robot_id!=robot.robot_id}
+        path=_astar_with_risk(grid,robot.pos,robot.goal,{},occupied,lambda_risk)
+        if path is None:
+            blocked_requests+=1
+            robot.replans+=1
+            continue
+        robot.path=path
+        for nxt in path[1:max_steps+1]:
+            if nxt in {r.pos for r in robots if r.robot_id!=robot.robot_id}:
+                raise RuntimeError("Unsafe centralized baseline: occupied-cell violation")
+            robot.pos=nxt
+            robot.steps+=1
+        robot.reached_goal=robot.pos==robot.goal
     return DecentralizedResult(
-        strategy="centralized",
-        all_reached=all_reached,
+        strategy="centralized_sequential_static_reservations",
+        all_reached=all(r.reached_goal for r in robots),
         total_steps=sum(r.steps for r in robots),
-        total_replans=0,
-        collision_events=collision_events,
-        avg_path_length=sum(r.steps for r in robots) / max(len(robots), 1),
+        total_replans=sum(r.replans for r in robots),
+        collision_events=blocked_requests,
+        avg_path_length=sum(r.steps for r in robots)/max(len(robots),1),
     )
