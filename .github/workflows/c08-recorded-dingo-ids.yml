@@ -1,0 +1,66 @@
+name: C08 recorded Dingo odometry with counterfactual IDS injection
+
+on:
+  pull_request:
+    paths:
+      - "contributions/08_security_ids/**"
+      - ".github/workflows/c08-recorded-dingo-ids.yml"
+  workflow_dispatch:
+
+jobs:
+  recorded-odometry-ids:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install original bag decoder and focused C08 tests
+        run: python -m pip install "rosbags>=0.10,<0.11" numpy pytest
+      - name: Run C08 injection, source-integrity and numerical guards
+        run: python -m pytest -q contributions/08_security_ids/tests
+      - name: Download original physically recorded Clearpath Dingo bag
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request,shutil,hashlib
+          file=Path("/tmp/c08_original_dingo.bag")
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          with urllib.request.urlopen(url,timeout=180) as source,file.open("wb") as f:
+              shutil.copyfileobj(source,f)
+          assert file.stat().st_size==38063988
+          assert hashlib.sha256(file.read_bytes()).hexdigest()=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          print("Verified actual original Dingo bag source, byte count and digest")
+          PY
+      - name: Actually evaluate C08 CUSUM on genuine odometry plus synthetic injection
+        run: |
+          python contributions/08_security_ids/experiments/eval_real_dingo_odometry_synthetic_attack.py \
+            /tmp/c08_original_dingo.bag \
+            --output results/c08_recorded_dingo/ids_report.json \
+            --attack-speed .35
+      - name: Independently reject ungrounded physical cybersecurity and safety claims
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path("results/c08_recorded_dingo/ids_report.json").read_text())
+          assert data["source_bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          assert data["real_telemetry_base"] is True
+          assert data["attack_is_synthetic_in_memory"] is True
+          assert data["no_attack_ground_truth_assumed"] is False
+          assert data["physical_robot_c08_control"] is False
+          assert data["physical_robot_trials"]==0
+          assert data["baseline_fit_samples"]>100 and data["heldout_test_samples"]>100
+          print("Actual C08 IDS evidence:",data["valid_velocity_observations"],"recorded samples")
+          print("Injected detection:",data["injected_detected_post_onset"],
+                "delay:",data["injected_detection_delay_samples"])
+          print("No original attack truth is asserted")
+          PY
+      - name: Upload C08 observed and synthetic-injected evidence without original bag
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c08-original-dingo-odometry-offline-injected-ids
+          path: results/c08_recorded_dingo/
+          if-no-files-found: warn
