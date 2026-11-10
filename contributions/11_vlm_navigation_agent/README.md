@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-11-purple)](.) [![Type](https://img.shields.io/badge/Type-Perception%20%2F%20VLM-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executed C11 integration verification:** [VLM_TRANSPORT_VALIDATION_EVIDENCE.md](VLM_TRANSPORT_VALIDATION_EVIDENCE.md) reports 21 passed tests, actual local HTTP/JPEG request transport (Ollama and OpenAI-compatible schemas), strict live semantic goal gating, and source-level repairs. The HTTP server used deterministic **mock replies**, not a trained VLM. No C11 physical robot motion is claimed.
+
 ## Plain-language summary
 
 A Vision-Language Model can help a robot understand what it sees, but the robot should not blindly execute every VLM suggestion.
