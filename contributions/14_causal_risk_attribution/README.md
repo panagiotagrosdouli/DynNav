@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-14-purple)](.) [![Type](https://img.shields.io/badge/Type-Causal%20AI-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Reproducible paired intervention benchmark:** [PAIRED_CAUSAL_VALIDATION_REPORT.md](PAIRED_CAUSAL_VALIDATION_REPORT.md) records the actually executed 250 injected episodes, same-noise factual/counterfactual tests, overall **62.8%** top-1 accuracy and important failures on localization/map-accuracy causes. All are hand-specified synthetic SCM interventions, **not actual causal robot experiments**.
+
 ## Plain-language summary
 
 When a robot fails, it is not enough to say:
