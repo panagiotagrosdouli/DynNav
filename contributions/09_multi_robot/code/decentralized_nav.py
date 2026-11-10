@@ -162,6 +162,16 @@ def run_decentralized(
                 intended[robot.robot_id] = robot.pos
                 reserved.add(robot.pos)
                 continue
+            # Respect lower-ID priority over an identical terminal goal.
+            # Two physical footprints cannot both occupy the same grid cell;
+            # the lower-priority agent waits (possibly indefinitely).
+            if any(other.robot_id < robot.robot_id and other.goal == robot.goal
+                   for other in robots):
+                intended[robot.robot_id] = robot.pos
+                reserved.add(robot.pos)
+                robot.collision_avoidance_events += 1
+                collision_events += 1
+                continue
             next_cell = robot.path[1] if len(robot.path)>1 else robot.pos
             blocked = (next_cell in (occupied-{robot.pos})) or next_cell in reserved
             if blocked or next_cell==robot.pos:
@@ -271,7 +281,7 @@ def run_centralized(
             robot.steps+=1
         robot.reached_goal=robot.pos==robot.goal
     return DecentralizedResult(
-        strategy="centralized_sequential_static_reservations",
+        strategy="centralized",
         all_reached=all(r.reached_goal for r in robots),
         total_steps=sum(r.steps for r in robots),
         total_replans=sum(r.replans for r in robots),
