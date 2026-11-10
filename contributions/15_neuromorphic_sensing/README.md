@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-15-purple)](.) [![Type](https://img.shields.io/badge/Type-Neuromorphic%20%2F%20Bio--inspired-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Critical corrected benchmarking evidence:** [TIME_ALIGNED_LATENCY_EVIDENCE.md](TIME_ALIGNED_LATENCY_EVIDENCE.md) reports the executed time-aligned six-scenario comparison. With equal frame input frequency, the existing randomly initialized SNN detected **0/6** obstacles while the frame baseline detected **6/6**. A neuromorphic latency advantage is **not demonstrated**. Both inputs were synthetic greyscale-derived events, not physical DVS sensor recordings.
+
 ## Plain-language summary
 
 Frame cameras observe the world in fixed snapshots.

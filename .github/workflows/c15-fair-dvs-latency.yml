@@ -1,0 +1,62 @@
+name: C15 fair time-aligned DVS simulator benchmark
+
+on:
+  pull_request:
+    paths:
+      - "contributions/15_neuromorphic_sensing/**"
+      - ".github/workflows/c15-fair-dvs-latency.yml"
+  workflow_dispatch:
+
+jobs:
+  c15-timed-simulation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install neuromorphic synthetic benchmark dependencies
+        run: python -m pip install numpy pytest
+      - name: Test exact identical input clock and invalid-frame rejection
+        run: python -m pytest -q contributions/15_neuromorphic_sensing/tests
+      - name: Run original C15 benchmark for comparison
+        run: |
+          python contributions/15_neuromorphic_sensing/experiments/eval_neuromorphic_latency.py \
+            --out results/c15_fair_latency/legacy_cadence_confounded.csv
+      - name: Execute equal-cadence input paired controls
+        run: |
+          python contributions/15_neuromorphic_sensing/experiments/eval_time_aligned_latency.py \
+            --output-dir results/c15_fair_latency
+      - name: Validate six actually compared equal-cadence scenarios
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          d=Path("results/c15_fair_latency")
+          report=json.loads((d/"summary.json").read_text())
+          rows=list(csv.DictReader((d/"paired_trials.csv").open()))
+          assert report["n_paired_scenarios"]==6
+          assert report["n_event_count_controls"]==6
+          assert report["event_count_detected"]==6
+          controls=json.loads((d/"event_count_controls.json").read_text())
+          assert len(controls)==6
+          assert all(c["detected"] for c in controls)
+          assert all(c["per_frame_events"][0]==0 for c in controls)
+          assert len(rows)==12
+          assert report["actual_event_camera"] is False
+          assert report["real_robot_trials"]==0
+          for i in range(0,12,2):
+              a,b=rows[i:i+2]
+              assert a["frame_period_us"]==b["frame_period_us"]
+              assert a["obstacle_speed_px_per_frame"]==b["obstacle_speed_px_per_frame"]
+              assert a["first_detection_time_us"]=="0.0"
+          print("Six actual paired simulated sensing timing tests checked; no hardware claims")
+          PY
+      - name: Upload time-aligned detection timing evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c15-fair-event-vs-frame-synthetic-timing
+          path: results/c15_fair_latency/
+          if-no-files-found: warn
