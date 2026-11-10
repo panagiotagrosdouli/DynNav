@@ -117,7 +117,7 @@ class DecentralizedResult:
     all_reached: bool
     total_steps: int
     total_replans: int
-    collision_events: int
+    collision_events: int  # blocked/avoided intents, NOT actual physical collisions
     avg_path_length: float
 
 
@@ -133,49 +133,57 @@ def run_decentralized(
     Priority: lower robot_id always has right-of-way.
     """
     H, W = grid.shape
-
-    # Initial planning
+    if len(set(r.robot_id for r in robots)) != len(robots):
+        raise ValueError("Duplicate robot_id is unsafe for multi-robot scheduling")
+    if len(set(r.pos for r in robots)) != len(robots):
+        raise ValueError("Multiple robots occupy one initial grid cell")
     for robot in robots:
-        path = _astar_with_risk(grid, robot.pos, robot.goal, {}, set(), lambda_risk)
-        robot.path = path or []
-
+        for x,y in (robot.pos, robot.goal):
+            if not (0<=x<W and 0<=y<H) or grid[y,x]:
+                raise ValueError("Robot start or goal is blocked/outside map")
+        robot.reached_goal = robot.pos == robot.goal
+        robot.path = _astar_with_risk(grid, robot.pos, robot.goal, {}, set(), lambda_risk) or [robot.pos]
     collision_events = 0
 
     for step in range(max_steps):
         if all(r.reached_goal for r in robots):
             break
 
-        # Collect current positions (for collision detection)
+        # Conservative discrete safety barrier: a robot may NOT enter ANY
+        # other agent's position occupied at the beginning of this tick.
+        # This also excludes head-on swaps, even when an occupant intends
+        # to leave. It can cause deadlock; collision safety != liveness.
         positions = {r.robot_id: r.pos for r in robots}
-        intended: dict[int, tuple[int, int]] = {}
-
-        # Determine intended moves (higher priority robots first)
-        reserved: set[tuple[int, int]] = set()
-
-        for robot in sorted(robots, key=lambda r: r.robot_id):
+        occupied = set(positions.values())
+        intended: dict[int, tuple[int,int]] = {}
+        reserved: set[tuple[int,int]] = set()
+        for robot in sorted(robots,key=lambda r:r.robot_id):
             if robot.reached_goal:
+                intended[robot.robot_id] = robot.pos
                 reserved.add(robot.pos)
                 continue
-
-            if robot.path and len(robot.path) > 1:
-                next_cell = robot.path[1]
-                if next_cell in reserved:
-                    # Yield: replan around reserved cells
-                    new_path = _astar_with_risk(
-                        grid, robot.pos, robot.goal,
-                        robot.shared_risk, reserved, lambda_risk
-                    )
-                    robot.path = new_path or [robot.pos]
-                    robot.replans += 1
-                    robot.collision_avoidance_events += 1
-                    collision_events += 1
-                    intended[robot.robot_id] = robot.pos
-                else:
-                    intended[robot.robot_id] = next_cell
+            next_cell = robot.path[1] if len(robot.path)>1 else robot.pos
+            blocked = (next_cell in (occupied-{robot.pos})) or next_cell in reserved
+            if blocked or next_cell==robot.pos:
+                unavailable=(occupied-{robot.pos})|reserved
+                # Replan but never execute a new cell in the same tick:
+                # the reservation/barrier must be reevaluated next tick.
+                replacement=_astar_with_risk(grid,robot.pos,robot.goal,
+                                             robot.shared_risk,unavailable,lambda_risk)
+                if replacement:
+                    robot.path=replacement
+                robot.replans+=1
+                robot.collision_avoidance_events+=int(blocked)
+                collision_events+=int(blocked)
+                intended[robot.robot_id]=robot.pos
             else:
-                intended[robot.robot_id] = robot.pos
-
-            reserved.add(intended.get(robot.robot_id, robot.pos))
+                intended[robot.robot_id]=next_cell
+            reserved.add(intended[robot.robot_id])
+        # Fail closed if any future modification defeats the intent barrier.
+        if len(set(intended.values())) != len(robots):
+            raise RuntimeError("C09 unresolved vertex collision; refusing to step")
+        if any(intended[r.robot_id] in occupied-{r.pos} for r in robots):
+            raise RuntimeError("C09 occupied-cell incursion; refusing to step")
 
         # Apply moves and share risk
         for robot in robots:
