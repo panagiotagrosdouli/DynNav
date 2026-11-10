@@ -167,10 +167,12 @@ class CBFConfig:
 
 class CBFSafetyFilter:
     """
-    Control Barrier Function filter for a unicycle / point robot.
+    Instantaneous Control Barrier Function filter for 2D point-robot velocity.
 
     Given a desired velocity command u_des and a set of obstacle positions,
-    returns a minimally modified u_safe that provably maintains h(x) ≥ 0
+    returns a minimally modified instantaneous velocity satisfying the
+    linearized CBF inequality if feasible; this ALONE does not prove future
+    safety for a physical robot or finite-rate controller. Target h(x) ≥ 0
     where h(x) = ‖x - x_obs‖² - r²  (sphere safety set).
     """
 
@@ -187,33 +189,66 @@ class CBFSafetyFilter:
         norm = np.linalg.norm(diff) + 1e-8
         return diff / norm
 
+    def filter_verified(self, u_des: np.ndarray,
+                        robot_pos: np.ndarray,
+                        obstacles: list[np.ndarray]) -> tuple[np.ndarray, dict]:
+        """Project a 2D point velocity onto all *linearized instantaneous* CBF constraints.
+
+        Enumerates vertices/active sets of the exact 2D Euclidean projection
+        QP. This is NOT a formal multi-step safety theorem, and cannot model
+        the actual unicycle, uncertain obstacle motion or finite-rate control.
+        An infeasible constraint set returns ZERO with feasible=False; the
+        caller MUST NOT treat zero as a certified safe command when h<0.
+        """
+        desired = np.asarray(u_des, dtype=float)
+        pos = np.asarray(robot_pos, dtype=float)
+        if desired.shape != (2,) or pos.shape != (2,) or not (
+            np.isfinite(desired).all() and np.isfinite(pos).all()):
+            raise ValueError("C18 requires finite 2D desired velocity and position")
+        if not (np.isfinite(self.cfg.alpha) and self.cfg.alpha > 0
+                and np.isfinite(self.cfg.safety_radius) and self.cfg.safety_radius > 0):
+            raise ValueError("C18 safety radius and CBF gain must be finite positive")
+        constraints = []
+        for obstacle in obstacles:
+            obs = np.asarray(obstacle, dtype=float)
+            if obs.shape != (2,) or not np.isfinite(obs).all():
+                raise ValueError("C18 obstacle coordinate invalid")
+            grad = self.dh_dx(pos, obs)
+            h = self.h(pos, obs)
+            constraints.append((grad, -self.cfg.alpha * h))
+        def feasible(candidate: np.ndarray) -> bool:
+            return bool(all(float(a @ candidate) >= b - 1e-8 for a,b in constraints))
+        candidates = [desired]
+        for a,b in constraints:
+            norm2 = float(a @ a)
+            if norm2 > 1e-12:
+                candidates.append(desired + max(0., (b - float(a @ desired))/norm2) * a)
+        for i,(a,b) in enumerate(constraints):
+            for c,d in constraints[i+1:]:
+                mat = np.stack([a,c])
+                if abs(float(np.linalg.det(mat))) > 1e-10:
+                    candidates.append(np.linalg.solve(mat, np.array([b,d])))
+        eligible = [u for u in candidates if feasible(u)]
+        if not eligible:
+            return np.zeros_like(desired), {
+                "constraint_feasible": False, "minimum_cbf_margin": None,
+                "status": "INFEASIBLE_CBF_ZERO_COMMAND_NOT_CERTIFIED_SAFE",
+                "instantaneous_only": True,
+            }
+        solution = min(eligible,key=lambda u: float(np.sum((u-desired)**2)))
+        margin = min((float(a @ solution - b) for a,b in constraints),default=float("inf"))
+        return solution, {
+            "constraint_feasible": True,
+            "minimum_cbf_margin": margin if np.isfinite(margin) else None,
+            "status": "INSTANTANEOUS_LINEARIZED_CBF_FEASIBLE",
+            "instantaneous_only": True,
+        }
+
     def filter(self, u_des: np.ndarray,
                robot_pos: np.ndarray,
                obstacles: list[np.ndarray]) -> np.ndarray:
-        """
-        QP-based CBF filter (gradient projection for simplicity).
-        Finds u_safe ≈ argmin ‖u − u_des‖² s.t. Lf_h + alpha*h ≥ 0 ∀ obs.
-        """
-        u = u_des.copy().astype(float)
-
-        for obs in obstacles:
-            for _ in range(self.cfg.max_iter):
-                h_val = self.h(robot_pos, obs)
-                grad = self.dh_dx(robot_pos, obs)
-
-                # CBF condition: grad · u + alpha * h ≥ 0
-                lf_h = float(grad @ u)
-                constraint = lf_h + self.cfg.alpha * h_val
-
-                if constraint >= 0:
-                    break  # satisfied
-
-                # Project u onto the constraint boundary
-                violation = -constraint
-                u = u + self.cfg.step_size * violation * grad
-                logger.debug("CBF correction applied | h=%.3f lf_h=%.3f", h_val, lf_h)
-
-        return u
+        """Compatibility interface; inspect batch_filter for feasibility evidence."""
+        return self.filter_verified(u_des, robot_pos, obstacles)[0]
 
     def batch_filter(self, u_des: np.ndarray,
                      robot_pos: np.ndarray,
@@ -223,7 +258,7 @@ class CBFSafetyFilter:
         """
         Filter command and return diagnostics.
         """
-        u_safe = self.filter(u_des, robot_pos, obstacles)
+        u_safe, certificate = self.filter_verified(u_des, robot_pos, obstacles)
         correction = np.linalg.norm(u_safe - u_des)
         min_dist = min(
             np.linalg.norm(robot_pos - obs) for obs in obstacles
@@ -233,6 +268,7 @@ class CBFSafetyFilter:
             "correction_norm": round(float(correction), 5),
             "min_obstacle_dist": round(float(min_dist), 5),
             "safety_violated": min_dist < self.cfg.safety_radius,
+            **certificate,
         }
         if info["safety_violated"]:
             logger.warning(
