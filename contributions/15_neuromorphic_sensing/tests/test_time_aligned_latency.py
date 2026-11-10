@@ -34,3 +34,28 @@ def test_reproducible_honest_summary(tmp_path):
     assert report["actual_event_camera"] is False
     assert report["real_robot_trials"]==0
     assert (tmp_path/"paired_trials.csv").exists()
+
+def test_actual_on_off_events_are_generated_after_first_reference_frame():
+    import numpy as np
+    sys.path.insert(0,str(SCRIPT.parents[1]))
+    from neuromorphic_sensing import DVSSimulator,DVSSimulatorConfig
+    sim=DVSSimulator(DVSSimulatorConfig(height=4,width=4,noise_rate=0.0,
+                                        threshold_pos=.12,threshold_neg=.12))
+    start=np.full((4,4),0.1)
+    bright=start.copy(); bright[1,2]=0.9
+    first=sim.process_frame(start,dt_us=10000)
+    on=sim.process_frame(bright,dt_us=10000)
+    off=sim.process_frame(start,dt_us=10000)
+    assert not first
+    assert any((e.x,e.y,e.polarity)==(2,1,1) for e in on)
+    assert any((e.x,e.y,e.polarity)==(2,1,-1) for e in off)
+
+def test_simulated_motion_produces_genuine_signal_driven_events():
+    from neuromorphic_benchmark import moving_obstacle_frames
+    from neuromorphic_sensing import DVSSimulator,DVSSimulatorConfig
+    frames=moving_obstacle_frames(n_frames=4,height=32,width=32,obstacle_size=5,
+                                  speed_px_per_frame=4)
+    sim=DVSSimulator(DVSSimulatorConfig(height=32,width=32,noise_rate=0.0))
+    counts=[len(sim.process_frame(frame)) for frame in frames]
+    assert counts[0]==0
+    assert sum(counts[1:])>0,counts
