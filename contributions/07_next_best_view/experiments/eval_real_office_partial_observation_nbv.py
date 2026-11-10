@@ -74,8 +74,21 @@ def choose_bases(grid,n,seed,minimum_clearance=32):
     if len(cells)<n:
         raise ValueError("Insufficient verified clear real-map free-space starts")
     rng=np.random.default_rng(seed)
-    selection=rng.choice(len(cells),size=n,replace=False)
-    return [(int(cells[i,1]),int(cells[i,0])) for i in selection]
+    # Sample diverse physical map regions instead of four nearly adjacent
+    # points in the only giant open room. The 4-connected component remains
+    # the same but selected bases must be spatially separated where possible.
+    order=rng.permutation(len(cells))
+    chosen=[]
+    min_separation=max(12,2*minimum_clearance)
+    for idx in order:
+        y,x=map(int,cells[idx])
+        if all((x-px)**2+(y-py)**2 >= min_separation**2 for px,py in chosen):
+            chosen.append((x,y))
+            if len(chosen)==n:
+                break
+    if len(chosen)<n:
+        raise ValueError("Insufficient geographically separated, connected real-map start regions")
+    return chosen
 
 def frontier_candidates(known,free_known,dist,occupied_known,base,sensor_radius,
                         sample_max=100,seed=0):
@@ -126,7 +139,7 @@ def evaluate(map_yaml,out_dir,n_starts,seed,observed_radius,sensor_radius):
     image=(yaml_path.parent/meta["image"]).resolve()
     obj=load_ros_map(yaml_path,unknown_as_obstacle=True)
     grid=occupancy(obj)
-    bases=choose_bases(grid,n_starts,seed,minimum_clearance=observed_radius+3)
+    bases=choose_bases(grid,n_starts,seed,minimum_clearance=max(5,observed_radius//3))
     rows=[];summary=[]
     for task,base in enumerate(bases):
         known,occupied,free=generate_observed(grid,base,observed_radius)
