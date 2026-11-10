@@ -17,6 +17,7 @@ from __future__ import annotations
 import base64
 import json
 import logging
+import math
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -91,20 +92,43 @@ class VLMNavigationPlanner:
         """
         Main entry point. Feed an RGB (H×W×3 uint8) frame, get a SemanticGoal.
         """
+        # VLM output is untrusted. Never use an invalid pixel, pose or depth
+        # as a physical waypoint. Reject before any model/network request.
+        if not isinstance(rgb_frame,np.ndarray) or rgb_frame.ndim!=3 or rgb_frame.shape[2]!=3 or rgb_frame.dtype!=np.uint8:
+            logger.warning("Rejected non-RGB uint8 input frame")
+            return None
+        if depth_frame is not None and (not isinstance(depth_frame,np.ndarray)
+                or depth_frame.ndim!=2 or depth_frame.shape!=rgb_frame.shape[:2]):
+            logger.warning("Rejected incompatible depth frame")
+            return None
+        if len(current_pose)!=3 or not all(math.isfinite(float(v)) for v in current_pose):
+            logger.warning("Rejected nonfinite camera/robot pose")
+            return None
         encoded = self._encode_frame(rgb_frame)
         raw = self._query_vlm(encoded)
         if raw is None:
             return None
 
         goal = self._parse_response(raw)
-        if goal is None or goal.confidence < self.cfg.confidence_threshold:
-            logger.warning("VLM goal below confidence threshold: %s", goal)
+        if goal is None or not math.isfinite(goal.confidence) or goal.confidence < self.cfg.confidence_threshold:
+            logger.warning("VLM goal missing/invalid confidence: %s", goal)
             return None
+        if goal.pixel_hint is not None:
+            u,v=goal.pixel_hint
+            height,width=rgb_frame.shape[:2]
+            if not (0<=u<width and 0<=v<height):
+                logger.warning("Rejected out-of-frame VLM pixel hint %s",goal.pixel_hint)
+                return None
 
-        if depth_frame is not None and goal.pixel_hint is not None:
-            goal.metric_waypoint = self._pixel_to_metric(
-                goal.pixel_hint, depth_frame, current_pose
-            )
+        if depth_frame is not None:
+            if goal.pixel_hint is None:
+                logger.warning("Depth-aware goal has no grounded pixel hint")
+                return None
+            waypoint=self._pixel_to_metric(goal.pixel_hint,depth_frame,current_pose)
+            if waypoint is None:
+                logger.warning("Unusable depth for VLM waypoint; fail closed")
+                return None
+            goal.metric_waypoint=waypoint
 
         self._session_goals.append(goal)
         logger.info("VLM goal accepted: %s (conf=%.2f)", goal.description, goal.confidence)
@@ -181,18 +205,28 @@ class VLMNavigationPlanner:
     def _parse_response(self, raw: str) -> Optional[SemanticGoal]:
         """Parse JSON from the VLM response."""
         try:
-            # Strip markdown fences if present
-            text = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
-            data = json.loads(text)
-            return SemanticGoal(
-                description=str(data.get("goal", "")),
-                region_label=str(data.get("region", "unknown")),
-                confidence=float(data.get("confidence", 0.0)),
-                pixel_hint=(
-                    int(data["pixel_u"]), int(data["pixel_v"])
-                ) if "pixel_u" in data else None,
-            )
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
+            text=raw.strip()
+            if text.startswith("```"):
+                parts=text.splitlines()
+                if len(parts)<3 or not parts[-1].strip().startswith("```"):
+                    raise ValueError("Malformed fenced VLM JSON")
+                text="\n".join(parts[1:-1]).strip()
+            data=json.loads(text)
+            if not isinstance(data,dict):
+                raise ValueError("VLM JSON response is not an object")
+            confidence=float(data.get("confidence",0.))
+            if not math.isfinite(confidence) or not 0<=confidence<=1:
+                raise ValueError("VLM confidence is nonfinite or out of [0,1]")
+            goal=str(data.get("goal","")).strip()
+            region=str(data.get("region","")).strip()
+            if not goal or not region or region.lower()=="unknown":
+                raise ValueError("VLM region or goal missing")
+            if ("pixel_u" in data) != ("pixel_v" in data):
+                raise ValueError("Incomplete VLM pixel coordinate pair")
+            pixels=(int(data["pixel_u"]),int(data["pixel_v"])) if "pixel_u" in data else None
+            return SemanticGoal(description=goal,region_label=region,
+                                confidence=confidence,pixel_hint=pixels)
+        except (json.JSONDecodeError,KeyError,ValueError,TypeError,OverflowError) as e:
             logger.error("Failed to parse VLM response: %s | raw=%s", e, raw[:200])
             return None
 
@@ -205,13 +239,14 @@ class VLMNavigationPlanner:
         """
         u, v = pixel
         h, w = depth.shape[:2]
-        fx = fy = max(w, h)   # rough focal length
+        if not (0<=u<w and 0<=v<h) or not math.isfinite(self.depth_scale) or self.depth_scale<=0:
+            return None
+        fx = fy = max(w, h)   # approximate focal length; NOT a calibrated camera
         cx, cy = w / 2, h / 2
-        d = float(depth[min(v, h - 1), min(u, w - 1)]) * self.depth_scale
-
-        if d < 0.05:
-            logger.warning("Depth at pixel %s too small (%.3f m), skipping", pixel, d)
-            return (pose[0], pose[1])
+        d = float(depth[v,u])*self.depth_scale
+        if not math.isfinite(d) or d<0.05:
+            logger.warning("Invalid/nonfinite/too-small depth at %s: %s",pixel,d)
+            return None
 
         # Camera-frame 3-D point
         x_cam = (u - cx) / fx * d
