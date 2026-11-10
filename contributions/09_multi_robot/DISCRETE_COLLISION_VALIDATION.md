@@ -25,6 +25,10 @@ The revised scheduler:
 
 Tests cover swaps, a feasible two-agent mission, duplicate initial positions/IDs, obstacle goals and initial-at-goal behavior.
 
+## Centralized comparison hardening
+
+The original `run_centralized` function claimed a centralized comparison but actually used **sequentially planned paths executed in parallel**, without checking for other robots' current occupied cells. That could produce collisions. The revised comparator now uses **sequential planning and sequential movement** with other agents' current positions as hard blocked cells. It is explicitly tagged `centralized_sequential_static_reservations`, **NOT an optimal joint multi-agent pathfinding solver**. A narrow corridor can still deadlock. Regression tests cover both safe refusal of a head-on swap and two nonconflicting successful routes.
+
 ## Replication
 
 ```bash
