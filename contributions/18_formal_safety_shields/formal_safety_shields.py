@@ -267,7 +267,7 @@ class CBFSafetyFilter:
         info = {
             "correction_norm": round(float(correction), 5),
             "min_obstacle_dist": round(float(min_dist), 5),
-            "safety_violated": min_dist < self.cfg.safety_radius,
+            "safety_violated": bool(min_dist < self.cfg.safety_radius),
             **certificate,
         }
         if info["safety_violated"]:
