@@ -78,3 +78,14 @@ def test_sequential_centralized_baseline_reaches_separate_goals():
     result=module.run_centralized(grid,agents,max_steps=10)
     assert result.all_reached
     assert len(set(a.pos for a in agents))==2
+
+def test_shared_target_prioritizes_lower_id_without_overlap():
+    grid=np.zeros((12,12),dtype=np.uint8)
+    agents=[module.RobotAgent(0,(0,0),(5,5)),
+            module.RobotAgent(1,(1,0),(5,5))]
+    outcome=module.run_decentralized(grid,agents,max_steps=200,share_risk=False)
+    assert agents[0].reached_goal
+    assert agents[0].pos==(5,5)
+    assert not agents[1].reached_goal
+    assert len({r.pos for r in agents})==2
+    assert not outcome.all_reached
