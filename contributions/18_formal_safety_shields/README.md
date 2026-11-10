@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-18-purple)](.) [![Type](https://img.shields.io/badge/Type-Formal%20Methods-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **CBF feasibility correction:** [CBF_FEASIBILITY_REPORT.md](CBF_FEASIBILITY_REPORT.md) documents the validated 2D instantaneous constraint solver, infeasible-state fail-closed reporting, randomized tests, and why this is **not a formal proof of physical robot safety**.
+
 ## Plain-language summary
 
 A robot planner can make mistakes.
