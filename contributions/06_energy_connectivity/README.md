@@ -12,6 +12,8 @@
 
 <p align="center"><em>Conceptual overview. The figure is not experimental evidence, a collision-safety guarantee, or a formal mission-assurance certificate.</em></p>
 
+> **Executed physical-world recorded data study:** [REAL_DINGO_ODOMETRY_RESOURCE_EVIDENCE.md](REAL_DINGO_ODOMETRY_RESOURCE_EVIDENCE.md) reports actual Dingo odometry measurements, a separately labelled hypothetical J/m energy estimate, the verified CI run and the explicit lack of genuine battery/RSSI/SNR telemetry. This is offline analysis, **not physical C06 robot control**.
+
 This contribution studies navigation under two operational constraints that geometric planners usually omit: **finite energy** and **limited communication quality**. It evaluates candidate routes using explicit resource margins and returns an auditable mission verdict rather than treating battery and connectivity as informal penalties.
 
 ---
