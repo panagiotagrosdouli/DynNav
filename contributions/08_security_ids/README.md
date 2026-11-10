@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-08-purple)](.) [![Type](https://img.shields.io/badge/Type-Cybersecurity%20%2F%20IDS-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executed genuine source-data IDS test:** [REAL_DINGO_OFFLINE_IDS_EVIDENCE.md](REAL_DINGO_OFFLINE_IDS_EVIDENCE.md) records actual ROS1 Dingo odometry input, separate artificial offline speed-bias injection and a **poor 521-sample detection delay**. The original bag has no verified real attack labels, and this is **not physical C08 robot control or live intrusion detection**.
+
 ## Plain-language summary
 
 A robot should not blindly trust its sensors, localization, or external signals.
