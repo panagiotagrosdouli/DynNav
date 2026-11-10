@@ -37,6 +37,12 @@ jobs:
           report=json.loads((d/"summary.json").read_text())
           rows=list(csv.DictReader((d/"paired_trials.csv").open()))
           assert report["n_paired_scenarios"]==6
+          assert report["n_event_count_controls"]==6
+          assert report["event_count_detected"]==6
+          controls=json.loads((d/"event_count_controls.json").read_text())
+          assert len(controls)==6
+          assert all(c["detected"] for c in controls)
+          assert all(c["per_frame_events"][0]==0 for c in controls)
           assert len(rows)==12
           assert report["actual_event_camera"] is False
           assert report["real_robot_trials"]==0
