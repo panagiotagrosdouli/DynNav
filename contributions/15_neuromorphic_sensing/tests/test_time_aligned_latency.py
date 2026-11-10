@@ -59,3 +59,12 @@ def test_simulated_motion_produces_genuine_signal_driven_events():
     counts=[len(sim.process_frame(frame)) for frame in frames]
     assert counts[0]==0
     assert sum(counts[1:])>0,counts
+
+def test_nonlearned_event_count_control_detects_actual_brightness_changes():
+    from neuromorphic_benchmark import moving_obstacle_frames
+    frames=moving_obstacle_frames(n_frames=8,speed_px_per_frame=6)
+    result=m.event_count_control(frames,10000,min_events=10)
+    assert result["detected"] is True
+    assert result["first_detection_time_us"] >= 10000
+    assert result["per_frame_events"][0] == 0
+    assert sum(result["per_frame_events"][1:])>0
