@@ -69,7 +69,7 @@ def test_sequential_centralized_baseline_refuses_headon_swap():
     assert not result.all_reached
     assert [a.pos for a in agents]==[(0,0),(1,0)]
     assert result.collision_events==2
-    assert "sequential" in result.strategy
+    assert result.strategy == "centralized"  # legacy public label; implementation is sequential
 
 def test_sequential_centralized_baseline_reaches_separate_goals():
     grid=np.zeros((5,9),dtype=np.uint8)
