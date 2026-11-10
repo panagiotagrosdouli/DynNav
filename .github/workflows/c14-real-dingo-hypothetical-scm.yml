@@ -1,0 +1,71 @@
+name: C14 paired causal SCM and original Dingo odometry proxy study
+
+on:
+  pull_request:
+    paths:
+      - "contributions/14_causal_risk_attribution/**"
+      - ".github/workflows/c14-real-dingo-hypothetical-scm.yml"
+  workflow_dispatch:
+
+jobs:
+  actual-source-hypothetical-scm:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install source decoder and finite-sample verification dependencies
+        run: python -m pip install numpy pytest "rosbags>=0.10,<0.11"
+      - name: Execute C14 exact causal graph and paired-noise regression tests
+        run: python -m pytest -q contributions/14_causal_risk_attribution/tests
+      - name: Execute original root-cause synthetic fixture with corrected SCM
+        run: |
+          python contributions/14_causal_risk_attribution/experiments/eval_root_cause_attribution.py \
+            --n-samples 80 --out results/c14_real_dingo/original_synthetic_scm_fixture.csv
+      - name: Download and SHA-256 validate actual historical physical Dingo recording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,urllib.request,shutil
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          out=Path("/tmp/c14-original-Dingo.bag")
+          with urllib.request.urlopen(url,timeout=180) as src,out.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          assert out.stat().st_size==38063988
+          assert hashlib.sha256(out.read_bytes()).hexdigest()=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          print("Original physical Dingo bag SHA-256 verified")
+          PY
+      - name: Execute C14 model counterfactual queries on genuine odometry observations
+        run: |
+          python contributions/14_causal_risk_attribution/experiments/eval_real_dingo_hypothetical_scm.py \
+            /tmp/c14-original-Dingo.bag \
+            --examples 24 --out results/c14_real_dingo/assumed_scm_odometry_events.json
+      - name: Verify recorded-source and strictly noncausal physical evidence limits
+        run: |
+          python - <<'PY'
+          import json,math
+          from pathlib import Path
+          p=Path("results/c14_real_dingo/assumed_scm_odometry_events.json")
+          doc=json.loads(p.read_text())
+          assert doc["source_bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          assert doc["observed_odometry_messages"]>2000
+          assert doc["selected_events"]==len(doc["cases"])==24
+          assert doc["genuine_physical_intervention_performed"] is False
+          assert doc["collision_index_is_physical_probability"] is False
+          assert doc["measured_change_is_known_causal_action_hazard"] is False
+          assert doc["scm_structure_learned_from_dingo"] is False
+          assert doc["physical_robot_trials"]==0
+          for case in doc["cases"]:
+              assert all(math.isfinite(v) for k,v in case.items() if isinstance(v,(float,int)))
+          print("Verified actual Dingo observations, with no false causal effects claims")
+          PY
+      - name: Upload real recording source-bound diagnostic and synthetic SCM baseline, not raw bag
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c14-real-dingo-recorded-kinematics-with-hypothetical-scm
+          path: results/c14_real_dingo/
+          if-no-files-found: warn
