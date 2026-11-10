@@ -1,0 +1,54 @@
+name: C10 human context fail-closed numerical and policy tests
+
+on:
+  pull_request:
+    paths:
+      - "contributions/10_human_language_ethics/**"
+      - ".github/workflows/c10-human-ethics-guards.yml"
+  workflow_dispatch:
+
+jobs:
+  ethical-policy-safety-contract:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test and registered runner dependencies
+        run: python -m pip install numpy pytest pyyaml
+      - name: Run all C10 invalid-input and operator-consent tests
+        run: python -m pytest -q contributions/10_human_language_ethics/tests
+      - name: Run C10 actual policy benchmark with audited outputs
+        run: |
+          python contributions/10_human_language_ethics/experiments/eval_human_ethics_policy.py \
+            --out results/c10_ethics/actual_policy_benchmark.csv
+          python scripts/run_contribution_suite.py --only C10 --fail-on-skip \
+            --output-dir results/c10_ethics/registered
+      - name: Independently verify no-go and operator approval boundaries
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          rows=list(csv.DictReader(Path("results/c10_ethics/actual_policy_benchmark.csv").open()))
+          assert len(rows)==9
+          by={r["scenario"]:r for r in rows}
+          for case in ("low_operator_trust","ambiguous_language"):
+              row=by[case]
+              assert row["action"]=="ASK_OPERATOR"
+              assert row["path_allowed"]=="False"
+              assert float(row["max_speed"])==0.0
+              assert row["requires_operator_confirmation"]=="True"
+          row=by["no_go_zone"]
+          assert row["action"]=="BLOCK_PATH" and row["path_allowed"]=="False"
+          assert float(row["max_speed"])==0.0
+          assert by["normal_corridor"]["path_allowed"]=="True"
+          print("C10 policy produced and verified",len(rows),"actual synthetic benchmark cases")
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c10-human-ethics-failclosed-policy-audit
+          path: results/c10_ethics/
+          if-no-files-found: warn
