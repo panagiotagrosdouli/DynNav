@@ -1,0 +1,58 @@
+name: C18 actual ROS2 Jazzy isolated CBF gate
+
+on:
+  pull_request:
+    paths:
+      - "contributions/18_formal_safety_shields/**"
+      - ".github/workflows/c18-ros2-cbf-gate.yml"
+  workflow_dispatch:
+
+jobs:
+  real-ros2-point-velocity-gate:
+    runs-on: ubuntu-24.04
+    container: ros:jazzy-ros-base-noble
+    timeout-minutes: 25
+    env:
+      ROS_DOMAIN_ID: "158"
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install actual ROS2 geometry and NumPy runtime
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3-numpy \
+            ros-jazzy-geometry-msgs ros-jazzy-std-msgs
+      - name: Execute feasible and genuinely infeasible ROS2 CBF command roundtrips
+        run: |
+          set -eo pipefail
+          source /opt/ros/jazzy/setup.bash
+          for MODE in feasible infeasible; do
+            timeout 30 python3 contributions/18_formal_safety_shields/experiments/ros2_isolated_cbf_point_velocity.py \
+              --scenario "$MODE" \
+              --output "results/c18_ros2/${MODE}.json"
+          done
+      - name: Independently reject physical robot claims and verify published commands
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("results/c18_ros2")
+          feasible=json.loads((root/"feasible.json").read_text())
+          blocked=json.loads((root/"infeasible.json").read_text())
+          assert feasible["cbf_diagnostics"]["constraint_feasible"] is True
+          assert abs(feasible["actual_ros2_filtered_velocity"][0]-.9)<1e-5
+          assert blocked["cbf_diagnostics"]["constraint_feasible"] is False
+          assert blocked["actual_ros2_filtered_velocity"]==[0.,0.]
+          assert all(v["physical_robot_commands"]==0 for v in (feasible,blocked))
+          assert all(v["physical_safety_certified"] is False for v in (feasible,blocked))
+          print("Actual ROS2 C18 DDS command test passed; never controlled a robot")
+          PY
+      - name: Upload ROS2 C18 actual published/received data and diagnostic records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c18-actual-ros2-isolated-cbf-point-velocity
+          path: results/c18_ros2/
+          if-no-files-found: warn

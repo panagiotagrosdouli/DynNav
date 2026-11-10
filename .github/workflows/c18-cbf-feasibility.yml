@@ -1,0 +1,44 @@
+name: C18 validated instantaneous CBF feasibility and infeasible case audit
+
+on:
+  pull_request:
+    paths:
+      - "contributions/18_formal_safety_shields/**"
+      - ".github/workflows/c18-cbf-feasibility.yml"
+  workflow_dispatch:
+
+jobs:
+  c18-constraints:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install actual numerical CBF test dependencies
+        run: python -m pip install numpy pytest
+      - name: Run numerical CBF constraint, infeasibility, and random case tests
+        run: python -m pytest -q contributions/18_formal_safety_shields/tests
+      - name: Execute the original C18 shielded-unshielded stress study
+        run: |
+          python contributions/18_formal_safety_shields/experiments/eval_shield_stress_test.py \
+            --out results/c18_verified_cbf/shield_stress.csv
+      - name: Check measurable outcomes without treating them as formal verification
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          rows=list(csv.DictReader(Path("results/c18_verified_cbf/shield_stress.csv").open()))
+          assert len(rows)==6
+          assert set(x["shielded"] for x in rows)=={"True","False"}
+          assert all(int(x["steps"])>0 for x in rows)
+          print("C18 passed synthetic CBF benchmark. No physical safety proof asserted.")
+          PY
+      - name: Upload C18 experimental records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c18-instantaneous-cbf-constraints-and-stress
+          path: results/c18_verified_cbf/
+          if-no-files-found: warn
