@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-17-purple)](.) [![Type](https://img.shields.io/badge/Type-Mapping%20%2F%20Grounding-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executable semantic graph integrity upgrade:** [GRAPH_INTEGRITY_REPORT.md](GRAPH_INTEGRITY_REPORT.md) documents deterministic cross-process stub embeddings, preserved semantic embeddings and exact graph topology during JSON persistence, fail-closed malformed inputs, actual tests and honest scientific limitations. The model remains an untrained random label stub, **not CLIP or a physically validated robot map**.
+
 ## Plain-language summary
 
 A robot does not always need to plan over every grid cell.
