@@ -20,6 +20,14 @@ Dedicated workflow: [C17 semantic integrity](https://github.com/panagiotagrosdou
 
 **Important research classification:** These are *actual software integration tests on synthetic semantic maps*, not a real CLIP/VLM model, actual scene segmentation, independently grounded real robot observations, a real-world metric-topological map or physical robot experiments.
 
+## Verified physical-world office occupancy topology extraction
+
+[Successful GitHub Actions run #42799402956](https://github.com/panagiotagrosdouli/DynNav/actions/runs/42799402956) downloaded and hash-verified the original LILocBench physical-world office ROS occupancy map (1000×1000 cells). A new 4-connected tile-component extractor produced **379 geometric graph nodes and 334 directed edges** (tile size 50 cells). All **6/6** generated pairs of truly connected map locations were correctly connected by the derived topological graph, and route connectivity survived a JSON graph serialization roundtrip. All **8 C17 tests passed**.
+
+The extractor does not add an edge merely because two approximate region centroids are close: each graph transition corresponds to at least one actual pair of adjacent unoccupied cells across regions. Synthetic wall-and-door regression tests reject graph edges that would falsely cross blocked walls.
+
+**Evidence restriction:** Map **geometry** is original physical-world recorded data. Region labels are algorithmically assigned tile/component IDs, *not* camera-recognized rooms, CLIP/VLM semantics or human place annotations. Graph reachability is not measured robot motion. A unit graph edge does not mean one meter, exact shortest travel time or safe robot clearance. This benchmark verifies structural topological connectivity, **not** long-horizon physical semantic-navigation performance.
+
 ## Replication
 
 ```bash
