@@ -1,0 +1,85 @@
+name: C07 actual office geometry and generated-view NBV evaluation
+
+on:
+  pull_request:
+    paths:
+      - "contributions/07_next_best_view/**"
+      - ".github/workflows/c07-real-office-nbv.yml"
+  workflow_dispatch:
+
+jobs:
+  c07-map-frontier-evidence:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install office map and sampling dependencies
+        run: python -m pip install numpy scipy pillow pyyaml pytest
+      - name: Run C07 known-mask/unknown-data isolation regression tests
+        run: python -m pytest -q contributions/07_next_best_view/tests
+      - name: Independently fetch exact upstream LILocBench office occupancy map
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,shutil,urllib.request,zipfile,yaml
+          target=Path("/tmp/c07_office")
+          target.mkdir(parents=True,exist_ok=True)
+          archive=target/"official_map_office.zip"
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip"
+          with urllib.request.urlopen(url,timeout=100) as source,archive.open("wb") as f:
+              shutil.copyfileobj(source,f)
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()=="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0"
+          with zipfile.ZipFile(archive) as z:
+              for item in z.infolist():
+                  assert (target/item.filename).resolve().is_relative_to(target.resolve())
+              z.extractall(target)
+          maps=[]
+          for f in target.rglob("*.yaml"):
+              data=yaml.safe_load(f.read_text())
+              if isinstance(data,dict) and isinstance(data.get("image"),str) and (f.parent/data["image"]).is_file():
+                  maps.append(f)
+          assert len(maps)==1,maps
+          Path("/tmp/c07-map-path").write_text(str(maps[0]))
+          PY
+      - name: Execute four distinct real-geometry synthetic-observation NBV trials
+        run: |
+          python contributions/07_next_best_view/experiments/eval_real_office_partial_observation_nbv.py \
+            "$(cat /tmp/c07-map-path)" --output-dir results/c07_real_office \
+            --starts 4 --seed 17 --observed-radius 24 --sensor-radius 15
+      - name: Independently verify source map identity and view ranking evidence
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path("results/c07_real_office")
+          meta=json.loads((root/"provenance.json").read_text())
+          ranking=list(csv.DictReader((root/"paired_rankings.csv").open()))
+          viewpoints=list(csv.DictReader((root/"viewpoints.csv").open()))
+          assert meta["map_shape"]==[1000,1000]
+          assert meta["map_image_sha256"]=="8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf"
+          assert meta["actual_sensor_scans_used"] is False
+          assert meta["physical_robot_trials"]==0
+          assert len(ranking)==4 and len(viewpoints)>=4
+          for row in ranking:
+              assert int(row["candidates"])>=2
+              assert float(row["classic_IG_cells"])>0
+              assert float(row["safe_IG_cells"])>0
+          for row in viewpoints:
+              assert row["known_geometric_return_to_base"]=="True"
+              assert int(row["known_free_travel_steps"])>=0
+              assert int(row["unknown_footprint_cells"])>0
+          print("Verified",len(ranking),"paired C07 real-office-generated-observation NBV problems")
+          PY
+      - name: Upload C07 real-map synthetic observation experiments
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c07-real-office-synthetic-observation-frontier-nbv
+          path: results/c07_real_office/
+          if-no-files-found: warn

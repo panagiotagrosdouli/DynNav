@@ -12,6 +12,8 @@
 
 <p align="center"><em>Conceptual overview. The figure is not experimental evidence, a formal exploration-optimality result, or a safety guarantee.</em></p>
 
+> **Executed actual office map study:** [REAL_OFFICE_FRONTIER_NBV_EVIDENCE.md](REAL_OFFICE_FRONTIER_NBV_EVIDENCE.md) reports four geographically separated real-map-geometry NBV problems with 361 generated reachable frontier scores, source hashes and actual policy selections. The partial observations are synthetic and the current results do **not** prove a returnability advantage or physical robot exploration.
+
 This contribution studies **active exploration** in unknown environments. It extends classical next-best-view selection beyond information gain and travel cost by explicitly accounting for path risk, returnability, and connectivity.
 
 The central premise is that an informative viewpoint is not necessarily an operationally acceptable viewpoint.
