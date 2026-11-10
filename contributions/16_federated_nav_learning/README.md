@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-16-purple)](.) [![Type](https://img.shields.io/badge/Type-Federated%20Learning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executed actual recorded-data evidence:** [REAL_DINGO_PSEUDO_FEDAVG_EVIDENCE.md](REAL_DINGO_PSEUDO_FEDAVG_EVIDENCE.md) documents a genuine 2,305-step Dingo odometry/command dataset, actual FedAvg supervised fitting on six chronological **pseudo-clients from ONE robot**, chronological held-out centralized baselines, weights, tests and clear physical/privacy limitations. **This is not a real fleet or verified differential privacy.**
+
 ## Plain-language summary
 
 A robot fleet can learn from many environments, but raw maps and trajectories may be private or sensitive.
