@@ -18,6 +18,7 @@ import base64
 import json
 import logging
 import math
+import os
 import re
 from dataclasses import dataclass, field
 from typing import Optional
@@ -165,34 +166,47 @@ class VLMNavigationPlanner:
             buf = io.BytesIO()
             img.save(buf, format="JPEG", quality=85)
             return base64.b64encode(buf.getvalue()).decode("utf-8")
-        except ImportError:
-            # Fallback: raw numpy bytes
-            return base64.b64encode(frame.tobytes()).decode("utf-8")
+        except ImportError as exc:
+            raise RuntimeError("Pillow is required to encode real JPEG image input for VLM APIs") from exc
 
     def _query_vlm(self, encoded_image: str) -> Optional[str]:
         """Send request to VLM endpoint; returns raw text response or None."""
         import urllib.request, urllib.error
 
-        payload = {
-            "model": self.cfg.model_name,
-            "messages": [
-                {"role": "system", "content": self.cfg.system_prompt},
-                {
-                    "role": "user",
-                    "content": self.cfg.prompt_template,
-                    "images": [encoded_image],
-                },
-            ],
-            "stream": False,
-        }
-        data = json.dumps(payload).encode("utf-8")
+        # Ollama /api/chat accepts separate image list; OpenAI-compatible
+        # /chat/completions requires multimodal image_url content parts.
+        is_openai_style = "/chat/completions" in self.cfg.api_endpoint
+        messages = [{"role": "system", "content": self.cfg.system_prompt}]
+        if is_openai_style:
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": self.cfg.prompt_template},
+                    {"type": "image_url", "image_url": {"url": "data:image/jpeg;base64,"+encoded_image}},
+                ],
+            })
+        else:
+            messages.append({
+                "role": "user", "content": self.cfg.prompt_template,
+                "images": [encoded_image],
+            })
+        data = json.dumps({
+            "model": self.cfg.model_name, "messages": messages,"stream": False
+        }).encode("utf-8")
+        headers={"Content-Type":"application/json"}
+        if is_openai_style:
+            token=os.getenv("C11_VLM_API_KEY")
+            if token:
+                headers["Authorization"]="Bearer "+token
+            elif self.cfg.api_endpoint.startswith("https://api.openai.com/"):
+                raise RuntimeError("C11_VLM_API_KEY required for OpenAI-hosted VLM; no anonymous calls")
 
         for attempt in range(self.cfg.max_retries):
             try:
                 req = urllib.request.Request(
                     self.cfg.api_endpoint,
                     data=data,
-                    headers={"Content-Type": "application/json"},
+                    headers=headers,
                 )
                 with urllib.request.urlopen(req, timeout=15) as resp:
                     result = json.loads(resp.read().decode("utf-8"))
