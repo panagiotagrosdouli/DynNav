@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-09-purple)](.) [![Type](https://img.shields.io/badge/Type-Multi--Robot%20Systems-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executed C09 collision counterexamples:** [DISCRETE_COLLISION_VALIDATION.md](DISCRETE_COLLISION_VALIDATION.md) documents successful actual CI regression tests and the fixed scheduler: a head-on swap in a 1×2 corridor is safely refused (but deadlocks); two agents on separate synthetic routes reach their goals. This proves only discrete in-process simulator properties, **not ROS2 fleet deployment or physical robot safety**.
+
 ## Plain-language summary
 
 A group of robots should not behave like independent robots that accidentally share the same environment.
