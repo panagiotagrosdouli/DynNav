@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import logging
+import math
 import re
 from dataclasses import dataclass, field
 from typing import Optional
@@ -180,24 +181,57 @@ class LLMMissionPlanner:
     def _parse_llm_response(self, instruction: str,
                              raw: str) -> Optional[Mission]:
         try:
-            text = raw.strip().lstrip("```json").lstrip("```").rstrip("```").strip()
+            text = raw.strip()
+            if text.startswith("```"):
+                lines = text.splitlines()
+                if len(lines) < 3 or lines[-1].strip() != "```":
+                    raise ValueError("incomplete fenced JSON")
+                if lines[0].strip().lower() not in ("```", "```json"):
+                    raise ValueError("unsupported code fence")
+                text = "\n".join(lines[1:-1]).strip()
             data = json.loads(text)
-            wps = [
-                Waypoint(
-                    label=str(w["label"]).lower().replace(" ", "_"),
-                    priority=int(w.get("priority", i + 1)),
-                    action=str(w.get("action", "navigate")),
-                    duration_s=float(w.get("duration_s", 0.0)),
-                )
-                for i, w in enumerate(data.get("waypoints", []))
-            ]
+            if not isinstance(data, dict):
+                raise ValueError("mission must be a JSON object")
+            items = data.get("waypoints", [])
+            if not isinstance(items, list):
+                raise ValueError("waypoints must be a JSON array")
+            confidence = data.get("confidence", 0.7)
+            if isinstance(confidence, bool) or not isinstance(confidence, (int, float)):
+                raise ValueError("confidence must be a number")
+            confidence = float(confidence)
+            if not math.isfinite(confidence) or not 0.0 <= confidence <= 1.0:
+                raise ValueError("confidence must be between 0 and 1")
+            wps = []
+            for i, w in enumerate(items):
+                if not isinstance(w, dict):
+                    raise ValueError("each waypoint must be an object")
+                label = w.get("label")
+                if not isinstance(label, str) or not label.strip():
+                    raise ValueError("waypoint label must be a nonempty string")
+                priority = w.get("priority", i + 1)
+                if isinstance(priority, bool) or not isinstance(priority, int) or priority < 1:
+                    raise ValueError("waypoint priority must be a positive integer")
+                action = w.get("action", "navigate")
+                if action not in ("navigate", "inspect", "wait"):
+                    raise ValueError("unsupported waypoint action")
+                duration = w.get("duration_s", 0.0)
+                if isinstance(duration, bool) or not isinstance(duration, (int, float)):
+                    raise ValueError("duration_s must be numeric")
+                duration = float(duration)
+                if not math.isfinite(duration) or duration < 0:
+                    raise ValueError("duration_s must be finite and nonnegative")
+                wps.append(Waypoint(
+                    label=label.lower().strip().replace(" ", "_"),
+                    priority=priority,
+                    action=action,
+                    duration_s=duration,
+                ))
+            priorities = [w.priority for w in wps]
+            if len(priorities) != len(set(priorities)):
+                raise ValueError("duplicate waypoint priorities")
             wps.sort(key=lambda w: w.priority)
-            return Mission(
-                raw_instruction=instruction,
-                waypoints=wps,
-                confidence=float(data.get("confidence", 0.7)),
-            )
-        except (json.JSONDecodeError, KeyError, ValueError) as e:
+            return Mission(raw_instruction=instruction, waypoints=wps, confidence=confidence)
+        except (json.JSONDecodeError, TypeError, ValueError) as e:
             logger.error("Failed to parse LLM response: %s", e)
             return None
 
