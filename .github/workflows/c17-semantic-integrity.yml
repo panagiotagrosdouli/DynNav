@@ -1,0 +1,49 @@
+name: C17 semantic topology integrity and grounding reproducibility
+
+on:
+  pull_request:
+    paths:
+      - "contributions/17_topological_semantic_maps/**"
+      - ".github/workflows/c17-semantic-integrity.yml"
+  workflow_dispatch:
+
+jobs:
+  c17-executable-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install actual C17 runtime and tests
+        run: python -m pip install numpy pytest
+      - name: Execute all C17 semantic graph persistence and grounding tests
+        run: python -m pytest -q contributions/17_topological_semantic_maps/tests
+      - name: Execute original C17 grounding and route repair benchmark
+        run: |
+          python contributions/17_topological_semantic_maps/experiments/eval_topo_semantic_navigation.py \
+            --out results/c17_semantic_integrity/benchmark.csv
+      - name: Independently validate benchmark output and semantic claims
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          p=Path("results/c17_semantic_integrity/benchmark.csv")
+          rows=list(csv.DictReader(p.open()))
+          grounded=[r for r in rows if r["row_type"]=="grounding"]
+          planned=[r for r in rows if r["row_type"]=="planning"]
+          assert len(grounded)==6 and len(planned)==2
+          assert all(r["top1_correct"]=="True" for r in grounded)
+          assert all(r["path_found"]=="True" for r in planned)
+          assert planned[1]["blocked_edges"]=="2"
+          print("C17 deterministic label stub and semantic graph route repair passed")
+          print("No actual CLIP model, VLM sensor grounding, or physical robot used")
+          PY
+      - name: Upload actual C17 experiment result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c17-semantic-grounding-topology-serialization
+          path: results/c17_semantic_integrity/
+          if-no-files-found: warn
