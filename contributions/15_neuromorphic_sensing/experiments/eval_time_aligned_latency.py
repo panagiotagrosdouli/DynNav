@@ -21,6 +21,26 @@ from neuromorphic_benchmark import (
     moving_obstacle_frames,evaluate_event_detector,evaluate_frame_baseline
 )
 
+def event_count_control(frames,dt_us,min_events=10):
+    """Deterministic event-rate control, NOT learned SNN nor real DVS sensor."""
+    from neuromorphic_sensing import DVSSimulator,DVSSimulatorConfig
+    h,w=frames[0].shape
+    sim=DVSSimulator(DVSSimulatorConfig(height=h,width=w,noise_rate=0.0))
+    totals=[]
+    detected_at=None
+    for idx,frame in enumerate(frames):
+        event_count=len(sim.process_frame(frame,dt_us=dt_us))
+        totals.append(event_count)
+        if event_count>=min_events and detected_at is None:
+            detected_at=idx*dt_us
+    return dict(method="simulated_DVS_event_count_control",
+                detected=detected_at is not None,
+                first_detection_time_us=detected_at if detected_at is not None else None,
+                total_events=sum(totals),
+                per_frame_events=totals,
+                fixed_threshold_events=min_events,
+                physical_camera=False,physical_robot=False)
+
 def paired_scenario(speed,dt_us,n_frames):
     if dt_us<=0 or n_frames<3 or speed<1:
         raise ValueError("Invalid time grid or speed")
@@ -45,14 +65,21 @@ def paired_scenario(speed,dt_us,n_frames):
 
 def run(output,intervals=(10000,33333),speeds=(3,6,10),n_frames=8):
     rows=[]
+    event_count_rows=[]
     for dt in intervals:
         for speed in speeds:
             rows.extend(paired_scenario(speed,dt,n_frames))
+            control=event_count_control(
+                moving_obstacle_frames(n_frames=n_frames,speed_px_per_frame=speed),dt)
+            event_count_rows.append({"speed_px_per_frame":speed,
+                                     "frame_period_us":dt,**control})
     output.mkdir(parents=True,exist_ok=True)
     with (output/"paired_trials.csv").open("w",newline="",encoding="utf-8") as f:
         writer=csv.DictWriter(f,fieldnames=rows[0])
         writer.writeheader()
         writer.writerows(rows)
+    with (output/"event_count_controls.json").open("w",encoding="utf-8") as f:
+        json.dump(event_count_rows,f,indent=2)
     pairs=[]
     for i in range(0,len(rows),2):
         a,b=rows[i:i+2]
@@ -66,9 +93,11 @@ def run(output,intervals=(10000,33333),speeds=(3,6,10),n_frames=8):
                 generated_frames=True,actual_event_camera=False,
                 actual_neuromorphic_hardware=False,real_robot_trials=0,
                 n_paired_scenarios=len(pairs),pairs=pairs,
+                n_event_count_controls=len(event_count_rows),
+                event_count_detected=sum(v['detected'] for v in event_count_rows),
                 scientific_limitations=[
                     "Both methods share identical finite-rate frame input, not independently timed asynchronous camera events",
-                    "The event detector uses an untrained randomly initialized SNN-style weight matrix",
+                    "The SNN uses untrained random weights; the separately reported event-count control is a fixed, nonlearned movement/change detector",
                     "Frame baseline checks bright occupancy and sees an obstacle on the initial input frame",
                     "Input-cadence equality removes an artificial benchmark timing advantage; detector inference time and physical sensing latency remain unmeasured",
                     "No physical robot actuation, event-camera ground truth or real obstacle detection claim"
