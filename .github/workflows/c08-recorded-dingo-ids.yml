@@ -39,6 +39,27 @@ jobs:
             /tmp/c08_original_dingo.bag \
             --output results/c08_recorded_dingo/ids_report.json \
             --attack-speed .35
+      - name: Actually measure IDS sensitivity on 5 in-memory attack magnitudes
+        run: |
+          python contributions/08_security_ids/experiments/eval_dingo_injection_sensitivity.py \
+            /tmp/c08_original_dingo.bag \
+            --output-dir results/c08_recorded_dingo/sensitivity \
+            --biases 0.1 0.2 0.35 0.5 1.0
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("results/c08_recorded_dingo/sensitivity/summary.json")
+          report=json.loads(p.read_text())
+          assert len(report["trials"])==5
+          assert report["physical_robot_trials"]==0
+          assert report["original_attack_truth_labeled"] is False
+          assert report["ros2_live_detector_deployed"] is False
+          assert report["source_bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          for trial in report["trials"]:
+              assert trial["heldout_samples"]>100
+              assert trial["artificial_bias_m_per_s"]>0
+          print("Five genuine-source/synthetic-bias evaluations validated")
+          PY
       - name: Independently reject ungrounded physical cybersecurity and safety claims
         run: |
           python - <<'PY'
