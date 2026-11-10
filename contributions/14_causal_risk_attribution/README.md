@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-14-purple)](.) [![Type](https://img.shields.io/badge/Type-Causal%20AI-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Executed C14 corrected SCM and real-recorded-data diagnostic:** [REAL_DINGO_PAIRED_SCM_AUDIT.md](REAL_DINGO_PAIRED_SCM_AUDIT.md) documents the paired-exogenous-noise counterfactual fix, DAG validation tests, negative 40% synthetic known-root top-1 accuracy, and actual Dingo odometry speed-change analysis with strictly **hypothetical** SCM interventions. No real causally identified robot hazard or physical C14-controlled navigation is claimed.
+
 ## Plain-language summary
 
 When a robot fails, it is not enough to say:
