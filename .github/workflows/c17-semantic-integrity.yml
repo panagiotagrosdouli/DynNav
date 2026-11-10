@@ -17,7 +17,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install actual C17 runtime and tests
-        run: python -m pip install numpy pytest
+        run: python -m pip install numpy scipy pillow pyyaml pytest
       - name: Execute all C17 semantic graph persistence and grounding tests
         run: python -m pytest -q contributions/17_topological_semantic_maps/tests
       - name: Execute original C17 grounding and route repair benchmark
@@ -39,6 +39,52 @@ jobs:
           assert planned[1]["blocked_edges"]=="2"
           print("C17 deterministic label stub and semantic graph route repair passed")
           print("No actual CLIP model, VLM sensor grounding, or physical robot used")
+          PY
+      - name: Download and verify official physical-world LILocBench occupancy map
+        run: |
+          python - <<'PY'
+          import hashlib,zipfile,urllib.request,shutil,yaml
+          from pathlib import Path
+          root=Path("/tmp/c17_office");root.mkdir(parents=True,exist_ok=True)
+          zfile=root/"map_office.zip"
+          with urllib.request.urlopen("https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",timeout=120) as src,zfile.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          assert hashlib.sha256(zfile.read_bytes()).hexdigest()=="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0", "Official occupancy archive changed"
+          with zipfile.ZipFile(zfile) as z:
+              for info in z.infolist():
+                  assert (root/info.filename).resolve().is_relative_to(root.resolve())
+              z.extractall(root)
+          candidates=[]
+          for path in root.rglob("*.yaml"):
+              v=yaml.safe_load(path.read_text())
+              if isinstance(v,dict) and isinstance(v.get("image"),str) and (path.parent/v["image"]).is_file():
+                  candidates.append(path)
+          assert len(candidates)==1
+          Path("/tmp/c17-map-yaml").write_text(str(candidates[0]))
+          PY
+      - name: Actually extract connected-region topology from real office map
+        env:
+          PYTHONPATH: .
+        run: |
+          python contributions/17_topological_semantic_maps/experiments/eval_real_office_geometric_topology.py \
+            "$(cat /tmp/c17-map-yaml)" --queries 6 --tile 50 \
+            --output-dir results/c17_semantic_integrity/actual_office_topology
+      - name: Independently verify real map and topological connectivity
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path("results/c17_semantic_integrity/actual_office_topology")
+          info=json.loads((root/"summary.json").read_text())
+          rows=list(csv.DictReader((root/"paired_topology_queries.csv").open()))
+          assert len(rows)==6
+          assert info["map_dimensions"]==[1000,1000]
+          assert info["official_image_sha256"]=="8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf"
+          assert info["paired_queries"]==info["valid_route_count"]==6
+          assert info["graph_nodes"]>0 and info["directed_edges"]>0
+          assert info["real_robot_navigation_trials"]==0
+          assert info["semantics_from_real_sensor_annotations"] is False
+          print("C17 REAL map topology extraction passed, with no fabricated semantics")
           PY
       - name: Upload actual C17 experiment result
         if: always()
