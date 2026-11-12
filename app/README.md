@@ -69,6 +69,7 @@ The Docker image contains the synthetic Streamlit laboratory only. It does not i
 | Results & Reports | Upload, filter, replay, compare, and export manifests |
 | Documentation | Browse curated repository Markdown safely |
 | System Status | Inspect runtime, dependencies, and available capabilities |
+| Publication Evidence | Browse pinned paper measurements, claim boundaries, and Gazebo integration evidence |
 
 ## Contribution registry
 
@@ -101,6 +102,8 @@ Depending on the page, the app can export:
 - result CSV and JSON;
 - Markdown reports;
 - ZIP run bundles.
+
+The Publication Evidence page reads the checked-in paper evidence manifest and claim matrix. It does not execute or refresh experiments and does not establish ROS/Gazebo efficacy.
 
 Browser downloads are generated from the current deterministic session. Persistent server-side storage is not guaranteed on Streamlit Community Cloud.
 
