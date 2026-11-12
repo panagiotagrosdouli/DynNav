@@ -78,9 +78,9 @@ with right:
     )
     st.metric("Endpoint-only minimax error lower bound",
               f"{comparison.endpoint_only_minimax_error_bound:.1%}")
-    st.latex(r"\\min_{\\hat R(x)}\\max_{h\\in\\{h_1,h_2\\}}"
-             r"\\left|\\hat R(x)-R(x,h)\\right|\\geq "
-             r"\\frac{|R_1-R_2|}{2}")
+    st.latex(r"\min_{\hat R(x)}\max_{h\in\{h_1,h_2\}}"
+             r"\left|\hat R(x)-R(x,h)\right|\geq "
+             r"\frac{|R_1-R_2|}{2}")
     st.caption(
         "This is a representation result under the declared finite independent-hazard "
         "model, not evidence that all state-only methods fail. A sufficiently augmented "
