@@ -93,6 +93,7 @@ def commitment_safe_return_astar(
     safe_cells: set[GridCell] | None = None,
     hazard_model: CommitmentHazardModel | None = None,
     config: SafeReturnConstraintConfig | None = None,
+    initial_activated_closures: frozenset[int] | None = None,
 ) -> SafeReturnConstraintResult:
     """Shortest path subject to a per-state history-conditioned return constraint.
 
@@ -101,6 +102,8 @@ def commitment_safe_return_astar(
     ``planning_time_ms`` includes the initial safe-return feasibility check and
     all online oracle calls used to accept or reject successors, but excludes
     post-goal diagnostic profile construction.
+    Prior executed hazards must be supplied through ``initial_activated_closures``
+    on replanning; candidate transitions never mutate that persistent history.
     """
     grid.validate()
     cfg = config or SafeReturnConstraintConfig()
@@ -108,13 +111,16 @@ def commitment_safe_return_astar(
     safe = set(safe_cells or {start})
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
+    initial_active = frozenset(initial_activated_closures or ())
+    if any(index < 0 or index >= len(model.closures) for index in initial_active):
+        raise ValueError("initial activated hazard indices are out of range")
 
     if not grid.in_bounds(start) or not grid.in_bounds(goal):
         raise ValueError("start and goal must be inside the grid")
     if not grid.passable(start) or not grid.passable(goal):
         return SafeReturnConstraintResult((), False, 0, 0, 0.0, 0.0, 0.0, 0, 0)
 
-    start_state: AugmentedState = (start, frozenset())
+    start_state: AugmentedState = (start, initial_active)
     cache: dict[AugmentedState, float] = {}
 
     def return_probability(state: AugmentedState) -> float:
@@ -133,7 +139,7 @@ def commitment_safe_return_astar(
     if return_probability(start_state) < cfg.minimum_return_probability:
         return SafeReturnConstraintResult(
             (), False, 0, 0, (time.perf_counter() - t0) * 1000.0,
-            0.0, 0.0, 0, 0
+            0.0, 0.0, len(initial_active), 0
         )
 
     frontier: list[tuple[float, int, AugmentedState]] = [(0.0, 0, start_state)]
@@ -184,5 +190,5 @@ def commitment_safe_return_astar(
 
     return SafeReturnConstraintResult(
         (), False, 0, expanded, (time.perf_counter() - t0) * 1000.0,
-        0.0, 0.0, 0, rejected
+        0.0, 0.0, len(initial_active), rejected
     )
