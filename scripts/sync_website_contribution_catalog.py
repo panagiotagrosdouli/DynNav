@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
 from pathlib import Path
 
@@ -16,16 +17,17 @@ DASHBOARD_REGISTRY_PATH = ROOT / "src/dynnav_dashboard/contribution_registry.yam
 OUTPUT_PATH = ROOT / "website/data/contributions.json"
 
 
-def _tracked_directory(relative_path: str) -> str | None:
+def _tracked_directory(relative_path: str, tracked: set[str]) -> str | None:
     if not relative_path:
         return None
     directory = ROOT / relative_path
-    if directory.is_dir() and any(item.is_file() for item in directory.rglob("*")):
+    if directory.is_dir() and any(name.startswith(relative_path + "/") and (ROOT / name).is_file() for name in tracked):
         return relative_path
     return None
 
 
 def build_catalog() -> list[dict[str, object]]:
+    tracked = set(subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode("utf-8").split("\0"))
     registry = yaml.safe_load(REGISTRY_PATH.read_text(encoding="utf-8"))
     experiment_data = yaml.safe_load(EXPERIMENTS_PATH.read_text(encoding="utf-8"))
     dashboard_registry = yaml.safe_load(DASHBOARD_REGISTRY_PATH.read_text(encoding="utf-8"))
@@ -48,12 +50,12 @@ def build_catalog() -> list[dict[str, object]]:
         if contribution_id not in experiments:
             raise ValueError(f"{contribution_id} has no registered experiment contract")
 
-        code_dir = _tracked_directory(f"{contribution_dir}/code")
+        code_dir = _tracked_directory(f"{contribution_dir}/code", tracked)
         experiment_runner = experiments[contribution_id]["runner"]
         if not (ROOT / experiment_runner).is_file():
             raise ValueError(f"{contribution_id} experiment runner is missing: {experiment_runner}")
-        result_dir = _tracked_directory(f"{contribution_dir}/results")
-        tests_dir = _tracked_directory(f"{contribution_dir}/tests")
+        result_dir = _tracked_directory(f"{contribution_dir}/results", tracked)
+        tests_dir = _tracked_directory(f"{contribution_dir}/tests", tracked)
         test_path = tests_dir or "tests/test_contribution_experiment_suite.py"
 
         catalog.append(
@@ -89,7 +91,9 @@ def main() -> int:
         if not OUTPUT_PATH.is_file() or OUTPUT_PATH.read_text(encoding="utf-8") != rendered:
             print(f"{OUTPUT_PATH.relative_to(ROOT)} is out of date; run {Path(__file__).relative_to(ROOT)}")
             return 1
-        print(f"Verified {len(json.loads(rendered))} registry entries, experiment contracts, and linked repository paths.")
+        print(
+            f"Verified {len(json.loads(rendered))} registry entries, experiment contracts, and linked repository paths."
+        )
         return 0
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
