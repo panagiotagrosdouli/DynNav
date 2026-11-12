@@ -25,11 +25,22 @@ jobs:
 
       - name: Install ROS and simulation dependencies
         run: |
-          apt-get update
+          set -euo pipefail
+          mkdir -p /tmp/dynnav_gazebo/setup
+          # Retain repository/candidate diagnostics even if dependency setup fails.
+          cat /etc/os-release > /tmp/dynnav_gazebo/setup/os-release.txt
+          cp -a /etc/apt/sources.list.d /tmp/dynnav_gazebo/setup/apt-sources
+          printf 'Acquire::Retries "3";\nAcquire::http::Timeout "60";\nAcquire::https::Timeout "60";\n' \
+            > /etc/apt/apt.conf.d/80dynnav-retries
+          apt-get update -o APT::Update::Error-Mode=any
+          apt-cache policy ros-jazzy-nav2-bringup \
+            > /tmp/dynnav_gazebo/setup/nav2-candidate.txt
           apt-get install -y --no-install-recommends \
             python3-colcon-common-extensions \
             python3-rosdep
-          rosdep init 2>/dev/null || true
+          if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+            rosdep init
+          fi
           rosdep update
           rosdep install \
             --from-paths \
@@ -37,7 +48,15 @@ jobs:
               ros2_ws/src/dynnav_nav2_benchmark \
             --ignore-src \
             --rosdistro jazzy \
-            -r -y
+            -r -y 2>&1 | tee /tmp/dynnav_gazebo/setup/rosdep-install.log
+
+      - name: Upload dependency setup diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-jazzy-gazebo-setup
+          path: /tmp/dynnav_gazebo/setup
+          if-no-files-found: error
 
       - name: Build planner and benchmark packages
         run: |
