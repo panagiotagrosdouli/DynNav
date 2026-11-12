@@ -25,7 +25,7 @@ def test_closure_is_the_only_return_bottleneck():
     grid = small_world()
     assert grid.passable(CLOSURE)
     assert grid.neighbors4((0, 2)) == [(1, 2)]
-    assert grid.neighbors4((1, 2)) == [(2, 2)]
+    assert set(grid.neighbors4((1, 2))) == {(2, 2), (0, 2)}
 
 
 @pytest.mark.parametrize("p", [-0.01, 1.01])
