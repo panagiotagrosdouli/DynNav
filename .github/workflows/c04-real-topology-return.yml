@@ -1,0 +1,81 @@
+name: C04 real office topology intervention and returnability study
+
+on:
+  pull_request:
+    paths:
+      - "contributions/04_irreversibility_returnability/**"
+      - ".github/workflows/c04-real-topology-return.yml"
+  workflow_dispatch:
+
+jobs:
+  real-office-synthetic-topology-stress:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install graph, occupancy-map and test dependencies
+        run: python -m pip install numpy scipy networkx pillow pyyaml pytest
+      - name: Execute all C04 targeted regression tests
+        run: python -m pytest -q contributions/04_irreversibility_returnability/tests
+      - name: Acquire independently verified official LILocBench ROS occupancy map
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile,urllib.request,hashlib,shutil,yaml
+          root=Path("/tmp/c04_office")
+          root.mkdir(exist_ok=True)
+          archive=root/"official_map_office.zip"
+          with urllib.request.urlopen("https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",timeout=90) as src, archive.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          if hashlib.sha256(archive.read_bytes()).hexdigest()!="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0":
+              raise ValueError("Official map archive SHA256 changed")
+          with zipfile.ZipFile(archive) as zip:
+              for m in zip.infolist():
+                  if not (root/m.filename).resolve().is_relative_to(root.resolve()):
+                      raise ValueError("Unsafe archive entry")
+              zip.extractall(root)
+          candidates=[p for p in root.rglob("*.yaml") if
+                      isinstance((y:=yaml.safe_load(p.read_text())),dict) and
+                      isinstance(y.get("image"),str) and (p.parent/y["image"]).is_file()]
+          if len(candidates)!=1:
+              raise ValueError(f"Expected one office map: {candidates}")
+          Path("/tmp/c04-original-map-yaml").write_text(str(candidates[0]))
+          PY
+      - name: Execute actual C04 returnability under three map articulation interventions
+        run: |
+          python contributions/04_irreversibility_returnability/experiments/eval_real_office_topology_interventions.py \
+            "$(cat /tmp/c04-original-map-yaml)" \
+            --n-cases 3 --output-dir results/c04_real_topology
+      - name: Independently verify all three lost-return cases and evidence labels
+        run: |
+          python - <<'PY'
+          import csv,json
+          from pathlib import Path
+          root=Path("results/c04_real_topology")
+          rows=list(csv.DictReader((root/"trials.csv").open()))
+          meta=json.loads((root/"summary.json").read_text())
+          assert len(rows)==3 and meta["cases"]==3
+          assert meta["map_dimensions"]==[1000,1000]
+          assert meta["source_map_image_sha256"]=="8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf"
+          assert meta["robot_action_caused_obstruction"] is False
+          assert meta["physical_robot_trials"]==0
+          for row in rows:
+              assert row["original_returnable"]=="True"
+              assert row["after_injection_returnable"]=="False"
+              assert float(row["original_return_distance_cells"])>=0
+              assert int(row["post_cut_robot_component_nodes"])>0
+          print("C04 3 real-geometry simulated topology failures verified; no physical motion")
+          PY
+      - name: Upload C04 evidence without re-distributing licensed map data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c04-lilocbench-articulation-returnability-stress
+          path: results/c04_real_topology/
+          if-no-files-found: warn
