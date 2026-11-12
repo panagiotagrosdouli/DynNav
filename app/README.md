@@ -104,7 +104,9 @@ Depending on the page, the app can export:
 - Markdown reports;
 - ZIP run bundles.
 
-The History-Conditioned Lab calls the canonical exact safe-return oracle on a controlled 5×5 topology; the slider changes the Bernoulli closure probability without fabricating a research trial.\n\nThe Publication Evidence page reads the checked-in paper evidence manifest and claim matrix. It does not execute or refresh experiments and does not establish ROS/Gazebo efficacy.
+The History-Conditioned Lab calls the canonical exact safe-return oracle on a controlled 5×5 topology; the slider changes the Bernoulli closure probability without fabricating a research trial.
+
+The Publication Evidence page reads the checked-in paper evidence manifest and claim matrix. It does not execute or refresh experiments and does not establish ROS/Gazebo efficacy.
 
 Browser downloads are generated from the current deterministic session. Persistent server-side storage is not guaranteed on Streamlit Community Cloud.
 
