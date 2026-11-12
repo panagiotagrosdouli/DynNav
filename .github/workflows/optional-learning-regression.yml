@@ -1,0 +1,31 @@
+name: Optional learned uncertainty regression
+
+on:
+  pull_request:
+    paths:
+      - "contributions/learned_uncertainty_astar/**"
+      - "tests/test_learned_uncertainty_astar.py"
+      - ".github/workflows/optional-learning-regression.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install canonical package and CPU neural dependency
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Exercise standalone and package entry points
+        run: |
+          python contributions/learned_uncertainty_astar/code/train.py --help
+          python -m contributions.learned_uncertainty_astar.code.evaluate --help
+          python -m pytest -q tests/test_learned_uncertainty_astar.py

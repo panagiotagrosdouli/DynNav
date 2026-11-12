@@ -24,12 +24,18 @@ import numpy as np
 
 try:
     import torch
-    from. uncertainty_heuristic_net import UncertaintyHeuristicNet
-    _TORCH_AVAILABLE = True
 except ImportError:
     torch = None  # type: ignore
     UncertaintyHeuristicNet = None  # type: ignore
     _TORCH_AVAILABLE = False
+else:
+    # Support both package imports and the documented standalone scripts.
+    # A broken local import must not be reported as a missing torch dependency.
+    if __package__:
+        from .uncertainty_heuristic_net import UncertaintyHeuristicNet
+    else:
+        from uncertainty_heuristic_net import UncertaintyHeuristicNet
+    _TORCH_AVAILABLE = True
 
 
 # ---------------------------------------------------------------------------

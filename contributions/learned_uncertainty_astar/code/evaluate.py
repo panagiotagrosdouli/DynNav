@@ -26,13 +26,12 @@ from typing import Optional
 
 import numpy as np
 
-from .uncertainty_astar import (
-    EuclideanHeuristic,
-    LearnedUncertaintyHeuristic,
-    astar,
-    make_uncertainty_astar,
-)
-from .train import build_dataset, load_model, make_random_grid, _random_free_cell
+if __package__:
+    from .uncertainty_astar import EuclideanHeuristic, LearnedUncertaintyHeuristic, astar, make_uncertainty_astar
+    from .train import build_dataset, load_model, make_random_grid, _random_free_cell
+else:
+    from uncertainty_astar import EuclideanHeuristic, LearnedUncertaintyHeuristic, astar, make_uncertainty_astar
+    from train import build_dataset, load_model, make_random_grid, _random_free_cell
 
 
 # ---------------------------------------------------------------------------
