@@ -55,3 +55,22 @@ def test_rollouts_are_reproducible_from_seed():
         y, s, other, _ = b.step(np.array([0.1, 0.2]))
         np.testing.assert_array_equal(x, y)
         assert (r, done) == (s, other)
+
+
+def test_one_step_policy_gradient_matches_analytic_gaussian_bias_derivative():
+    cfg = module.PPOConfig(obs_dim=1, action_dim=1, hidden_dim=1, lr_actor=0.1,
+                           n_epochs=1, batch_size=2, entropy_coef=0.0, value_coef=0.0,
+                           max_grad_norm=10.0)
+    agent = module.PPOAgent(cfg)
+    for network in (agent.actor, agent.critic):
+        for layer in (network.l1, network.l2, network.out):
+            layer.W[:] = 0.0
+            layer.b[:] = 0.0
+    agent.actor.log_std[:] = 0.0
+    # At mean=0, std=1, d log pi(a)/d bias = a. With advantages
+    # [+1,-1], both samples imply a +1 ascent gradient for the mean bias.
+    old_log = -0.5 - 0.5 * np.log(2 * np.pi)
+    for action in [1.0, -1.0]:
+        agent.buffer.add(np.array([0.0]), np.array([action]), old_log, 0.0, 0.0, 1.0)
+    agent.update(np.array([1.0, -1.0]), np.zeros(2))
+    assert agent.actor.out.b[0] == pytest.approx(0.1, abs=1e-8)

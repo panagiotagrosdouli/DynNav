@@ -204,6 +204,11 @@ def main():
         probe = Probe()
         navigator = BasicNavigator()
         navigator.set_parameters([Parameter("use_sim_time", value=True)])
+        probe.wait(
+            lambda: probe.map is not None and probe.counts["scan"] >= 10,
+            120,
+            "reloaded map and live scans before AMCL initialization",
+        )
         from geometry_msgs.msg import PoseStamped
 
         pose = PoseStamped()
@@ -215,10 +220,15 @@ def main():
         pose.pose.position.y = initial_map_pose.translation.y
         pose.pose.orientation = initial_map_pose.rotation
         deadline = time.monotonic() + 150
+        next_initial_pose = 0.0
         while time.monotonic() < deadline and not probe.counts["amcl"]:
-            navigator.setInitialPose(pose)
+            if time.monotonic() >= next_initial_pose:
+                pose.header.stamp = navigator.get_clock().now().to_msg()
+                navigator.setInitialPose(pose)
+                next_initial_pose = time.monotonic() + 1.0
             rclpy.spin_once(probe.node, timeout_sec=0.2)
             rclpy.spin_once(navigator, timeout_sec=0.1)
+            time.sleep(0.01)
         if not probe.counts["amcl"]:
             raise RuntimeError("AMCL did not publish a finite map-frame pose on the newly generated map")
         probe.transform("map", "base_link")
@@ -238,6 +248,10 @@ def main():
         navigator.destroy_node()
     except Exception as exc:
         result["error"] = f"{type(exc).__name__}: {exc}"
+        if probe is not None:
+            result["failure_observations"] = probe.snapshot()
+        (directory / "result.json").write_text(json.dumps(result, indent=2) + "\n")
+        print("::error::" + result["error"].replace("%", "%25"), flush=True)
         raise
     finally:
         if process is not None:

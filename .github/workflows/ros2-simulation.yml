@@ -151,6 +151,16 @@ jobs:
           lines = Path('/tmp/dynnav_gazebo/slam_localization/probe.log').read_text().splitlines()
           for line in lines[-20:]:
               print('::error::' + line.replace('%', '%25').replace('\r', '%0D'))
+          for log in Path('/tmp/dynnav_gazebo/slam_localization').glob('*launch.log'):
+              errors = [line for line in log.read_text().splitlines() if 'ERROR' in line or 'Error' in line]
+              for line in errors[-8:]:
+                  print('::error::' + line.replace('%', '%25').replace('\r', '%0D'))
+          result = Path('/tmp/dynnav_gazebo/slam_localization/result.json')
+          if result.exists():
+              import json
+              data = json.loads(result.read_text())
+              print('::error::' + str(data.get('error')))
+              print('::error::observations: ' + str(data.get('failure_observations')))
           PY
             exit 1
           fi
