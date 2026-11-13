@@ -7,6 +7,7 @@ on:
       - "tests/test_learned_uncertainty_astar.py"
       - "contributions/21_ppo_navigation_agent/**"
       - "contributions/20_multimodal_failure_explainer/**"
+      - "contributions/22_curriculum_rl/**"
       - ".github/workflows/optional-learning-regression.yml"
   workflow_dispatch:
 
@@ -33,7 +34,7 @@ jobs:
           python -m pytest -q tests/test_learned_uncertainty_astar.py
       - name: Verify actual policy updates and fail-closed explanations
         run: |
-          python -m pytest -q contributions/21_ppo_navigation_agent/tests contributions/20_multimodal_failure_explainer/tests
+          python -m pytest -q contributions/21_ppo_navigation_agent/tests contributions/20_multimodal_failure_explainer/tests contributions/22_curriculum_rl/tests
           python contributions/21_ppo_navigation_agent/experiments/train_ppo_cpu.py \
             --updates 20 --eval-seeds 16 --output results/c21_actual_training_ci
       - uses: actions/upload-artifact@v4

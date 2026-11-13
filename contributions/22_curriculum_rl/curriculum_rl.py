@@ -86,6 +86,10 @@ class CurriculumScheduler:
                  advance_every: int = 100,       # for FIXED strategy
                  window_size: int = 50):         # rolling window for success rate
         self.stages = stages
+        if strategy == CurriculumStrategy.REVERSE:
+            raise NotImplementedError("Reverse curriculum goal-expansion semantics are not implemented")
+        if not stages or advance_every <= 0 or window_size <= 0:
+            raise ValueError("Curriculum requires nonempty stages and positive schedule/window")
         self.strategy = strategy
         self.advance_every = advance_every
         self.window = window_size
@@ -161,10 +165,10 @@ class CurriculumNavEnv:
     Wraps a NavEnv and applies the current difficulty level from the scheduler.
     """
 
-    def __init__(self, scheduler: CurriculumScheduler, obs_dim: int = 84):
+    def __init__(self, scheduler: CurriculumScheduler, obs_dim: int = 84, seed: int | None = None):
         self.scheduler = scheduler
         self.obs_dim = obs_dim
-        self._rng = np.random.default_rng()
+        self._rng = np.random.default_rng(seed)
         self.robot_pos = np.zeros(2)
         self.goal_pos = np.zeros(2)
         self.obstacles: list[np.ndarray] = []
@@ -259,39 +263,50 @@ def run_curriculum_training(
     import sys, os
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), "../21_ppo_navigation_agent"))
 
-    try:
-        from ppo_nav_agent import PPOAgent, PPOConfig
-        agent_available = True
-    except ImportError:
-        agent_available = False
-        logger.warning("PPOAgent not found — running environment stub only")
+    from ppo_nav_agent import PPOAgent, PPOConfig
+    if n_episodes <= 0:
+        raise ValueError("n_episodes must be positive")
 
     scheduler = CurriculumScheduler(strategy=strategy)
-    env = CurriculumNavEnv(scheduler)
-    rng = np.random.default_rng(seed)
+    cfg = PPOConfig(obs_dim=6, hidden_dim=32)
+    env = CurriculumNavEnv(scheduler, obs_dim=cfg.obs_dim, seed=seed)
+    agent = PPOAgent(cfg)
+    agent._rng = np.random.default_rng(seed)
     log = []
 
     for ep in range(n_episodes):
         obs = env.reset()
+        episode_stage = scheduler.current.name
+        episode_stage_idx = scheduler.current_stage_idx
+        agent.buffer.clear()
+        initial_weights = agent.actor.out.W.copy()
         done = False
         ep_reward = 0.0
         ep_steps = 0
 
         while not done:
-            # Random policy stub (replace with agent.select_action(obs))
-            action = rng.uniform(-0.5, 0.5, 2)
-            obs, reward, done, info = env.step(action)
+            action, log_prob, value = agent.select_action(obs)
+            next_obs, reward, done, info = env.step(action)
+            # Time limits truncate an episode; goal success is terminal.
+            terminal = bool(info.get("success", False))
+            agent.buffer.add(obs, action, log_prob, reward, value, float(terminal))
+            obs = next_obs
             ep_reward += reward
             ep_steps += 1
 
+        last_value = 0.0 if info.get("success", False) else agent.critic.forward(obs)
+        advantages, returns = agent.buffer.compute_gae(last_value, cfg.gamma, cfg.gae_lambda)
+        losses = agent.update(advantages, returns)
         record = {
             "episode": ep + 1,
-            "stage": scheduler.current.name,
-            "stage_idx": scheduler.current_stage_idx,
+            "stage": episode_stage,
+            "stage_idx": episode_stage_idx,
             "ep_reward": round(ep_reward, 3),
             "ep_steps": ep_steps,
             "success": int(info.get("success", False)),
             "success_rate": round(scheduler.success_rate, 3),
+            "policy_update_l2": float(np.linalg.norm(agent.actor.out.W - initial_weights)),
+            **losses,
         }
         log.append(record)
 
@@ -300,7 +315,8 @@ def run_curriculum_training(
                         ep + 1, scheduler.current.name,
                         scheduler.success_rate, ep_reward)
 
-    os.makedirs(os.path.dirname(out_csv), exist_ok=True)
+    from pathlib import Path
+    Path(out_csv).parent.mkdir(parents=True, exist_ok=True)
     with open(out_csv, "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=log[0].keys())
         w.writeheader(); w.writerows(log)
