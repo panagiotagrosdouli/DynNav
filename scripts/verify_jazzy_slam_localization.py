@@ -14,6 +14,7 @@ import math
 import os
 import signal
 import subprocess
+import threading
 import time
 from pathlib import Path
 
@@ -21,6 +22,7 @@ import rclpy
 from geometry_msgs.msg import PoseWithCovarianceStamped, Twist, TwistStamped
 from nav2_simple_commander.robot_navigator import BasicNavigator, TaskResult
 from nav_msgs.msg import OccupancyGrid, Odometry
+from rclpy.executors import SingleThreadedExecutor
 from rclpy.parameter import Parameter
 from rclpy.qos import DurabilityPolicy, QoSProfile, qos_profile_sensor_data
 from sensor_msgs.msg import LaserScan
@@ -43,6 +45,17 @@ class Probe:
         self.node.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.amcl, qos)
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self.node)
+        # BasicNavigator spins itself through rclpy's global executor. Keep the
+        # independent sensor observer on its own continuously serviced executor.
+        self.executor = SingleThreadedExecutor()
+        self.executor.add_node(self.node)
+        self.thread = threading.Thread(target=self.executor.spin, daemon=True)
+        self.thread.start()
+
+    def close(self):
+        self.executor.shutdown(timeout_sec=5.0)
+        self.thread.join(timeout=5.0)
+        self.node.destroy_node()
 
     def scan(self, msg):
         finite = sum(math.isfinite(v) and msg.range_min <= v <= msg.range_max for v in msg.ranges)
@@ -72,9 +85,9 @@ class Probe:
     def wait(self, predicate, seconds, label):
         deadline = time.monotonic() + seconds
         while time.monotonic() < deadline:
-            rclpy.spin_once(self.node, timeout_sec=0.1)
             if predicate():
                 return
+            time.sleep(0.1)
         raise RuntimeError("Timed out: " + label + "; counts=" + repr(self.counts))
 
     def transform(self, target, source):
@@ -156,7 +169,7 @@ def main():
                 message.header.stamp = probe.node.get_clock().now().to_msg()
                 message.header.frame_id = "base_link"
             publisher.publish(message)
-            rclpy.spin_once(probe.node, timeout_sec=0.1)
+            time.sleep(0.1)
         publisher.publish(command_type())
         if max(probe.yaws) - min(probe.yaws) < 0.2:
             raise RuntimeError("Odometry did not observe commanded robot rotation")
@@ -198,7 +211,7 @@ def main():
             raise RuntimeError("Map saving did not retain a map image and YAML")
         stop(process)
         log.close()
-        probe.node.destroy_node()
+        probe.close()
         probe = None
         process, log, result["amcl_command"] = launch(False, directory, map_file)
         probe = Probe()
@@ -226,7 +239,6 @@ def main():
                 pose.header.stamp = navigator.get_clock().now().to_msg()
                 navigator.setInitialPose(pose)
                 next_initial_pose = time.monotonic() + 1.0
-            rclpy.spin_once(probe.node, timeout_sec=0.2)
             rclpy.spin_once(navigator, timeout_sec=0.1)
             time.sleep(0.01)
         if not probe.counts["amcl"]:
@@ -242,7 +254,7 @@ def main():
             raise RuntimeError("Nav2 rejected the mapped/localized goal")
         deadline = time.monotonic() + 120
         while not navigator.isTaskComplete() and time.monotonic() < deadline:
-            rclpy.spin_once(probe.node, timeout_sec=0.1)
+            time.sleep(0.1)
         if navigator.getResult() != TaskResult.SUCCEEDED:
             navigator.cancelTask()
             raise RuntimeError("Navigation on the newly observed and reloaded map did not succeed")
@@ -264,7 +276,7 @@ def main():
         if process is not None:
             stop(process)
         if probe is not None:
-            probe.node.destroy_node()
+            probe.close()
         rclpy.shutdown()
         (directory / "result.json").write_text(json.dumps(result, indent=2) + "\n")
 
