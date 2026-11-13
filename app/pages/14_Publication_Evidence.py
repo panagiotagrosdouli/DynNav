@@ -5,6 +5,7 @@ import json
 
 import pandas as pd
 import streamlit as st
+from dynnav_dashboard.audit_view import render_audit_evidence
 
 from dynnav_dashboard.publication_evidence import (
     CLAIMS, MANIFEST, gazebo_probe_summary, load_claim_rows, load_manifest,
@@ -33,9 +34,12 @@ st.markdown(f"**Manuscript:** {manifest['paper_title']}")
 st.caption(f"Evidence source: `{MANIFEST.relative_to(MANIFEST.parents[2])}` · "
            f"Claim status source: `{CLAIMS.relative_to(CLAIMS.parents[0])}`")
 
-tab_study, tab_claims, tab_gazebo, tab_provenance = st.tabs([
-    "Retained Study", "Claim–Evidence Matrix", "Gazebo Integration", "Provenance & Downloads",
+tab_study, tab_audit, tab_claims, tab_gazebo, tab_provenance = st.tabs([
+    "Retained Study", "Verified Audit Reproduction", "Claim–Evidence Matrix", "Gazebo Integration", "Provenance & Downloads",
 ])
+
+with tab_audit:
+    render_audit_evidence()
 
 with tab_study:
     st.subheader("Unavoidable-hazard evaluation — retained publication artifact")

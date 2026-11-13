@@ -109,3 +109,4 @@ st.caption(
     "For retained publication measurements, see the separate Publication Evidence page. "
     "This interactive example does not modify the pinned manuscript evidence."
 )
+st.page_link("pages/14_Publication_Evidence.py", label="Inspect retained publication and verified audit evidence")

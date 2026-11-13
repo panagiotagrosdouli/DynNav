@@ -184,3 +184,11 @@ Reduce grid sizes, episode counts, or sweep ranges. Contribution renderers are l
 **ROS2 or Gazebo unavailable**
 
 The Streamlit app does not require or claim ROS2/Gazebo execution. Those capabilities must be validated separately in a suitable robotics environment.
+
+Results & Reports and Publication Evidence share one verified-audit view. It checks
+committed SHA-256 digests, trial identities, complete paired scenario/seed counts,
+and raw binary rates before displaying the retained 96-scenario reproduction.
+The displayed audit code checkpoint is not asserted to be each file's generating
+commit: some original commands lack per-artifact revision stamps. Missing or
+corrupt artifacts produce an error rather than substituted measurements. The
+History-Conditioned Lab remains a separate live synthetic oracle demonstration.
