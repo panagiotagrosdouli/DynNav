@@ -114,16 +114,26 @@ jobs:
         run: |
           python3 - <<'PY'
           import json
+          import sys
           from collections import defaultdict
           from pathlib import Path
           p = Path('/tmp/dynnav_history/results/results.json')
           data = json.loads(p.read_text())
+          def report_error(kind, value, trace):
+              print('::error::' + str(value).replace('%', '%25'), flush=True)
+              sys.__excepthook__(kind, value, trace)
+          sys.excepthook = report_error
           assert data['schema_version'] == 1
           trials = data['trials']
           repetitions = int("${{ inputs.repetitions || '8' }}")
           assert len(trials) == repetitions * 3
           by_rep = defaultdict(list)
           for row in trials:
+              if not row.get('valid_trial'):
+                  detail = {key: row.get(key) for key in (
+                      'planner_id', 'repetition', 'invalid_reason', 'execution_stamp_failures',
+                      'execution_transform_failures', 'execution_observation_count', 'sampling_gaps')}
+                  print('::error::Invalid trial: ' + json.dumps(detail), flush=True)
               by_rep[row['repetition']].append(row)
               for key in ('valid_trial','latent_draw','trigger_observed','closure_realized','closure_applied','sampling_gaps','ambiguous_trigger_gaps','injection_clearance_m','recovery_feasible','execution_observation_source','execution_observation_count','execution_transform_failures','observation_poll_period_s'): assert key in row
               assert row['execution_observation_source'] == 'tf:map->base_link'
