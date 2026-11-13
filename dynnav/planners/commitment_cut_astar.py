@@ -92,14 +92,22 @@ def commitment_cut_astar(
     safe_cells: set[GridCell] | None = None,
     hazard_model: CommitmentHazardModel | None = None,
     config: CommitmentCutAStarConfig | None = None,
+    initial_activated_closures: frozenset[int] | None = None,
 ) -> CommitmentCutAStarResult:
-    """Plan over position/history using the critical-cut return upper bound."""
+    """Plan using the cut bound, retaining hazards from prior executed motion.
+
+    Candidate transitions project activation locally; they do not mutate the
+    caller's persistent execution history.
+    """
     grid.validate()
     cfg = config or CommitmentCutAStarConfig()
     cfg.validate()
     safe = set(safe_cells or {start})
     model = hazard_model or CommitmentHazardModel(())
     model.validate(grid)
+    initial_active = frozenset(initial_activated_closures or ())
+    if any(index < 0 or index >= len(model.closures) for index in initial_active):
+        raise ValueError("initial activated hazard indices are out of range")
 
     if not grid.in_bounds(start) or not grid.in_bounds(goal):
         raise ValueError("start and goal must be inside the grid")
@@ -107,7 +115,7 @@ def commitment_cut_astar(
         return CommitmentCutAStarResult((), False, float("inf"), 0, 0, 0.0, 0.0, 0.0, 0)
 
     t0 = time.perf_counter()
-    initial: AugmentedState = (start, frozenset())
+    initial: AugmentedState = (start, initial_active)
     frontier: list[tuple[float, int, AugmentedState]] = [(0.0, 0, initial)]
     costs: dict[AugmentedState, float] = {initial: 0.0}
     parents: dict[AugmentedState, AugmentedState] = {}
@@ -159,5 +167,5 @@ def commitment_cut_astar(
 
     return CommitmentCutAStarResult(
         (), False, float("inf"), 0, expanded,
-        (time.perf_counter() - t0) * 1000.0, 0.0, 0.0, 0
+        (time.perf_counter() - t0) * 1000.0, 0.0, 0.0, len(initial_active)
     )

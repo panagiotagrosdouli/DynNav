@@ -225,3 +225,14 @@ This would directly test whether automated explanations improve human debugging 
 Contribution 20 establishes the failure-explanation layer of DynNav.
 
 The upgraded version makes the module scientifically stronger by scoring explanation quality rather than only generating reports.
+
+## Fail-closed episode evidence
+
+The base explainer no longer emits scores from unrelated synthetic SCM noise or
+hardcoded fallback root causes. Without an integrated episode-grounded causal
+model it returns an empty cause list and an explicit unavailable attribution
+status. The confidence field remains a backward-compatible zero sentinel with
+`confidence_status: unavailable_uncalibrated`; zero is not a calibrated
+probability. Visual descriptions remain unavailable until a genuine visual
+provider is integrated. Rule-based event descriptions and supplied STL traces
+remain usable, but they do not establish causality or debugging efficacy.

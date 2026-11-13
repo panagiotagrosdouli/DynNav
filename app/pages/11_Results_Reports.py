@@ -9,6 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from dynnav_dashboard.config import DEFAULT_SCENARIO
+from dynnav_dashboard.audit_view import render_audit_evidence
 from dynnav_dashboard.simulation import build_environment, plan_astar, plan_risk_aware
 
 st.set_page_config(page_title="DynNav Results & Reports", page_icon="📊", layout="wide")
@@ -16,7 +17,10 @@ st.title("Results & Reports")
 st.caption("Inspect, filter, export, and replay deterministic DynNav experiment manifests.")
 st.info("Synthetic software evidence only. Replayed results are not ROS2, Gazebo, hardware, or certified-safety validation.")
 
-source = st.radio("Result source", ["Current session", "Upload manifest"], horizontal=True)
+source = st.radio("Result source", ["Verified research audit", "Current session", "Upload manifest"], horizontal=True)
+if source == "Verified research audit":
+    render_audit_evidence()
+    st.stop()
 payload = st.session_state.get("dynnav_experiment") if source == "Current session" else None
 
 if source == "Upload manifest":

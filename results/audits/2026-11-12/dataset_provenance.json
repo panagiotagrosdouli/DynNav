@@ -1,0 +1,9 @@
+{
+  "source_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt",
+  "dataset_version": "dynamics_0, retrieved 2026-11-12; no independent release identifier exposed",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "source_sha256": "606f9392c1a992c9acdb5e680a9108ef7647ba8943d747435c90dfa56feaa38f",
+  "official_page_sha256": "7990993ffbc1c21ec5dd4b4563514817b8be0406521f4f15e9af592b95fd25c5",
+  "redistribution": "Raw dataset excluded; reproduce via official download. Cite Trekel et al., IROS 2025.",
+  "scope": "XY trajectory summary only; no train/test split or planner/navigation evaluation; orientations are not evaluated."
+}

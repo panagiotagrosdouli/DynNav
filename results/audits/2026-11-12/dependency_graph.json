@@ -1,0 +1,4015 @@
+{
+  "directory_count": 401,
+  "directory_paths": [
+    ".github",
+    ".github/ISSUE_TEMPLATE",
+    ".github/workflows",
+    ".streamlit",
+    "_misc",
+    "analysis",
+    "app",
+    "app/pages",
+    "apps",
+    "apps/api",
+    "apps/web",
+    "apps/web/app",
+    "apps/web/components",
+    "apps/web/lib",
+    "assets",
+    "assets/contributions",
+    "assets/readme",
+    "assets/styleguide",
+    "benchmarks",
+    "benchmarks/dynamic_self_aware_astar",
+    "benchmarks/fragile_commitment",
+    "benchmarks/fragile_commitment/configs",
+    "benchmarks/self_aware_astar",
+    "benchmarks/self_aware_navigation",
+    "code_scripts",
+    "configs",
+    "configs/contributions",
+    "contributions",
+    "contributions/01_learned_astar",
+    "contributions/01_learned_astar/assets",
+    "contributions/01_learned_astar/code",
+    "contributions/01_learned_astar/docs",
+    "contributions/01_learned_astar/experiments",
+    "contributions/01_learned_astar/models",
+    "contributions/01_learned_astar/results",
+    "contributions/01_learned_astar/tests",
+    "contributions/02_uncertainty_calibration",
+    "contributions/02_uncertainty_calibration/assets",
+    "contributions/02_uncertainty_calibration/code",
+    "contributions/02_uncertainty_calibration/docs",
+    "contributions/02_uncertainty_calibration/experiments",
+    "contributions/02_uncertainty_calibration/models",
+    "contributions/02_uncertainty_calibration/results",
+    "contributions/02_uncertainty_calibration/results/uncertainty_plots",
+    "contributions/02_uncertainty_calibration/tests",
+    "contributions/03_belief_risk_planning",
+    "contributions/03_belief_risk_planning/assets",
+    "contributions/03_belief_risk_planning/code",
+    "contributions/03_belief_risk_planning/docs",
+    "contributions/03_belief_risk_planning/experiments",
+    "contributions/03_belief_risk_planning/results",
+    "contributions/03_belief_risk_planning/tests",
+    "contributions/04_irreversibility_returnability",
+    "contributions/04_irreversibility_returnability/assets",
+    "contributions/04_irreversibility_returnability/code",
+    "contributions/04_irreversibility_returnability/docs",
+    "contributions/04_irreversibility_returnability/experiments",
+    "contributions/04_irreversibility_returnability/results",
+    "contributions/04_irreversibility_returnability/tests",
+    "contributions/05_safe_mode_navigation",
+    "contributions/05_safe_mode_navigation/assets",
+    "contributions/05_safe_mode_navigation/code",
+    "contributions/05_safe_mode_navigation/docs",
+    "contributions/05_safe_mode_navigation/experiments",
+    "contributions/05_safe_mode_navigation/results",
+    "contributions/05_safe_mode_navigation/tests",
+    "contributions/06_energy_connectivity",
+    "contributions/06_energy_connectivity/assets",
+    "contributions/06_energy_connectivity/code",
+    "contributions/06_energy_connectivity/docs",
+    "contributions/06_energy_connectivity/experiments",
+    "contributions/06_energy_connectivity/results",
+    "contributions/06_energy_connectivity/tests",
+    "contributions/07_nbv_exploration",
+    "contributions/07_nbv_exploration/code",
+    "contributions/07_nbv_exploration/experiments",
+    "contributions/07_nbv_exploration/results",
+    "contributions/07_next_best_view",
+    "contributions/07_next_best_view/assets",
+    "contributions/07_next_best_view/code",
+    "contributions/07_next_best_view/docs",
+    "contributions/07_next_best_view/experiments",
+    "contributions/07_next_best_view/tests",
+    "contributions/08_security_ids",
+    "contributions/08_security_ids/code",
+    "contributions/08_security_ids/docs",
+    "contributions/08_security_ids/experiments",
+    "contributions/08_security_ids/results",
+    "contributions/08_security_ids/tests",
+    "contributions/09_multi_robot",
+    "contributions/09_multi_robot/code",
+    "contributions/09_multi_robot/docs",
+    "contributions/09_multi_robot/experiments",
+    "contributions/09_multi_robot/results",
+    "contributions/09_multi_robot/tests",
+    "contributions/10_human_language_ethics",
+    "contributions/10_human_language_ethics/code",
+    "contributions/10_human_language_ethics/demos",
+    "contributions/10_human_language_ethics/docs",
+    "contributions/10_human_language_ethics/experiments",
+    "contributions/10_human_language_ethics/results",
+    "contributions/10_human_language_ethics/tests",
+    "contributions/11_vlm_navigation_agent",
+    "contributions/11_vlm_navigation_agent/docs",
+    "contributions/11_vlm_navigation_agent/experiments",
+    "contributions/11_vlm_navigation_agent/results",
+    "contributions/11_vlm_navigation_agent/tests",
+    "contributions/12_diffusion_occupancy",
+    "contributions/12_diffusion_occupancy/docs",
+    "contributions/12_diffusion_occupancy/experiments",
+    "contributions/12_diffusion_occupancy/tests",
+    "contributions/13_latent_world_model",
+    "contributions/13_latent_world_model/docs",
+    "contributions/13_latent_world_model/experiments",
+    "contributions/13_latent_world_model/tests",
+    "contributions/14_causal_risk_attribution",
+    "contributions/14_causal_risk_attribution/docs",
+    "contributions/14_causal_risk_attribution/experiments",
+    "contributions/14_causal_risk_attribution/tests",
+    "contributions/15_neuromorphic_sensing",
+    "contributions/15_neuromorphic_sensing/docs",
+    "contributions/15_neuromorphic_sensing/experiments",
+    "contributions/15_neuromorphic_sensing/tests",
+    "contributions/16_federated_nav_learning",
+    "contributions/16_federated_nav_learning/docs",
+    "contributions/16_federated_nav_learning/experiments",
+    "contributions/16_federated_nav_learning/tests",
+    "contributions/17_topological_semantic_maps",
+    "contributions/17_topological_semantic_maps/docs",
+    "contributions/17_topological_semantic_maps/experiments",
+    "contributions/17_topological_semantic_maps/tests",
+    "contributions/18_formal_safety_shields",
+    "contributions/18_formal_safety_shields/docs",
+    "contributions/18_formal_safety_shields/experiments",
+    "contributions/18_formal_safety_shields/tests",
+    "contributions/19_llm_mission_planner",
+    "contributions/19_llm_mission_planner/docs",
+    "contributions/19_llm_mission_planner/experiments",
+    "contributions/20_multimodal_failure_explainer",
+    "contributions/20_multimodal_failure_explainer/docs",
+    "contributions/20_multimodal_failure_explainer/experiments",
+    "contributions/21_ppo_navigation_agent",
+    "contributions/21_ppo_navigation_agent/docs",
+    "contributions/21_ppo_navigation_agent/experiments",
+    "contributions/22_curriculum_rl",
+    "contributions/22_curriculum_rl/docs",
+    "contributions/22_curriculum_rl/experiments",
+    "contributions/23_gaussian_splatting_mapper",
+    "contributions/23_gaussian_splatting_mapper/docs",
+    "contributions/23_gaussian_splatting_mapper/experiments",
+    "contributions/24_nerf_uncertainty",
+    "contributions/24_nerf_uncertainty/docs",
+    "contributions/24_nerf_uncertainty/experiments",
+    "contributions/25_adversarial_attack_simulator",
+    "contributions/25_adversarial_attack_simulator/docs",
+    "contributions/25_adversarial_attack_simulator/experiments",
+    "contributions/26_swarm_consensus",
+    "contributions/26_swarm_consensus/docs",
+    "contributions/26_swarm_consensus/experiments",
+    "contributions/27_Recoverability_Theory",
+    "contributions/_unsorted",
+    "contributions/_unsorted/results",
+    "contributions/ablation_study",
+    "contributions/ablation_study/code",
+    "contributions/ablation_study/experiments",
+    "contributions/ablation_study/results",
+    "contributions/benchmarking",
+    "contributions/benchmarking/code",
+    "contributions/benchmarking/experiments",
+    "contributions/benchmarking/results",
+    "contributions/hybrid_learned_astar",
+    "contributions/hybrid_learned_astar/code",
+    "contributions/hybrid_learned_astar/experiments",
+    "contributions/hybrid_learned_astar/results",
+    "contributions/hybrid_planner",
+    "contributions/hybrid_planner/code",
+    "contributions/hybrid_planner/experiments",
+    "contributions/hybrid_planner/results",
+    "contributions/learned_uncertainty_astar",
+    "contributions/learned_uncertainty_astar/code",
+    "contributions/learned_uncertainty_astar/experiments",
+    "contributions/learned_uncertainty_astar/results",
+    "contributions/realtime_replanning",
+    "contributions/realtime_replanning/code",
+    "contributions/realtime_replanning/experiments",
+    "contributions/realtime_replanning/results",
+    "contributions/tests",
+    "core",
+    "cpp_extension",
+    "cybersecurity_ros2",
+    "cybersecurity_ros2/nodes",
+    "data",
+    "data/plots",
+    "data_curriculum",
+    "datasets",
+    "debug",
+    "debug/artifacts",
+    "docs",
+    "docs/archive",
+    "docs/audits",
+    "dynnav",
+    "dynnav/contributions",
+    "dynnav/core",
+    "dynnav/evaluation",
+    "dynnav/experiments",
+    "dynnav/mapping",
+    "dynnav/planners",
+    "dynnav/prediction",
+    "dynnav/researcher",
+    "dynnav/safety",
+    "dynnav/security",
+    "dynnav/simulation",
+    "dynnav/uncertainty",
+    "figures",
+    "generators",
+    "ig_explorer",
+    "ig_explorer/ig_explorer",
+    "ig_explorer/resource",
+    "ig_explorer/test",
+    "launch",
+    "logs_ablation",
+    "logs_benchmark",
+    "logs_calibration",
+    "logs_calibration_ensemble",
+    "logs_ood",
+    "logs_real_world",
+    "modules",
+    "modules/control",
+    "modules/costmap_monitor",
+    "modules/coverage_clustering",
+    "modules/drl_planner",
+    "modules/evaluation",
+    "modules/exploration",
+    "modules/fusion",
+    "modules/graph_planning",
+    "modules/mapping",
+    "modules/nce_monitor",
+    "modules/photogrammetry",
+    "modules/planning",
+    "modules/priority_mapping",
+    "modules/utils",
+    "modules/visual_odometry",
+    "modules/visualization",
+    "modules/vla",
+    "modules/vo_fusion",
+    "modules/vo_uncertainty",
+    "nav_research",
+    "nav_research/calib_active",
+    "nav_research/vla",
+    "neural_uncertainty",
+    "neural_uncertainty/results",
+    "neural_uncertainty/results/statistical_runs",
+    "neural_uncertainty/results/statistical_runs/full",
+    "neural_uncertainty/results/statistical_runs/no_coverage",
+    "neural_uncertainty/results/statistical_runs/no_online",
+    "neural_uncertainty/results/statistical_runs/no_priority",
+    "neural_uncertainty/results/statistical_runs/no_vla",
+    "neural_uncertainty/results/statistical_runs/no_vo_unc",
+    "paper",
+    "paper/dynnav_r",
+    "pdfs",
+    "photogrammetry_module",
+    "photogrammetry_module/code_scripts",
+    "photogrammetry_module/photogrammetry_module",
+    "research_experiments",
+    "research_experiments/trust_aware_cvar",
+    "research_experiments/trust_aware_cvar/analysis",
+    "research_experiments/trust_aware_cvar/benchmark",
+    "research_experiments/trust_aware_cvar/core",
+    "research_experiments/trust_aware_cvar/figures",
+    "research_experiments/trust_aware_cvar/paper",
+    "research_experiments/trust_aware_cvar/results",
+    "research_experiments/trust_aware_cvar/results/tables",
+    "research_results",
+    "resource",
+    "results",
+    "results/fragile_commitment_v2",
+    "results/manifests",
+    "results/multiseed",
+    "results/noisy_activation",
+    "results/ros2_gazebo",
+    "results/ros2_gazebo/dynamic_run_31488640894",
+    "results/ros2_gazebo/dynamic_run_31488640894/behavior_trees",
+    "results/ros2_gazebo/static_run_31488640827",
+    "results/statistical_runs",
+    "results/statistical_runs/astar_classic",
+    "results/statistical_runs/astar_learned",
+    "results/statistical_runs/full",
+    "results/statistical_runs/no_coverage",
+    "results/statistical_runs/no_online",
+    "results/statistical_runs/no_priority",
+    "results/statistical_runs/no_vla",
+    "results/statistical_runs/no_vo_unc",
+    "ros2",
+    "ros2_ws",
+    "ros2_ws/lidar_slam_tb3",
+    "ros2_ws/lidar_slam_tb3/src",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav/config",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav/dynamic_nav",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav/launch",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav/resource",
+    "ros2_ws/lidar_slam_tb3/src/dynamic_nav/test",
+    "ros2_ws/lidar_slam_tb3/src/my_arm_sim",
+    "ros2_ws/lidar_slam_tb3/src/my_arm_sim/my_arm_sim",
+    "ros2_ws/lidar_slam_tb3/src/my_arm_sim/resource",
+    "ros2_ws/lidar_slam_tb3/src/my_arm_sim/test",
+    "ros2_ws/lidar_slam_tb3/src/my_arm_sim/urdf",
+    "ros2_ws/lidar_slam_tb3/src/my_robot_bringup",
+    "ros2_ws/lidar_slam_tb3/src/nav_research",
+    "ros2_ws/lidar_slam_tb3/src/nav_research/config",
+    "ros2_ws/lidar_slam_tb3/src/nav_research/launch",
+    "ros2_ws/lidar_slam_tb3/src/nav_research/nav_research",
+    "ros2_ws/lidar_slam_tb3/src/nav_research/resource",
+    "ros2_ws/lidar_slam_tb3/src/nav_research/test",
+    "ros2_ws/lidar_slam_tb3/src/rl_robot",
+    "ros2_ws/lidar_slam_tb3/src/rl_robot/resource",
+    "ros2_ws/lidar_slam_tb3/src/rl_robot/rl_robot",
+    "ros2_ws/lidar_slam_tb3/src/rl_robot/test",
+    "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced",
+    "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/resource",
+    "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/robotic_arm_advanced",
+    "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/test",
+    "ros2_ws/lidar_slam_tb3/src/tb3_benchmark",
+    "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/resource",
+    "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/tb3_benchmark",
+    "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/test",
+    "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller",
+    "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/resource",
+    "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/tb3_fsm_controller",
+    "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/test",
+    "ros2_ws/lidar_slam_tb3/src/tb3_nav",
+    "ros2_ws/lidar_slam_tb3/src/tb3_nav/resource",
+    "ros2_ws/lidar_slam_tb3/src/tb3_nav/tb3_nav",
+    "ros2_ws/lidar_slam_tb3/src/tb3_nav/test",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/launch",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/resource",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/tb3_sim_bringup",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/test",
+    "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/worlds",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam/config",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam/launch",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam/resource",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam/tb3_slam",
+    "ros2_ws/lidar_slam_tb3/src/tb3_slam/test",
+    "ros2_ws/src",
+    "ros2_ws/src/dynnav_bringup",
+    "ros2_ws/src/dynnav_bringup/config",
+    "ros2_ws/src/dynnav_bringup/launch",
+    "ros2_ws/src/dynnav_bringup/resource",
+    "ros2_ws/src/dynnav_bringup/rviz",
+    "ros2_ws/src/dynnav_nav2",
+    "ros2_ws/src/dynnav_nav2/config",
+    "ros2_ws/src/dynnav_nav2/docs",
+    "ros2_ws/src/dynnav_nav2/dynnav_nav2",
+    "ros2_ws/src/dynnav_nav2/launch",
+    "ros2_ws/src/dynnav_nav2/resource",
+    "ros2_ws/src/dynnav_nav2_benchmark",
+    "ros2_ws/src/dynnav_nav2_benchmark/config",
+    "ros2_ws/src/dynnav_nav2_benchmark/dynnav_nav2_benchmark",
+    "ros2_ws/src/dynnav_nav2_benchmark/launch",
+    "ros2_ws/src/dynnav_nav2_benchmark/models",
+    "ros2_ws/src/dynnav_nav2_benchmark/resource",
+    "ros2_ws/src/dynnav_nav2_benchmark/test",
+    "ros2_ws/src/dynnav_nav2_cpp",
+    "ros2_ws/src/dynnav_nav2_cpp/config",
+    "ros2_ws/src/dynnav_nav2_cpp/include",
+    "ros2_ws/src/dynnav_nav2_cpp/include/dynnav_nav2_cpp",
+    "ros2_ws/src/dynnav_nav2_cpp/src",
+    "ros2_ws/src/dynnav_nav2_cpp/test",
+    "ros2_ws/src/dynnav_turtlebot3",
+    "ros2_ws/src/dynnav_turtlebot3/config",
+    "ros2_ws/src/dynnav_turtlebot3/launch",
+    "ros2_ws/src/dynnav_turtlebot3/worlds",
+    "scripts",
+    "scripts/maintenance",
+    "src",
+    "src/cybersecurity_ros2",
+    "src/cybersecurity_ros2/cybersecurity_ros2",
+    "src/cybersecurity_ros2/cybersecurity_ros2/nodes",
+    "src/cybersecurity_ros2/resource",
+    "src/dynnav",
+    "src/dynnav_dashboard",
+    "src/dynnav_dashboard/contributions",
+    "test",
+    "tests",
+    "tests/security",
+    "tools",
+    "utils",
+    "vercel_app",
+    "vercel_app/app",
+    "vercel_app/app/simulation",
+    "website",
+    "website/app",
+    "website/app/contributions",
+    "website/app/contributions/[id]",
+    "website/components",
+    "website/data",
+    "website/public"
+  ],
+  "duplicate_source_content_candidates": [
+    {
+      "paths": [
+        "launch/bringup_slam.launch.py",
+        "ros2_ws/lidar_slam_tb3/src/nav_research/launch/bringup_slam.launch.py"
+      ],
+      "sha256": "11427431c013b61f2e20abb2c7e16882c6b26aaef6f425e46c5f73b935316020"
+    },
+    {
+      "paths": [
+        "apps/web/next-env.d.ts",
+        "website/next-env.d.ts"
+      ],
+      "sha256": "1862ac4bbbc5192d4bf562161df66ea547ed3e67173100656ab606ae9797db2b"
+    },
+    {
+      "paths": [
+        "scripts/generate_figures.py",
+        "scripts/make_demo_gif.py"
+      ],
+      "sha256": "1a4a5f743d9e65e51f3f16acb9b93c80336819d3941f766ec633f624977efbd4"
+    },
+    {
+      "paths": [
+        "ig_explorer/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/dynamic_nav/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/my_arm_sim/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/nav_research/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/rl_robot/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_nav/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/test/test_flake8.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_slam/test/test_flake8.py",
+        "test/test_flake8.py"
+      ],
+      "sha256": "37a813a0507f0ce51a2d0b57312d2cc078a0307a3ca85580ea801b0d2f9755d2"
+    },
+    {
+      "paths": [
+        "contributions/05_safe_mode_navigation/code/safe_mode_threshold_ablation.py",
+        "research_experiments/safe_mode_threshold_ablation.py"
+      ],
+      "sha256": "3ea1f76f9ba876c9b87ddf5b34aee5be0e83a6085585afdacc324159a7f70c62"
+    },
+    {
+      "paths": [
+        "cybersecurity_ros2/nodes/odom_ids.py",
+        "src/cybersecurity_ros2/cybersecurity_ros2/nodes/odom_ids.py"
+      ],
+      "sha256": "42ee9640c72686844481be0c5c8858d07e5811e7ac0c91fe1d91fdc0f0792ae3"
+    },
+    {
+      "paths": [
+        "cybersecurity_ros2/nodes/odom_attacker.py",
+        "src/cybersecurity_ros2/cybersecurity_ros2/nodes/odom_attacker.py"
+      ],
+      "sha256": "6114b00843ab413a09f9b345cfd42b06f55528bd32d537b3d157620b204d1642"
+    },
+    {
+      "paths": [
+        "photogrammetry_module/optimal_path_planner.py",
+        "photogrammetry_module/photogrammetry_module/optimal_path_planner.py"
+      ],
+      "sha256": "8a5ce0f0c2342e6e70310353503c54114389aae36070e3ea021e71f7f92ed738"
+    },
+    {
+      "paths": [
+        "generators/generate_dummy_ablation_runs.py",
+        "neural_uncertainty/generate_dummy_ablation_runs.py"
+      ],
+      "sha256": "b4fed0f509a7e7794cfb2c79bf98c9168c1b6b134a16d08e7ae39fb833a7e5dc"
+    },
+    {
+      "paths": [
+        "contributions/03_belief_risk_planning/code/belief_risk_planner.py",
+        "core/simple_risk_planner.py"
+      ],
+      "sha256": "b54a9f688d81c2cafc5da70f683e118a94543a060d0d7743e2ad6b976fef6e7b"
+    },
+    {
+      "paths": [
+        "ros2_ws/lidar_slam_tb3/src/nav_research/metrics_nav2.py",
+        "utils/metrics_nav2.py"
+      ],
+      "sha256": "b7e435b0a0d31f17ae461ad5fd3edecc95819302cb2d1b2154bddd533f147601"
+    },
+    {
+      "paths": [
+        "launch/dynamic_nav_tb3.launch.py",
+        "ros2_ws/lidar_slam_tb3/src/dynamic_nav/launch/dynamic_nav_tb3.launch.py"
+      ],
+      "sha256": "dd74e9b59761af2de0038488ea1979b69ebff201b023e758db6ddd228c1efbfe"
+    },
+    {
+      "paths": [
+        "contributions/01_learned_astar/code/__init__.py",
+        "contributions/02_uncertainty_calibration/code/__init__.py",
+        "contributions/03_belief_risk_planning/code/__init__.py",
+        "contributions/04_irreversibility_returnability/code/__init__.py",
+        "contributions/05_safe_mode_navigation/code/__init__.py",
+        "contributions/06_energy_connectivity/code/__init__.py",
+        "contributions/07_nbv_exploration/code/__init__.py",
+        "contributions/08_security_ids/code/__init__.py",
+        "contributions/09_multi_robot/code/__init__.py",
+        "contributions/10_human_language_ethics/code/__init__.py",
+        "contributions/10_human_language_ethics/demos/__init__.py",
+        "contributions/__init__.py",
+        "contributions/ablation_study/__init__.py",
+        "contributions/ablation_study/code/__init__.py",
+        "contributions/ablation_study/experiments/__init__.py",
+        "contributions/ablation_study/results/__init__.py",
+        "contributions/benchmarking/__init__.py",
+        "contributions/benchmarking/code/__init__.py",
+        "contributions/benchmarking/experiments/__init__.py",
+        "contributions/benchmarking/results/__init__.py",
+        "contributions/hybrid_learned_astar/__init__.py",
+        "contributions/hybrid_learned_astar/experiments/__init__.py",
+        "contributions/hybrid_planner/__init__.py",
+        "contributions/hybrid_planner/code/__init__.py",
+        "contributions/hybrid_planner/experiments/__init__.py",
+        "contributions/hybrid_planner/results/__init__.py",
+        "contributions/learned_uncertainty_astar/__init__.py",
+        "contributions/learned_uncertainty_astar/code/__init__.py",
+        "contributions/learned_uncertainty_astar/experiments/__init__.py",
+        "contributions/realtime_replanning/__init__.py",
+        "contributions/realtime_replanning/code/__init__.py",
+        "contributions/realtime_replanning/experiments/__init__.py",
+        "contributions/realtime_replanning/results/__init__.py",
+        "ig_explorer/ig_explorer/__init__.py",
+        "modules/__init__.py",
+        "modules/control/__init__.py",
+        "modules/exploration/__init__.py",
+        "modules/fusion/__init__.py",
+        "modules/mapping/__init__.py",
+        "modules/photogrammetry/__init__.py",
+        "modules/planning/__init__.py",
+        "modules/utils/__init__.py",
+        "modules/visual_odometry/__init__.py",
+        "modules/visualization/__init__.py",
+        "nav_research/__init__.py",
+        "nav_research/vla/vla_cost_fusion.py",
+        "nav_research/vla/vla_demo.py",
+        "nav_research/vla/vla_intents.py",
+        "research_experiments/__init__.py",
+        "research_experiments/trust_aware_cvar/analysis/__init__.py",
+        "research_experiments/trust_aware_cvar/benchmark/__init__.py",
+        "research_experiments/trust_aware_cvar/core/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/dynamic_nav/dynamic_nav/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/my_arm_sim/my_arm_sim/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/nav_research/nav_research/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/rl_robot/rl_robot/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/robotic_arm_advanced/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/tb3_benchmark/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/tb3_fsm_controller/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_nav/tb3_nav/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/tb3_sim_bringup/__init__.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_slam/tb3_slam/__init__.py",
+        "src/cybersecurity_ros2/cybersecurity_ros2/__init__.py",
+        "src/cybersecurity_ros2/cybersecurity_ros2/nodes/__init__.py"
+      ],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "paths": [
+        "ig_explorer/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/dynamic_nav/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/my_arm_sim/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/nav_research/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/rl_robot/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_nav/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/test/test_pep257.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_slam/test/test_pep257.py",
+        "test/test_pep257.py"
+      ],
+      "sha256": "e8b88d49ee296987b1b40069f81019b5fa09b1aa1bfee9a1faae45bb5cf53eda"
+    },
+    {
+      "paths": [
+        "ig_explorer/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/dynamic_nav/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/my_arm_sim/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/nav_research/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/rl_robot/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/robotic_arm_advanced/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_benchmark/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_fsm_controller/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_nav/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/test/test_copyright.py",
+        "ros2_ws/lidar_slam_tb3/src/tb3_slam/test/test_copyright.py",
+        "test/test_copyright.py"
+      ],
+      "sha256": "ea71bbbc6247b5c14d176ed09f39ee274d563cc9b2ec355828ea451ceff31757"
+    },
+    {
+      "paths": [
+        "analysis/analyze_lambda_sweep_risk_length.py",
+        "research_experiments/analyze_lambda_sweep_risk_length.py"
+      ],
+      "sha256": "f92af3ecb0e71a4b6acc245eed9abbacfc75e03709b0b02fcf87c4698221b00c"
+    }
+  ],
+  "folder_counts_by_root": {
+    ".github": 3,
+    ".streamlit": 1,
+    "_misc": 1,
+    "analysis": 1,
+    "app": 2,
+    "apps": 6,
+    "assets": 4,
+    "benchmarks": 6,
+    "code_scripts": 1,
+    "configs": 2,
+    "contributions": 160,
+    "core": 1,
+    "cpp_extension": 1,
+    "cybersecurity_ros2": 2,
+    "data": 2,
+    "data_curriculum": 1,
+    "datasets": 1,
+    "debug": 2,
+    "docs": 3,
+    "dynnav": 13,
+    "figures": 1,
+    "generators": 1,
+    "ig_explorer": 4,
+    "launch": 1,
+    "logs_ablation": 1,
+    "logs_benchmark": 1,
+    "logs_calibration": 1,
+    "logs_calibration_ensemble": 1,
+    "logs_ood": 1,
+    "logs_real_world": 1,
+    "modules": 20,
+    "nav_research": 3,
+    "neural_uncertainty": 9,
+    "paper": 2,
+    "pdfs": 1,
+    "photogrammetry_module": 3,
+    "research_experiments": 9,
+    "research_results": 1,
+    "resource": 1,
+    "results": 18,
+    "ros2": 1,
+    "ros2_ws": 82,
+    "scripts": 2,
+    "src": 8,
+    "test": 1,
+    "tests": 2,
+    "tools": 1,
+    "utils": 1,
+    "vercel_app": 3,
+    "website": 7
+  },
+  "limitations": [
+    "Import resolution is approximate and static; wildcard and dynamic imports are not resolved.",
+    "An import edge does not prove that the import is executed in a test or production.",
+    "An identical source digest does not prove that either file is safely removable.",
+    "ROS XML/CMake, web API calls, JavaScript imports and runtime dependencies need separate audits.",
+    "Git does not record empty directories or untracked local files."
+  ],
+  "python_file_count": 1113,
+  "python_parse_errors": [],
+  "root_directories": [
+    ".github",
+    ".streamlit",
+    "_misc",
+    "analysis",
+    "app",
+    "apps",
+    "assets",
+    "benchmarks",
+    "code_scripts",
+    "configs",
+    "contributions",
+    "core",
+    "cpp_extension",
+    "cybersecurity_ros2",
+    "data",
+    "data_curriculum",
+    "datasets",
+    "debug",
+    "docs",
+    "dynnav",
+    "figures",
+    "generators",
+    "ig_explorer",
+    "launch",
+    "logs_ablation",
+    "logs_benchmark",
+    "logs_calibration",
+    "logs_calibration_ensemble",
+    "logs_ood",
+    "logs_real_world",
+    "modules",
+    "nav_research",
+    "neural_uncertainty",
+    "paper",
+    "pdfs",
+    "photogrammetry_module",
+    "research_experiments",
+    "research_results",
+    "resource",
+    "results",
+    "ros2",
+    "ros2_ws",
+    "scripts",
+    "src",
+    "test",
+    "tests",
+    "tools",
+    "utils",
+    "vercel_app",
+    "website"
+  ],
+  "schema_version": 1,
+  "scope": "tracked files and static resolvable Python imports only",
+  "static_local_python_import_edges": [
+    {
+      "kind": "from",
+      "source": "app/dashboard.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/dashboard.py",
+      "target": "src/dynnav_dashboard/contributions/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/dashboard.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/01_Home.py",
+      "target": "src/dynnav_dashboard/registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/02_Robot_Lab.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/02_Robot_Lab.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/03_Scenario_Builder.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/03_Scenario_Builder.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/04_Planner_Arena.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/04_Planner_Arena.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/05_Belief_Mapping_Lab.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/05_Belief_Mapping_Lab.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/05_Belief_Mapping_Lab.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/05_Belief_Mapping_Lab.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/06_Risk_Safety_Lab.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/06_Risk_Safety_Lab.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/09_Contribution_Explorer.py",
+      "target": "src/dynnav_dashboard/contributions/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/09_Contribution_Explorer.py",
+      "target": "src/dynnav_dashboard/registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/10_Experiment_Studio.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/10_Experiment_Studio.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/11_Results_Reports.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/11_Results_Reports.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/13_System_Status.py",
+      "target": "src/dynnav_dashboard/contributions/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/pages/13_System_Status.py",
+      "target": "src/dynnav_dashboard/registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/presentation.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "app/presentation.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "apps/api/main.py",
+      "target": "dynnav/researcher/api.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py",
+      "target": "dynnav/planners/dynamic_self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/run_dynamic_demo.py",
+      "target": "dynnav/planners/dynamic_self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/run_dynamic_demo.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/dynamic_self_aware_astar/run_dynamic_demo.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/fragile_commitment/v2_analysis.py",
+      "target": "dynnav/evaluation/scientific_metrics.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/self_aware_astar/compare_astar.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/self_aware_astar/compare_astar.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "benchmarks/self_aware_astar/compare_astar.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "benchmarks/self_aware_astar/compare_astar.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/self_aware_astar/randomized_ablation_benchmark.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/self_aware_astar/randomized_ablation_benchmark.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "benchmarks/self_aware_astar/randomized_ablation_benchmark.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "benchmarks/self_aware_astar/randomized_ablation_benchmark.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "benchmarks/self_aware_navigation/run_self_aware_demo.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "code_scripts/photogrammetry_mission.py",
+      "target": "photogrammetry_module/image_capture.py"
+    },
+    {
+      "kind": "from",
+      "source": "code_scripts/photogrammetry_mission.py",
+      "target": "photogrammetry_module/optimal_path_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/01_learned_astar/experiments/eval_real_ros_map.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/01_learned_astar/experiments/ros2_get_plan_roundtrip_test.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/02_uncertainty_calibration/code/build_calib_aware_uncertainty_grid.py",
+      "target": "neural_uncertainty/calibration_methods.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/02_uncertainty_calibration/code/build_calib_learned_uncertainty_grid_from_affine.py",
+      "target": "neural_uncertainty/calibration_methods.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/03_belief_risk_planning/experiments/eval_real_map_proximity_risk.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/04_irreversibility_returnability/experiments/eval_real_office_returnability.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/07_next_best_view/experiments/eval_real_office_partial_observation_nbv.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/08_security_ids/code/security_monitor_cusum.py",
+      "target": "utils/sequential_ids.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/10_human_language_ethics/demos/run_real_human_preference_demo.py",
+      "target": "modules/graph_planning/prm_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/10_human_language_ethics/demos/vla_demo.py",
+      "target": "nav_research/vla/vla_nbv_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/11_vlm_navigation_agent/vlm_goal_validator.py",
+      "target": "dynnav/researcher/vlm_goal_validator.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/12_diffusion_occupancy/experiments/train_real_map_static_denoiser.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/17_topological_semantic_maps/experiments/eval_real_office_geometric_topology.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/__init__.py",
+      "target": "contributions/hybrid_learned_astar/code/hybrid_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/__init__.py",
+      "target": "contributions/hybrid_learned_astar/code/hybrid_heuristic.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/evaluate.py",
+      "target": "contributions/hybrid_learned_astar/code/hybrid_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/evaluate.py",
+      "target": "contributions/hybrid_learned_astar/code/hybrid_heuristic.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/evaluate.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/hybrid_heuristic.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/code/hybrid_heuristic.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_heuristic_net.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/experiments/run_hybrid_experiment.py",
+      "target": "contributions/hybrid_learned_astar/code/evaluate.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/hybrid_learned_astar/experiments/run_hybrid_experiment.py",
+      "target": "contributions/learned_uncertainty_astar/code/train.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/code/evaluate.py",
+      "target": "contributions/learned_uncertainty_astar/code/train.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/code/evaluate.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/code/train.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/code/train.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_heuristic_net.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/code/uncertainty_astar.py",
+      "target": "contributions/learned_uncertainty_astar/code/uncertainty_heuristic_net.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/experiments/run_experiment.py",
+      "target": "contributions/learned_uncertainty_astar/code/evaluate.py"
+    },
+    {
+      "kind": "from",
+      "source": "contributions/learned_uncertainty_astar/experiments/run_experiment.py",
+      "target": "contributions/learned_uncertainty_astar/code/train.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/__init__.py",
+      "target": "dynnav/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/__init__.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/__init__.py",
+      "target": "dynnav/research_modules.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/activation_belief.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/activation_belief.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/activation_belief.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/benchmarks.py",
+      "target": "dynnav/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/benchmarks.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/benchmarks.py",
+      "target": "dynnav/scenarios.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/commitment_hazard.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/commitment_hazard.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/__init__.py",
+      "target": "dynnav/core/grid_primitives.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/__init__.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/__init__.py",
+      "target": "dynnav/core/navigation_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/__init__.py",
+      "target": "dynnav/core/self_aware_cost.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/__init__.py",
+      "target": "dynnav/core/self_awareness.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/information_gain.py",
+      "target": "dynnav/core/navigation_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/self_aware_cost.py",
+      "target": "dynnav/core/navigation_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/core/self_awareness.py",
+      "target": "dynnav/core/navigation_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/demo.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/demo.py",
+      "target": "dynnav/experiments/history_information_gap_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_execution_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_phase_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_phase_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_phase_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_trap_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_trap_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_trap_benchmark.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/commitment_trap_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/cut_scaling_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/cut_scaling_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/cut_scaling_benchmark.py",
+      "target": "dynnav/recoverability_cut.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/end_to_end_evaluation.py",
+      "target": "dynnav/experiments/multiseed_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/end_to_end_evaluation.py",
+      "target": "dynnav/experiments/scenario_suite.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/end_to_end_evaluation.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_heldout_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_pareto_benchmark.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_pareto_benchmark.py",
+      "target": "dynnav/experiments/geometric_heldout_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_pareto_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_pareto_benchmark.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/geometric_pareto_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/hazard_planner_pilot.py",
+      "target": "dynnav/experiments/recoverability_estimator_pilot.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/hazard_planner_pilot.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/hazard_planner_pilot.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/heldout_history_generalization.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_commitment_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_commitment_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_commitment_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_commitment_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_commitment_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_information_gap_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_information_gap_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_information_gap_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_state_scaling_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_state_scaling_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/history_state_scaling_benchmark.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/online_recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/recoverability_dstar_lite.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/joint_cut_counterexample.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/joint_cut_counterexample.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/joint_cut_counterexample.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/joint_cut_counterexample.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/multi_commitment_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/multi_commitment_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/multi_commitment_benchmark.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/multi_commitment_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/multiseed_evaluation.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/noisy_activation_benchmark.py",
+      "target": "dynnav/activation_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_benchmark.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_estimator_pilot.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_estimator_pilot.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/recoverability_estimator_pilot.py",
+      "target": "dynnav/recoverability_estimation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/experiments/cut_scaling_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/repeated_timing_benchmark.py",
+      "target": "dynnav/recoverability_cut.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/safe_return_threshold_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/safe_return_threshold_benchmark.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/scenario_suite.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/topology_reliability_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/topology_reliability_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/topology_reliability_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/topology_reliability_benchmark.py",
+      "target": "dynnav/recoverability_estimation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/experiments/unavoidable_history_benchmark.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/lab_grade.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/lab_grade.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/lab_grade.py",
+      "target": "dynnav/risk.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/mapping/__init__.py",
+      "target": "dynnav/mapping/occupancy_grid.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/mapping/ros_map.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/monitoring.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/__init__.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/__init__.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/__init__.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_aware_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_aware_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_aware_astar.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_cut_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_cut_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_cut_astar.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_cut_astar.py",
+      "target": "dynnav/recoverability_cut.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_safe_return_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_safe_return_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/commitment_safe_return_astar.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/dynamic_self_aware_astar.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/dynamic_self_aware_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/dynamic_self_aware_astar.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/hazard_reliability_astar.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/hazard_reliability_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/hazard_reliability_astar.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/hazard_reliability_astar.py",
+      "target": "dynnav/recoverability_estimation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/online_recoverability.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/online_recoverability.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/online_recoverability.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_astar.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_astar.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_dstar_lite.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_dstar_lite.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/recoverability_dstar_lite.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/self_aware_astar.py",
+      "target": "dynnav/core/information_gain.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/self_aware_astar.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planners/self_aware_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planning.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/planning.py",
+      "target": "dynnav/risk.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/prediction/__init__.py",
+      "target": "dynnav/prediction/predictive_risk_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/prediction/predictive_risk_map.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_belief.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_cut.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_cut.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_estimation.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_estimation.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_scenarios.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/recoverability_scenarios.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/research_modules.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/research_modules.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/research_modules.py",
+      "target": "dynnav/risk.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/__init__.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/__init__.py",
+      "target": "dynnav/researcher/protocols.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/api.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/api.py",
+      "target": "dynnav/researcher/orchestrator.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/api.py",
+      "target": "dynnav/researcher/protocols.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/cli.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/cli.py",
+      "target": "dynnav/researcher/orchestrator.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/orchestrator.py",
+      "target": "dynnav/experiments/end_to_end_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/orchestrator.py",
+      "target": "dynnav/experiments/multiseed_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/orchestrator.py",
+      "target": "dynnav/experiments/scenario_suite.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/orchestrator.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/orchestrator.py",
+      "target": "dynnav/researcher/reporting.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/protocols.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/researcher/reporting.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/ros2.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/scenarios.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/attack_graph.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/attribution.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/detectors.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/fusion.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/mitigation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/policy.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/sensor_profiles.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/temporal.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/__init__.py",
+      "target": "dynnav/security/trust.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/attribution.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/detectors.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/detectors.py",
+      "target": "dynnav/security/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/fusion.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/mitigation.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/pipeline.py",
+      "target": "dynnav/security/detectors.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/pipeline.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/pipeline.py",
+      "target": "dynnav/security/sensor_profiles.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/pipeline.py",
+      "target": "dynnav/security/trust.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/policy.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/policy.py",
+      "target": "dynnav/security/mitigation.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/policy.py",
+      "target": "dynnav/security/pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/sensor_profiles.py",
+      "target": "dynnav/security/detectors.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/security/trust.py",
+      "target": "dynnav/security/events.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/simulation/grid_world.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/uncertainty/fields.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "dynnav/visualization.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/graph_planning/d_star_lite.py",
+      "target": "modules/graph_planning/a_star.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/photogrammetry/adaptive_replan.py",
+      "target": "modules/photogrammetry/__init__.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "modules/photogrammetry/adaptive_replan.py",
+      "target": "modules/photogrammetry/replan_weighted.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_frontiers.py",
+      "target": "modules/exploration/frontier_explorer.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_icp.py",
+      "target": "modules/mapping/icp.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_nbv.py",
+      "target": "modules/exploration/nbv.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_nce.py",
+      "target": "modules/utils/nce_monitor.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_particles.py",
+      "target": "modules/mapping/particle_filter.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_planners.py",
+      "target": "modules/planning/a_star.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_planners.py",
+      "target": "modules/planning/rrt.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/plot_planners.py",
+      "target": "modules/planning/rrt_star.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_frontiers.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_icp.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_nbv.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_nce.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_particles.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_planners.py"
+    },
+    {
+      "kind": "from",
+      "source": "modules/visualization/run_all_plots.py",
+      "target": "modules/visualization/plot_uncertainty.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/__init__.py",
+      "target": "nav_research/calib_active/active_calibration_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/__init__.py",
+      "target": "nav_research/calib_active/calibration_ekf.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/__init__.py",
+      "target": "nav_research/calib_active/calibration_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/active_calibration_planner.py",
+      "target": "nav_research/calib_active/observability_metrics.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/calibration_ekf.py",
+      "target": "nav_research/calib_active/sensor_models.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/calibration_node.py",
+      "target": "nav_research/calib_active/active_calibration_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/calibration_node.py",
+      "target": "nav_research/calib_active/calibration_ekf.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/calibration_node.py",
+      "target": "nav_research/calib_active/calibration_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/calibration_node.py",
+      "target": "nav_research/calib_active/sensor_models.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/ros_interface.py",
+      "target": "nav_research/calib_active/active_calibration_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/ros_interface.py",
+      "target": "nav_research/calib_active/calibration_ekf.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/calib_active/ros_interface.py",
+      "target": "nav_research/calib_active/calibration_state.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/rl_rrt_planner_node.py",
+      "target": "nav_research/advanced_planners.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/vla/vla_nbv_planner.py",
+      "target": "nav_research/vla/vla_cost_fusion.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/vla/vla_nbv_planner.py",
+      "target": "nav_research/vla/vla_intents.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/vla/vla_nbv_planner_backup.py",
+      "target": "nav_research/vla/vla_cost_fusion.py"
+    },
+    {
+      "kind": "from",
+      "source": "nav_research/vla/vla_nbv_planner_backup.py",
+      "target": "nav_research/vla/vla_intents.py"
+    },
+    {
+      "kind": "from",
+      "source": "photogrammetry_module/code_scripts/photogrammetry_mission.py",
+      "target": "photogrammetry_module/image_capture.py"
+    },
+    {
+      "kind": "from",
+      "source": "photogrammetry_module/code_scripts/photogrammetry_mission.py",
+      "target": "photogrammetry_module/optimal_path_planner.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/compare_multiobj_vs_classic_astar.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/compare_multiobj_vs_classic_astar.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/compare_multiobj_vs_classic_astar.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/compare_multiobj_vs_classic_astar.py",
+      "target": "research_experiments/run_multiobj_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/detect_online_failures.py",
+      "target": "research_experiments/multiobj_target_selector.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/detect_online_failures.py",
+      "target": "research_experiments/online_multiobj_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/generate_curriculum_datasets.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/grid_world.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/heuristics_residual.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/online_astar.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/online_multiobj_astar.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/online_multiobj_astar.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/online_multiobj_astar.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/online_multiobj_astar.py",
+      "target": "research_experiments/multiobj_target_selector.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_ablation_hidden.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_ablation_hidden.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_ablation_hidden.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_astar_comparison.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_astar_comparison.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_astar_comparison.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_astar_comparison.py",
+      "target": "research_experiments/online_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_curriculum_generalization.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_curriculum_generalization.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_curriculum_generalization.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_data_sweep_experiments.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_data_sweep_experiments.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_data_sweep_experiments.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_heuristic_error_logging.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_heuristic_error_logging.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar.py",
+      "target": "research_experiments/multiobj_target_selector.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar_batch.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar_batch.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar_batch.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_multiobj_astar_batch.py",
+      "target": "research_experiments/run_multiobj_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_residual_comparison.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_residual_comparison.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_residual_comparison.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_residual_comparison.py",
+      "target": "research_experiments/heuristics_residual.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_static_vs_online_mo_batch.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_static_vs_online_mo_batch.py",
+      "target": "research_experiments/online_multiobj_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_static_vs_online_mo_batch.py",
+      "target": "research_experiments/run_multiobj_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_uncertainty_error_logging.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/run_uncertainty_error_logging.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/viz_failure_instance.py",
+      "target": "research_experiments/astar_core.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/viz_failure_instance.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/viz_failure_instance.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/viz_heatmap_error.py",
+      "target": "research_experiments/grid_world.py"
+    },
+    {
+      "kind": "from",
+      "source": "research_experiments/viz_heatmap_error.py",
+      "target": "research_experiments/heuristics.py"
+    },
+    {
+      "kind": "from",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py",
+      "target": "ros2_ws/src/dynnav_nav2/dynnav_nav2/path_conversion.py"
+    },
+    {
+      "kind": "from",
+      "source": "ros2_ws/src/dynnav_nav2/dynnav_nav2/occupancy_grid_conversion.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/generate_figures.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/generate_research_assets.py",
+      "target": "dynnav/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/generate_research_assets.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/generate_research_assets.py",
+      "target": "dynnav/scenarios.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/generate_research_assets.py",
+      "target": "dynnav/visualization.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/inspect_ros_map.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/inspect_ros_map.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/make_demo_gif.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/presentation_benchmark.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/presentation_benchmark.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_all.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_benchmarks.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_calibration_experiment.py",
+      "target": "neural_uncertainty/calibration_methods.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_commitment_execution_benchmark.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_commitment_phase_benchmark.py",
+      "target": "dynnav/experiments/commitment_phase_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_commitment_trap_benchmark.py",
+      "target": "dynnav/experiments/commitment_trap_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_cut_scaling_benchmark.py",
+      "target": "dynnav/experiments/cut_scaling_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_drift_calibration_experiment.py",
+      "target": "neural_uncertainty/calibration_methods.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_geometric_heldout_benchmark.py",
+      "target": "dynnav/experiments/geometric_heldout_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_geometric_pareto_benchmark.py",
+      "target": "dynnav/experiments/geometric_pareto_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_hazard_planner_pilot.py",
+      "target": "dynnav/experiments/hazard_planner_pilot.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_heldout_history_generalization.py",
+      "target": "dynnav/experiments/heldout_history_generalization.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_history_commitment_benchmark.py",
+      "target": "dynnav/experiments/history_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_history_information_gap_benchmark.py",
+      "target": "dynnav/experiments/history_information_gap_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_history_state_scaling_benchmark.py",
+      "target": "dynnav/experiments/history_state_scaling_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_joint_cut_counterexample.py",
+      "target": "dynnav/experiments/joint_cut_counterexample.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_multi_commitment_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_noisy_activation_benchmark.py",
+      "target": "dynnav/experiments/noisy_activation_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_recoverability_estimator_pilot.py",
+      "target": "dynnav/experiments/recoverability_estimator_pilot.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_research_suite.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_research_suite.py",
+      "target": "dynnav/lab_grade.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_safe_return_threshold_benchmark.py",
+      "target": "dynnav/experiments/safe_return_threshold_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/run_topology_reliability_benchmark.py",
+      "target": "dynnav/experiments/topology_reliability_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/validate_streamlit_app.py",
+      "target": "src/dynnav_dashboard/contributions/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "scripts/validate_streamlit_app.py",
+      "target": "src/dynnav_dashboard/registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/__init__.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c01_learned_astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c02_ekf_ukf.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c03_cvar_astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c04_returnability.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c06_energy_connectivity.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c07_next_best_view.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c08_security_ids.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c09_multi_robot.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c10_human_aware.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c13_world_model.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c14_causal_scm.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c15_neuromorphic.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c16_federated_learning.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c17_topological_maps.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c19_llm_planner.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c20_failure_explainer.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c21_ppo.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c22_curriculum_rl.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c23_gaussian_splatting.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c24_nerf_uncertainty.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c25_adversarial.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "src/dynnav_dashboard/contributions/__init__.py",
+      "target": "src/dynnav_dashboard/contributions/c26_bft_swarm.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/_common.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c01_learned_astar.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c01_learned_astar.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c02_ekf_ukf.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c02_ekf_ukf.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c03_cvar_astar.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c03_cvar_astar.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c04_returnability.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c04_returnability.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c06_energy_connectivity.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c06_energy_connectivity.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c07_next_best_view.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c07_next_best_view.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c08_security_ids.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c08_security_ids.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c09_multi_robot.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c09_multi_robot.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c10_human_aware.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c10_human_aware.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c11_twin_critic_rl.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c11_twin_critic_rl.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py",
+      "target": "dynnav/researcher/vlm_goal_validator.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c13_world_model.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c13_world_model.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c14_causal_scm.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c14_causal_scm.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c15_neuromorphic.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c15_neuromorphic.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c16_federated_learning.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c16_federated_learning.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c17_topological_maps.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c17_topological_maps.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c19_llm_planner.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c19_llm_planner.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c20_failure_explainer.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c20_failure_explainer.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c21_ppo.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c21_ppo.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c22_curriculum_rl.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c22_curriculum_rl.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c23_gaussian_splatting.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c23_gaussian_splatting.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c24_nerf_uncertainty.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c24_nerf_uncertainty.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c25_adversarial.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c25_adversarial.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c26_bft_swarm.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/contributions/c26_bft_swarm.py",
+      "target": "src/dynnav_dashboard/contributions/_common.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/metrics.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/metrics.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/simulation.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/visualization.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "src/dynnav_dashboard/visualization.py",
+      "target": "src/dynnav_dashboard/simulation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_attack_graph.py",
+      "target": "dynnav/security/attack_graph.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_security_core.py",
+      "target": "dynnav/security/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_security_decisions.py",
+      "target": "dynnav/security/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_security_policy.py",
+      "target": "dynnav/security/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_sensor_detector_factory.py",
+      "target": "dynnav/security/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_sensor_profiles.py",
+      "target": "dynnav/security/sensor_profiles.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/security/test_sensor_security_pipeline.py",
+      "target": "dynnav/security/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_activation_belief.py",
+      "target": "dynnav/activation_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_activation_belief.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_activation_belief.py",
+      "target": "dynnav/experiments/noisy_activation_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_activation_belief.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_baseline_replanning_history.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_baseline_replanning_history.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_baseline_replanning_history.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_baseline_replanning_history.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_astar.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_astar.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "tests/test_commitment_aware_astar.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_online_history.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_online_history.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_aware_online_history.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_cut_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_cut_astar.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_cut_astar.py",
+      "target": "dynnav/planners/commitment_cut_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_cut_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_execution_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_execution_benchmark.py",
+      "target": "dynnav/experiments/commitment_execution_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_execution_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_hazard.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_hazard.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_hazard.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_phase_benchmark.py",
+      "target": "dynnav/experiments/commitment_phase_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_phase_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_safe_return_astar.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_safe_return_astar.py",
+      "target": "dynnav/planners/commitment_safe_return_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_safe_return_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_trap_benchmark.py",
+      "target": "dynnav/experiments/commitment_trap_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_trap_benchmark.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_trap_benchmark.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_commitment_trap_benchmark.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_contribution_registry.py",
+      "target": "scripts/validate_contribution_registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_cut_scaling_benchmark.py",
+      "target": "dynnav/experiments/cut_scaling_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynamic_randomized_benchmark.py",
+      "target": "benchmarks/dynamic_self_aware_astar/randomized_dynamic_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynamic_self_aware_astar.py",
+      "target": "dynnav/planners/dynamic_self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynamic_self_aware_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynamic_self_aware_astar.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynnav_smoke.py",
+      "target": "dynnav/benchmarks.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynnav_smoke.py",
+      "target": "dynnav/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynnav_smoke.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynnav_smoke.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_dynnav_smoke.py",
+      "target": "dynnav/scenarios.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_end_to_end_evaluation.py",
+      "target": "dynnav/experiments/end_to_end_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_end_to_end_evaluation.py",
+      "target": "dynnav/experiments/multiseed_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_end_to_end_evaluation.py",
+      "target": "dynnav/experiments/scenario_suite.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_geometric_heldout_benchmark.py",
+      "target": "dynnav/experiments/geometric_heldout_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_geometric_pareto_benchmark.py",
+      "target": "dynnav/experiments/geometric_pareto_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_hazard_planner_pilot.py",
+      "target": "dynnav/experiments/hazard_planner_pilot.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_hazard_planner_pilot.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_hazard_reliability_astar.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_hazard_reliability_astar.py",
+      "target": "dynnav/planners/hazard_reliability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_hazard_reliability_astar.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_heldout_history_generalization.py",
+      "target": "dynnav/experiments/heldout_history_generalization.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_history_commitment_benchmark.py",
+      "target": "dynnav/experiments/history_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_history_information_gap_benchmark.py",
+      "target": "dynnav/experiments/history_information_gap_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_history_state_scaling_benchmark.py",
+      "target": "dynnav/experiments/history_state_scaling_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_incremental_replanning_benchmark.py",
+      "target": "dynnav/experiments/incremental_replanning_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_incremental_replanning_benchmark.py",
+      "target": "dynnav/planners/online_recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_joint_cut_counterexample.py",
+      "target": "dynnav/experiments/joint_cut_counterexample.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_lab_grade.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_lab_grade.py",
+      "target": "dynnav/lab_grade.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_mapping_occupancy_grid.py",
+      "target": "dynnav/mapping/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_multi_commitment_benchmark.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_multi_commitment_benchmark.py",
+      "target": "dynnav/experiments/multi_commitment_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_multi_commitment_benchmark.py",
+      "target": "dynnav/planners/commitment_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_online_recoverability.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_online_recoverability.py",
+      "target": "dynnav/planners/online_recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_online_recoverability.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "import",
+      "source": "tests/test_package_layout.py",
+      "target": "dynnav/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_planning.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_planning.py",
+      "target": "dynnav/monitoring.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_planning.py",
+      "target": "dynnav/planning.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_planning.py",
+      "target": "dynnav/risk.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_presentation_benchmark.py",
+      "target": "scripts/presentation_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_presentation_config.py",
+      "target": "src/dynnav_dashboard/config.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_belief.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_belief.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_belief.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_benchmark.py",
+      "target": "dynnav/experiments/recoverability_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_benchmark.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_benchmark.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_core.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_core.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "import",
+      "source": "tests/test_recoverability_core.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_core.py",
+      "target": "dynnav/recoverability.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_cut.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_cut.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_cut.py",
+      "target": "dynnav/recoverability_cut.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_dstar_lite.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_dstar_lite.py",
+      "target": "dynnav/planners/recoverability_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_dstar_lite.py",
+      "target": "dynnav/planners/recoverability_dstar_lite.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_estimation.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_estimation.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_estimation.py",
+      "target": "dynnav/recoverability_estimation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_estimator_pilot.py",
+      "target": "dynnav/experiments/recoverability_estimator_pilot.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_scenarios.py",
+      "target": "dynnav/planners/grid_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_scenarios.py",
+      "target": "dynnav/recoverability_belief.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_recoverability_scenarios.py",
+      "target": "dynnav/recoverability_scenarios.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_repeated_timing_benchmark.py",
+      "target": "dynnav/experiments/repeated_timing_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_research_modules.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_research_modules.py",
+      "target": "dynnav/research_modules.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_research_pipeline_phase2.py",
+      "target": "dynnav/research_pipeline.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_api.py",
+      "target": "dynnav/researcher/api.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_api.py",
+      "target": "dynnav/researcher/orchestrator.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_models.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_models.py",
+      "target": "dynnav/researcher/orchestrator.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_models.py",
+      "target": "dynnav/researcher/protocols.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_orchestrator.py",
+      "target": "dynnav/experiments/end_to_end_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_orchestrator.py",
+      "target": "dynnav/experiments/multiseed_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_orchestrator.py",
+      "target": "dynnav/researcher/models.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_researcher_orchestrator.py",
+      "target": "dynnav/researcher/orchestrator.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_adapter.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_adapter.py",
+      "target": "dynnav/ros2.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_occupancy_grid_conversion.py",
+      "target": "ros2_ws/src/dynnav_nav2/dynnav_nav2/occupancy_grid_conversion.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_path_conversion.py",
+      "target": "ros2_ws/src/dynnav_nav2/dynnav_nav2/path_conversion.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_planner_bridge_helpers.py",
+      "target": "dynnav/commitment_hazard.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_planner_bridge_helpers.py",
+      "target": "ros2_ws/src/dynnav_nav2/dynnav_nav2/dynnav_planner_bridge.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros2_request_format.py",
+      "target": "ros2_ws/src/dynnav_nav2/dynnav_nav2/request_format.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_ros_map.py",
+      "target": "dynnav/mapping/ros_map.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_safe_return_threshold_benchmark.py",
+      "target": "dynnav/experiments/safe_return_threshold_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_scientific_metrics.py",
+      "target": "dynnav/evaluation/scientific_metrics.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_self_aware_astar.py",
+      "target": "dynnav/planners/__init__.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "tests/test_self_aware_astar.py",
+      "target": "dynnav/planners/astar.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "tests/test_self_aware_astar.py",
+      "target": "dynnav/planners/self_aware_astar.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_self_aware_astar_plotting.py",
+      "target": "benchmarks/self_aware_astar/plot_randomized_results.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_self_aware_astar_randomized_benchmark.py",
+      "target": "benchmarks/self_aware_astar/randomized_ablation_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_self_aware_astar_statistical_analysis.py",
+      "target": "benchmarks/self_aware_astar/statistical_analysis.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_self_aware_core.py",
+      "target": "dynnav/core/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_statistical_evaluation.py",
+      "target": "dynnav/experiments/multiseed_evaluation.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_statistical_evaluation.py",
+      "target": "dynnav/experiments/statistics.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_streamlit_lab_smoke.py",
+      "target": "src/dynnav_dashboard/contributions/__init__.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_streamlit_lab_smoke.py",
+      "target": "src/dynnav_dashboard/registry.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_topology_reliability_benchmark.py",
+      "target": "dynnav/experiments/topology_reliability_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_unavoidable_history_benchmark.py",
+      "target": "dynnav/experiments/unavoidable_history_benchmark.py"
+    },
+    {
+      "kind": "from",
+      "source": "tests/test_vlm_goal_validator.py",
+      "target": "dynnav/researcher/vlm_goal_validator.py"
+    },
+    {
+      "kind": "from-member",
+      "source": "tests/test_website_catalog.py",
+      "target": "scripts/sync_website_contribution_catalog.py"
+    }
+  ],
+  "tracked_file_count": 2245
+}

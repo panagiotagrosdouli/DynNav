@@ -145,6 +145,8 @@ def _trial(
     last_execution_pose = None
     execution_observation_count = 0
     execution_transform_failures = 0
+    execution_stamp_failures = 0
+    last_stamp_ns = 0
     while navigator.result_future is not None and not navigator.result_future.done():
         rclpy.spin_once(
             navigator,
@@ -160,6 +162,18 @@ def _trial(
         except TransformException:
             execution_transform_failures += 1
         else:
+            stamp = transform.header.stamp
+            stamp_ns = stamp.sec * 1_000_000_000 + stamp.nanosec
+            now_ns = navigator.get_clock().now().nanoseconds
+            if transform.header.frame_id != scenario.frame_id or not (
+                0 < stamp_ns <= now_ns + 50_000_000 and now_ns - stamp_ns <= 1_500_000_000
+            ):
+                execution_stamp_failures += 1
+                state.previous_cell = None
+                continue
+            if stamp_ns <= last_stamp_ns:
+                continue
+            last_stamp_ns = stamp_ns
             translation = transform.transform.translation
             current_pose = Pose2D(
                 float(translation.x),
@@ -175,7 +189,7 @@ def _trial(
             )
             text = state.observe(cell)
             if text is not None and planner_id == "DynNavHistory":
-                publisher.publish(String(data=text))
+                publisher.publish(String(data=f"v1|{scenario.frame_id}|{stamp_ns}|{text}"))
             if state.closure_requested and not closure_applied:
                 clearance = math.hypot(
                     current_pose.x - scenario.blocker_pose.x,
@@ -252,6 +266,8 @@ def _trial(
         and not closure_applied
     ):
         injection_error = "closure_not_safely_applied"
+    if execution_stamp_failures and injection_error is None:
+        injection_error = "invalid_execution_frame_or_stamp"
     valid = state.observation_valid and injection_error is None
     recovery_feasible = (
         None if recovery is None else bool(recovery["within_budget"])
@@ -283,6 +299,8 @@ def _trial(
         ),
         "execution_observation_count": execution_observation_count,
         "execution_transform_failures": execution_transform_failures,
+        "execution_stamp_failures": execution_stamp_failures,
+        "execution_observation_contract": "stamped_v1",
         "observation_poll_period_s": scenario.observation_poll_period_s,
         "accepted_transitions": state.accepted_transitions,
         "sampling_gaps": state.sampling_gaps,

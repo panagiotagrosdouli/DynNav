@@ -1,0 +1,1424 @@
+{
+  "evidence_classification": "tracked_files_integrity_and_static_source_audit_only",
+  "files": [
+    {
+      "bytes": 3546,
+      "checks": [],
+      "file": "C01_BASELINE_AUDIT.md",
+      "sha256": "f0021f147563c4fc540491766c5e365b4536b99c59fc60301b3735995237d522",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 2285,
+      "checks": [],
+      "file": "ERGO_NOVELTY_BOUNDARIES.md",
+      "sha256": "7735d5c6ef7807a50bd7c76026ecba946700099e20af7c87e036f71676baf738",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 7587,
+      "checks": [],
+      "file": "FULL_EXECUTION_AUDIT.md",
+      "sha256": "178e1ea7e489ad9359a421cff40034cb1292464d3918b0db34f8a1b08412a71d",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 6617,
+      "checks": [],
+      "file": "PHYSICAL_ROBOT_PROTOCOL.md",
+      "sha256": "f24f03a2dfed11f2abb59ed30bc03ac494b92f25d170878af17adcb6d47df2f4",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 13190,
+      "checks": [],
+      "file": "README.md",
+      "sha256": "4d620970efc0fa53f82156988d79afc0e77590f441a4268dfe0ee14221433ab0",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 13136,
+      "checks": [],
+      "file": "README_GR.md",
+      "sha256": "121d29ea9070623b6d713bab6af82ec9bb23e51bcc92d0d08ea7bfe209394729",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 7746,
+      "checks": [],
+      "file": "REAL_DATA_PROTOCOL.md",
+      "sha256": "6b4bdfa1dad0a34366bab612309d28a199bcb3210879a0eb4e727a60e554f9fd",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 13670,
+      "checks": [],
+      "file": "REAL_ROBOT_README.md",
+      "sha256": "b7463db53aa18baf40567623adce4cb53e1c98044ed9446dbbf2a267b65ffefd",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 9909,
+      "checks": [],
+      "file": "REAL_ROS2_EXECUTION_REPORT.md",
+      "sha256": "8a9795478920d199bb8a2f44954492056d5ad858d456ee6c5a64d7a8811927be",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 5665,
+      "checks": [],
+      "file": "ROS2_CLOSED_LOOP_EVIDENCE.md",
+      "sha256": "98858b8510fbf665116c048cc7c1a7b331c1b7e015288ea2899032c9db6e22c6",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 6164,
+      "checks": [],
+      "file": "ROS2_PLANNING_INTERFACE.md",
+      "sha256": "782677853a1f1d0591199610113a668c66decee33bd76a17aebbf5f041569bbe",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 7575,
+      "checks": [],
+      "file": "SCIENTIFIC_REVIEW_2026-11-09.md",
+      "sha256": "565a2866a925a28457f3e3ddc6a89954979421b8d6154048c5ce3766529ccf9d",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 6714,
+      "checks": [],
+      "file": "assets/learned_astar_pipeline.svg",
+      "sha256": "bd5bef47a90f71c95680d1ff44c166343f38e546d8d327b0e1ba90da874fe6fd",
+      "status": "SVG_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 0,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/__init__.py",
+      "imports": [],
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 8268,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/astar_learned_heuristic.py",
+      "imports": [
+        "argparse",
+        "heapq",
+        "heuristic_logger",
+        "learned_heuristic",
+        "matplotlib.pyplot",
+        "numpy",
+        "torch"
+      ],
+      "sha256": "42a03b093b4bcf5a695d91f93d4ca40aa7f4077324a2bd4c7ef052f6c7231de1",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 4359,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/ergo_optimal.py",
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "hashlib",
+        "heapq",
+        "math",
+        "numpy",
+        "time",
+        "typing"
+      ],
+      "sha256": "222fa552de2e62821e3029bda1a368a87659b04afb224edaa96080db17d9b65e",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2019,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/heuristic_logger.py",
+      "imports": [
+        "numpy",
+        "os"
+      ],
+      "sha256": "9d37f1735a8ca4e1bc35f19913592edd03a8aae8d226a8c2cd7eff52b637558e",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1319,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/learned_heuristic.py",
+      "imports": [
+        "torch"
+      ],
+      "sha256": "e333a997a9ca20cebb2e658e5bb8209a3f6491b81680718bbaab19fe672d64d3",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 679,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/learned_heuristic_uncertainty.py",
+      "imports": [
+        "torch",
+        "torch.nn",
+        "torch.nn.functional"
+      ],
+      "sha256": "744eb50d13970d709e2337cd449250460184593e60067c07ef865e88f01efd6a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1750,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic.py",
+      "imports": [
+        "learned_heuristic",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "b10317906642ae06bacef88d089a84309e8ea2288009fb81376b525d363cdb60",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1805,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_ablation.py",
+      "imports": [
+        "learned_heuristic",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "c0388cc684b90f51f42b4f1a79ef4446a0ab9ea6664c5f47751ca14451afba92",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2610,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_curriculum.py",
+      "imports": [
+        "learned_heuristic",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "05f30982e02b73412ba2ea82929de4168d8f5efaeea85a8ae475e00e05788d0f",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2120,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_data_sweep.py",
+      "imports": [
+        "learned_heuristic",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "d346786070368839cc17a97a31ce5acfad64844fc056328ce8cbf3fb3c09ce85",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 4139,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_demo.py",
+      "imports": [
+        "argparse",
+        "numpy",
+        "os",
+        "pandas",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "da7d29fe765688fbc822a463fbdb8516630eceee06533eae5975cb60bdf59b7f",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2596,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_from_npz.py",
+      "imports": [
+        "argparse",
+        "learned_heuristic",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "114c8a12c5ceaef8bfd1649ef3d10472d99430efd13c2e8c8f40c62c4b898a5a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1633,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "code/train_heuristic_uncertainty.py",
+      "imports": [
+        "learned_heuristic_uncertainty",
+        "numpy",
+        "torch",
+        "torch.utils.data"
+      ],
+      "sha256": "83b8ec611a02825d84a53df7490ab19f5efa6323adae386d16a0857e4ae7d324",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2932,
+      "checks": [],
+      "file": "docs/SCIENTIFIC_UPGRADE.md",
+      "sha256": "b22afc28500319731768c960ff8bb303fd2bfe61e3b018cee7ac6f1ec456b3f9",
+      "status": "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED"
+    },
+    {
+      "bytes": 9595,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/admissibility_audit.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "astar_learned_heuristic",
+        "collections",
+        "csv",
+        "numpy",
+        "pathlib",
+        "random",
+        "statistics",
+        "sys"
+      ],
+      "sha256": "a9a74a159929ea711da8be8af2cf95da487067b9d170d3b744ad79d767cc503a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 12227,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/astar_learned_heuristic.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "dataclasses",
+        "heapq",
+        "heuristic_logger",
+        "learned_heuristic",
+        "matplotlib.pyplot",
+        "numpy",
+        "pathlib",
+        "sys",
+        "torch",
+        "typing"
+      ],
+      "sha256": "38e3272be553252cd3fad21a1b5661c97b8d98a0834c07caa9f4777f61ada3c0",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 6793,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/audit_all_c01_files.py",
+      "imports": [
+        "PIL",
+        "__future__",
+        "argparse",
+        "ast",
+        "csv",
+        "hashlib",
+        "json",
+        "math",
+        "numpy",
+        "os",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "time",
+        "torch",
+        "xml.etree.ElementTree"
+      ],
+      "sha256": "7d135202bf969745a170fbc3c2c2037a282108395125f5af2602f9388e4cc0c5",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 3760,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ergo_pilot.py",
+      "imports": [
+        "argparse",
+        "csv",
+        "ergo_optimal",
+        "hashlib",
+        "importlib.util",
+        "json",
+        "learned_heuristic",
+        "numpy",
+        "pathlib",
+        "platform",
+        "random",
+        "sys",
+        "time",
+        "torch"
+      ],
+      "sha256": "761203d46aed760163fca5f837cbc470d3c21a1f6288c11f09380f7c23a3a264",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 5538,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/eval_astar_learned.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "astar_learned_heuristic",
+        "csv",
+        "pathlib",
+        "random",
+        "statistics",
+        "sys",
+        "time",
+        "typing"
+      ],
+      "sha256": "7ef40818486389d8e66385754ccb063ebfca7b6ba81a1cf6e0979e30bd714e8f",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 9908,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/eval_real_ros_map.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "astar_learned_heuristic",
+        "collections",
+        "csv",
+        "dynnav.mapping.ros_map",
+        "hashlib",
+        "json",
+        "math",
+        "numpy",
+        "pathlib",
+        "random",
+        "statistics",
+        "sys",
+        "time",
+        "yaml"
+      ],
+      "sha256": "7258466f9b3371a413c2b24d700c3fabcf5106e1643116ffd5a7ea2fc164eae3",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 4293,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/inspect_recorded_rosbag.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "collections",
+        "hashlib",
+        "json",
+        "pathlib",
+        "rosbags.highlevel"
+      ],
+      "sha256": "ca06f4c2277e6292882898646134a7f1fcf44e5d2158bdf36713b06ad8cdf84a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 8069,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_get_plan_node.py",
+      "imports": [
+        "__future__",
+        "astar_learned_heuristic",
+        "geometry_msgs.msg",
+        "hashlib",
+        "json",
+        "nav_msgs.msg",
+        "nav_msgs.srv",
+        "pathlib",
+        "rclpy",
+        "rclpy.node",
+        "rclpy.qos",
+        "ros2_grid_geometry",
+        "std_msgs.msg",
+        "sys",
+        "time"
+      ],
+      "sha256": "4114615f422bab253b120f270d65927fc4994c3517981a8e4d236453ad0c3979",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 6730,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_get_plan_roundtrip_test.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "dynnav.mapping.ros_map",
+        "eval_real_ros_map",
+        "json",
+        "math",
+        "nav_msgs.msg",
+        "nav_msgs.srv",
+        "pathlib",
+        "rclpy",
+        "rclpy.node",
+        "std_msgs.msg",
+        "sys",
+        "time"
+      ],
+      "sha256": "bf5d0e8faf1199338e200daab48c34e6d36e0cf8ee0bbfa159929f666e56c6a2",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 4288,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_grid_geometry.py",
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "math",
+        "numpy"
+      ],
+      "sha256": "bdb6e26ae0822c2807b7a66daceeca73ef1499218324d2d4c45c5280ec31b58a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 4076,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_hardware_readiness.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "json",
+        "nav_msgs.msg",
+        "pathlib",
+        "rclpy",
+        "rclpy.node",
+        "rclpy.qos",
+        "sensor_msgs.msg",
+        "tf2_msgs.msg",
+        "time"
+      ],
+      "sha256": "221f15ed55b0084baf78c2d6ebf76fc3ebef0e722f526894e7253ecd8d8bca18",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 10446,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_isolated_closed_loop.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "geometry_msgs.msg",
+        "json",
+        "math",
+        "nav_msgs.msg",
+        "nav_msgs.srv",
+        "pathlib",
+        "rclpy",
+        "rclpy.node",
+        "std_msgs.msg",
+        "time"
+      ],
+      "sha256": "16bcb30f7535ba91040c1dd58f074ac7608f32b8b764efef381d5cdcc1aa9c9e",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 3288,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/ros2_verify_recorded_replay.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "collections",
+        "json",
+        "nav_msgs.msg",
+        "pathlib",
+        "rclpy",
+        "rclpy.node",
+        "rclpy.qos",
+        "sensor_msgs.msg",
+        "tf2_msgs.msg",
+        "time"
+      ],
+      "sha256": "41ec3163ef800aeaac566eb90055a917a124c8d2964d7812af6ce8ea1fb5487a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 11257,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/statistical_validation.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "astar_learned_heuristic",
+        "collections",
+        "csv",
+        "dataclasses",
+        "numpy",
+        "pathlib",
+        "random",
+        "statistics",
+        "sys",
+        "time",
+        "typing"
+      ],
+      "sha256": "37018cd1ebfcf32ebaf993b72c2850234f544916b2d42fab44102d872a6d77c2",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 3058,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/timing_benchmark.py",
+      "imports": [
+        "argparse",
+        "info_gain_planner",
+        "multiobj_planner",
+        "pandas",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "sha256": "c5ba42eca4f67f995a942c3668fdb38e041742b6ccabdc87e807d66561771ccb",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 6285,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "experiments/validate_physical_evidence.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "hashlib",
+        "json",
+        "pathlib",
+        "re",
+        "typing"
+      ],
+      "sha256": "ac4e3d046cf76722fa35d5a096a98d79f4ecb8538379f958000aa37f6a6fbb90",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "arrays": {
+        "X": [
+          12114,
+          11
+        ],
+        "y": [
+          12114
+        ]
+      },
+      "bytes": 581962,
+      "checks": [
+        "npz_loaded_and_finite"
+      ],
+      "file": "models/heuristic_logs.npz",
+      "sha256": "10717d7ee5e1b170c617e119e4613637ffaeea3d880b7350d6424c38b1dc9918",
+      "status": "NPZ_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 21513,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "01bdfe2ef952645dceac8b74ea549cf0e59d5c6a745157469a77844d598d4679",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21633,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_curriculum_8_16_32.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "febbbff4e4453382abb05436cfb7fe09ffe4c9d17230c8242961d3abf4229ef2",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 24473,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_demo.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          16
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "f90afe7ef9a29b61d90b2de68b027f5db2aebe8606aaf31b696864e5fa3ca558",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21437,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_frac_10.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "a59347ada1fcc52fcb2aa71085dbec93be9df5e865aaf7cb0f5900514d3707ca",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21513,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_frac_100.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "618dabd90385d2d11a075c3347bb8957c08bec580db16bb73402c1c92d64a9fc",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21437,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_frac_25.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "7c58618c8e484bfaa2bd60f176f42578d0b35977b4aa841c8d4ee30a29d483dd",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21437,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_frac_50.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "d31dcb167d9a21ab63dad723ef9e09197c058d0a0a7182ba73b400cddfa8e518",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21401,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_h128.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "5b60440e2a6896f66fac74d70ef45bb852268068b4c63239e7160f3729116330",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21389,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_h32.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "7da929b002164dc2afd83b322394f19421c8f28f590ca8deddb90f5819daddac",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21389,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_h64.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "9b14315384cac65133b664f0f823d984f5fd5f4302d0d6c6a9765e7294b9620a",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 21513,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_residual.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          4
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "7d16fdc3a287594fa4228f7583faf8fa9e1a475616729e12b85d60db76ac1a6e",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 23193,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_rich.pt",
+      "layers": {
+        "net.0.bias": [
+          64
+        ],
+        "net.0.weight": [
+          64,
+          11
+        ],
+        "net.2.bias": [
+          64
+        ],
+        "net.2.weight": [
+          64,
+          64
+        ],
+        "net.4.bias": [
+          1
+        ],
+        "net.4.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "640ec68fcf1a04b3fc3abbc146ff5aaaee58a5a170ec5770c39459cce972b19a",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 22105,
+      "checks": [
+        "torch_checkpoint_loaded_finite"
+      ],
+      "file": "models/heuristic_net_unc.pt",
+      "layers": {
+        "fc1.bias": [
+          64
+        ],
+        "fc1.weight": [
+          64,
+          4
+        ],
+        "fc2.bias": [
+          64
+        ],
+        "fc2.weight": [
+          64,
+          64
+        ],
+        "fc_logvar.bias": [
+          1
+        ],
+        "fc_logvar.weight": [
+          1,
+          64
+        ],
+        "fc_mu.bias": [
+          1
+        ],
+        "fc_mu.weight": [
+          1,
+          64
+        ]
+      },
+      "sha256": "61fbc8969fe1e13966b9e0a9a9f52f97a0d4cb08195e853128e85c0dbfc27ff6",
+      "status": "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED"
+    },
+    {
+      "bytes": 12127,
+      "checks": [],
+      "columns": [
+        "seed",
+        "start",
+        "goal",
+        "classic_success",
+        "learned_success",
+        "classic_path_len",
+        "classic_expansions",
+        "classic_runtime_ms",
+        "learned_path_len",
+        "learned_expansions",
+        "learned_runtime_ms",
+        "expansion_ratio",
+        "runtime_ratio",
+        "delta_path"
+      ],
+      "file": "results/astar_eval_results.csv",
+      "rows": 100,
+      "sha256": "644463090f98ea587f29b902209444bf8fa49b3eab89dfaaa12187fc59664f3a",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 12058,
+      "checks": [],
+      "columns": [
+        "seed",
+        "start",
+        "goal",
+        "classic_success",
+        "learned_success",
+        "classic_path_len",
+        "classic_expansions",
+        "classic_runtime_ms",
+        "learned_path_len",
+        "learned_expansions",
+        "learned_runtime_ms",
+        "expansion_ratio",
+        "runtime_ratio",
+        "delta_path"
+      ],
+      "file": "results/astar_eval_results_rerun.csv",
+      "rows": 100,
+      "sha256": "a4449d53866131ee4cc2e939ddfb30f7714a7bc84f00e2b1a1a4d3fa9a67b54e",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 12053,
+      "checks": [],
+      "columns": [
+        "seed",
+        "start",
+        "goal",
+        "classic_success",
+        "learned_success",
+        "classic_path_len",
+        "classic_expansions",
+        "classic_runtime_ms",
+        "learned_path_len",
+        "learned_expansions",
+        "learned_runtime_ms",
+        "expansion_ratio",
+        "runtime_ratio",
+        "delta_path"
+      ],
+      "file": "results/astar_eval_results_rerun_fixed.csv",
+      "rows": 100,
+      "sha256": "3a5451b92fb58c3ecf35b8940c06d860848575453a34bee9e3ffa0a2d6be7f5b",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 50471,
+      "checks": [
+        "png_decodable"
+      ],
+      "file": "results/astar_learned_vs_classic.png",
+      "sha256": "f298cf4bb55bc50aaf08a7986a7229a49741843191ba24aaefd6a3d98436327f",
+      "status": "IMAGE_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 73777,
+      "checks": [
+        "png_decodable"
+      ],
+      "file": "results/autotune_expansions.png",
+      "sha256": "de289d178bcc0e6dfb5dd7acc380fed83fad3a5bc200d3b1298423a9e3d8c856",
+      "status": "IMAGE_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 3993,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "results/autotune_heuristic.py",
+      "imports": [
+        "__future__",
+        "argparse",
+        "astar_learned_heuristic",
+        "csv",
+        "hashlib",
+        "heuristic_logger",
+        "online_update_heuristic",
+        "pathlib",
+        "shutil",
+        "sys"
+      ],
+      "sha256": "96a52a665941dacf1281dfc8b43d7771be0e2f656f9c5973f46d9d402e3275f5",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 67604,
+      "checks": [
+        "png_decodable"
+      ],
+      "file": "results/autotune_ratio.png",
+      "sha256": "e8f11e167e7390ab6f46be0b4726ea8a69f08c6598640e9b52aef3d25fc12a80",
+      "status": "IMAGE_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 504,
+      "checks": [],
+      "columns": [
+        "iteration",
+        "classic_path_len",
+        "classic_expansions",
+        "learned_path_len",
+        "learned_expansions",
+        "expansion_ratio",
+        "delta_path"
+      ],
+      "file": "results/autotune_results.csv",
+      "rows": 10,
+      "sha256": "cf2b3d3c176a3c19de24242b1465e49b9b0cbc57c88a2aac0b02dd055f4a4a4c",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 3730,
+      "checks": [],
+      "columns": [
+        "scenario",
+        "method",
+        "n",
+        "success_rate",
+        "path_cost_mean",
+        "path_cost_std",
+        "expansions_mean",
+        "expansions_std",
+        "expansions_median",
+        "expansions_ci95_low",
+        "expansions_ci95_high",
+        "runtime_ms_mean",
+        "runtime_ms_std",
+        "runtime_ms_median",
+        "runtime_ms_ci95_low",
+        "runtime_ms_ci95_high"
+      ],
+      "file": "results/c01_validation_summary.csv",
+      "rows": 16,
+      "sha256": "28edeb17d624455a5398d28f518d8efcb2552710542ab798a5d99321812961c0",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 171303,
+      "checks": [],
+      "columns": [
+        "task_id",
+        "scenario",
+        "obstacle_density",
+        "trial",
+        "grid_size",
+        "start",
+        "goal",
+        "method",
+        "success",
+        "path_len",
+        "path_cost",
+        "expansions",
+        "runtime_ms",
+        "delta_cost_vs_astar",
+        "expansion_reduction_vs_astar_pct"
+      ],
+      "file": "results/c01_validation_trials.csv",
+      "rows": 1600,
+      "sha256": "d74af4731e0dd4a43e44d4bdf7bb790bc69c5f6913278876d89853838845c00c",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 96,
+      "checks": [],
+      "columns": [
+        "component",
+        "avg_time_ms"
+      ],
+      "file": "results/timing_results.csv",
+      "rows": 2,
+      "sha256": "580dad026e3c9e6113dee73b40221ccefe64390bf14843672118ce0177882826",
+      "status": "CSV_STRUCTURALLY_VERIFIED"
+    },
+    {
+      "bytes": 2235,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_c01_full_inventory.py",
+      "imports": [
+        "importlib.util",
+        "json",
+        "pathlib",
+        "pytest",
+        "sys"
+      ],
+      "sha256": "4474408f80adc89dc7b3b049116399dec14b0c78385ed81af1edfce6beb89a8a",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2312,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_ergo_optimal.py",
+      "imports": [
+        "collections",
+        "importlib.util",
+        "numpy",
+        "pathlib",
+        "random",
+        "sys"
+      ],
+      "sha256": "96506bd9883c703d71934d5ece918644503a56fd8d1bee8cf1c1dfecad4a8b27",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2583,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_real_ros_map_eval.py",
+      "imports": [
+        "PIL",
+        "importlib.util",
+        "numpy",
+        "pathlib",
+        "pytest",
+        "sys"
+      ],
+      "sha256": "5bb1ae89d80401a6a6c6e86bed93f83152d762fe94ac8625a3ee6e22521cc615",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 2380,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_ros2_grid_geometry.py",
+      "imports": [
+        "importlib.util",
+        "math",
+        "numpy",
+        "pathlib",
+        "pytest",
+        "sys"
+      ],
+      "sha256": "560f5dedc3e63bdf03288a6d8b32c9eb80769d80a3e1fca9230d18d6453ac9d8",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1727,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_ros2_hardware_readiness.py",
+      "imports": [
+        "importlib.util",
+        "pathlib",
+        "sys"
+      ],
+      "sha256": "67985d02b35a61a5aa09452b4e1b43c6a6ac8ad58246bb61603053f229a37246",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 1078,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_ros2_isolated_closed_loop.py",
+      "imports": [
+        "importlib.util",
+        "math",
+        "pathlib",
+        "pytest",
+        "sys"
+      ],
+      "sha256": "70377ab9b4ce5f3989eb5bd2089f889c446e5f55ba27aacec7652c7ea50a0cd7",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    },
+    {
+      "bytes": 3464,
+      "checks": [
+        "python_ast_compile"
+      ],
+      "file": "tests/test_validate_physical_evidence.py",
+      "imports": [
+        "hashlib",
+        "importlib.util",
+        "json",
+        "pathlib",
+        "sys"
+      ],
+      "sha256": "ca34e2eeaeb5ffde5ca1ef82499aeaf6f65a163c43f82d4278631a65b225cfd4",
+      "status": "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED"
+    }
+  ],
+  "not_proven": [
+    "that every historical script completes a valid end-to-end run",
+    "that every saved model was trained on held-out real-world data",
+    "that all C01 artifacts were independently reproduced",
+    "that a physical robot was driven by C01"
+  ],
+  "status_counts": {
+    "CHECKPOINT_STRUCTURALLY_VERIFIED_NOT_EFFICACY_VALIDATED": 13,
+    "CSV_STRUCTURALLY_VERIFIED": 7,
+    "DOCUMENT_READABLE_NOT_FACT_INDEPENDENTLY_VERIFIED": 13,
+    "IMAGE_STRUCTURALLY_VERIFIED": 3,
+    "NPZ_STRUCTURALLY_VERIFIED": 1,
+    "SOURCE_COMPILES_RUNTIME_NOT_FULLY_EXECUTED": 37,
+    "SVG_STRUCTURALLY_VERIFIED": 1
+  },
+  "torch_available": true,
+  "total_files": 75
+}

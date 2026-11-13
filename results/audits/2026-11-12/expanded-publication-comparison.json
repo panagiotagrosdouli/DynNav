@@ -1,0 +1,517 @@
+{
+  "scope": "Selected manifest non-timing claims compared with fresh raw-generated summaries; not all manuscript claims or bibliography",
+  "checks": [
+    {
+      "claim": "gap.mean_history_separation",
+      "generated": 0.5,
+      "manifest": 0.5,
+      "passed": true
+    },
+    {
+      "claim": "gap.max_history_separation",
+      "generated": 0.9,
+      "manifest": 0.9,
+      "passed": true
+    },
+    {
+      "claim": "gap.max_absolute_risky_history_state_only_error",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "phase.match_rate",
+      "generated": 1.0,
+      "manifest": 1,
+      "passed": true
+    },
+    {
+      "claim": "phase.trials",
+      "generated": 75,
+      "manifest": 75,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.shortest.0.2",
+      "generated": 0.512,
+      "manifest": 0.512,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.shortest.0.5",
+      "generated": 0.881,
+      "manifest": 0.881,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.shortest.0.8",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_single.0.2",
+      "generated": 0.512,
+      "manifest": 0.512,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_single.0.5",
+      "generated": 0.881,
+      "manifest": 0.881,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_single.0.8",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_exact.0.2",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_exact.0.5",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_exact.0.8",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_cut.0.2",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_cut.0.5",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.history_cut.0.8",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.hard_return_0.9.0.2",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.hard_return_0.9.0.5",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.hard_return_0.9.0.8",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_exact.0.2",
+      "generated": 0.512,
+      "manifest": 0.512,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_exact.0.5",
+      "generated": 0.881,
+      "manifest": 0.881,
+      "passed": true
+    },
+    {
+      "claim": "homogeneous.state_only_exact.0.8",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.shortest",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.state_only_single",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.history_cut",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.hard_return_0.9",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.state_only_exact",
+      "generated": 0.992,
+      "manifest": 0.992,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.risk_difference",
+      "generated": -0.992,
+      "manifest": -0.992,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.CI.lower",
+      "generated": -0.998,
+      "manifest": -0.998,
+      "passed": true
+    },
+    {
+      "claim": "heldout.low_to_high_6.CI.upper",
+      "generated": -0.984,
+      "manifest": -0.984,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.shortest",
+      "generated": 0.998,
+      "manifest": 0.998,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.state_only_single",
+      "generated": 0.998,
+      "manifest": 0.998,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.history_cut",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.hard_return_0.9",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.state_only_exact",
+      "generated": 0.998,
+      "manifest": 0.998,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.risk_difference",
+      "generated": -0.998,
+      "manifest": -0.998,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.CI.lower",
+      "generated": -1.0,
+      "manifest": -1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.alternating_7.CI.upper",
+      "generated": -0.994,
+      "manifest": -0.994,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.shortest",
+      "generated": 1.0,
+      "manifest": 1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.state_only_single",
+      "generated": 1.0,
+      "manifest": 1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.history_cut",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.hard_return_0.9",
+      "generated": 0.116,
+      "manifest": 0.116,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.state_only_exact",
+      "generated": 1.0,
+      "manifest": 1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.risk_difference",
+      "generated": -1,
+      "manifest": -1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.CI.lower",
+      "generated": -1.0,
+      "manifest": -1,
+      "passed": true
+    },
+    {
+      "claim": "heldout.mixed_8.CI.upper",
+      "generated": -1.0,
+      "manifest": -1,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.shortest",
+      "generated": 0.81,
+      "manifest": 0.81,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.state_only_single",
+      "generated": 0.81,
+      "manifest": 0.81,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.state_only_exact",
+      "generated": 0.81,
+      "manifest": 0.81,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.mcnemar",
+      "generated": 2.420369946780824e-122,
+      "manifest": 2.420369946780824e-122,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.CI.lower",
+      "generated": -0.844,
+      "manifest": -0.844,
+      "passed": true
+    },
+    {
+      "claim": "geometric.fork.CI.upper",
+      "generated": -0.776,
+      "manifest": -0.776,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.shortest",
+      "generated": 0.756,
+      "manifest": 0.756,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.state_only_single",
+      "generated": 0.756,
+      "manifest": 0.756,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.state_only_exact",
+      "generated": 0.756,
+      "manifest": 0.756,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.mcnemar",
+      "generated": 3.248565551764031e-114,
+      "manifest": 3.248565551764031e-114,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.CI.lower",
+      "generated": -0.794,
+      "manifest": -0.794,
+      "passed": true
+    },
+    {
+      "claim": "geometric.l_room.CI.upper",
+      "generated": -0.718,
+      "manifest": -0.718,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.shortest",
+      "generated": 0.89,
+      "manifest": 0.89,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.state_only_single",
+      "generated": 0.89,
+      "manifest": 0.89,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.state_only_exact",
+      "generated": 0.89,
+      "manifest": 0.89,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.history_exact",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.mcnemar",
+      "generated": 2.2013136429275836e-134,
+      "manifest": 2.2013136429275836e-134,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.CI.lower",
+      "generated": -0.916,
+      "manifest": -0.916,
+      "passed": true
+    },
+    {
+      "claim": "geometric.chamber_two_trigger.CI.upper",
+      "generated": -0.862,
+      "manifest": -0.862,
+      "passed": true
+    },
+    {
+      "claim": "series.max_cut_error",
+      "generated": 0.0,
+      "manifest": 0,
+      "passed": true
+    },
+    {
+      "claim": "joint.optimistic_cases",
+      "generated": 9,
+      "manifest": 9,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.2",
+      "generated": 0.9600000000000002,
+      "manifest": 0.96,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.2",
+      "generated": 0.9600000000000002,
+      "manifest": 0.96,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.2",
+      "generated": 0.9600000000000002,
+      "manifest": 0.96,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.5",
+      "generated": 0.75,
+      "manifest": 0.75,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.5",
+      "generated": 0.75,
+      "manifest": 0.75,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.5",
+      "generated": 0.75,
+      "manifest": 0.75,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.8",
+      "generated": 0.35999999999999993,
+      "manifest": 0.36,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.8",
+      "generated": 0.35999999999999993,
+      "manifest": 0.36,
+      "passed": true
+    },
+    {
+      "claim": "joint.exact_return.0.8",
+      "generated": 0.35999999999999993,
+      "manifest": 0.36,
+      "passed": true
+    },
+    {
+      "claim": "pareto.chamber_two_trigger.hard_zero_failure",
+      "generated": true,
+      "manifest": true,
+      "passed": true
+    },
+    {
+      "claim": "pareto.fork.hard_zero_failure",
+      "generated": true,
+      "manifest": true,
+      "passed": true
+    },
+    {
+      "claim": "pareto.l_room.hard_zero_failure",
+      "generated": true,
+      "manifest": true,
+      "passed": true
+    }
+  ],
+  "all_passed": true,
+  "source_code_revision": "94990150a83825bfc2be470c9511687b04153536"
+}

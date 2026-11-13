@@ -214,3 +214,18 @@ This would ensure the agent progresses only when it is both successful and safe.
 Contribution 22 establishes the curriculum-learning layer of DynNav.
 
 The upgraded version makes the module stronger by comparing curriculum strategies through measurable progression, stability, and transfer metrics.
+
+## Actual curriculum learning path
+
+`run_curriculum_training` now collects actions from C21's policy and applies real
+PPO gradient updates after each episode. Environment and policy sampling are
+seeded, loss values and parameter-update norms are retained, and the episode's
+starting stage is recorded before any scheduler transition. Time-limit endings
+bootstrap the critic; goal success is terminal. CPU PyTorch is required, with no
+silent random-policy fallback.
+
+The original synthetic strategy-evaluator artifacts remain separate and are not
+upgraded into learned-policy evidence. No curriculum benefit is established by
+the update regression tests. The `REVERSE` strategy now explicitly raises
+`NotImplementedError`; its goal-expansion semantics are still unsupported rather
+than silently doing nothing.

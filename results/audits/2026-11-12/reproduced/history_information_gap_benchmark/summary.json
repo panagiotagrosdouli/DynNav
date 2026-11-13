@@ -1,0 +1,7 @@
+{
+  "max_absolute_risky_history_state_only_error": 0.0,
+  "max_history_separation": 0.9,
+  "mean_history_separation": 0.5,
+  "mean_safe_history_state_only_error": -0.5,
+  "trials": 5
+}

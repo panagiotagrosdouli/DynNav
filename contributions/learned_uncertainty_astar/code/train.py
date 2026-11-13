@@ -32,12 +32,12 @@ import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset, random_split
-from .uncertainty_heuristic_net import UncertaintyHeuristicNet, gaussian_nll_loss
-from .uncertainty_astar import (
-    EuclideanHeuristic,
-    astar,
-    extract_features,
-)
+if __package__:
+    from .uncertainty_heuristic_net import UncertaintyHeuristicNet, gaussian_nll_loss
+    from .uncertainty_astar import EuclideanHeuristic, astar, extract_features
+else:
+    from uncertainty_heuristic_net import UncertaintyHeuristicNet, gaussian_nll_loss
+    from uncertainty_astar import EuclideanHeuristic, astar, extract_features
 
 
 # ---------------------------------------------------------------------------

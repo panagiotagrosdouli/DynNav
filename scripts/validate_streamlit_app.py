@@ -25,6 +25,7 @@ REQUIRED_PAGES = {
     "app/pages/12_Documentation.py",
     "app/pages/13_System_Status.py",
     "app/pages/14_Publication_Evidence.py",
+    "app/pages/15_History_Conditioned_Lab.py",
 }
 
 REQUIRED_APP_ASSETS = {

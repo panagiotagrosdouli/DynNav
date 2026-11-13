@@ -1,4 +1,5 @@
 #include "dynnav_nav2_cpp/dynnav_global_planner.hpp"
+#include "dynnav_nav2_cpp/history_observation.hpp"
 
 #include <cmath>
 #include <cstdint>
@@ -24,35 +25,14 @@ namespace
 std::vector<std::string> split(const std::string & text, const char delimiter)
 {
   std::vector<std::string> parts;
+  if (text.empty()) {return parts;}
   std::stringstream stream(text);
   std::string item;
   while (std::getline(stream, item, delimiter)) {
-    if (!item.empty()) {
-      parts.push_back(item);
-    }
+    parts.push_back(item);
   }
+  if (text.back() == delimiter) {parts.emplace_back();}
   return parts;
-}
-
-std::pair<unsigned int, unsigned int> parseCell(const std::string & text)
-{
-  const auto parts = split(text, ':');
-  if (parts.size() != 2U) {
-    throw std::invalid_argument("cell must be encoded as x:y");
-  }
-  const auto x = std::stoul(parts[0]);
-  const auto y = std::stoul(parts[1]);
-  return {static_cast<unsigned int>(x), static_cast<unsigned int>(y)};
-}
-
-std::pair<std::pair<unsigned int, unsigned int>, std::pair<unsigned int, unsigned int>>
-parseTransition(const std::string & text)
-{
-  const auto parts = split(text, '>');
-  if (parts.size() != 2U) {
-    throw std::invalid_argument("transition must be encoded as x:y>x:y");
-  }
-  return {parseCell(parts[0]), parseCell(parts[1])};
 }
 
 std::size_t checkedIndex(
@@ -88,11 +68,16 @@ std::vector<HistoryHazard> parseHistoryHazards(
               "history hazard must be trigger@closure@probability");
     }
     const auto trigger = parseTransition(fields[0]);
+    std::size_t consumed = 0;
+    const double probability = std::stod(fields[2], &consumed);
+    if (consumed != fields[2].size() || !std::isfinite(probability) || probability < 0.0 || probability > 1.0) {
+      throw std::invalid_argument("invalid hazard probability");
+    }
     result.push_back({
       checkedIndex(costmap, trigger.first),
       checkedIndex(costmap, trigger.second),
       checkedIndex(costmap, parseCell(fields[1])),
-      std::stod(fields[2])});
+      probability});
   }
   return result;
 }
@@ -185,6 +170,12 @@ void DynNavGlobalPlanner::configure(
     history_config_.max_iterations = search_config_.max_iterations;
     history_config_.max_hazard_cells = static_cast<std::size_t>(history_max_hazard_cells);
     try {
+      std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> map_lock(*(costmap_->getMutex()));
+      history_width_ = costmap_->getSizeInCellsX();
+      history_height_ = costmap_->getSizeInCellsY();
+      history_origin_x_ = costmap_->getOriginX();
+      history_origin_y_ = costmap_->getOriginY();
+      history_resolution_ = costmap_->getResolution();
       history_safe_indices_ = parseSafeCells(costmap_, safe_cells_raw);
       history_hazards_ = parseHistoryHazards(costmap_, hazards_raw);
       if (history_safe_indices_.empty()) {
@@ -226,6 +217,7 @@ void DynNavGlobalPlanner::cleanup()
   {
     std::lock_guard<std::mutex> lock(history_mutex_);
     active_history_mask_ = 0U;
+    last_observation_ns_ = 0U;
     observed_cell_valid_ = false;
   }
   costmap_ = nullptr;
@@ -244,16 +236,33 @@ void DynNavGlobalPlanner::deactivate()
   RCLCPP_INFO(logger_, "Deactivating DynNav planner %s", name_.c_str());
 }
 
+void DynNavGlobalPlanner::validateHistoryGeometry() const
+{
+  if (costmap_->getSizeInCellsX() != history_width_ || costmap_->getSizeInCellsY() != history_height_ ||
+    costmap_->getOriginX() != history_origin_x_ || costmap_->getOriginY() != history_origin_y_ ||
+    costmap_->getResolution() != history_resolution_)
+  {
+    throw nav2_core::PlannerException(
+            "History costmap geometry changed; reconfigure the planner explicitly before interpreting cell hazards");
+  }
+}
+
 void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::SharedPtr message)
 {
   if (!history_aware_ || costmap_ == nullptr) {
     return;
   }
   try {
-    const auto transition = parseTransition(message->data);
+    std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> map_lock(*(costmap_->getMutex()));
+    validateHistoryGeometry();
+    std::lock_guard<std::mutex> lock(history_mutex_);
+    const auto now = clock_->now().nanoseconds();
+    if (now < 0) {throw std::invalid_argument("negative ROS clock");}
+    const auto observation = parseObservation(
+      message->data, global_frame_, static_cast<std::uint64_t>(now), last_observation_ns_);
+    const auto transition = observation.transition;
     const auto source = checkedIndex(costmap_, transition.first);
     const auto target = checkedIndex(costmap_, transition.second);
-    std::lock_guard<std::mutex> lock(history_mutex_);
     if (observed_cell_valid_ && source != observed_cell_) {
       RCLCPP_WARN(
         logger_,
@@ -270,6 +279,7 @@ void DynNavGlobalPlanner::onExecutedTransition(const std_msgs::msg::String::Shar
     }
     observed_cell_ = target;
     observed_cell_valid_ = true;
+    last_observation_ns_ = observation.stamp_ns;
   } catch (const std::exception & exc) {
     RCLCPP_ERROR(logger_, "Invalid executed transition '%s': %s", message->data.c_str(), exc.what());
   }
@@ -282,6 +292,7 @@ void DynNavGlobalPlanner::onHistoryReset(const std_msgs::msg::String::SharedPtr 
   }
   std::lock_guard<std::mutex> lock(history_mutex_);
   active_history_mask_ = 0U;
+  last_observation_ns_ = 0U;
   observed_cell_valid_ = false;
   RCLCPP_INFO(
     logger_,
@@ -303,6 +314,8 @@ nav_msgs::msg::Path DynNavGlobalPlanner::createPlan(
             "Start and goal must be expressed in the global costmap frame " + global_frame_);
   }
 
+  std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> map_lock(*(costmap_->getMutex()));
+  if (history_aware_) {validateHistoryGeometry();}
   unsigned int start_x = 0;
   unsigned int start_y = 0;
   unsigned int goal_x = 0;
@@ -318,13 +331,16 @@ nav_msgs::msg::Path DynNavGlobalPlanner::createPlan(
   const auto height = static_cast<std::size_t>(costmap_->getSizeInCellsY());
   const auto start_index = static_cast<std::size_t>(costmap_->getIndex(start_x, start_y));
   const auto goal_index = static_cast<std::size_t>(costmap_->getIndex(goal_x, goal_y));
+  const double origin_x = costmap_->getOriginX();
+  const double origin_y = costmap_->getOriginY();
+  const double resolution = costmap_->getResolution();
 
   std::vector<std::uint8_t> costs;
   {
-    std::unique_lock<nav2_costmap_2d::Costmap2D::mutex_t> lock(*(costmap_->getMutex()));
     const auto * char_map = costmap_->getCharMap();
     costs.assign(char_map, char_map + width * height);
   }
+  map_lock.unlock();
   costs[start_index] = 0U;
 
   std::vector<std::size_t> planned_indices;
@@ -400,7 +416,8 @@ nav_msgs::msg::Path DynNavGlobalPlanner::createPlan(
     const auto map_y = static_cast<unsigned int>(index / width);
     double world_x = 0.0;
     double world_y = 0.0;
-    costmap_->mapToWorld(map_x, map_y, world_x, world_y);
+    world_x = origin_x + (static_cast<double>(map_x) + 0.5) * resolution;
+    world_y = origin_y + (static_cast<double>(map_y) + 0.5) * resolution;
 
     geometry_msgs::msg::PoseStamped pose;
     pose.header = path.header;

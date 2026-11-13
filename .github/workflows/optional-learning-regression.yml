@@ -1,0 +1,45 @@
+name: Optional learned uncertainty regression
+
+on:
+  pull_request:
+    paths:
+      - "contributions/learned_uncertainty_astar/**"
+      - "tests/test_learned_uncertainty_astar.py"
+      - "contributions/21_ppo_navigation_agent/**"
+      - "contributions/20_multimodal_failure_explainer/**"
+      - "contributions/22_curriculum_rl/**"
+      - ".github/workflows/optional-learning-regression.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cpu-learning:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install canonical package and CPU neural dependency
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Exercise standalone and package entry points
+        run: |
+          python contributions/learned_uncertainty_astar/code/train.py --help
+          python -m contributions.learned_uncertainty_astar.code.evaluate --help
+          python -m pytest -q tests/test_learned_uncertainty_astar.py
+      - name: Verify actual policy updates and fail-closed explanations
+        run: |
+          python -m pytest -q contributions/21_ppo_navigation_agent/tests contributions/20_multimodal_failure_explainer/tests contributions/22_curriculum_rl/tests
+          python contributions/21_ppo_navigation_agent/experiments/train_ppo_cpu.py \
+            --updates 20 --eval-seeds 16 --output results/c21_actual_training_ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c21-actual-gradient-training
+          path: results/c21_actual_training_ci
+          if-no-files-found: warn

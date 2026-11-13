@@ -77,7 +77,6 @@ def rollout_to_goal(
             correction = float(info["cbf"]["correction_norm"])
             rho = float(list(info["stl"].values())[0])
         else:
-            monitor.update(state)
             u_cmd = u_des
             correction = 0.0
             rho = float(list(monitor.update(state).values())[0])

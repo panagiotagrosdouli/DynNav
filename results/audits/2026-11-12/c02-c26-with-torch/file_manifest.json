@@ -1,0 +1,5007 @@
+{
+  "contributions": [
+    {
+      "directories": [
+        "contributions/02_uncertainty_calibration"
+      ],
+      "file_count": 51,
+      "files": [
+        {
+          "file": "contributions/02_uncertainty_calibration/CLAIMS_EVIDENCE.md",
+          "sha256": "e7b37325708a093fc22284180bc35d11b8adb5885d8129bd4c2a01d81c7cce31",
+          "size": 1342,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/DEEP_VALIDATION_REPORT.md",
+          "sha256": "4bb2549f313d82b12f8ad79bdddd17fd70c64dece1c848b8d4ee359038f13a07",
+          "size": 6488,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/EXECUTION_EVIDENCE.md",
+          "sha256": "72436914b01d6a247b5a7c3fd421eb1962130dc11ee27d53bfb2c74ed7b8e5f7",
+          "size": 3356,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/README.md",
+          "sha256": "08a23bc7e5a65236326eac4dfa2a05e03389cfd1cf9a378a862abdc1f2aa8662",
+          "size": 9135,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/assets/uncertainty_calibration_pipeline.svg",
+          "sha256": "00553897bc6c123ba8362033f88c141c0026f5ac6816363175e1443ee6b511aa",
+          "size": 6383,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/build_calib_aware_uncertainty_grid.py",
+          "sha256": "835ecb044b0433425901e06847dc952a30b2990e66d4b5a3a9de05b9315feba7",
+          "size": 5705,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/build_calib_learned_uncertainty_grid_from_affine.py",
+          "sha256": "dd9b578bceb9224341085a52fa8ea34d2132bc7ed0b8193297bd400a4ab578ce",
+          "size": 2113,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/build_learned_uncertainty_grid.py",
+          "sha256": "237f17385ea110a163a9ea87f416e26ae89c2e0c5579abf6c80d712d9ff05515",
+          "size": 3445,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/drift_aware_nbv_experiment.py",
+          "sha256": "5ddba1d2403998554e955e83eac1f136eddf4f5559fb100c4100b642ac9bd4bb",
+          "size": 5214,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/drift_aware_nbv_multistep.py",
+          "sha256": "26c1d90c98480c7bf7bdd903a8f3bed08799f397cff6f2543ef4d86b17489eaa",
+          "size": 7488,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/drift_aware_planner.py",
+          "sha256": "6e878e608b22efa34e4d4820821d676208cbb381c21b5bd98fb4609b036c5bac",
+          "size": 4876,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/drift_dataset_builder.py",
+          "sha256": "cde03af3a8b9d390943d036d65b37cf0f52d2fe3cdcf7f455da75e70b93b6418",
+          "size": 2579,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/drift_uncertainty_analysis.py",
+          "sha256": "6984a319b4538ec297b397179758fe96958eb2c39ef2c4699cf675b27cd29515",
+          "size": 5724,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/train_drift_predictor.py",
+          "sha256": "9321383acb5260c5a2c6c8f25a703c71c9ad04e87ff49439fe66da49d34f77f9",
+          "size": 2997,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/train_drift_uncertainty_net.py",
+          "sha256": "2b09f5c90636c1889c8d4612470bf16dcea3fbad772734383ca82ea4767199b9",
+          "size": 7461,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/code/uncertainty_calibrator.py",
+          "sha256": "f90a25d9296bca902ecc0a6dae8ec99a5b30f174cb00cbd3ed821ff00195efd3",
+          "size": 7719,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "cf3f7f9c4f3c15f1dbe6ac3e4a2ed822a41007dc224dbf95d9f07c4443d76dfe",
+          "size": 3944,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/analyze_drift_uncertainty_calibration.py",
+          "sha256": "bf86acce021ea2a20a52d285ff75655edb787923b57028062f405537eb895d75",
+          "size": 6453,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/analyze_uncertainty_calibration.py",
+          "sha256": "de93b58147f3dc709b51015d8769e537eb3e5a13fe18199b88ab8ad27dfcae82",
+          "size": 7555,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/eval_archived_instance_holdout.py",
+          "sha256": "bb9aa386b5e66d04ecf9a4c7b4e875eb318de2144f048b0472ba6e279a335919",
+          "size": 4902,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/eval_three_way_group_coverage.py",
+          "sha256": "4757d3789499dd734722174ba068fc0ef7530a28f6daa0ca023cf400a6944dc5",
+          "size": 5363,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/eval_uncertainty_calibration.py",
+          "sha256": "19f256dc2b0f18baec950d3b2415f577f076c527a0c80d27808574dd52bebf05",
+          "size": 6035,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/generate_uncertainty_error_data.py",
+          "sha256": "94fe40bfaae2bd0b52c7c642ac337891ea22dc25967dc115563da8d418ff7b70",
+          "size": 3863,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/experiments/ros2_archived_uncertainty_roundtrip.py",
+          "sha256": "581fabc9d88e48dc96270c884b5034cc834b05f0b253be7fd7e328bbf0522555",
+          "size": 4532,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "arrays": {
+            "b": [],
+            "feature_cols": [
+              3
+            ],
+            "mean": [
+              3
+            ],
+            "std": [
+              3
+            ],
+            "w": [
+              3
+            ]
+          },
+          "file": "contributions/02_uncertainty_calibration/models/drift_model.npz",
+          "sha256": "1a0bbd6fdee30ea0bbc84643ac9100f51442ae3f320aac68207f8ecab77b4fdd",
+          "size": 1508,
+          "status": "NPZ_STRUCTURALLY_VALID",
+          "type": ".npz"
+        },
+        {
+          "checkpoint_schema": {
+            "feature_cols": [
+              "entropy",
+              "local_uncertainty",
+              "speed"
+            ],
+            "input_dim": 3,
+            "model_state_dict": {
+              "backbone.0.bias": {
+                "kind": "tensor",
+                "shape": [
+                  64
+                ]
+              },
+              "backbone.0.weight": {
+                "kind": "tensor",
+                "shape": [
+                  64,
+                  3
+                ]
+              },
+              "backbone.2.bias": {
+                "kind": "tensor",
+                "shape": [
+                  64
+                ]
+              },
+              "backbone.2.weight": {
+                "kind": "tensor",
+                "shape": [
+                  64,
+                  64
+                ]
+              },
+              "head.bias": {
+                "kind": "tensor",
+                "shape": [
+                  2
+                ]
+              },
+              "head.weight": {
+                "kind": "tensor",
+                "shape": [
+                  2,
+                  64
+                ]
+              }
+            },
+            "target_col": "drift"
+          },
+          "file": "contributions/02_uncertainty_calibration/models/drift_uncertainty_net.pt",
+          "sha256": "becc8582b760781e171898f5172133b5ab8bdefc9fd9547bd3a0a531bb45bb53",
+          "size": 21629,
+          "status": "PT_TENSORS_AND_METADATA_VALID",
+          "type": ".pt"
+        },
+        {
+          "checkpoint_schema": {
+            "net.0.bias": {
+              "kind": "tensor",
+              "shape": [
+                64
+              ]
+            },
+            "net.0.weight": {
+              "kind": "tensor",
+              "shape": [
+                64,
+                3
+              ]
+            },
+            "net.3.bias": {
+              "kind": "tensor",
+              "shape": [
+                64
+              ]
+            },
+            "net.3.weight": {
+              "kind": "tensor",
+              "shape": [
+                64,
+                64
+              ]
+            },
+            "net.6.bias": {
+              "kind": "tensor",
+              "shape": [
+                1
+              ]
+            },
+            "net.6.weight": {
+              "kind": "tensor",
+              "shape": [
+                1,
+                64
+              ]
+            }
+          },
+          "file": "contributions/02_uncertainty_calibration/models/drift_uncertainty_net_exp_online_adapted.pt",
+          "sha256": "b12f7e0b73707b623255dcd0cb3cf370d36d88e17dada8d6bad8fc7b4ae4dcb0",
+          "size": 21537,
+          "status": "PT_TENSORS_AND_METADATA_VALID",
+          "type": ".pt"
+        },
+        {
+          "checkpoint_schema": {
+            "net.0.bias": {
+              "kind": "tensor",
+              "shape": [
+                64
+              ]
+            },
+            "net.0.weight": {
+              "kind": "tensor",
+              "shape": [
+                64,
+                3
+              ]
+            },
+            "net.3.bias": {
+              "kind": "tensor",
+              "shape": [
+                64
+              ]
+            },
+            "net.3.weight": {
+              "kind": "tensor",
+              "shape": [
+                64,
+                64
+              ]
+            },
+            "net.6.bias": {
+              "kind": "tensor",
+              "shape": [
+                1
+              ]
+            },
+            "net.6.weight": {
+              "kind": "tensor",
+              "shape": [
+                1,
+                64
+              ]
+            }
+          },
+          "file": "contributions/02_uncertainty_calibration/models/drift_uncertainty_net_online_adapted.pt",
+          "sha256": "ac53745acbc723f89521bddfb53ac36f2d07ee0b7d1d095d5b8f5c31ffcfc4b6",
+          "size": 21489,
+          "status": "PT_TENSORS_AND_METADATA_VALID",
+          "type": ".pt"
+        },
+        {
+          "arrays": {
+            "x_mean": [
+              1,
+              3
+            ],
+            "x_std": [
+              1,
+              3
+            ],
+            "y_mean": [
+              1,
+              1
+            ],
+            "y_std": [
+              1,
+              1
+            ]
+          },
+          "file": "contributions/02_uncertainty_calibration/models/drift_uncertainty_norm_stats.npz",
+          "sha256": "67f8a9e22acdff0ddb034be2d45c847136d19c2c8dafd491ef9fec1d7a8b1206",
+          "size": 1026,
+          "status": "NPZ_STRUCTURALLY_VALID",
+          "type": ".npz"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/readmegr.md",
+          "sha256": "d7b23c1dc3c948f2948679217d4b4698c50303252df241611827271afb7d8c3e",
+          "size": 2840,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "columns": [
+            "row",
+            "col",
+            "calib_sigma"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/calib_learned_uncertainty_grid.csv",
+          "rows": 199,
+          "sha256": "1a91cadcbccff17fc8cd5741adc2206711e0b705dca5c1c5bb158f188b7a11cc",
+          "size": 4917,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "row",
+            "col",
+            "learned_sigma"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/calib_learned_uncertainty_grid_affine.csv",
+          "rows": 199,
+          "sha256": "f0c85a1e503f4c2c6181271ab30a5f7f840c9b32d25a1daa49aff76a07277cbc",
+          "size": 4941,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "entropy",
+            "local_uncertainty",
+            "speed",
+            "drift"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/drift_dataset.csv",
+          "rows": 199,
+          "sha256": "c99da74e60fadc3d6c51ac166fa1e05e748fba7e9784628987f782832628d4a0",
+          "size": 9609,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_uncertainty_gaussian_coverage.png",
+          "sha256": "891ffa93ecf279ee994f9a107744a202e84e0e828dc327c931b68ba05a423ae6",
+          "size": 46342,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_uncertainty_sigma_calibration.png",
+          "sha256": "60574a159336fa4f4f38cb666f941b18341620de870b73e8aa87d7c18bafecee",
+          "size": 74655,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_uncertainty_z_hist.png",
+          "sha256": "97fbbb1eeb202d794b84e08f0d7d3b93c3237845b1b6a02382a3d797d7013930",
+          "size": 33926,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_vs_uncertainty.png",
+          "sha256": "4ae183f45a5a9ebe6864cd40cec847ec14583a93da0a47103afbf56d4f1bb9c0",
+          "size": 72404,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_vs_uncertainty_bins.png",
+          "sha256": "a4a309efe167fa94541b1d30ac86699a95b6343262a32c892b15cc774172a6f3",
+          "size": 36097,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/drift_vs_uncertainty_scatter.png",
+          "sha256": "6987b3e1d0efea546b0fb2e3114db035e4492ada6b13a860557eee0f0010a706",
+          "size": 71505,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "cell_id",
+            "row",
+            "col",
+            "center_x",
+            "center_z",
+            "feature_density_norm",
+            "uncertainty"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/feature_uncertainty_grid.csv",
+          "rows": 1271,
+          "sha256": "76c6317cde8e3c28450eec620018903505234ca8c8fc9e97e639d19f584e2eb3",
+          "size": 77712,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "row",
+            "col",
+            "learned_sigma"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/learned_uncertainty_grid.csv",
+          "rows": 199,
+          "sha256": "58c1528f88fd9da1b09b4a593564c811a1fa48fb9d617faf490d1235ea6f0eb4",
+          "size": 4907,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "row",
+            "col",
+            "learned_sigma"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/learned_uncertainty_grid_active.csv",
+          "rows": 199,
+          "sha256": "f0c85a1e503f4c2c6181271ab30a5f7f840c9b32d25a1daa49aff76a07277cbc",
+          "size": 4941,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "n_samples",
+            "mae",
+            "pearson_sigma_abs_error",
+            "spearman_sigma_abs_error",
+            "ece_sigma_abs_error",
+            "coverage_1sigma",
+            "coverage_2sigma",
+            "coverage_3sigma"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/uncertainty_calibration_metrics.csv",
+          "rows": 1,
+          "sha256": "091ac8184688ea6512e84789d75841ff2371b546ac7e224a7249027557a36d9e",
+          "size": 272,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/uncertainty_calibration_summary.md",
+          "sha256": "f9563123984cefade482f8085973249c6ef98d986fa1be461a6ac2e1cf90212d",
+          "size": 534,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "columns": [
+            "instance_id",
+            "state_x",
+            "state_y",
+            "h_star",
+            "mu",
+            "sigma",
+            "error",
+            "abs_error",
+            "rel_error",
+            "grid_size"
+          ],
+          "file": "contributions/02_uncertainty_calibration/results/uncertainty_error_data.csv",
+          "rows": 25235,
+          "sha256": "95178c3304f15f9fed1ed6d562465e2a2a1f79a146b6121a7db19a18e9141015",
+          "size": 2884514,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/uncertainty_plots/binned_calibration.png",
+          "sha256": "0c3974bcc2a56b258478ef06af08ce982a8307cc0fe81ffa5291a6dab26f9216",
+          "size": 30903,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/results/uncertainty_plots/sigma_vs_abs_error.png",
+          "sha256": "f273b9c0ceb2090f66c1827b184bff50c7b9330ae782ac869c7b9abd4e6d996a",
+          "size": 36055,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/tests/test_archived_instance_holdout.py",
+          "sha256": "f84148cb380782ce5164341cbc4ee50dda5ea878d230435879f12dea81bab11b",
+          "size": 1664,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/tests/test_drift_training_no_leakage.py",
+          "sha256": "69f3e673ea7513ffb6203f42e5b82f53c5c82e51033d73e67f97964c5646b901",
+          "size": 1806,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/02_uncertainty_calibration/tests/test_three_way_group_coverage.py",
+          "sha256": "fcebf1d63a2444de4da80b3c260b20821ad268c66528f07c8f99748d4b6195a3",
+          "size": 1806,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C02",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 8,
+        "NPZ_STRUCTURALLY_VALID": 2,
+        "PNG_DECODABLE": 8,
+        "PT_TENSORS_AND_METADATA_VALID": 3,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 22,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 7
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/03_belief_risk_planning"
+      ],
+      "file_count": 37,
+      "files": [
+        {
+          "file": "contributions/03_belief_risk_planning/CLAIMS_EVIDENCE.md",
+          "sha256": "6ac34f77abad5084dcd0e55320cf2d336b94c96a33996c8907cff46110941161",
+          "size": 617,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/EXECUTION_EVIDENCE.md",
+          "sha256": "081c57536dd35e8da47a95459bdde67924a7f34e3aa72f1a6ccdc8e77516eee0",
+          "size": 3096,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/README.md",
+          "sha256": "c3e0a28cdf106a81d7fa65b259b376e1e6abfdd5d3822a9de23c942c5578237b",
+          "size": 7337,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/README_GR.md",
+          "sha256": "98864514464c60dcb01a8a2fb14a0e4b6e389c8fc68f038f2b32b160c08a8199",
+          "size": 10528,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/REAL_MAP_RISK_EVALUATION.md",
+          "sha256": "53ea5f6f58635de0f81feed35875df0153a5efeda8965361bc19d8f56b4699ef",
+          "size": 5663,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/assets/belief_risk_planning_pipeline.svg",
+          "sha256": "01dc7e4cd5083c3e945bf8e524dc57249e18ee17f3c728f0addfd1dc1878a2d5",
+          "size": 5285,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/belief_risk_planner.py",
+          "sha256": "b54a9f688d81c2cafc5da70f683e118a94543a060d0d7743e2ad6b976fef6e7b",
+          "size": 1991,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/belief_space_planner.py",
+          "sha256": "9129228f70c479218b8309d7d0ca64236a4cb0e29a9a77d3fca863ac8c396424",
+          "size": 6649,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/risk_budget.py",
+          "sha256": "e702d6da33c293961117024ce6e0f7e996d00c2cea2ec6a606eb25bfc4560811",
+          "size": 718,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/risk_cost_utils.py",
+          "sha256": "70c6e83322235b97a9b90de27f18173e2e4640a7c45ecc04ef497a7df4885bb3",
+          "size": 4378,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/code/risk_tradeoff_analyzer.py",
+          "sha256": "0fdfab9bc977c3b0dc73173477eacaffc91fb28b2732a4364b7cdf9a3029e244",
+          "size": 5264,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "86cf301dc843874d07199d6681f54f307fb8ea981c9f5b74edfa39ea954a8a39",
+          "size": 3528,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/eval_belief_risk.py",
+          "sha256": "51b395b9c68be62317dd428df0a469ddb05d2cc25ce14e407cc4f60d901682db",
+          "size": 3387,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/eval_real_map_proximity_risk.py",
+          "sha256": "c18525100c2ff70cb20c63d027a52c28cfc812d244d4ba99c104f91d63cdcf94",
+          "size": 8021,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/eval_risk_tradeoff.py",
+          "sha256": "7376b700b1f9c1435c95a72519355445f864fbd8e717ba7d8314b258b5a427a5",
+          "size": 4219,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/lambda_sweep_risk_length_demo.py",
+          "sha256": "3add8f9073f9e7b426d61af2db9326cdb8c0fb2e7a63352595de39bebbbdc32e",
+          "size": 5445,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/ros2_get_plan_risk.py",
+          "sha256": "8fd5ac31c12589b7861bb549342f57c0fc01be1c3cc57bed3bb1b833b7e65f4b",
+          "size": 5793,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/ros2_isolated_risk_closed_loop.py",
+          "sha256": "6bcf74e9d4893b88cfecd186e2b1ebd5c74895f1792461ef99487a3eef4aefe8",
+          "size": 10426,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/ros2_risk_plan_roundtrip_test.py",
+          "sha256": "ae5c32dd9d6333376caf93ce1d35345492bfdc431474d2fe88464f5046f6129e",
+          "size": 4099,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/run_risk_budget_demo.py",
+          "sha256": "430c43d00352d287923443a07388b27d21a8312ebfb9dd8cb51603bfa1b2fe46",
+          "size": 1118,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/select_lambda_for_risk_budget.py",
+          "sha256": "42ac379e7fdddebc8624ba0196e7b60771ced23e72ee7a449ca0d7545f9bf281",
+          "size": 1435,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/experiments/select_path_under_risk_budget.py",
+          "sha256": "e99c944eda44d9182c994fadadfcd5ba2fcab7e6f5e52c5febbb0a7187e125a4",
+          "size": 2717,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/readmegr.md",
+          "sha256": "20fb429ad0d004f551bb5a428a682a694ef96573d2343586442c0c6b0ba43d15",
+          "size": 2021,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "columns": [
+            "lambda",
+            "found_path",
+            "total_cost",
+            "length_cells",
+            "geometric_length",
+            "fused_sum",
+            "fused_mean",
+            "fused_max"
+          ],
+          "file": "contributions/03_belief_risk_planning/results/belief_risk_lambda_sweep.csv",
+          "rows": 6,
+          "sha256": "40e36c4d14d584d02ca8adf937897cab8e844e11ee90822412075e88ae7c5a1d",
+          "size": 545,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "n_lambda_values",
+            "success_rate",
+            "baseline_lambda",
+            "baseline_fused_mean",
+            "baseline_geometric_length",
+            "best_risk_lambda",
+            "best_risk_fused_mean",
+            "best_risk_geometric_length",
+            "risk_reduction_pct_vs_lambda0",
+            "length_change_pct_vs_lambda0",
+            "best_cost_lambda",
+            "best_cost"
+          ],
+          "file": "contributions/03_belief_risk_planning/results/c03_belief_risk_summary.csv",
+          "rows": 1,
+          "sha256": "74314c6487b881ba33229ca2d5b7e2b3db7c8957325dc0d230a140c1e743b905",
+          "size": 340,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/c03_belief_risk_summary.md",
+          "sha256": "12dbe3817af642a7870952344e0f10c3348914cfd6850c3dc6c39172c4193b2d",
+          "size": 544,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_fused_risk.png",
+          "sha256": "4a3a6a1d4de01cdb9909277df53bfdb18e0b268866a54d907a5e8d2546b44668",
+          "size": 22380,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_geometric_length.png",
+          "sha256": "1158df99661839dece01169c8314161ec1731a133cfa00ed5c3587e6aaf396a1",
+          "size": 18932,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_length_cells.png",
+          "sha256": "bf9bb5b9457815e61ff8412a10f876c9230c1ae44981822a0829460cc1f3fbeb",
+          "size": 17713,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_length_risk_tradeoff.png",
+          "sha256": "75e8fbd40605b1152699f3994a542470fbf06cf2f526bd3265de7698e67c0543",
+          "size": 68085,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "lambda",
+            "assignments",
+            "total_distance",
+            "total_risk",
+            "max_risk",
+            "total_cost"
+          ],
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_risk_length_results.csv",
+          "rows": 7,
+          "sha256": "6ee803c4bc4d89bcdf9371758ed0302f18bbf04d38c58443024bbb8c0077a323",
+          "size": 404,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/results/lambda_sweep_total_cost.png",
+          "sha256": "b584eb8d2d7335fb0be815bddfc2ddb02f4f9409af44dde0de23da0e8196d7ce",
+          "size": 26996,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "lambda",
+            "success",
+            "total_cost",
+            "geo_cost",
+            "path_len",
+            "expansions",
+            "max_I_on_path",
+            "mean_I_on_path",
+            "I_start",
+            "I_goal",
+            "door_I",
+            "wall_I",
+            "reason"
+          ],
+          "file": "contributions/03_belief_risk_planning/results/risk_weighted_lambda_sweep.csv",
+          "rows": 12,
+          "sha256": "770f410d4c3a782b4a61f4b608a680a091f83246734db776711f7bd56266db1c",
+          "size": 938,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/tests/test_real_map_proximity_risk.py",
+          "sha256": "2eab663a911bcf2bd178cc3cac2e640ffcb62569d9471fee45819b9915f891fe",
+          "size": 2092,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/tests/test_risk_cost_integration.py",
+          "sha256": "c50b368ef0a9bee478293a1e7f5f746872d65e53c8e456f09f3f1e26be50a9b0",
+          "size": 1470,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/03_belief_risk_planning/tests/test_ros2_isolated_risk_closed_loop.py",
+          "sha256": "f306951d642d97bc5dc2adbb13989d07fbb51eb6cedf28c99cfba659c290a4ed",
+          "size": 1161,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C03",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 4,
+        "PNG_DECODABLE": 5,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 19,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 8
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/04_irreversibility_returnability"
+      ],
+      "file_count": 53,
+      "files": [
+        {
+          "file": "contributions/04_irreversibility_returnability/CLAIMS_EVIDENCE.md",
+          "sha256": "4db332c8ab00041220373e1dc4c194244fb970a710ed7da9957303fd24cfe4d5",
+          "size": 1076,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/EXECUTION_EVIDENCE.md",
+          "sha256": "abde8cda95f9774bd0bf490b2108eeca013a960f06706c74b054be491046f0a5",
+          "size": 2804,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/README.md",
+          "sha256": "cdaa8a2884c94dbdeb4ed80601e8890bb424b42e0859830cc2a798b32c94d902",
+          "size": 7882,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/README_GR.md",
+          "sha256": "3674d852818860ee4b927993ec6fee2e63c2ef2aaebc9e66fe27453b0556ef76",
+          "size": 12220,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/REAL_MAP_RETURNABILITY_EVIDENCE.md",
+          "sha256": "b5c3ca30c5687002fbd26f6ed0f84fb3374050bb8689dd53970a2e99ad7adb2e",
+          "size": 4245,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/assets/recoverability_pipeline.svg",
+          "sha256": "2c4b71a9dc298c16d41721de8af82e70d32f0d5c23142eee3b20f2632b522347",
+          "size": 5311,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/irreversibility_map.py",
+          "sha256": "3281640b6f5bc0b86f3cb0361bfd71a2cec457206f7406adee3361b3c8575b07",
+          "size": 4723,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/irreversibility_planner.py",
+          "sha256": "e3e7050a899fb5a0763fdaf079a565872404a95bbfef36bcb24779d2690623b4",
+          "size": 2991,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/irreversibility_safe_mode.py",
+          "sha256": "7d4484b5947b564ac659f9d6d8f66526de3295d98a024409be0d5579539bbdea",
+          "size": 7549,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/recoverability_metrics.py",
+          "sha256": "8aadc8c9e6d926ec5cc0a3f543fa28190b0e5978507afb276bf66e37780c192f",
+          "size": 8304,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/returnability_map.py",
+          "sha256": "c431d55bc99981932cafe878c829db2f816b4ca2079463e8d75064a5992bb63a",
+          "size": 2408,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/code/returnability_planner.py",
+          "sha256": "780cf3793a6fbaf692765bafecf8b56891d8c6656363bb525ba08edb0fa4f0bd",
+          "size": 3825,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "12b088c34f611f4eae60b121b4f0542324824ddb123884e58235402ffa9316ef",
+          "size": 3940,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/eval_real_office_returnability.py",
+          "sha256": "b161d5b7d6a3cd5f3dd3bfd524eae5edae3b38f33f452c30dd62ece7abd93401",
+          "size": 8381,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/eval_recoverability_metrics.py",
+          "sha256": "58e5be78b685ccf993178af4be89b1c5132190cc926e60c864c75b9c4853a017",
+          "size": 3506,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/eval_returnability.py",
+          "sha256": "e6ab55adfb21170e1be580205270976ea8f7dac8feb15a515dcb710e0da8e59b",
+          "size": 4078,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/plot_irreversibility_bottleneck_sweep.py",
+          "sha256": "7880e3365bd31b04ba49488ad7660771be483bed4254f2d3de63621c567b5dad",
+          "size": 2651,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/plot_irreversibility_safe_mode_sweep.py",
+          "sha256": "c104bbf766f2bc67a2694e7980658ad3fa9ede6bb365ec61129d3cdcc9e6d524",
+          "size": 1761,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/plot_irreversibility_tau_sweep.py",
+          "sha256": "a9a3ac9f1a05efe450d27f5d1a55d3be9c43bee66ad1f150798417325dfcd9c3",
+          "size": 2640,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/plot_returnability_mu_sweep.py",
+          "sha256": "43fd5225656eec93be87686d82d1fec04af6763fb5922303a2ec38f7edefca34",
+          "size": 1285,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/ros2_returnability_get_plan.py",
+          "sha256": "53647df1e7f672d442c2b73d6c98805a92fe131695ad8bfa529ebc44e9b8d60c",
+          "size": 6370,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/ros2_returnability_service_test.py",
+          "sha256": "0fdc9d9f475f20fc95d0b28198c44d6efc925352e9dd3fdebf39b237bbad2552",
+          "size": 3394,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_irreversibility_bottleneck_sweep.py",
+          "sha256": "71dbdfc0df4aba60fe6e3e39e6285ae501d48ed6193e8d680dc3a32e7c03f979",
+          "size": 4754,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_irreversibility_demo.py",
+          "sha256": "93a7fc49b313fbd5fadadac447ed6ce88d112051800f7a44e47b06d47c72af80",
+          "size": 3484,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_irreversibility_safe_mode_demo.py",
+          "sha256": "0c5746258c98328bdf6f01f1663914232c858524576d6449fcb0383b87cf4b42",
+          "size": 2386,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_irreversibility_safe_mode_sweep.py",
+          "sha256": "d80a62dbfbbf92a5f3f15a1a45a04c4a2bdde10dfe261df7b639a20e3860a848",
+          "size": 2877,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_irreversibility_tau_sweep.py",
+          "sha256": "5de52c03bdf4d19fbbdcb33b8a83b2e2550d9c3feaf93bfe87283c090b52a8d9",
+          "size": 4660,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_returnability_demo.py",
+          "sha256": "1a6b8fbe6d3ac791653eebab6c23ea5a319095b4793a6ac757c16a2e740bebdb",
+          "size": 2114,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_returnability_mu_sweep.py",
+          "sha256": "822e101895eb21f2ba1efbda1bb764670db1424b0807bb8c46c67937298a6fb7",
+          "size": 2444,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/experiments/run_returnability_weighted_demo.py",
+          "sha256": "f7baaa4c9384f19fa61f0ba80b2b54c0d74bf7c9b27da7a6c16ba5a0f7697033",
+          "size": 2639,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/readmegr.md",
+          "sha256": "d2ec545a1ae5b77f36694d133acfe1117c561a53789b25db430637ea84228ef8",
+          "size": 7604,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "columns": [
+            "tau_sweep_n",
+            "tau_sweep_success_rate",
+            "min_feasible_tau",
+            "safe_mode_n",
+            "safe_mode_success_rate",
+            "safe_mode_relaxed_cases",
+            "safe_mode_normal_cases",
+            "safe_mode_mean_tau_gap",
+            "safe_mode_path_len",
+            "safe_mode_mean_I_on_path",
+            "safe_mode_max_I_on_path",
+            "returnability_mu_n",
+            "returnability_success_rate",
+            "returnability_meanR_mu0",
+            "returnability_meanR_max_mu"
+          ],
+          "file": "contributions/04_irreversibility_returnability/results/c04_returnability_summary.csv",
+          "rows": 1,
+          "sha256": "acd9ffcb1b38acc65347e560bbe741e561e6abd4a793f33a7f7d2f93cf7b2cc7",
+          "size": 462,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/c04_returnability_summary.md",
+          "sha256": "d94333a830f171b4b98907f9a0a9e224fa957a41938497a35499de9d4c665061",
+          "size": 773,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/hard_vs_soft_comparison.png",
+          "sha256": "7c3da772b5ae06fa4ffd69d2e70158ee407e9added3749fa7f110734baed781f",
+          "size": 236541,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "tau",
+            "success",
+            "cost",
+            "path_len",
+            "expansions",
+            "max_I_on_path",
+            "mean_I_on_path",
+            "I_start",
+            "I_goal",
+            "reason"
+          ],
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_bottleneck_tau_sweep.csv",
+          "rows": 15,
+          "sha256": "49f6b8aa7a46845d33064b8f1c861067629203d8fac8df1a3f4eb3c048fe72ff",
+          "size": 1048,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_cost_vs_tau.png",
+          "sha256": "1b00c9c8308acbbc8be03cb9aae5144d4a1a4455f26f42bec45c6628f9c76eb6",
+          "size": 40932,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_expansions_vs_tau.png",
+          "sha256": "5ae469c407ca125eceaac369606cb194a363aa6f8e371411a7e35242b38296f6",
+          "size": 64913,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_maxI_vs_tau.png",
+          "sha256": "df98f6a5bd923320d73f07c542d3f7f3024ca54f33196721f9d63245dd203d50",
+          "size": 64178,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "tau0",
+            "success",
+            "mode",
+            "tau_used",
+            "tau_gap",
+            "expansions",
+            "cost",
+            "path_len",
+            "max_I_on_path",
+            "mean_I_on_path",
+            "reason",
+            "I_start",
+            "I_goal",
+            "door_I",
+            "wall_I"
+          ],
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_safe_mode_sweep.csv",
+          "rows": 26,
+          "sha256": "9b8360f62b17aa65b4cd2be5ee757f259a21ed8c2c32cdaefbc04e2c65787522",
+          "size": 3317,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_success_vs_tau.png",
+          "sha256": "e4446116186f826377bee74efdca17773f0939941b7be307fc8cd1d27e12d131",
+          "size": 52428,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "tau",
+            "success",
+            "cost",
+            "path_len",
+            "expansions",
+            "max_I_on_path",
+            "mean_I_on_path",
+            "I_start",
+            "I_goal",
+            "reason"
+          ],
+          "file": "contributions/04_irreversibility_returnability/results/irreversibility_tau_sweep.csv",
+          "rows": 15,
+          "sha256": "72298ccd031d3e5b8adac1ed1880a9e9dcbd5cecbf90635bf275e525997051d2",
+          "size": 1052,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/nbv_topk_overlay_irreversibility.png",
+          "sha256": "6f530a028c91f18a19debf27dcd22527e86d77c40d59f0e0f957748ca06d794a",
+          "size": 100610,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/nbv_topk_overlay_returnability.png",
+          "sha256": "af1e639a6e375d9ed9db297b40cc7862be5c0a89660bde516857c733500f9ede",
+          "size": 75483,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/path_overlay_hard_vs_soft.png",
+          "sha256": "b833c12155115543fc374e54ab4ddc7ea3177f88c095fff4423b7cd55ad17107",
+          "size": 90605,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/returnability_cost_vs_mu.png",
+          "sha256": "b4c6676408d8aea526e22a9ff71a6306853257f07bf629728a1fe25df9e7324d",
+          "size": 61764,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/returnability_heatmap.png",
+          "sha256": "7c60f20a1a3a3b1b19580b7c94903a6c5d0b82c33be9c145f69d9e141fe0bac6",
+          "size": 71671,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/returnability_meanI_vs_mu.png",
+          "sha256": "f019fddba78e724094718f391abd791aa84b8d83a53f96d6aa3b9d1f25f18f9f",
+          "size": 59750,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/results/returnability_meanR_vs_mu.png",
+          "sha256": "04b4e2140a64c431cdeb17093f73983d67f69960f1dfb387bf2a14399221b91f",
+          "size": 59377,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "mu",
+            "success",
+            "cost",
+            "expansions",
+            "path_len",
+            "maxI",
+            "meanI",
+            "meanR",
+            "reason"
+          ],
+          "file": "contributions/04_irreversibility_returnability/results/returnability_mu_sweep.csv",
+          "rows": 6,
+          "sha256": "8deaf2a5f3b39b300970e0b601f87ccb94cc6b354e12f52b91ce2ada5c2f6895",
+          "size": 537,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/tests/test_real_office_returnability.py",
+          "sha256": "70750dcc55fa7cfc400eb68aa3143957ccc785a6620e19399513cfbfa0765d3c",
+          "size": 2241,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/tests/test_recoverability_profile.py",
+          "sha256": "09b702f557390487df602f37c00c7724b6b556c4e92c608e717b599ba5b628b9",
+          "size": 2640,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/04_irreversibility_returnability/tests/test_safe_mode_threshold_contract.py",
+          "sha256": "b3b572d538438ea9b1afc330354c65dc998108cdcdfc2b70feb8634a6aa71d28",
+          "size": 1631,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C04",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 5,
+        "PNG_DECODABLE": 12,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 27,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 8
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/05_safe_mode_navigation"
+      ],
+      "file_count": 34,
+      "files": [
+        {
+          "file": "contributions/05_safe_mode_navigation/CLAIMS_EVIDENCE.md",
+          "sha256": "3268b66d9ca776395e6279a345a6771a106bc034712cace524a00a63533c7f54",
+          "size": 929,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/EXECUTION_EVIDENCE.md",
+          "sha256": "35e610fd90b0c6614a503726f40018ef28f929425805c9fdd67b9eb451ff597a",
+          "size": 2768,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/README.md",
+          "sha256": "3909b9a5873ee4b66dc9730220ad3c062264d35662eea95c471624e676052991",
+          "size": 8213,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/README_GR.md",
+          "sha256": "6d4487cfedd719aa38f31fa164a745bd64c912b753376c6f1e5e22128ffe005c",
+          "size": 13485,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/REAL_RECORDED_LIDAR_AND_ROS2_EVIDENCE.md",
+          "sha256": "5f5c2b2b3693828374985ab73a98a6f0d702502b77ccf47e83ac055733f17c09",
+          "size": 5803,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/assets/safe_mode_navigation_pipeline.svg",
+          "sha256": "819c64f650369c5d252b5cfedc713fc60a4d6807af39062a8f067afd54f45b1b",
+          "size": 5578,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/code/safe_mode_controller.py",
+          "sha256": "45ac0b06f2a65bb14caa9c0f283b9e0a4f327c8bd8c4a1ce8e8bb01c524297f7",
+          "size": 9005,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/code/safe_mode_threshold_ablation.py",
+          "sha256": "3ea1f76f9ba876c9b87ddf5b34aee5be0e83a6085585afdacc324159a7f70c62",
+          "size": 10387,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "717c8110c1c49befbd4bff4564c4215e3f2d55e7e4afff4cb3265f0ba54eebd7",
+          "size": 3978,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/analyze_safe_mode_results.py",
+          "sha256": "25b6996a9eeaa6ffae8c6e90f3acf67916cc502092b3523980155fbcd6a858e2",
+          "size": 5233,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/eval_recorded_dingo_lidar_safe_mode.py",
+          "sha256": "e562a256a1dc8d4f93e7737f0372b905fa324532e46e736863c2b1eecc39c141",
+          "size": 4550,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/eval_safe_mode_thresholds.py",
+          "sha256": "32e6a51a0c3aede1cf299c46b702eb850779040ffa64d44385a2c683edcc6227",
+          "size": 4274,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/ros2_safe_mode_roundtrip.py",
+          "sha256": "4e6bc7ae458cfb767e0cf5dcfabcb2c1b30f90b4e875c10d5e886b3b7c5f6e06",
+          "size": 3768,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/ros2_safe_mode_supervisor.py",
+          "sha256": "0f701b7c96e1afcf2390003f8f05e60e0309794a1e6bf59e034e3692793f0cc8",
+          "size": 2650,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/experiments/run_adaptive_tau_safe_mode_demo.py",
+          "sha256": "0303f406a18d62e6058475f5fed9b275c54f5f979655b3a9b04477e71d97f2cf",
+          "size": 2570,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "columns": [
+            "NORMAL_POLICY_total_distance_mean",
+            "NORMAL_POLICY_total_distance_std",
+            "NORMAL_POLICY_total_risk_mean",
+            "NORMAL_POLICY_total_risk_std",
+            "NORMAL_POLICY_max_risk_mean",
+            "NORMAL_POLICY_max_risk_std",
+            "NORMAL_POLICY_total_cost_mean",
+            "NORMAL_POLICY_total_cost_std",
+            "SAFE_MODE_POLICY_total_distance_mean",
+            "SAFE_MODE_POLICY_total_distance_std",
+            "SAFE_MODE_POLICY_total_risk_mean",
+            "SAFE_MODE_POLICY_total_risk_std",
+            "SAFE_MODE_POLICY_max_risk_mean",
+            "SAFE_MODE_POLICY_max_risk_std",
+            "SAFE_MODE_POLICY_total_cost_mean",
+            "SAFE_MODE_POLICY_total_cost_std",
+            "risk_reduction_pct",
+            "max_risk_reduction_pct",
+            "distance_increase_pct",
+            "cost_increase_pct"
+          ],
+          "file": "contributions/05_safe_mode_navigation/results/c05_safe_mode_summary.csv",
+          "rows": 1,
+          "sha256": "ff74e7f109cd7719a52f96d3df232945d4994df3587416b564a6a56ac50fd560",
+          "size": 726,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/c05_safe_mode_summary.md",
+          "sha256": "071f7b866f4ad50506a33c161a56affab2d04650dbb1655dc7e1d7561f4c4371",
+          "size": 429,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/failure_taxonomy_safe_mode.png",
+          "sha256": "6987fdb6e21f0b1526b5ea11f099baf3024d8c73e8fb58db64e334e9afcaa2c5",
+          "size": 37907,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/heatmap_safe_mode.png",
+          "sha256": "755a31ceb597f241779f85d00de84f61782359fb4bdd644ddafc656bcaf5d741",
+          "size": 57450,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/ids_alarm_safe_mode.png",
+          "sha256": "0fea246f59a02af3041e46e15246ad49c43f25e91c1ad07c424b060dd8a5955d",
+          "size": 35060,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/joint_safe_mode_vs_gamma_delta_1.0.png",
+          "sha256": "7f05c57ce954988bc64f99ab64160fb8a0f7640f3237280e60aa250108107c15",
+          "size": 79191,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "step",
+            "policy",
+            "any_safe_mode",
+            "robot_id",
+            "self_trust_S",
+            "expected_drift",
+            "observed_drift",
+            "calibration_error",
+            "total_distance",
+            "total_risk",
+            "max_risk",
+            "total_cost"
+          ],
+          "file": "contributions/05_safe_mode_navigation/results/multi_robot_safe_mode_results.csv",
+          "rows": 30,
+          "sha256": "1c5efb73f4b5bb41cf1a76a06f0129c08161ad1edec6bac27fb8819a098c0bcf",
+          "size": 2141,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_activation_vs_tau0.png",
+          "sha256": "3317580100bf12187c78b3bc8196337caabe0e9265334bfa1ee85349af7aa6b2",
+          "size": 63783,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_tau_gap_hist.png",
+          "sha256": "1150ad3af3de2dd45b8d21b8e0696d8dacb533852e9120cfcd1bf9eff9f7476a",
+          "size": 47947,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_tau_gap_vs_tau0.png",
+          "sha256": "07a87a598e7a56672c37edb61da8cf2bfedd29e1c270a5367e29634da6c2c360",
+          "size": 73283,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_tau_used_vs_tau0.png",
+          "sha256": "b67f6ac479b83986453d387f890e50f3f8860ae6904a820fc6305dfe65dc762c",
+          "size": 68753,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "threshold",
+            "policy",
+            "num_steps",
+            "mean_total_distance",
+            "mean_total_risk",
+            "mean_max_risk",
+            "mean_total_cost"
+          ],
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_threshold_ablation_results.csv",
+          "rows": 8,
+          "sha256": "e5cdfa15162a09801dd74ed3cea287c477263ebb6dcca043ffe5c53cc3ce5c87",
+          "size": 406,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_threshold_cost.png",
+          "sha256": "a3a8392ec041ff28a46143ca890f4972c0ceca7f1bbea8c1b706444c7d105247",
+          "size": 63754,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_threshold_distance.png",
+          "sha256": "93b463015d08800ce21decbdbd5519e013a85d64fe30b707352691ce19afc2ce",
+          "size": 68925,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_threshold_maxrisk.png",
+          "sha256": "c35daf978f0e365886311fdbe3f48db7e8580d06346eb7aac81f6f60512b4833",
+          "size": 68247,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/results/safe_mode_threshold_risk.png",
+          "sha256": "858e261b87be44d72754656063abec901c4d8d59ceac1d4f8302624601a2dea0",
+          "size": 65051,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/tests/test_recorded_lidar_proxy.py",
+          "sha256": "e2f9a98cb167851878b6ba052e31ecd465c17d1af045d9a7482809fa6dcc2b6c",
+          "size": 1179,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/05_safe_mode_navigation/tests/test_safety_finite_state_machine.py",
+          "sha256": "7989183c7a712fe743dc343e9a0d8d9e4eddfc5de4b7d0cc24d79c36a92379be",
+          "size": 1859,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C05",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 3,
+        "PNG_DECODABLE": 12,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 11,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 7
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/06_energy_connectivity"
+      ],
+      "file_count": 38,
+      "files": [
+        {
+          "file": "contributions/06_energy_connectivity/EXECUTION_EVIDENCE.md",
+          "sha256": "8a91a6cc4311d5540f53889cc3d152b78b11b206c3830adc894d1ad72d6e4901",
+          "size": 2738,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/README.md",
+          "sha256": "873bcc66e0dfd861c5bbcfb9a2804c3c3fb9409488714c51e3bccf54ce45e6de",
+          "size": 7380,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/README_GR.md",
+          "sha256": "03436f27db79460cc0073578c0f7aed26aba6e55e38c619ba16069e209a162db",
+          "size": 10480,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/REAL_DINGO_ODOMETRY_RESOURCE_EVIDENCE.md",
+          "sha256": "5de960b8e7b58bde9898d4afd51ba76120192e5d341d265f77d4fc2164316734",
+          "size": 3661,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/assets/energy_connectivity_pipeline.svg",
+          "sha256": "c1256ffa31b9451e0518225ee9e4dacb30d32e1f27025ee8ff52706778d57595",
+          "size": 4729,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/connectivity_aware_planner.py",
+          "sha256": "e9b4a4fa3ccccbd29d9ee7e855d27379d14ccaaa64adb1002545c30bab9c9862",
+          "size": 2704,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/connectivity_map.py",
+          "sha256": "da67f516902e4d0a22026f630c7a02e897594fe95ee40ad4f4005118d649b077",
+          "size": 2393,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/energy_connectivity_planner.py",
+          "sha256": "332fc1214ed2ed7e0ecead5b9ddf8268b93641cb6b5d29e0b483c389a117a023",
+          "size": 5429,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/energy_model.py",
+          "sha256": "f276a7e3eca696795b26a650f718a355b4c3a0953b05fde4bf04c547f0110888",
+          "size": 850,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/energy_risk_time_planner.py",
+          "sha256": "b9281d289977d5cdfa042c1fb966dd679c2d004eb82aebb3a882087d193b015a",
+          "size": 5396,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/net_channel.py",
+          "sha256": "42c18c45c7d062599f8fb10a27d171727a35e014a89a0457c8e7e1a02171efcd",
+          "size": 1157,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/recharge_planner.py",
+          "sha256": "d680bb0552eb43ce9ed3dfea172d94eea9a2228396e54f08329f8a7ac33c0557",
+          "size": 5844,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/code/resource_feasibility.py",
+          "sha256": "18663536d0948a445753bfa24cf6a54ffd713e05c9fdd60e9919f9a6bb197a62",
+          "size": 3817,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "a7e0b9cc07cb8b13c77925772bc263a54765868b908f27dd0e18f1f8daaa1b7a",
+          "size": 3527,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/eval_energy_connectivity.py",
+          "sha256": "f9cd5b3fd6d04356ef99ae891594303f78f8fae9b9555f69bd0015f625bb6d84",
+          "size": 4975,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/eval_real_dingo_odometry_resources.py",
+          "sha256": "17d849f5aa5b2ffbe1a109a2c57b61cda5883ef22dfd3f4352813058a2950c69",
+          "size": 4545,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/eval_resource_feasibility.py",
+          "sha256": "764f766f833dd3d45087abd13dcaaeb6680c0b8e8f029fe549c41310ffd04106",
+          "size": 3443,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/run_connectivity_sweep.py",
+          "sha256": "8480ed05c9d01d3bd23464817cfd1469d6080338a3f6d34eee05643f1b4060d1",
+          "size": 2079,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/run_energy_connectivity_joint_sweep.py",
+          "sha256": "5ff8b6b03775811c343a15077b3456d5d024211ab45fc49394d3523faa0795d1",
+          "size": 1160,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/experiments/run_energy_risk_time_demo.py",
+          "sha256": "b6c71201ed9a03d61424019dfcc1e9bb7790741742999d9d0f30bcb7aec3e681",
+          "size": 3409,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "columns": [
+            "planner",
+            "success",
+            "path_len",
+            "cost",
+            "energy_used",
+            "budget",
+            "energy_margin",
+            "min_connectivity",
+            "expansions"
+          ],
+          "file": "contributions/06_energy_connectivity/results/c06_energy_connectivity_summary.csv",
+          "rows": 3,
+          "sha256": "35dfb368aa0228cfbae2e2a124282e4a1d6cd8087fa1929e5cdff6e1e38824c3",
+          "size": 228,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/c06_energy_connectivity_summary.md",
+          "sha256": "e26663fda66a473a1cdaf73ee71a6e3f48f9cbb98b3faccf721ad4770874e242",
+          "size": 514,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/connectivity_baseline_pathlen.png",
+          "sha256": "35acf4ec7bc556264cae4e1915df2b81ffb72b94bec3a8aba8a44423e08ec1e1",
+          "size": 39714,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/connectivity_expansions_vs_gamma.png",
+          "sha256": "2e836126f1992ee42905c74a0de0f6efa527aa8e5a482b2ebc1ca04ebede2726",
+          "size": 71581,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "seed",
+            "planner",
+            "lam",
+            "gamma",
+            "status",
+            "expansions",
+            "path_len",
+            "path_risk_sum",
+            "path_conn_pen_sum"
+          ],
+          "file": "contributions/06_energy_connectivity/results/connectivity_sweep.csv",
+          "rows": 140,
+          "sha256": "4b3f4ca28e27780a8b89b9ab674c83b6f551c30035fb6b1390bd3832660e8230",
+          "size": 10865,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "seed",
+            "delta",
+            "gamma",
+            "status",
+            "safe_mode_activations",
+            "disconnect_steps",
+            "replans",
+            "path_len"
+          ],
+          "file": "contributions/06_energy_connectivity/results/energy_connectivity_joint_sweep.csv",
+          "rows": 600,
+          "sha256": "182f5797d76084ac76926f138d752d0dc4423d5c238c99b54c4a10bcfc1077ba",
+          "size": 13559,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "gamma_E",
+            "success",
+            "reason",
+            "L",
+            "R",
+            "E",
+            "J",
+            "expansions"
+          ],
+          "file": "contributions/06_energy_connectivity/results/energy_risk_time_sweep.csv",
+          "rows": 5,
+          "sha256": "d8d1bf1fdffd59e3e48c723791ab1a5364571ecdef7c0204d252b0f5e82388f5",
+          "size": 322,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/energy_sweep_E.png",
+          "sha256": "5bc1e13cc7e2ebe9c3cf90488b9a924a918de17e24d6ee9a8694cf0278306e9d",
+          "size": 11907,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/energy_sweep_L.png",
+          "sha256": "5de7ee729c039bcb16dc02b9d05716d98cb41fb8170934f8ebd39afa7e4af6d7",
+          "size": 11600,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/energy_sweep_R.png",
+          "sha256": "04696dbc35458f8f7490eef83f29d21281226a3e84d92d9f32b176d9f98566fd",
+          "size": 11276,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/energy_sweep_expansions.png",
+          "sha256": "0eda46bea07297183c2611d3ecda9a568cdcb94589368b9729f33797c935258a",
+          "size": 13641,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/heatmap_disconnect.png",
+          "sha256": "6c133905a94e9f224dd4a46554dbb835a33419e18f70b655f5d1f4a6e97b97b4",
+          "size": 46612,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/joint_disconnect_vs_gamma_delta_0.0.png",
+          "sha256": "6319f2b096d0051b19d0c6c181e3e920d31423c0c5e044c81463d2c42204d280",
+          "size": 67598,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/joint_disconnect_vs_gamma_delta_0.5.png",
+          "sha256": "a02abe6d2f533dfcf2eea5a7241e509e46bbcd0653a263128872753741835e9a",
+          "size": 68913,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/joint_disconnect_vs_gamma_delta_1.0.png",
+          "sha256": "a533d4fa350f8f5537db26b96e10ac4ea1d011e1f7e31ffd8e61df0b7028a940",
+          "size": 68793,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/results/joint_disconnect_vs_gamma_delta_2.0.png",
+          "sha256": "5d857951f2a70a5dbbe3c68062e1babd6b7eb70f55f7803ddd5a8364712cdbe5",
+          "size": 70948,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/06_energy_connectivity/tests/test_real_odometry_resource_proxy.py",
+          "sha256": "7493502d2d32fc86bb37fa2510bf5f3bcc51d6f7d3822c52028c2d16fbffbb86",
+          "size": 1253,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C06",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 4,
+        "PNG_DECODABLE": 11,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 16,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 6
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/07_nbv_exploration",
+        "contributions/07_next_best_view"
+      ],
+      "file_count": 63,
+      "files": [
+        {
+          "file": "contributions/07_nbv_exploration/EXECUTION_EVIDENCE.md",
+          "sha256": "5e6bf834f8a862a5007bbc3b4f36b0723e48b6bcc2033d19cb96ab858b8434fc",
+          "size": 1230,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/add_option_entropy_grouped.py",
+          "sha256": "864bcd29a22379261dfe02b6558626584d25c6893644d2164be0447e214e73b4",
+          "size": 1416,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/add_option_entropy_to_nbv_scores.py",
+          "sha256": "033930cee699f6e4a4f3e86a9cb0c8eb9a74c39382c0896aee380a2e6936570d",
+          "size": 2253,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/frontier_explorer.py",
+          "sha256": "f65e6b6ae5bfcc57b18af9f571d1b065e866ca209662ffd163e43d593ee438d1",
+          "size": 7195,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/frontier_vs_infogain.py",
+          "sha256": "8ece813b7bb98edadf7417c2acd22f630ce288d0ea0d0201060209ef44c659d8",
+          "size": 8234,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/info_gain_planner.py",
+          "sha256": "42f34b995cbfd219763c5e5e919289cb33254cb86e1e1e408617b70636daecfa",
+          "size": 11561,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/nbv_frontier_sampling.py",
+          "sha256": "87ed476d88c5afe5e8f5bb13a7eddfff643c1ef4ebfbb2cf6b2c6ed6466fb24e",
+          "size": 2135,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/nbv_irreversibility_scoring.py",
+          "sha256": "37b597a943036b3ce3c2d3e7aa4dba0fbe4e0b62528aeeb83d2a8a34891e55f2",
+          "size": 1955,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/code/nbv_option_entropy.py",
+          "sha256": "657b165111f8dd8715c83b5f4ed7ae0001f2ddb480ff99dc0b1fbe8045f4d280",
+          "size": 1063,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/analyze_option_entropy_returnability.py",
+          "sha256": "5c169a18dc4dfa7c8cb3646845d68f9e3fe258447817ba71c605063166a04314",
+          "size": 4106,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/eval_nbv_exploration.py",
+          "sha256": "953759e932a7fb12828327821f1be02c5b001c538e1e1ab25702e1f4d878de14",
+          "size": 2711,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/plot_nbv_frontier_top10_overlay.py",
+          "sha256": "77c3f4767fc7c8698425cfcee1cae08f99bd1c7421eb7ed6d5c162d1cec9bad8",
+          "size": 2738,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/plot_nbv_random_vs_frontier_benchmark.py",
+          "sha256": "f20b30c10b70b09e77fec04ff57925ed494701206d94dd2aa4e1642427dbecf1",
+          "size": 1346,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/plot_nbv_topk_overlay.py",
+          "sha256": "8cdfb902f63962dadf7b0c79f8db4ecf19cb82fb058f1de3e75acf50e185b3b7",
+          "size": 2896,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/plot_nbv_topk_overlay_I.py",
+          "sha256": "14d13358845fdc48d690b99ca3fab351306c216ee82f477fe7b2028fbf26401d",
+          "size": 3077,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/run_nbv_frontier_demo.py",
+          "sha256": "2bbe0d591d4b00fcc213ea24e25a06795ed9b66a89d2b1ece0c6d4a3b5858944",
+          "size": 2228,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/run_nbv_irreversibility_demo.py",
+          "sha256": "72f17ffd24c62c8844125f630ccb1c06d4a865ccf679e9519f211fe325ae42b7",
+          "size": 3405,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/experiments/run_nbv_random_vs_frontier_benchmark.py",
+          "sha256": "1865fb70162e9460e3d12b6818bcd3d0eb4d7cfa14efb7fc28d4a05e9213d5a3",
+          "size": 3676,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanIG_3methods.png",
+          "sha256": "3345e41ceb83e60a6ed2b14abb538c637b231478a05942ef77004db66bfe968d",
+          "size": 72105,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanIG_random_vs_frontier.png",
+          "sha256": "9c4d8dd1d726e19d6dfbdadca700006ff409c64a332da272d2eccf7b203a67df",
+          "size": 41547,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanI_3methods.png",
+          "sha256": "124ad5fb5c74cb295903fee4409acda20fd72a55606b2859c4d57dafdece4001",
+          "size": 75507,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanI_random_vs_frontier.png",
+          "sha256": "f0d9fe202c901aeb9e64ba337f3b24590ab3924fb4986f84066faede463bc190",
+          "size": 44644,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanR_3methods.png",
+          "sha256": "35ab714a727aa5a5bd34c81f8e6a81afcf426672eae488cf522f8b81d00f828a",
+          "size": 68729,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/bench_top10_meanR_random_vs_frontier.png",
+          "sha256": "4d0dc2613a1d725e835e5def845f36fbe502dbfaafbe919276ac37598cf0ee93",
+          "size": 39046,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "method",
+            "avg_mean_IG",
+            "avg_mean_I",
+            "avg_mean_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/c07_nbv_summary.csv",
+          "rows": 3,
+          "sha256": "81d403e1f890536478d34cb2eae816f74eb580c68c482381f94e41fd95c65728",
+          "size": 239,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/c07_nbv_summary.md",
+          "sha256": "51cddb021b1686649e9c1ba71d99c60acdbc1b57afaf656c98108d45cc6c0dcd",
+          "size": 499,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/entropy_ig_viz.png",
+          "sha256": "97d0671a1b81822748c5f268c8b610199bb64960a11cc1f975b38d4dff275064",
+          "size": 82798,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "30",
+            "40"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_classical_topk.csv",
+          "rows": 9,
+          "sha256": "683aec5db70194cc493cc79569fb7870532092fd3f8bed11d6642836333cdb79",
+          "size": 60,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_classical_topk.png",
+          "sha256": "6bf1b32a4a4e3c45b1bf8a3ba75d70ec7f31c71cf8e04cb1e0cd193ef190f0a2",
+          "size": 21458,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_demo.png",
+          "sha256": "b6d870554f61b28a83488498e8172b518d8e0dcc96879ffb692fcd577f512a6b",
+          "size": 82790,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "0",
+            "0"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_driftaware_topk.csv",
+          "rows": 9,
+          "sha256": "b44f865bf94d05f5487ba4f70c90c0c6015fae576782b85440069ec08833fabf",
+          "size": 55,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_driftaware_topk.png",
+          "sha256": "0d8f1e57c217279b428a3c343cf4601f4ea4938116b55f77c55ffec2e238e005",
+          "size": 25127,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R",
+            "seed",
+            "episode",
+            "step"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_scores.csv",
+          "rows": 135,
+          "sha256": "074d1a29a24d5a0b7ac14cd9fbb20be17b77813cfece8782cac521b7a512fb56",
+          "size": 16116,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R",
+            "seed",
+            "episode",
+            "step"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_scores_log.csv",
+          "rows": 135,
+          "sha256": "074d1a29a24d5a0b7ac14cd9fbb20be17b77813cfece8782cac521b7a512fb56",
+          "size": 16116,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R",
+            "seed",
+            "episode",
+            "step",
+            "option_entropy_norm",
+            "option_entropy_K",
+            "option_entropy_temp",
+            "option_entropy_utility",
+            "score_IG_I_R_opt"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_scores_log_with_entropy.csv",
+          "rows": 135,
+          "sha256": "2c08100bb68668b2a2ff9e2ac1b7a42d4b98d38d50a43b465044f3da4af749eb",
+          "size": 21989,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R",
+            "seed",
+            "episode",
+            "step"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_top10.csv",
+          "rows": 10,
+          "sha256": "2b589e683fffe7a2f27d8e05fb7363bc96a42cd6fbd31b6df358239ff89b5708",
+          "size": 1310,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_top10_on_I.png",
+          "sha256": "a14f6780865a18a9cc0686df0c4b9de9da3943302af0f156a24b6968cb0ce618",
+          "size": 42742,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_frontier_top10_on_R.png",
+          "sha256": "d28c93b7663a98a02304d77a75c53fad0cb9cb4bb242d51f76641c4f337c1ba4",
+          "size": 48114,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_goal_scores.csv",
+          "rows": 500,
+          "sha256": "2b5ff90d39d3a714740ad33a29e78d1d515aa0bfb6e22e2d1becea5377ba45ff",
+          "size": 50057,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "x",
+            "y"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_classical_goals.csv",
+          "rows": 30,
+          "sha256": "3574e513e3c7ed42bddf5999062d036fe2bd85a3124600476164ab9d3c1bc4da",
+          "size": 165,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "step",
+            "ig",
+            "drift"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_classical_metrics.csv",
+          "rows": 30,
+          "sha256": "42f0533d250010a5cb504dc07781e860cfb076a0fb38d1604ddf39ab1c857190",
+          "size": 2264,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_drift.png",
+          "sha256": "6e94c2c6f721ae5f90a5ef6ba3d1c18ff6bfc9ea7d167d19c910257c581e0b27",
+          "size": 31332,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "x",
+            "y"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_driftaware_goals.csv",
+          "rows": 30,
+          "sha256": "fce04b845bd144a9454c50aa19c3730a16c4e8d995b2b1543f8d497409dd74dc",
+          "size": 168,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "step",
+            "ig",
+            "drift"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_driftaware_metrics.csv",
+          "rows": 30,
+          "sha256": "4639f11457d6274538a9d4b2b94087fedf90dc8c7b76d97d15e58e62c811306d",
+          "size": 2264,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_multistep_ig.png",
+          "sha256": "45f6ce4459545169dff86d59ef5f52b7fd6144c20761969026d9a1a62535a8f1",
+          "size": 22182,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "trial",
+            "method",
+            "mean_IG",
+            "mean_I",
+            "mean_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_random_vs_frontier_benchmark.csv",
+          "rows": 90,
+          "sha256": "7d52fe72c56c225ea00c2bc30eb7ce92f18a2e0990820eaf8ad5a1cafaec8d48",
+          "size": 6482,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_scatter_IG_vs_I.png",
+          "sha256": "53185f0340a3f84f2ce5ee6048bb8e5a1e24ce9ff2c919df7cbf50819dade755",
+          "size": 102177,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R",
+            "option_entropy_norm",
+            "option_entropy_K",
+            "option_entropy_temp",
+            "option_entropy_utility",
+            "score_IG_I_R_opt"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_scores_with_option_entropy.csv",
+          "rows": 135,
+          "sha256": "a219644ee5a31ba23f96b3985554fafb50a358b3240310e82b49cd18097fd59e",
+          "size": 21161,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_top10_full.csv",
+          "rows": 10,
+          "sha256": "9cf7e7865347da3438915276b39969ddb7b3e9f5605141eae3e130ee3c82b73a",
+          "size": 1246,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_top10_ig.csv",
+          "rows": 10,
+          "sha256": "35c170b5f53a90e1b93c3e09da774d669818fe2a8f299595bc948037aacecec4",
+          "size": 1112,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "y",
+            "x",
+            "IG",
+            "I_local",
+            "R_local",
+            "score_IG",
+            "score_IG_I",
+            "score_IG_I_R"
+          ],
+          "file": "contributions/07_nbv_exploration/results/nbv_top10_ig_minus_I.csv",
+          "rows": 10,
+          "sha256": "ef4c85e6f37b1d98570fbddd58c28d41f2757186d47104fff4806dad631eb99e",
+          "size": 1067,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/07_nbv_exploration/results/nbv_vla_viz.png",
+          "sha256": "0f8dc83fa59e10151d8a4065e56dfd1561c4b2aae4d38889341e1ac36a26f475",
+          "size": 103433,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/07_next_best_view/EXECUTION_EVIDENCE.md",
+          "sha256": "610b42f5e670e3e85e58c31b3caa06480730dba27edfef4328b25488099176e2",
+          "size": 3058,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_next_best_view/README.md",
+          "sha256": "11c9c17f0d1d2e7be5871e4c7d4588c1a69dbde11b0281e0a3158cec2060660f",
+          "size": 6935,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_next_best_view/README_GR.md",
+          "sha256": "802f89daa5bd6478d63f821d982ecb89328162b719c014ffa489bcc0ea1c2bc4",
+          "size": 9728,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_next_best_view/REAL_OFFICE_FRONTIER_NBV_EVIDENCE.md",
+          "sha256": "c8f468a1dade0b032af2afeda5e3a7b80717ae98ae9af5511f7f1e37fbcab737",
+          "size": 5153,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_next_best_view/assets/next_best_view_pipeline.svg",
+          "sha256": "92e059899e6cab997435e548de087d148e16afc1f74c0014bd22b9a9f87f42b5",
+          "size": 4320,
+          "status": "SVG_XML_VALID",
+          "type": ".svg"
+        },
+        {
+          "file": "contributions/07_next_best_view/code/nbv_scoring.py",
+          "sha256": "0d5be96d9b00465d1008ecb031d03ab992d70beabc77cdd330f91c315bd6aeeb",
+          "size": 3530,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_next_best_view/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "76e8827c26ddc75992c3ad452a649d0aa8ed528e367979f74c92271a94670ec1",
+          "size": 2826,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/07_next_best_view/experiments/eval_real_office_partial_observation_nbv.py",
+          "sha256": "76f3a1648956a781c43715a78b9c189f53ea009a6d6f673d73b874c5eda3fb32",
+          "size": 9702,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_next_best_view/experiments/eval_returnability_aware_nbv.py",
+          "sha256": "a6e6529492257b3e6069a45d935516be5828032c649cba1468f1e3d725e3fe95",
+          "size": 3131,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/07_next_best_view/tests/test_real_office_partial_nbv.py",
+          "sha256": "f7fc2ae10448518b4df1565a1b8b2934bddba59808efba2b842ac74d81ffbad8",
+          "size": 1918,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C07",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 17,
+        "PNG_DECODABLE": 16,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 22,
+        "SVG_XML_VALID": 1,
+        "TEXT_READABLE": 7
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/08_security_ids"
+      ],
+      "file_count": 61,
+      "files": [
+        {
+          "file": "contributions/08_security_ids/AUDIT.md",
+          "sha256": "801baa156f2956b29b855a1287de1b3d7d356be16de3add0d009488c9dca2e25",
+          "size": 3437,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/EXECUTION_EVIDENCE.md",
+          "sha256": "99f0a0a5f560cd4859e0beb2fc1a78785b6f2be8e5c0f6e51200da430d3f77cf",
+          "size": 2711,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/README.md",
+          "sha256": "b5b0ccdcbb71e000614fe0893135c23ab585674c608d15d9f9a889b76ce11df7",
+          "size": 6718,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/REAL_DINGO_IDS_EVIDENCE.md",
+          "sha256": "242bd42bd6309dec75c385a490fde81529577fc700ae6dcf1302f666ef1d4402",
+          "size": 4286,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/REAL_DINGO_OFFLINE_IDS_EVIDENCE.md",
+          "sha256": "b3b5cee1e64d7fb583a900cbe04891f1fcc63e151674d296f62db5d49bc086fd",
+          "size": 4263,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/attack_aware_ukf.py",
+          "sha256": "a0d1cdb8980edf9f577515085dd94625028cc6c6046f5e2c8b133aee8d157967",
+          "size": 11542,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/attack_injector.py",
+          "sha256": "a3bc4c2890c29e406254a13318fcd1b9234d51453fe9cefc95deaa21cd1c52ba",
+          "size": 2295,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/cusum_detector.py",
+          "sha256": "9c2507970f82e43cfd1265b83956818d02482dbe6f5452007def32b38a42693c",
+          "size": 6138,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/ids_cost_shaping.py",
+          "sha256": "dcaae36f903e8679c02566549b259cf7403477cdb316f255d78bd692751e7f64",
+          "size": 1607,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/ids_mitigation_policy.py",
+          "sha256": "65d503de4e52a33b2ae630245ed4703b8b394b7a5d86f36ceeafcddd7b6a963f",
+          "size": 1417,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/ids_response_policy.py",
+          "sha256": "4886048f00a4f0aac9cd70fd06945a2a01c9a520440b85c0c31fdcd9f8192169",
+          "size": 3482,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/security_monitor.py",
+          "sha256": "edf85d56ffe9dbe3350ce635308ddc66b02135b1b37eb49d239c052d41991ccf",
+          "size": 4103,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/code/security_monitor_cusum.py",
+          "sha256": "eead77a65c4c9509e97e862ba0d6f994099834f952a7c06e77c618b92d1aca61",
+          "size": 2136,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "144088e908dbc54a5132ab033026693665e2b16e826f745cc2dbf6b1239cc4b1",
+          "size": 2992,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/calibrate_tf_cusum.py",
+          "sha256": "b799d944caf7a926b2429650bc0ab5a48e8db5505e09116417609957f3edd123",
+          "size": 3736,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_dingo_injection_sensitivity.py",
+          "sha256": "fc65f25f7ab4c30952fcacee0d09c50aae0cfeb3c5af6726fde93ac190fd0bbd",
+          "size": 2740,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_ids_cusum_ewma.py",
+          "sha256": "05a6647f2a8b67e26982deccd04258bbecebc3d92065954729ceabd7818c5425",
+          "size": 8404,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_ids_replay.py",
+          "sha256": "5cd3001bfbeb896820240c68337b3e7a1ed924161735797c36712ca0a48569a1",
+          "size": 6379,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_ids_response_policy.py",
+          "sha256": "228d79a4be86272e03fcb18bf452e19420ed979fc45ea67a1a73a91acc2df14b",
+          "size": 2553,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_ids_roc_delay.py",
+          "sha256": "0bb7f6a1f4280f504d179a0414d561f7336328585a22afe4116e8251d955014b",
+          "size": 7319,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_ids_sweep.py",
+          "sha256": "f214c2aa1bd8d0f3762bc583d15ebba7501c2642a70d6284cf730e1923592eb0",
+          "size": 2036,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_real_dingo_odometry_synthetic_attack.py",
+          "sha256": "46e496db99db03424f09109d1ff72cc09080599f84670415160d3e6fa8233671",
+          "size": 6406,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/experiments/eval_security_ids.py",
+          "sha256": "c50e3512032d661d41d8ce3c1df7b20cd84a4447a9c038e4ebb6bd8efe1e6700",
+          "size": 1938,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/results/attack_aware_est_traj.png",
+          "sha256": "75f83964893a651494129502a5ce439559d8d2c9c55bd11d7a9dda2a4fd1b343",
+          "size": 44422,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/attack_aware_inflation.png",
+          "sha256": "92250b646308b17dc94284ea7a6501f4abd096e7df94cb8f876432001c075c8c",
+          "size": 72081,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/attack_aware_nis.png",
+          "sha256": "1282cc8b1f6bcebadda4882d9eb3232420899ceacc001a357e24252bcb02ee0b",
+          "size": 181564,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/attack_aware_trust.png",
+          "sha256": "7304d060a775d5e0fdaa398f249aec4b4b0f4b0f21be765fd184d905aed417f5",
+          "size": 53608,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "method",
+            "ROC_AUC",
+            "detect_rate",
+            "FPR_star",
+            "delay_mean_steps"
+          ],
+          "file": "contributions/08_security_ids/results/c08_security_ids_summary.csv",
+          "rows": 3,
+          "sha256": "36ee69074bb57d2966e7f9e93c7df8d14e16f49bd2465956c3b845e1d771ce99",
+          "size": 264,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/c08_security_ids_summary.md",
+          "sha256": "30f1fd2b1d52fdda0c72557f8a9ac29ea51ce5ef0dc2313ed2f20b0ffdcd3e95",
+          "size": 358,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "columns": [
+            "seed",
+            "attack_level",
+            "mode",
+            "lambda0",
+            "T",
+            "attack_start",
+            "attack_end",
+            "mean_score",
+            "max_score",
+            "ok_plans",
+            "episode_success",
+            "total_cost",
+            "total_risk",
+            "max_risk_cell",
+            "expansions_sum",
+            "api_used",
+            "last_err",
+            "used_toy_fallback"
+          ],
+          "file": "contributions/08_security_ids/results/ids_cost_shaping_results.csv",
+          "rows": 80,
+          "sha256": "2421a2a9aaa8dac3a73dbcf9dc53503f14f0dfda3a6cc119eb91110a7fc766a3",
+          "size": 12118,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "seed",
+            "attack_level",
+            "mode",
+            "lambda0",
+            "T",
+            "attack_start",
+            "attack_end",
+            "mean_score",
+            "max_score",
+            "ok_plans",
+            "episode_success",
+            "total_cost",
+            "total_risk",
+            "max_risk_cell",
+            "api_used",
+            "last_err",
+            "used_toy_fallback"
+          ],
+          "file": "contributions/08_security_ids/results/ids_cost_shaping_results_real.csv",
+          "rows": 24,
+          "sha256": "edb270c9e72b8357aa400a7e8d28e0f68079c9d3d44a8d31c8d0be67840fad02",
+          "size": 3707,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_cost_shaping_success.png",
+          "sha256": "37becbcec69c84634a894c60c8ad778490062cb74b54ae63ab96c82ad1622213",
+          "size": 56648,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_cost_shaping_tradeoff.png",
+          "sha256": "56a88dd0608ee776d61bccefa88ee99291cd9ba534c943e7b4809dde78606ca4",
+          "size": 57461,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_cusum_threshold.png",
+          "sha256": "edf80318d9b8588be7882cd29b6e352b9427dd6ee785d1de8f41a114e1ae1bb5",
+          "size": 53287,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_d2_thr.png",
+          "sha256": "69bb448562c6c31d99d9c84912447565f7696a62fc6deeccbbcd82fa49b72900",
+          "size": 103208,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "thr_star",
+            "FPR_star",
+            "TPR_star",
+            "ROC_AUC",
+            "PR_AUC",
+            "detect_rate",
+            "delay_mean_steps",
+            "delay_median_steps",
+            "delay_p90_steps"
+          ],
+          "file": "contributions/08_security_ids/results/ids_delay_stats.csv",
+          "rows": 1,
+          "sha256": "c18c74c2544d387874bfe8ca665b505bb4638bdac09a4822441814442632e323",
+          "size": 331,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "method",
+            "thr_star",
+            "FPR_star",
+            "TPR_star",
+            "ROC_AUC",
+            "detect_rate",
+            "delay_mean_steps",
+            "delay_median_steps",
+            "delay_p90_steps"
+          ],
+          "file": "contributions/08_security_ids/results/ids_methods_summary.csv",
+          "rows": 3,
+          "sha256": "3e9d21c929863bb4bbaa4077e294817b2bc2a9fef21e965444d0b4b4fd86ff26",
+          "size": 486,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_mitigation_outputs.png",
+          "sha256": "53b39de1ebdedc63896d854f9f7a39087a54705e448d671636873ab39e4b811d",
+          "size": 35324,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "thr",
+            "precision",
+            "recall",
+            "TP",
+            "FP",
+            "TN",
+            "FN"
+          ],
+          "file": "contributions/08_security_ids/results/ids_pr.csv",
+          "rows": 250,
+          "sha256": "741148453c4be1d3ac5ed2eff3cfe635a787923cc2cbfb32b6c8a3d428205c7d",
+          "size": 43783,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_pr.png",
+          "sha256": "ed94eb366d532d715ce8d0294bd6d9af08790f03e886b425ee5799639d8c58ac",
+          "size": 49594,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "t",
+            "attack",
+            "d2",
+            "thr",
+            "ratio",
+            "scale",
+            "flagged",
+            "streak",
+            "triggered",
+            "alert"
+          ],
+          "file": "contributions/08_security_ids/results/ids_replay_log.csv",
+          "rows": 200,
+          "sha256": "672684c65f98842cd0283e40cfb081ff40a661f7b9894c3f1eebe3f0439b8153",
+          "size": 10407,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "thr",
+            "FPR",
+            "TPR",
+            "TP",
+            "FP",
+            "TN",
+            "FN"
+          ],
+          "file": "contributions/08_security_ids/results/ids_roc.csv",
+          "rows": 250,
+          "sha256": "214c57593f9cfce9bf451065b3a01d0ca1ca074c5d2671d5c990cee319e37728",
+          "size": 43774,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_roc.png",
+          "sha256": "b98b13ee76acd284781f3f6a7bb7d01381b434ddf41a64e235b2e7d9f0c1c4c2",
+          "size": 48617,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_roc_compare.png",
+          "sha256": "517a8d93ce5bded31ed5250484b4e4e472c470a025d75f5faf84250f19afe086",
+          "size": 72146,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "thr",
+            "FPR",
+            "TPR",
+            "TP",
+            "FP",
+            "TN",
+            "FN"
+          ],
+          "file": "contributions/08_security_ids/results/ids_roc_cusum.csv",
+          "rows": 291,
+          "sha256": "83f4d413bb473c2ccae20017667f0226f52223673befb9e20090be2e7920f67c",
+          "size": 50949,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "thr",
+            "FPR",
+            "TPR",
+            "TP",
+            "FP",
+            "TN",
+            "FN"
+          ],
+          "file": "contributions/08_security_ids/results/ids_roc_ewma.csv",
+          "rows": 300,
+          "sha256": "932564a4ea241608457a210ba2aa8d6438092377512ba9960a1488ea14100d13",
+          "size": 52524,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "thr",
+            "FPR",
+            "TPR",
+            "TP",
+            "FP",
+            "TN",
+            "FN"
+          ],
+          "file": "contributions/08_security_ids/results/ids_roc_raw.csv",
+          "rows": 300,
+          "sha256": "0f3bdbcd5df29bce6e9037d96a89b2c7734cd87ffd055aee8ae144797fd2b9d2",
+          "size": 52524,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/ids_scale.png",
+          "sha256": "99675587d931c79d5e7175d4ca4fdfa3a543f925a7e8c27814057faefff69d6d",
+          "size": 73499,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "t",
+            "nis",
+            "ewma",
+            "cusum",
+            "alarm",
+            "safe_mode",
+            "vo_trust",
+            "lambda_eff"
+          ],
+          "file": "contributions/08_security_ids/results/ids_to_planner_hook_log.csv",
+          "rows": 250,
+          "sha256": "567dbeee587c651471bcccce78725598de26ff1cccbbcfc5655e1f1aee6ab02b",
+          "size": 50053,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_attack_cusum.png",
+          "sha256": "6b077b82b023b814422b0bd92678a26f01227f64fa93619d260bc511ad7b823f",
+          "size": 52547,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_attack_params.txt",
+          "sha256": "ce5174e24f4e8431ee02216299f169494e5e79f2775e84cbd9574120ad413d2c",
+          "size": 138,
+          "status": "TEXT_READABLE",
+          "type": ".txt"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_attack_score.png",
+          "sha256": "5a96865d1e4b5a9725bde9c010ea412ec7b8dd211a4a74d20dfc40019f439ca7",
+          "size": 39565,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "t_sec",
+            "tf_score",
+            "tf_cusum",
+            "tf_alarm"
+          ],
+          "file": "contributions/08_security_ids/results/tf_ids_stream.csv",
+          "rows": 567,
+          "sha256": "e9233a98347502c40e46758e4b30ee0c2f55918105f34bca12fc8e8ead14f73b",
+          "size": 28193,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "t_sec",
+            "tf_score",
+            "tf_cusum",
+            "tf_alarm"
+          ],
+          "file": "contributions/08_security_ids/results/tf_no_attack.csv",
+          "rows": 1244,
+          "sha256": "6b46c49ab7a1415773d25769bd7d3f0511fbece54950e288bd5f7074fbad9fb2",
+          "size": 63060,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_no_attack_cusum.png",
+          "sha256": "0bb89cf6dbaf27c67fdcf357d60cc0c675614c2cc39724c9661551acfc7bdacc",
+          "size": 52574,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_no_attack_params.txt",
+          "sha256": "9abf1220c191264cd27b0345805ff45afcdaec50c75e801c3a531d8a12b4858b",
+          "size": 72,
+          "status": "TEXT_READABLE",
+          "type": ".txt"
+        },
+        {
+          "file": "contributions/08_security_ids/results/tf_no_attack_score.png",
+          "sha256": "fbe9e94e43f4ef1fd1c3877c7655728590db57121785c91f10a725c7b71f4109",
+          "size": 35777,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/08_security_ids/tests/test_dingo_injection_sensitivity.py",
+          "sha256": "e19acf07838f6e33aa3c0c7bda27c20a99c2ff7d1975bb78d1cdeab1408375e1",
+          "size": 1242,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/tests/test_real_dingo_offline_attack.py",
+          "sha256": "b3c9c9e50166afe919025be0ece156bc5272b6e635302a4045945e0ab8e07ff2",
+          "size": 1890,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/08_security_ids/tests/test_security_monitor_import.py",
+          "sha256": "f225fa9116974b6d42eee51d2b175945605ac000164fa573c52bd3aefe730407",
+          "size": 1100,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C08",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 14,
+        "PNG_DECODABLE": 17,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 21,
+        "TEXT_READABLE": 9
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/09_multi_robot"
+      ],
+      "file_count": 28,
+      "files": [
+        {
+          "file": "contributions/09_multi_robot/DISCRETE_COLLISION_VALIDATION.md",
+          "sha256": "a5c49d7b8009ad06f172feaae3f0d542274e3bb1746da27983b19df685a81e68",
+          "size": 4235,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/09_multi_robot/EXECUTION_EVIDENCE.md",
+          "sha256": "97b3717108646386368f62e8e254dc0f4ff3ce2da2e72e5ec914c77e66a174f8",
+          "size": 2756,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/09_multi_robot/README.md",
+          "sha256": "db0b7332974f634042e162f0103837ca2eb5064d43b7e876ae22d353c1316e4d",
+          "size": 6114,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/decentralized_nav.py",
+          "sha256": "2cca19347c7721d9203eba4a6f0acf73d7b36426b8edb7f499b79ae2f5a99407",
+          "size": 11082,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/memory_aware_planner.py",
+          "sha256": "b2cd8e3c9cb1eac4cbc650e7c75c328a614faab829a3cc34b4031c2487bdfb4b",
+          "size": 2500,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_coverage_sim.py",
+          "sha256": "261e8dd9581358b61b58b7a4b194a42d2fc6c4ea38fc73f27e7c1ff4d4b407a5",
+          "size": 11519,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_disagreement.py",
+          "sha256": "6363a46fa2c5e266cfb3d9c6d5a7532c99809596c1b5e81ff31eb0c42f039a4a",
+          "size": 1847,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_risk_allocation.py",
+          "sha256": "84cbb4d59cb3e7868beaed337d4d4e38a96c7a6dc02ee4dd5f3530682d6b8f3f",
+          "size": 8712,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_safe_mode_demo.py",
+          "sha256": "2ea63e301bf8efa574bb0046f00ae01dc2e3aa254a646c1acbc03e426475eddf",
+          "size": 4745,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_safe_mode_experiment.py",
+          "sha256": "52cd8db7fd4b1daff298066b143c0fcee36b94a8ea72c08e36077e9a2da5f9c6",
+          "size": 8962,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_safe_mode_logged.py",
+          "sha256": "353d678a2a526f938d4143c457e73c66f7e63681b5579c8bec5e8093dc96b2f3",
+          "size": 9911,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/multi_robot_uncertainty.py",
+          "sha256": "994fb0a1d915e57c1f06bce8b7fbec0bcff287222d471b4a560ec71a53ce23c2",
+          "size": 951,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/code/team_coordination_metrics.py",
+          "sha256": "27f60d8798b774f0fd3763ff96da52bb5ebf2ae8abf9b11db04f916d7c767046",
+          "size": 3639,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "de311ffa3664ef42eb1d0bbf2816bf2309f4adb548a77f282909b22ccefa4d43",
+          "size": 2604,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/09_multi_robot/experiments/analyze_multi_robot_risk_results.py",
+          "sha256": "8be6c2329f0db3a3c243db404ddd0327409fd1edeec966cdaeb7a5c294ee622b",
+          "size": 1544,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/experiments/eval_multi_robot.py",
+          "sha256": "1c52cbd4777336b2a38fbf61122036066ad6d23ebfc3699e325cecc2e790e793",
+          "size": 3617,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/experiments/eval_team_coordination.py",
+          "sha256": "9b4fd471b7d37cf6d6f09a37dede5b5cc14d872012d371e700d23fd94ac2f9fd",
+          "size": 3625,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/experiments/run_multi_robot_experiment.py",
+          "sha256": "f729ca6ac45eae26cd048bcc0f6218987f410304c35f4b4b8bd23be3400fd101",
+          "size": 1951,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/09_multi_robot/experiments/run_multi_robot_risk_experiment.py",
+          "sha256": "6f36f54f6b2da930531b116c796f5bd6b2f6e9361433ecc1ec8607e609a04bfa",
+          "size": 11299,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "columns": [
+            "episode",
+            "success",
+            "failed",
+            "path_len",
+            "expansions",
+            "mem_max"
+          ],
+          "file": "contributions/09_multi_robot/results/memory_aware_results.csv",
+          "rows": 15,
+          "sha256": "bbaef13fcde9c9ec38750c22eea8d2ebf3be253f8ac8d01816ccefe15d9fc3f4",
+          "size": 342,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/09_multi_robot/results/memory_episode_1.png",
+          "sha256": "d0bd1523470c3e78ef0f0345b589c667046ccdb2d7bc73f7697c3b9af5b0d8af",
+          "size": 30846,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/09_multi_robot/results/memory_episode_10.png",
+          "sha256": "d0bd1523470c3e78ef0f0345b589c667046ccdb2d7bc73f7697c3b9af5b0d8af",
+          "size": 30846,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/09_multi_robot/results/memory_episode_15.png",
+          "sha256": "d0bd1523470c3e78ef0f0345b589c667046ccdb2d7bc73f7697c3b9af5b0d8af",
+          "size": 30846,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/09_multi_robot/results/memory_episode_5.png",
+          "sha256": "d0bd1523470c3e78ef0f0345b589c667046ccdb2d7bc73f7697c3b9af5b0d8af",
+          "size": 30846,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/09_multi_robot/results/memory_failures_over_time.png",
+          "sha256": "29af194e9a0ef92c46748d82fefd82d91dc5128752614a5f72afd89b2ec6c2ec",
+          "size": 12194,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "columns": [
+            "trial",
+            "policy",
+            "num_robots",
+            "num_targets",
+            "risk_mode",
+            "total_distance",
+            "mean_distance",
+            "total_risk",
+            "mean_risk",
+            "max_risk",
+            "total_cost"
+          ],
+          "file": "contributions/09_multi_robot/results/multi_robot_risk_results.csv",
+          "rows": 600,
+          "sha256": "fd441d0a0bb5c45ced8822d4ee4799faaa5ddca3bb386a2f4e080f5aa04556c1",
+          "size": 88547,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/09_multi_robot/tests/test_discrete_collision_guards.py",
+          "sha256": "1e5102cf267a8b523b45cf3ca3d32658076535f295ab6cf28350886b022e2fd9",
+          "size": 3941,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C09",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 2,
+        "PNG_DECODABLE": 5,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 17,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/10_human_language_ethics"
+      ],
+      "file_count": 44,
+      "files": [
+        {
+          "file": "contributions/10_human_language_ethics/EXECUTION_EVIDENCE.md",
+          "sha256": "5e6eb90239e99dcbf072f17ee4cfdc6dd143eec0e79a97bf2e0a645409626cc2",
+          "size": 2764,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/HUMAN_ETHICS_FAILCLOSED_REPORT.md",
+          "sha256": "69911188a4ea24cd723f166930ac70a984decd1ac96851aa78a2e5d4dcede321",
+          "size": 2206,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/README.md",
+          "sha256": "1242276513935cce53d31fea67b3e1b04744fa3185a4a93b2284d692fc41c091",
+          "size": 6228,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/ethical_demo.py",
+          "sha256": "1b3dacfd6af90997405ec806ea193259b465ed6b49c363e3376e5f6ca1e8c6ed",
+          "size": 2150,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/ethical_layer.py",
+          "sha256": "4797a71b7cadcce860bedacfda9aa481854013b1721db62651871ff730944d26",
+          "size": 1161,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/ethical_risk_policy.py",
+          "sha256": "071c43ee273d5a79575e5c7d1946545cdd8a547e3e5ea515849aa01f4a83e8e9",
+          "size": 2751,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/ethical_zones.py",
+          "sha256": "9c6f8291aef019a155df76dd7c71e74401e69b1a7d0b9efcc988b91cc0c43d5b",
+          "size": 1627,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/human_aware_real_planner.py",
+          "sha256": "744e7d3c59fe04d7126233ed70529577eec632358f08071f3a7f6feaa67dc535",
+          "size": 5301,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/human_ethics_policy.py",
+          "sha256": "1c5ae697a5f4733a158dea8429ace1bdfb67bd0dcdbd3d374cb51cdc23b9f8d2",
+          "size": 7243,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/human_preference_wrapper.py",
+          "sha256": "6d9d230b7d4e087b381498f51150da5dd23249c7936a788d6fa20df74ecbac15",
+          "size": 3405,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/human_risk_policy.py",
+          "sha256": "12050291bad26a7cf798fe119b69b735a681c44eae85e970f730f7f75211dc7e",
+          "size": 3617,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/language_safety_demo.py",
+          "sha256": "2443e4c66aafdd3575cf1ff36f75a465eaadbda5d3e1565754250fef2b017be2",
+          "size": 1497,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/language_safety_policy.py",
+          "sha256": "e64230c78af33fd928eba0ea937d4496d03da6be80039f701ae070995ed48792",
+          "size": 6200,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/nlp_constraint_mapper.py",
+          "sha256": "26facca9b05a2dfe6ac65078e77727b927b84c2667e40b6aa15b340a2b910894",
+          "size": 6255,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/trust_dynamics.py",
+          "sha256": "3f9df439ccfbfe20674e00d215d8d6f03f04035291398c96c5b9749bf8bf2d14",
+          "size": 7344,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/trust_layer.py",
+          "sha256": "911b4e3513daa1d3318f72dfb8c9dfa0c490f8331923620e81a66d1d883dabac",
+          "size": 3060,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/code/user_preferences.py",
+          "sha256": "dbd97136f79acaeab38ecff78a39ffc14aaec889d5b338faa4bb657136821427",
+          "size": 2360,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/__init__.py",
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "size": 0,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/ask_for_help_demo.py",
+          "sha256": "11c72bf253d35f23ccfcf6da47383d91a68846f578af2a02512fa740a0adecb1",
+          "size": 1829,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/ask_for_help_policy.py",
+          "sha256": "5341539717f27bcdbac7d32496bcead1e895d9ce9a22ceb7611d11faaa1e4dbe",
+          "size": 3013,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/coverage_clustering_demo.py",
+          "sha256": "00ddf260ce44a39edbd4030331919579aeb930d85b3dbdb64d4869ec5a566e6a",
+          "size": 3058,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/emotion_aware_demo.py",
+          "sha256": "6f566a2393e3e612756919deea59bf6c7414dd1cc9d8569d20dc0324eae42e2e",
+          "size": 2031,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/eval_language_ethics.py",
+          "sha256": "dccf55c2494a6befba98f76ff7351e19c36c29bf17f501d0a17d179f0b23323e",
+          "size": 3119,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/ig_planners_demo.py",
+          "sha256": "a1703ac1e42a912a3a14aad0dfd1a321db611148c4291f0938fc22d8e3effda5",
+          "size": 2634,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/informed_rrt_star_demo.py",
+          "sha256": "f057cae8f0ec2dc45ecf01aa5bd93eb5dd80f85c6a3307acea7b508fc50c23a4",
+          "size": 9290,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/integrated_navigation_demo.py",
+          "sha256": "ac393f2d243ef085c5c8eab2f479a414c4c08cf1c8bb8a48c3d408c912148d10",
+          "size": 2209,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/rrt_demo.py",
+          "sha256": "f780c34ed1037674229909a6dd8fc54a2c4dd7fd35aa8380e425b76d2b854bce",
+          "size": 5063,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_ids_cost_shaping_demo.py",
+          "sha256": "5d3d9f44f9365bd554c3175cafbfcf6c4eb0455aa611257142da10993eb1c28a",
+          "size": 9721,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_memory_aware_demo.py",
+          "sha256": "5d55e224cad5f93fd9c2bb0aad841f870824d3760f34cea22d9008d26f0da6cf",
+          "size": 2880,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_minimax_tau_demo.py",
+          "sha256": "d79bf28238b13d76c5a55726e1dcbf8b9ffd1870a50dd31302dbbf969dac37d9",
+          "size": 2656,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_real_human_preference_demo.py",
+          "sha256": "56a51bf87605708450d220e2167b758609a840aaf73217b46ffbefe186faffee",
+          "size": 6180,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_trust_and_preferences_demo.py",
+          "sha256": "e6d6999c36104ba6bdbd4360a493336ac20543c55c73953e82c51479db917232",
+          "size": 4249,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/run_trust_dynamics_demo.py",
+          "sha256": "16bb8a9321827fa40d472c048c9b8487a1a22bedc97ad1007ff352d737cd14c1",
+          "size": 1855,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/self_healing_demo.py",
+          "sha256": "a422248aa6281698c73b43aa2dcad48d4359191aac397435c6fb00818bd88e95",
+          "size": 1932,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/ukf_demo.py",
+          "sha256": "5b42f5cfd1a46df85c5857a163421d0a580f0826e71a61866f062832f26c2031",
+          "size": 2668,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/vla_demo.py",
+          "sha256": "15b6ef72f85367f0b95cca7fcd5ef09d98bb0d1a43486cf3690c8f607023edab",
+          "size": 471,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/demos/vla_multiobj_profile_demo.py",
+          "sha256": "f08f2a4422d3b96884e7b8dc1a6ecca07aeeafd6879af0dddd7ba54685c2c3bb",
+          "size": 7267,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "e92d9d326fbd2f3edb9efd257588217e451d5182abe50f1dec066ee71abead17",
+          "size": 3074,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/experiments/eval_human_ethics_policy.py",
+          "sha256": "c1cf83670dc4de6e8e21813f8bf0d2b036136f1072b23dc409f6f6d4fb2f9d4e",
+          "size": 3720,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "columns": [
+            "safe_messages",
+            "safe_messages_correct",
+            "risk_messages",
+            "risk_messages_adjusted",
+            "constraint_commands",
+            "constraint_commands_mapped",
+            "safe_message_accuracy",
+            "risk_detection_rate",
+            "constraint_mapping_rate"
+          ],
+          "file": "contributions/10_human_language_ethics/results/c10_language_ethics_summary.csv",
+          "rows": 1,
+          "sha256": "c37d0b8948910d7bd0243137754bf790386542c99eb78214ff48f82ac764cc6c",
+          "size": 212,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/results/c10_language_ethics_summary.md",
+          "sha256": "35865956f570558393be214b153bf5560fbc8238e33aba9b75f0d04d52a4cad8",
+          "size": 393,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/results/trust_plot.png",
+          "sha256": "832018bf32410651b76f6aa4c9662db9d6e2253f90c8d77ce26a468d0e4bdff2",
+          "size": 21249,
+          "status": "PNG_DECODABLE",
+          "type": ".png"
+        },
+        {
+          "file": "contributions/10_human_language_ethics/tests/test_human_ethics_failclosed.py",
+          "sha256": "7f07f61602471dfbb2bfc9a3766c8a9c1ee134b2df72cfb0b7fae30ef9683201",
+          "size": 2267,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C10",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 1,
+        "PNG_DECODABLE": 1,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 37,
+        "TEXT_READABLE": 5
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/11_vlm_navigation_agent"
+      ],
+      "file_count": 14,
+      "files": [
+        {
+          "file": "contributions/11_vlm_navigation_agent/EXECUTION_EVIDENCE.md",
+          "sha256": "931f2e8494c30b8138a04eb486c67509a94da5c6aab8ba697c78f8432c509987",
+          "size": 1959,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/README.md",
+          "sha256": "fc5e21253231db04fd3376b046cfffa06fde79525b617f27714cf930deaddf74",
+          "size": 6269,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/VLM_TRANSPORT_VALIDATION_EVIDENCE.md",
+          "sha256": "4d8e30f5c391c0b2064b3487194a3a485e2c5b84ec2036e9b74c32a4c80edc6a",
+          "size": 3655,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "36bcef583be087f2e0f171d60fe9d93f20a9ca32bb24c840e03eb7fd73ea7122",
+          "size": 2808,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/experiments/eval_vlm_goal_validation.py",
+          "sha256": "c18c99556e21c4cdd56334c76fd31b10dfe6be0accaa7e6fa18aff9abe8b05bf",
+          "size": 3895,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/experiments/eval_vlm_navigation_agent.py",
+          "sha256": "251a2cecab62f43cc0f6d44f1d9f9064b6098b84ba8d7d06b2a841a0a25cce67",
+          "size": 4752,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/experiments/eval_vlm_planner.py",
+          "sha256": "cd198f4270983f845e8348ac7cdf3fc5e12897f6baafac4bdc668a61f10f7e68",
+          "size": 3677,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "columns": [
+            "scene_id",
+            "gt_region",
+            "pred_region",
+            "region_match",
+            "gt_goal",
+            "pred_goal",
+            "goal_match",
+            "valid_goal",
+            "confidence",
+            "latency_ms"
+          ],
+          "file": "contributions/11_vlm_navigation_agent/results/c11_vlm_navigation_per_scene.csv",
+          "rows": 8,
+          "sha256": "680234ab4f7297ab2f798da900b481968c3987eb02f7b8ad5b438b4ea26fbc07",
+          "size": 502,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "columns": [
+            "n_scenes",
+            "region_accuracy",
+            "goal_accuracy",
+            "valid_goal_rate",
+            "mean_confidence",
+            "mean_latency_ms",
+            "confidence_goal_calibration_error"
+          ],
+          "file": "contributions/11_vlm_navigation_agent/results/c11_vlm_navigation_summary.csv",
+          "rows": 1,
+          "sha256": "df289e3e0a9d8f7b32e29fe2f53780185c34c541357234600a11df3b73c9a284",
+          "size": 183,
+          "status": "CSV_STRUCTURALLY_VALID",
+          "type": ".csv"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/results/c11_vlm_navigation_summary.md",
+          "sha256": "9254f79b4b7156947b036f6c808580ec9faaf378f1e810b7c23b3d244ce99335",
+          "size": 514,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/tests/test_actual_http_transport.py",
+          "sha256": "d9db52b62cbc950f55f1b7ae15c4b97cfd1a29b464616be419d928829c05a26e",
+          "size": 2949,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/tests/test_vlm_fail_closed.py",
+          "sha256": "c77bd15237d17c3bcddc0b9721d7b5c0d2f6506267b63bd3c29807e20ca0c4c7",
+          "size": 3747,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/vlm_goal_validator.py",
+          "sha256": "11a1197edd4fd8ff3131a0cd0ce61cd332e00f284c3c1defd7d9b7c228f32e2c",
+          "size": 304,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/11_vlm_navigation_agent/vlm_planner.py",
+          "sha256": "69333d50deb0270d0d6b9f4eb91450e9e668a6913d885c1a43f5c2bad99aed69",
+          "size": 12371,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C11",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "CSV_STRUCTURALLY_VALID": 2,
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 7,
+        "TEXT_READABLE": 5
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/12_diffusion_occupancy"
+      ],
+      "file_count": 10,
+      "files": [
+        {
+          "file": "contributions/12_diffusion_occupancy/EXECUTION_EVIDENCE.md",
+          "sha256": "1fd2e13fd4c15837d4e40e8d23f11077d2d86ce3381770d51a804e22f1b854f1",
+          "size": 1977,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/README.md",
+          "sha256": "643e99fcaeed84debc8b68020c5c2495b07dfc96918ff8e0089627482ed8bf2c",
+          "size": 6691,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/REAL_MAP_TRAINING_EVIDENCE.md",
+          "sha256": "7a2b82afc63172a708d41817fa09f8ea153b987a062509a4909a2c3855866fd5",
+          "size": 4845,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/diffusion_occupancy.py",
+          "sha256": "2288e1aaae25f36400fa4df3a7e1b045cc264060e26385c293ed1081c993c0dc",
+          "size": 9399,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "7f9369e2dd2ba2961013f08458e8b4eb574912ac6733bb8a114e8bcf960eae25",
+          "size": 2734,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/experiments/eval_diffusion_occupancy.py",
+          "sha256": "103c6b60c0a19f32958cf594137a24be9f47e9d2484adbe7243d7c1c19b58c15",
+          "size": 2895,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/experiments/eval_risk_map_quality.py",
+          "sha256": "5ac9b96081db31c3996ed8b215592417baf8ebba46193ef7d45ceb967864d1ce",
+          "size": 3772,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/experiments/train_real_map_static_denoiser.py",
+          "sha256": "f01f3c137645e2d874b5a844f18a4dbab07f200a1d7d9d4993fd8442894f1e2f",
+          "size": 7594,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/risk_map_evaluator.py",
+          "sha256": "ee734958eb93c7626bd9e35e2ef699457378177c5aef0701d7caa5311f5f1a93",
+          "size": 3288,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/12_diffusion_occupancy/tests/test_real_map_diffusion_contracts.py",
+          "sha256": "1aa88d410908af848cedbe6759b2c7c02fdcf4cd1921d5a982b0a06fddec7e44",
+          "size": 2376,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C12",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 6,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/13_latent_world_model"
+      ],
+      "file_count": 9,
+      "files": [
+        {
+          "file": "contributions/13_latent_world_model/EXECUTION_EVIDENCE.md",
+          "sha256": "332e10f03d360019d84335b95b5973e1306242354658be83c613e63985d95cca",
+          "size": 1967,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/13_latent_world_model/README.md",
+          "sha256": "4d76f994ccda9d51da0e4f44cb7d8e3ee4315590110ffa11a9de3a41693e5636",
+          "size": 6163,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/13_latent_world_model/REAL_DINGO_TRAINED_DYNAMICS_EVIDENCE.md",
+          "sha256": "d0ca5d21f702a0c4304c5f0c0b3fca69f9210dce1827e70eae56ec095b8090d0",
+          "size": 4817,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/13_latent_world_model/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "c9edb2dd02e02ef1c42262dd485b723da062bf6fa98f54426ec534c1e389d813",
+          "size": 2881,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/13_latent_world_model/experiments/eval_rollout_audit.py",
+          "sha256": "55005759b41782db9c246f203a0a8c046c8533aebd1d58c05beee78184fd37b2",
+          "size": 3003,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/13_latent_world_model/experiments/train_real_dingo_action_dynamics.py",
+          "sha256": "d6f4a7cc4fabef69dac1b63a895529ae1fefce80b07d4df6279519d90ed32722",
+          "size": 10241,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/13_latent_world_model/latent_world_model.py",
+          "sha256": "a5c7513bd462fcfa6675e466b8f1b504ed858ba71aac7ae3c9d1a1c583c08181",
+          "size": 8252,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/13_latent_world_model/rollout_auditor.py",
+          "sha256": "5c27f596d33ba8d6542e06303cf43c5829ae643b72b74f35edec03d7a4143373",
+          "size": 3949,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/13_latent_world_model/tests/test_real_dingo_action_dynamics.py",
+          "sha256": "bc18266b289fc087f5a002534b4c3b4f5f9a79ab15142b8053eb67673418e44d",
+          "size": 2445,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C13",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 5,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/14_causal_risk_attribution"
+      ],
+      "file_count": 9,
+      "files": [
+        {
+          "file": "contributions/14_causal_risk_attribution/EXECUTION_EVIDENCE.md",
+          "sha256": "700d023520be37573e0bdff506a048dce09c433bf9a106b36836984fd8dc3d2c",
+          "size": 1948,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/PAIRED_CAUSAL_VALIDATION_REPORT.md",
+          "sha256": "ea316aa85ddaa98b62e25cc44f8ec78b2a7d0854985eacb24c3512b9014c5f0c",
+          "size": 3960,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/README.md",
+          "sha256": "277aef642203f71a189837af592a29ac7db134fcd69f2fc8ddb6ec51aaff8127",
+          "size": 6596,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/causal_attribution_evaluator.py",
+          "sha256": "e5e26c7a0c1353ccdbab7365f709589b7f9056c2a10ebdb3a31b56e2f71e56bc",
+          "size": 2627,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/causal_risk.py",
+          "sha256": "61b901eeb01ef16a06f488307aeed8f130d883212e257bcaf4b278384e80b7b2",
+          "size": 8695,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "7167854665ba8004d569616fed2c91211f4a324b29957886a82570a67af1fa19",
+          "size": 3259,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/experiments/eval_paired_counterfactuals.py",
+          "sha256": "01f2cf08f41be4f12923f85fcb556c5aca3cce6b54dc54ceeeb18fd22252b216",
+          "size": 5782,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/experiments/eval_root_cause_attribution.py",
+          "sha256": "7825f8390aabefa68e9768df5327aa6f9f7f988eb70f73a90dd7c5eb669907ee",
+          "size": 3785,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/14_causal_risk_attribution/tests/test_paired_counterfactuals.py",
+          "sha256": "27e033e64a9dbd041b2509f369bc8a12e640af501fd99a4b0bd5962d2794f1b5",
+          "size": 1747,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C14",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 5,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/15_neuromorphic_sensing"
+      ],
+      "file_count": 9,
+      "files": [
+        {
+          "file": "contributions/15_neuromorphic_sensing/EXECUTION_EVIDENCE.md",
+          "sha256": "6156a5d3f8a1689c2a109362d3046d3b4da8cb25a5aa88de64da6c2660f3b2ea",
+          "size": 1971,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/README.md",
+          "sha256": "8c842bbf331deaf6cca2100278af4836901f974823d95f42a6dfb5deea921b62",
+          "size": 5500,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/TIME_ALIGNED_LATENCY_EVIDENCE.md",
+          "sha256": "eab3464cf6576e4a7e6765828f6624b0851868cd0da333b6b13e527f6ecd6fef",
+          "size": 4586,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "d6e46c06a277b0b2f079398942a447a19831a363955432a3f7b6ac29f93c1f3c",
+          "size": 2775,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/experiments/eval_neuromorphic_latency.py",
+          "sha256": "662a6f12ed154f4fdd94e9cafa447f6d61ddf4f7cc3966cc82b271541b51888c",
+          "size": 2265,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/experiments/eval_time_aligned_latency.py",
+          "sha256": "f1d08895d1caab40e0aa733ca5a7b17d5ff377272e730f49af50ef57021f3137",
+          "size": 5717,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/neuromorphic_benchmark.py",
+          "sha256": "feb92e38751bebafb4322e5c88e6c5d387a488c9ec46977d752b8fa5184f77b7",
+          "size": 4079,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/neuromorphic_sensing.py",
+          "sha256": "58a6f1e815df39a5670f20bcb478ecd278a73f9a95452a57e4b07e1dbc1a63be",
+          "size": 8513,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/15_neuromorphic_sensing/tests/test_time_aligned_latency.py",
+          "sha256": "2f1719bf1dcda1feaf8877e043b0a9df11ddc9993612066abd09ae1ac8232c3b",
+          "size": 3193,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C15",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 5,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/16_federated_nav_learning"
+      ],
+      "file_count": 9,
+      "files": [
+        {
+          "file": "contributions/16_federated_nav_learning/EXECUTION_EVIDENCE.md",
+          "sha256": "99b0c2dd0318b2def7af588b4aaef034f75ab4e39b39f02435296fe01aa8dd9f",
+          "size": 1988,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/README.md",
+          "sha256": "5816a81eead14706728cb6faa7bcb60040b495ed10e7dc93d0ae2ccf34da521a",
+          "size": 5601,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/REAL_DINGO_PSEUDO_FEDAVG_EVIDENCE.md",
+          "sha256": "8b999074e216b8432ab89e252c5b3bde2d57ad9980bf71a23a96f6a266ec1dd4",
+          "size": 4570,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "b8c227aee927462aa3be482757debd1208c186abf1162724ea5c6ab60f05a5aa",
+          "size": 2918,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/experiments/eval_federated_tradeoffs.py",
+          "sha256": "07015cf27940dc38a8b479158e769342089299d7023e7ca77cb6d5fbec10987d",
+          "size": 2341,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/experiments/eval_real_dingo_pseudoclient_fedavg.py",
+          "sha256": "5594607d7e69c3cf4014f7c48407f01a40b73b2a567a7f432ad58074bda202b9",
+          "size": 7532,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/federated_evaluator.py",
+          "sha256": "0d65e5dda5e02221a657e21c6a95a06b7ae8cf7ce2be12154f8eb8bbe97044a0",
+          "size": 3645,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/federated_nav.py",
+          "sha256": "ff97417c1c826bca94b26026556713a2661e9bbcc27d9b09ab1aac0fa3a9718c",
+          "size": 8505,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/16_federated_nav_learning/tests/test_real_dingo_pseudoclient_fedavg.py",
+          "sha256": "490626bdaa99e2ddcee795af547ac45f49b38e698e321773f86f0bcd475d9084",
+          "size": 1898,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C16",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 5,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/17_topological_semantic_maps"
+      ],
+      "file_count": 10,
+      "files": [
+        {
+          "file": "contributions/17_topological_semantic_maps/EXECUTION_EVIDENCE.md",
+          "sha256": "32a94d2a4d0398d34c40bbd799f5b1209293ac8e33c61acf07e36cb6b336989e",
+          "size": 1968,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/GRAPH_INTEGRITY_REPORT.md",
+          "sha256": "5ca5493bf60da7aa9184c4b6541ff9bab93b0a5ad1334b90d3a22841068e495a",
+          "size": 4592,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/README.md",
+          "sha256": "e4bd79ee3450f40ada465cca1335d3833362f43621c076459ad4c4b946311096",
+          "size": 5786,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "9b667df5b442b7c599e4df6fe3cffdc45138f08012feb279369425472a626159",
+          "size": 3096,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/experiments/eval_real_office_geometric_topology.py",
+          "sha256": "3f788586089b827c69b4064985187a3f66f887acf52b11278323763a5ea588f1",
+          "size": 5569,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/experiments/eval_topo_semantic_navigation.py",
+          "sha256": "46a0cc858ad114e7f05582c4480c8375b25f391a6ecde7759ccaf0bfdf824ea9",
+          "size": 3944,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/tests/test_real_office_geometric_topology.py",
+          "sha256": "394ae8544825fb101253a4bf21c85a7bc1715038f78b5d4ee4e12afa4a975f50",
+          "size": 1424,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/tests/test_semantic_graph_integrity.py",
+          "sha256": "49d0748bb0778d5a1025edbf91dabcb1a7eedccaeea89258d16f5873fa8416c7",
+          "size": 3026,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/topo_semantic_evaluator.py",
+          "sha256": "61e71e0d78a53e6fd173f9f11de26f61fd77803c28a66d91d40513c7e2e077ee",
+          "size": 4342,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/17_topological_semantic_maps/topo_semantic_map.py",
+          "sha256": "fe33d519ea3015483d1be66b3dfe0704de2381de422e4e74c2516b1f1c231c34",
+          "size": 10423,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C17",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 6,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/18_formal_safety_shields"
+      ],
+      "file_count": 10,
+      "files": [
+        {
+          "file": "contributions/18_formal_safety_shields/CBF_FEASIBILITY_REPORT.md",
+          "sha256": "898996150e97ca50870f969d909f651428f3142f18aa002fbf861a43db6f352c",
+          "size": 5108,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/EXECUTION_EVIDENCE.md",
+          "sha256": "6ad00accf52977b1eaf67ea3ab431701fb3d15a1446ee3a5713696c64dc98788",
+          "size": 1975,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/README.md",
+          "sha256": "28bf9fed66f4877e2f57da31ed6ac1513f83cdb802b87789cb5688f9fe91b66e",
+          "size": 5937,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "3033731661d0cf2c44515b4737a6ef9b1ad21b874cbb1f2f78e0efd87a9f5b95",
+          "size": 2808,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/experiments/eval_safety_shields.py",
+          "sha256": "5e08cb4f858f162e3f327d054aad80af734e958640b501e6dfacb0ecd204357d",
+          "size": 3186,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/experiments/eval_shield_stress_test.py",
+          "sha256": "dc17e76eb6c0518e62c7648e4d30bff626266e0032c349c7a7dd8448f00bdc88",
+          "size": 2319,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/experiments/ros2_isolated_cbf_point_velocity.py",
+          "sha256": "2333a16dd439823209eda2eb2303e56d73a7cd30a41ad91dd80c63997116581d",
+          "size": 4747,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/formal_safety_shields.py",
+          "sha256": "bc48a2e3046d01e4682260b1622d9bd3835078a38adffedc03ed25b7e6b7dd4c",
+          "size": 12563,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/shield_evaluator.py",
+          "sha256": "2cdd2e5a7788082e9981da80eaf3ef096e55cb892761b9cd3f80d4f6c236ecf9",
+          "size": 4017,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/18_formal_safety_shields/tests/test_verified_cbf_constraints.py",
+          "sha256": "3bceb232fd1d39679453e4825b39046579c4c5ba537513b58a3511beb828d97f",
+          "size": 2665,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C18",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 6,
+        "TEXT_READABLE": 4
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/19_llm_mission_planner"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/19_llm_mission_planner/EXECUTION_EVIDENCE.md",
+          "sha256": "5716f6589ffce6293a0dfc89cb1788b1566b3bc06cd7dbd91cbbcee21482744b",
+          "size": 1992,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/19_llm_mission_planner/README.md",
+          "sha256": "718d69d1ed144d7588cccb021f7ddf6f5169847485faf4e811448d6ecf88573f",
+          "size": 5510,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/19_llm_mission_planner/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "cce8fd35ee594d052c2d21bb3babd4d76f0e327c3c8e4622303c188261311a7d",
+          "size": 3055,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/19_llm_mission_planner/experiments/eval_mission_plan_quality.py",
+          "sha256": "0fdc7f0e0ef2b4bb225b0525e7178b5edeff14ed6d6bba6aded66373506d7f6c",
+          "size": 3859,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/19_llm_mission_planner/llm_mission_planner.py",
+          "sha256": "d2f97462d6f71f27780540de844a9954e06eb8419318f499493af3e67ebc1c48",
+          "size": 9270,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/19_llm_mission_planner/mission_plan_evaluator.py",
+          "sha256": "74589cfbb328b1dbeac01b0375768db1c5046c75d253c29a64e39f2efcb1ab77",
+          "size": 3804,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C19",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/20_multimodal_failure_explainer"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/20_multimodal_failure_explainer/EXECUTION_EVIDENCE.md",
+          "sha256": "10c1ccdc74b095843e59cd4175a7df4db4c1b2d02dd57d15155e4208f289cc99",
+          "size": 1980,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/20_multimodal_failure_explainer/README.md",
+          "sha256": "0c18d8dc1dd1e72425a1d920f81a419a44c09d6a3c86a7d696480109ea941caf",
+          "size": 5628,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/20_multimodal_failure_explainer/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "0b28f785216c7d524232e6a0614f8007f3e9dc5ebd7b018cd54d96204f91c577",
+          "size": 2678,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/20_multimodal_failure_explainer/experiments/eval_failure_report_quality.py",
+          "sha256": "3d1dde47f684efbf2cbc9c420ef3336951910c1673cc72d6e168b49b37c1778f",
+          "size": 4438,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/20_multimodal_failure_explainer/failure_report_evaluator.py",
+          "sha256": "3e8a0d5dd5f5bf23241e9d5c1a2aca6ac4e8470523410a72f8d2896dfdf5cdc7",
+          "size": 3565,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/20_multimodal_failure_explainer/multimodal_failure_explainer.py",
+          "sha256": "e31e6fbba62e729b7727a32fd8078b5beff6a9df6adb248412e6e51f16bab837",
+          "size": 8442,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C20",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/21_ppo_navigation_agent"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/21_ppo_navigation_agent/EXECUTION_EVIDENCE.md",
+          "sha256": "67e43fc09b0f231a933de17e6ef9f4f76efcafbdc2823bb346ea20e16c4ca270",
+          "size": 2099,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/21_ppo_navigation_agent/README.md",
+          "sha256": "845ba522dffdf4a096b6fa2f14a8a302ecd7cd92d57a6f8a951250124ea82c6d",
+          "size": 5402,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/21_ppo_navigation_agent/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "ede2d5703b00ac897ab8d2213ed65d8dae0fb68caba8420ccaabb67e377e4c30",
+          "size": 2749,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/21_ppo_navigation_agent/experiments/eval_policy_safety.py",
+          "sha256": "fde0cbd45f88df5fdc4c80a3de73c36d416071a82181d4e2ef4a798a69f0e068",
+          "size": 2430,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/21_ppo_navigation_agent/ppo_nav_agent.py",
+          "sha256": "b827c3f0e833e2f9f88ea60963633fdf553cadac2b3e5d8bbc5ae7372812cec5",
+          "size": 12496,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/21_ppo_navigation_agent/ppo_policy_evaluator.py",
+          "sha256": "a8835eec166063d3969e65763d9cfb8c88222a915fda9f6bd6975c8be050a6c2",
+          "size": 4439,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C21",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/22_curriculum_rl"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/22_curriculum_rl/EXECUTION_EVIDENCE.md",
+          "sha256": "e7f23ba9ee9f7e100cbf96de19726d6d3bbe616e61ba8528eba591a48e9e4a7e",
+          "size": 2136,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/22_curriculum_rl/README.md",
+          "sha256": "de23123bf8ffc3c05bd7c219f6f54079cc36c7729153d04469c6c1300197b7a6",
+          "size": 5715,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/22_curriculum_rl/curriculum_evaluator.py",
+          "sha256": "71bbf7ae7c2869c55bd5af98d629ae3a4ddd2c4ecd159f7f0b8398b3a4af506d",
+          "size": 4341,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/22_curriculum_rl/curriculum_rl.py",
+          "sha256": "edab99afc50969b353555b1e69c7c826e0aac62f4f9e21ba7a94b8d2c674970b",
+          "size": 11118,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/22_curriculum_rl/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "0cd216dbacd854b5b847a0903a00360a9ff10c69e0c9fdf3b1f85ef032b8bd66",
+          "size": 2837,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/22_curriculum_rl/experiments/eval_curriculum_strategies.py",
+          "sha256": "7a5cb154606ce82a383cc7eda5b6115e792f570f86a483c17eb9d63ef5e3d995",
+          "size": 2232,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C22",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/23_gaussian_splatting_mapper"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/EXECUTION_EVIDENCE.md",
+          "sha256": "e1c4032991a37ad0bdd2b75b3c09a26776ec71c1430989ade2cf93cb4c98e57f",
+          "size": 2134,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/README.md",
+          "sha256": "fe2aac06ed373b81960fb053da63ee41c608e013f4000fbaaae9da86b3368abb",
+          "size": 5580,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "4932f68bf1a1f2666ac322c45df273b3ee560bef6af6103fce1cf3ad013dee6d",
+          "size": 2770,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/experiments/eval_gs_mapping_quality.py",
+          "sha256": "c67fb6ff767e09fa7eff717b336f0788247f61610caf91e3d6147fd71e163293",
+          "size": 2128,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/gaussian_splatting_map.py",
+          "sha256": "996f067aee0efd2eb5a87c8e4060426263d41e5bac871e0c0e2ce013bad9cc01",
+          "size": 9913,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/23_gaussian_splatting_mapper/gs_mapping_evaluator.py",
+          "sha256": "923965e9dbc5978b183fddcbfbf4dc34542613697f27013e71d4ce76ba1f590b",
+          "size": 4701,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C23",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/24_nerf_uncertainty"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/24_nerf_uncertainty/EXECUTION_EVIDENCE.md",
+          "sha256": "a70c7a7634c805125beb80768c54401c812a7da8688c319448ee97dd40ebaca8",
+          "size": 2126,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/24_nerf_uncertainty/README.md",
+          "sha256": "1ccbcdbf38c613844b3f299c403d7a73b69de64d18256f83a52070efa2966fb7",
+          "size": 6348,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/24_nerf_uncertainty/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "078995074be6f1a9ce9cc0ca5d5ebda306b4ac7f0fbeb5204919c0256f177277",
+          "size": 2805,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/24_nerf_uncertainty/experiments/eval_nerf_uncertainty.py",
+          "sha256": "921d7737c647c3fe2201fe0562945518693a575fd45fb3e4744989e7d2933580",
+          "size": 2086,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/24_nerf_uncertainty/nerf_uncertainty.py",
+          "sha256": "14cba32bf51e4ddadd4a1e2d0f13d980d1d34c8012e9408e26c885aafd81974e",
+          "size": 8028,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/24_nerf_uncertainty/nerf_uncertainty_evaluator.py",
+          "sha256": "4bc4350859df3f9a52259b576bc380c6b9ccc2095191b0644ccbf4ba2cfac6cc",
+          "size": 6543,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C24",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/25_adversarial_attack_simulator"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/25_adversarial_attack_simulator/EXECUTION_EVIDENCE.md",
+          "sha256": "1cff87d057d1a9d86b0a6975a43c84a8317b3b54e42faab05acd798904be7d33",
+          "size": 2093,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/25_adversarial_attack_simulator/README.md",
+          "sha256": "e89184e3c9288747c8e004508d504c1deac0a7404949b6e9ed58a5b97e2660c0",
+          "size": 6381,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/25_adversarial_attack_simulator/adversarial_attacks.py",
+          "sha256": "66f3bc0862895846f83882cca277de299e08c879900969dee22be10567a1cfce",
+          "size": 10834,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/25_adversarial_attack_simulator/attack_impact_evaluator.py",
+          "sha256": "db3f9c5c3bb1ccb325509469861e34bb6b08ddec930a5409cbb99809cbfbf232",
+          "size": 6900,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/25_adversarial_attack_simulator/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "5bea5b28e9ea4daafae73e544613e257111b844f0f51cd56a11a61aa5c482a38",
+          "size": 2804,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/25_adversarial_attack_simulator/experiments/eval_attack_impact.py",
+          "sha256": "a4c95fa725a6e94f6d52012c598e72b3fc7ca84d981ee93bf785d1f005c3a532",
+          "size": 2709,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C25",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    },
+    {
+      "directories": [
+        "contributions/26_swarm_consensus"
+      ],
+      "file_count": 6,
+      "files": [
+        {
+          "file": "contributions/26_swarm_consensus/EXECUTION_EVIDENCE.md",
+          "sha256": "5d0cdff029c7e729f9a580c30a8c0563c2899f6189ec52c40a26f860ecdc9f4e",
+          "size": 2151,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/26_swarm_consensus/README.md",
+          "sha256": "478811a8a7f9181356420734433b5f40c243a0af37558449ac99ecec29c33e40",
+          "size": 7492,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/26_swarm_consensus/docs/SCIENTIFIC_UPGRADE.md",
+          "sha256": "f650c4658cd1a97ae77c0a2e373df2cb8fe8c4a05808f799b85320a1f35388ce",
+          "size": 3128,
+          "status": "TEXT_READABLE",
+          "type": ".md"
+        },
+        {
+          "file": "contributions/26_swarm_consensus/experiments/eval_swarm_consensus.py",
+          "sha256": "1294bed6cb935de003dfc5b201ed72ef76f42053cacb7f45fb3061e61daa3895",
+          "size": 2587,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/26_swarm_consensus/swarm_consensus.py",
+          "sha256": "d26994a9ea5a449cd75fa7182b70bc5239d31aaf43e2aa4626a2c39025f90610",
+          "size": 10799,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        },
+        {
+          "file": "contributions/26_swarm_consensus/swarm_consensus_evaluator.py",
+          "sha256": "ea84aba545e94e50962ae55b62e82d8cbd8834f3dfdf2a23149eee109dc4b161",
+          "size": 6661,
+          "status": "SOURCE_COMPILES_RUNTIME_UNVERIFIED",
+          "type": ".py"
+        }
+      ],
+      "id": "C26",
+      "physical_robot_control_verified": false,
+      "status_counts": {
+        "SOURCE_COMPILES_RUNTIME_UNVERIFIED": 3,
+        "TEXT_READABLE": 3
+      },
+      "structural_checks_do_not_prove_efficacy": true
+    }
+  ],
+  "limitation": "Source compilation and artifact validity are not experiment execution, statistical verification or real robot evidence",
+  "n_contributions": 25,
+  "n_files": 537,
+  "schema_version": 1,
+  "scope": "C02-C26 file-level integrity only"
+}

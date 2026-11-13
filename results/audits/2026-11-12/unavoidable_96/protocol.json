@@ -1,0 +1,15 @@
+{
+  "execution_seeds": 250,
+  "generator_seed": 20260925,
+  "invariant": "every start-to-goal route activates at least one hazard per module",
+  "probability_choices": [
+    0.15,
+    0.25,
+    0.35,
+    0.5,
+    0.65,
+    0.75,
+    0.85
+  ],
+  "scenario_count": 96
+}

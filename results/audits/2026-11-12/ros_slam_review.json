@@ -1,0 +1,92 @@
+{
+  "source_revision": "43669a23c3395a21f3c49306184d4c5ea578f824",
+  "review_type": "targeted static source review only",
+  "runtime_execution_performed": false,
+  "scope": "Canonical C++ planner registration/configuration/history/costmap handling and selected historical SLAM/TurtleBot3 packages; not every ROS source file reviewed.",
+  "positive_observations": [
+    "CMake enforces C++17 and exports matching pluginlib class/library names.",
+    "Canonical package.xml and CMake list the primary Nav2/rclcpp/costmap/message/plugin dependencies consistently.",
+    "createPlan projects active masks without writing projected final masks back into persistent history.",
+    "Cancellation callbacks are propagated to grid search; cancellation and no-path failures become Nav2 exceptions.",
+    "Byte costmap copy and persistent mask each use explicit locks, although geometry snapshot consistency remains a risk.",
+    "SLAM Toolbox params specify live scan, odom/map/base_footprint and mapping mode; source presence is not an executed map."
+  ],
+  "findings": [
+    {
+      "id": "ROS-01",
+      "severity": "high",
+      "status": "STATIC DEFECT",
+      "path": "ros2_ws/lidar_slam_tb3/src/tb3_slam/package.xml",
+      "line": 3,
+      "finding": "SLAM wrapper manifest declares no runtime dependencies, although its launch imports launch/ament_index_python and resolves slam_toolbox. A fresh rosdep install of this package does not request the dependencies required to launch it.",
+      "evidence": [
+        "package.xml lines 3-18 have only test_depend and export entries",
+        "launch/online_async_slam.launch.py lines 1-5 imports launch and ament_index_python; line 17 resolves slam_toolbox"
+      ],
+      "recommendation": "Declare launch, ament_index_python and slam_toolbox runtime dependencies; build and launch on clean Jazzy before claiming live SLAM."
+    },
+    {
+      "id": "ROS-02",
+      "severity": "high",
+      "status": "STATIC INTEGRATION MISMATCH; RUNTIME NOT EXECUTED",
+      "path": "ros2_ws/lidar_slam_tb3/src/nav_research/launch/bringup_slam.launch.py",
+      "line": 35,
+      "finding": "The combined SLAM launch starts slam_toolbox separately, then includes Nav2 bringup_launch.py without specifying slam mode, a map, or localization selection. It relies on upstream defaults rather than explicitly composing a SLAM navigation pipeline; default localization bringup may start AMCL/map-server alongside SLAM without a configured saved map.",
+      "recommendation": "Use Nav2 navigation_launch.py with the separately managed SLAM pipeline, or use bringup_launch.py with explicit slam=true and pass the correct SLAM parameter contract. Verify a single map->odom publisher and successful goal execution."
+    },
+    {
+      "id": "ROS-03",
+      "severity": "high",
+      "status": "STATIC TARGET-COMPATIBILITY GAP",
+      "path": "ros2_ws/src/dynnav_turtlebot3/package.xml",
+      "line": 19,
+      "finding": "The package advertised as Jazzy/Gazebo integration still declares gazebo_ros, as does historical tb3_sim_bringup. This is a Gazebo Classic dependency and is not the Harmonic ros_gz integration. The existing canonical benchmark uses a separate supported ros_gz path, so its successful selective build does not validate this package.",
+      "related_path": "ros2_ws/lidar_slam_tb3/src/tb3_sim_bringup/package.xml:21",
+      "recommendation": "Classify the legacy launch as legacy or migrate its actual launch/world/spawn interfaces to ros_gz; verify whole-workspace rosdep independently of selective benchmark-package builds."
+    },
+    {
+      "id": "ROS-04",
+      "severity": "medium",
+      "status": "STATIC DEFECT",
+      "path": "ros2_ws/src/dynnav_nav2_cpp/src/dynnav_global_planner.cpp",
+      "line": 43,
+      "finding": "parseCell uses std::stoul without checking the consumed length, then narrows unsigned long to unsigned int without range validation. Strings such as 0junk parse as 0; on a 64-bit unsigned-long platform 4294967296 narrows to 0. Malformed executed-transition input can therefore alias a configured valid hazard trigger.",
+      "recommendation": "Require unsigned digit-only syntax, complete numeric consumption, and range bounds before narrowing. Add parser known-answer rejection tests."
+    },
+    {
+      "id": "ROS-05",
+      "severity": "medium",
+      "status": "STATIC CONCURRENCY RISK; NOT REPRODUCED",
+      "path": "ros2_ws/src/dynnav_nav2_cpp/src/dynnav_global_planner.cpp",
+      "line": 310,
+      "finding": "createPlan reads worldToMap, dimensions and cell indices before acquiring the costmap mutex used for byte copying. It later uses mapToWorld after releasing that mutex. If costmap geometry changes concurrently, geometry and bytes need not represent the same map and the copied byte length can be stale. Frozen fixed-size benchmarks do not exercise this condition.",
+      "recommendation": "Snapshot dimensions, origin, resolution, world/cell conversion and bytes under one costmap lock, then convert path with that same geometry snapshot; test a resize/reconfiguration boundary."
+    },
+    {
+      "id": "ROS-06",
+      "severity": "medium",
+      "status": "STATIC OBSERVATION-TRUST LIMITATION",
+      "path": "ros2_ws/src/dynnav_nav2_cpp/src/dynnav_global_planner.cpp",
+      "line": 247,
+      "finding": "Persistent hazard updates trust a String topic carrying cell pairs; the message has no timestamp, frame, observation-quality or sequence field, and discontinuity only logs a resynchronization warning. Matching events are activated even after a stream discontinuity. The benchmark publisher may enforce stricter adjacent-observation validity, but that validity is not independently encoded/verified by this plugin interface.",
+      "recommendation": "Document the trusted publisher contract; use a typed execution-observation message or validate adjacent transitions, freshness/frame/map identity and gap policy before activation. Do not equate topic receipt with physically verified execution."
+    },
+    {
+      "id": "ROS-07",
+      "severity": "low",
+      "status": "STATIC SUPPORTED LIMITATION",
+      "path": "ros2_ws/src/dynnav_nav2_cpp/src/dynnav_global_planner.cpp",
+      "line": 301,
+      "finding": "The plugin stores tf_ but rejects start/goal outside the global costmap frame instead of transforming them. This is explicit failure handling, not proof of general arbitrary-frame input support.",
+      "recommendation": "Document the same-frame precondition and test through Nav2 transforms; only implement direct transforms if the supported API contract requires them."
+    }
+  ],
+  "unverified_requirements": [
+    "Live LaserScan/odometry/TF observations",
+    "New map from simulated sensors, map save/load",
+    "AMCL localization errors versus simulator truth",
+    "RViz interactive visualization",
+    "Sensor dropout/controller delay/localization disturbance stress experiments",
+    "Hardware execution"
+  ]
+}

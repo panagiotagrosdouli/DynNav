@@ -1,0 +1,9 @@
+row_type,scenario,query,expected_label,predicted_label,top1_correct,topk_correct,best_similarity,start_label,goal_label,path_found,path_length_nodes,path_cost,expanded_graph_nodes,blocked_edges
+grounding,semantic_query,kitchen,kitchen,kitchen,True,True,1.0,,,,,,,
+grounding,semantic_query,corridor,corridor,corridor,True,True,1.0,,,,,,,
+grounding,semantic_query,robotics_lab,robotics_lab,robotics_lab,True,True,1.0,,,,,,,
+grounding,semantic_query,office,office,office,True,True,1.0,,,,,,,
+grounding,semantic_query,exit,exit,exit,True,True,1.0,,,,,,,
+grounding,semantic_query,storage_room,storage_room,storage_room,True,True,1.0,,,,,,,
+planning,nominal,,,,False,False,0.0,kitchen,exit,True,4,9.0,6,0
+planning,blocked_corridor_lab,,,,False,False,0.0,kitchen,exit,True,6,14.0,6,2

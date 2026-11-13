@@ -1,0 +1,10 @@
+method,lambda_value,path_length,mean_risk,max_risk,expected_risk,cvar_risk,total_objective,dominated,risk_reduction_vs_lambda0_pct,path_length_increase_vs_lambda0_pct,objective_risk,alpha
+short_risky_corridor,0.0,44.0,0.266,0.82,0.266,0.82,44.0,False,0.0,0.0,cvar,0.95
+short_risky_corridor,0.1,44.0,0.266,0.82,0.266,0.82,44.082,False,0.0,0.0,cvar,0.95
+short_risky_corridor,0.25,44.0,0.266,0.82,0.266,0.82,44.205,False,0.0,0.0,cvar,0.95
+short_risky_corridor,0.5,44.0,0.266,0.82,0.266,0.82,44.41,False,0.0,0.0,cvar,0.95
+short_risky_corridor,1.0,44.0,0.266,0.82,0.266,0.82,44.82,False,0.0,0.0,cvar,0.95
+short_risky_corridor,2.0,44.0,0.266,0.82,0.266,0.82,45.64,False,0.0,0.0,cvar,0.95
+short_risky_corridor,4.0,44.0,0.266,0.82,0.266,0.82,47.28,False,0.0,0.0,cvar,0.95
+short_risky_corridor,8.0,44.0,0.266,0.82,0.266,0.82,50.56,False,0.0,0.0,cvar,0.95
+medium_balanced_route,12.0,49.0,0.16399999999999998,0.25,0.16399999999999998,0.25,52.0,False,69.51219512195121,11.363636363636363,cvar,0.95

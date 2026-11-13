@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "python": "3.12.14",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "claim_boundary": "Controlled implementation smoke checks only; no real-robot, Gazebo, formal-proof, trained-model, or generalization claim.",
+  "results": [
+    {
+      "contribution_id": "C01",
+      "experiment_id": "c01_learned_astar_comparison",
+      "status": "passed",
+      "command": [
+        "/workspace/DynNav/.venv/bin/python",
+        "/workspace/DynNav/contributions/01_learned_astar/experiments/eval_astar_learned.py",
+        "--trials",
+        "8",
+        "--min-goal-distance",
+        "8",
+        "--out",
+        "/workspace/DynNav/work/audit/c01/artifacts/c01_learned_astar.csv"
+      ],
+      "artifact": "artifacts/c01_learned_astar.csv",
+      "evidence_level": "synthetic",
+      "claim_boundary": "Requires the repository's local trained checkpoint and PyTorch; synthetic grids do not establish transfer to Nav2 or a physical robot.",
+      "missing_dependencies": [],
+      "returncode": 0,
+      "duration_seconds": 5.843,
+      "stdout": "Running trial 1/8 with seed 0...\nRunning trial 2/8 with seed 1...\nRunning trial 3/8 with seed 2...\nRunning trial 4/8 with seed 3...\nRunning trial 5/8 with seed 4...\nRunning trial 6/8 with seed 5...\nRunning trial 7/8 with seed 6...\nRunning trial 8/8 with seed 7...\n\nSaved per-trial results to /workspace/DynNav/work/audit/c01/artifacts/c01_learned_astar.csv\n\n=== Contribution 01 summary ===\nTrials: 8\nClassic success rate: 1.000\nLearned success rate: 1.000\nClassic path length: 31.8750 \u00b1 13.2604\nLearned path length: 31.8750 \u00b1 13.2604\nClassic expansions: 294.5000 \u00b1 226.7169\nLearned expansions: 170.5000 \u00b1 179.0156\nExpansion ratio: 0.5095 \u00b1 0.1976\nClassic runtime ms: 0.9632 \u00b1 0.8290\nLearned runtime ms: 27.0457 \u00b1 32.5181\nRuntime ratio: 26.4753 \u00b1 16.2737\nDelta path length: 0.0000 \u00b1 0.0000\n",
+      "stderr": "mkdir -p failed for path /home/agent/.config/matplotlib: [Errno 30] Read-only file system: '/home/agent/.config/matplotlib'\nMatplotlib created a temporary cache directory at /tmp/matplotlib-3kaeo7fv because there was an issue with the default path (/home/agent/.config/matplotlib); it is highly recommended to set the MPLCONFIGDIR environment variable to a writable directory, in particular to speed up the import of Matplotlib and to better support multiprocessing.\nFontconfig error: No writable cache directories\n",
+      "artifact_sha256": "c73e9fa807af1b68c9d8724f49bed27620994339aa9c0e6b81a4f2262f1ffa5d",
+      "artifact_rows": 8,
+      "artifact_bytes": 1130
+    }
+  ]
+}

@@ -25,11 +25,23 @@ jobs:
 
       - name: Install ROS and simulation dependencies
         run: |
-          apt-get update
+          set -euo pipefail
+          mkdir -p /tmp/dynnav_gazebo/setup
+          # Retain repository/candidate diagnostics even if dependency setup fails.
+          cat /etc/os-release > /tmp/dynnav_gazebo/setup/os-release.txt
+          cp -a /etc/apt/sources.list.d /tmp/dynnav_gazebo/setup/apt-sources
+          printf 'Acquire::Retries "3";\nAcquire::http::Timeout "60";\nAcquire::https::Timeout "60";\n' \
+            > /etc/apt/apt.conf.d/80dynnav-retries
+          apt-get update -o APT::Update::Error-Mode=any
+          apt-cache policy ros-jazzy-nav2-bringup \
+            > /tmp/dynnav_gazebo/setup/nav2-candidate.txt
           apt-get install -y --no-install-recommends \
             python3-colcon-common-extensions \
-            python3-rosdep
-          rosdep init 2>/dev/null || true
+            python3-rosdep \
+            ros-jazzy-slam-toolbox
+          if [ ! -f /etc/ros/rosdep/sources.list.d/20-default.list ]; then
+            rosdep init
+          fi
           rosdep update
           rosdep install \
             --from-paths \
@@ -37,7 +49,15 @@ jobs:
               ros2_ws/src/dynnav_nav2_benchmark \
             --ignore-src \
             --rosdistro jazzy \
-            -r -y
+            -r -y 2>&1 | tee /tmp/dynnav_gazebo/setup/rosdep-install.log
+
+      - name: Upload dependency setup diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-jazzy-gazebo-setup
+          path: /tmp/dynnav_gazebo/setup
+          if-no-files-found: error
 
       - name: Build planner and benchmark packages
         run: |
@@ -114,4 +134,41 @@ jobs:
         with:
           name: dynnav-jazzy-gazebo-static-planner
           path: /tmp/dynnav_gazebo/results
+          if-no-files-found: warn
+
+      - name: Execute live simulated SLAM, map save/reload, AMCL and navigation
+        run: |
+          set -o pipefail
+          source /opt/ros/jazzy/setup.bash
+          source /tmp/dynnav_gazebo/install/setup.bash
+          mkdir -p /tmp/dynnav_gazebo/slam_localization
+          if ! timeout --signal=INT --kill-after=30s 12m \
+            python3 scripts/verify_jazzy_slam_localization.py \
+            --output /tmp/dynnav_gazebo/slam_localization 2>&1 \
+            | tee /tmp/dynnav_gazebo/slam_localization/probe.log; then
+            python3 - <<'PY'
+          from pathlib import Path
+          lines = Path('/tmp/dynnav_gazebo/slam_localization/probe.log').read_text().splitlines()
+          for line in lines[-20:]:
+              print('::error::' + line.replace('%', '%25').replace('\r', '%0D'))
+          for log in Path('/tmp/dynnav_gazebo/slam_localization').glob('*launch.log'):
+              errors = [line for line in log.read_text().splitlines() if 'ERROR' in line or 'Error' in line]
+              for line in errors[-8:]:
+                  print('::error::' + line.replace('%', '%25').replace('\r', '%0D'))
+          result = Path('/tmp/dynnav_gazebo/slam_localization/result.json')
+          if result.exists():
+              import json
+              data = json.loads(result.read_text())
+              print('::error::' + str(data.get('error')))
+              print('::error::observations: ' + str(data.get('failure_observations')))
+          PY
+            exit 1
+          fi
+
+      - name: Retain live SLAM and localization evidence including failures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dynnav-jazzy-live-slam-amcl
+          path: /tmp/dynnav_gazebo/slam_localization
           if-no-files-found: warn

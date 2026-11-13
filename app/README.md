@@ -70,6 +70,7 @@ The Docker image contains the synthetic Streamlit laboratory only. It does not i
 | Documentation | Browse curated repository Markdown safely |
 | System Status | Inspect runtime, dependencies, and available capabilities |
 | Publication Evidence | Browse pinned paper measurements, claim boundaries, and Gazebo integration evidence |
+| History-Conditioned Lab | Recompute exact same-endpoint safe-return probabilities for executed paths that activate different hazards |
 
 ## Contribution registry
 
@@ -102,6 +103,8 @@ Depending on the page, the app can export:
 - result CSV and JSON;
 - Markdown reports;
 - ZIP run bundles.
+
+The History-Conditioned Lab calls the canonical exact safe-return oracle on a controlled 5×5 topology; the slider changes the Bernoulli closure probability without fabricating a research trial.
 
 The Publication Evidence page reads the checked-in paper evidence manifest and claim matrix. It does not execute or refresh experiments and does not establish ROS/Gazebo efficacy.
 
@@ -181,3 +184,11 @@ Reduce grid sizes, episode counts, or sweep ranges. Contribution renderers are l
 **ROS2 or Gazebo unavailable**
 
 The Streamlit app does not require or claim ROS2/Gazebo execution. Those capabilities must be validated separately in a suitable robotics environment.
+
+Results & Reports and Publication Evidence share one verified-audit view. It checks
+committed SHA-256 digests, trial identities, complete paired scenario/seed counts,
+and raw binary rates before displaying the retained 96-scenario reproduction.
+The displayed audit code checkpoint is not asserted to be each file's generating
+commit: some original commands lack per-artifact revision stamps. Missing or
+corrupt artifacts produce an error rather than substituted measurements. The
+History-Conditioned Lab remains a separate live synthetic oracle demonstration.
