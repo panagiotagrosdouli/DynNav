@@ -219,3 +219,12 @@ This would connect C15 directly to C05 and make low-latency sensing actionable.
 Contribution 15 establishes the neuromorphic sensing layer of DynNav.
 
 The upgraded version adds explicit latency evaluation, making the contribution stronger and more experimentally grounded.
+
+### Reproducible simulator event timestamps
+
+`DVSSimulatorConfig(seed=...)` now controls both background noise and within-frame
+timestamp jitter through one persistent generator. Previously a new unseeded RNG
+was constructed for every frame, so timestamps varied even with zero noise.
+Finite input and positive finite frame intervals are required. Seeded replay is
+an implementation property, not a demonstrated neuromorphic sensing advantage;
+previous negative latency findings remain unchanged.

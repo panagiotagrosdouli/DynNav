@@ -321,5 +321,27 @@ def run_curriculum_training(
         w = csv.DictWriter(f, fieldnames=log[0].keys())
         w.writeheader(); w.writerows(log)
 
+    # Retain actual learned parameters rather than merely labeling a CSV training.
+    import hashlib
+    import json
+    checkpoint = Path(out_csv).with_suffix(".npz")
+    weights = {"actor_log_std": agent.actor.log_std}
+    for family, network in (("actor", agent.actor), ("critic", agent.critic)):
+        for name in ("l1", "l2", "out"):
+            layer = getattr(network, name)
+            weights[f"{family}_{name}_W"] = layer.W
+            weights[f"{family}_{name}_b"] = layer.b
+    np.savez(checkpoint, **weights)
+    Path(out_csv).with_suffix(".json").write_text(json.dumps({
+        "evidence": "actual_gradient_training_in_synthetic_curriculum_environment",
+        "seed": seed, "episodes": n_episodes, "strategy": strategy.value,
+        "configuration": cfg.__dict__, "scheduler": scheduler.summary(),
+        "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "checkpoint_sha256": hashlib.sha256(checkpoint.read_bytes()).hexdigest(),
+        "heldout_evaluation_completed": False,
+        "physical_robot_tested": False,
+        "limitation": "Training execution and parameter updates only; no curriculum advantage established.",
+    }, indent=2) + "\n")
+
     logger.info("Curriculum training complete. Summary: %s", scheduler.summary())
     return log

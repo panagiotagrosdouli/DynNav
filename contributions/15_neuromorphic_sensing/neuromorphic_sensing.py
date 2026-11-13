@@ -52,6 +52,7 @@ class DVSSimulatorConfig:
     threshold_neg: float = 0.15    # log-intensity change to fire OFF event
     noise_rate: float = 0.001      # fraction of pixels firing spurious events/frame
     refractory_us: float = 500.0   # refractory period in µs
+    seed: int | None = None       # seed both noise and within-frame timestamp jitter
 
 
 class DVSSimulator:
@@ -62,6 +63,7 @@ class DVSSimulator:
 
     def __init__(self, cfg: DVSSimulatorConfig | None = None):
         self.cfg = cfg or DVSSimulatorConfig()
+        self._rng = np.random.default_rng(self.cfg.seed)
         self._log_ref = np.full(
             (self.cfg.height, self.cfg.width), -np.inf
         )
@@ -76,14 +78,16 @@ class DVSSimulator:
         Process one greyscale frame. dt_us = inter-frame gap in microseconds.
         Returns list of DVSEvent fired since the last frame.
         """
-        assert frame.shape == (self.cfg.height, self.cfg.width), \
-            f"Frame shape mismatch: got {frame.shape}"
+        if frame.shape != (self.cfg.height, self.cfg.width):
+            raise ValueError(f"Frame shape mismatch: got {frame.shape}")
+        if not np.isfinite(frame).all() or not np.isfinite(dt_us) or dt_us <= 0:
+            raise ValueError("DVS frames must be finite and frame intervals positive and finite")
 
         self._t_us += dt_us
         log_frame = np.log(np.clip(frame, 1e-6, 1.0))
 
         events: list[DVSEvent] = []
-        rng = np.random.default_rng()
+        rng = self._rng
 
         # Determine which pixels have a valid reference
         has_ref = self._log_ref > -np.inf
