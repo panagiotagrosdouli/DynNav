@@ -25,7 +25,7 @@ def event_count_control(frames,dt_us,min_events=10):
     """Deterministic event-rate control, NOT learned SNN nor real DVS sensor."""
     from neuromorphic_sensing import DVSSimulator,DVSSimulatorConfig
     h,w=frames[0].shape
-    sim=DVSSimulator(DVSSimulatorConfig(height=h,width=w,noise_rate=0.0))
+    sim=DVSSimulator(DVSSimulatorConfig(height=h,width=w,noise_rate=0.0,seed=0))
     totals=[]
     detected_at=None
     for idx,frame in enumerate(frames):

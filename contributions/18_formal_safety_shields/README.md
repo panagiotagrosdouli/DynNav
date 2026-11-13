@@ -246,3 +246,11 @@ This would connect C18 directly to C02, C03, C05, and C08.
 Contribution 18 establishes the formal runtime safety layer of DynNav.
 
 The upgraded version makes the contribution more research-ready by evaluating shield effectiveness and cost under explicit stress-test conditions.
+
+### Matched evaluator sampling
+
+The unshielded evaluator previously appended each state twice to its STL monitor,
+while the shielded branch appended once. Both now use one monitor sample per
+simulation step, with a regression checking matched sample counts. This repairs
+an evaluation inconsistency; it does not prove continuous-time safety or resolve
+future-interval semantics in the general STL prototype.

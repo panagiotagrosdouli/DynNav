@@ -57,11 +57,14 @@ def evaluate_event_detector(
     frames: list[np.ndarray],
     dt_us: float = 10_000.0,
     detect_threshold: float = 0.05,
+    seed: int = 0,
 ) -> DetectionMetrics:
     if not frames:
         raise ValueError("frames must not be empty")
     h, w = frames[0].shape
-    sim = DVSSimulator(DVSSimulatorConfig(height=h, width=w, noise_rate=0.0, threshold_pos=0.12, threshold_neg=0.12))
+    sim = DVSSimulator(DVSSimulatorConfig(
+        height=h, width=w, noise_rate=0.0, threshold_pos=0.12, threshold_neg=0.12, seed=seed
+    ))
     detector = SNNObstacleDetector(grid_n=4, grid_m=4)
     all_events = []
     first_detection_time = float("inf")
