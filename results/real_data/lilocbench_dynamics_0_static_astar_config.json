@@ -1,0 +1,32 @@
+{
+  "dataset": "LILocBench",
+  "sequence": "dynamics_0",
+  "evidence_status": "static-map route baseline; not dynamic replanning or closed-loop evidence",
+  "map": {
+    "source": "official map_office.zip",
+    "archive_sha256": "941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0",
+    "yaml_sha256": "6e61ed85520c2e4638684734c738daf63c17de830a535cd8458cee14cd1fb11e",
+    "image_sha256": "8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf",
+    "resolution_m": 0.05,
+    "origin_xy_yaw": [-25.0, -25.0, 0.0],
+    "unknown_cells": "blocked"
+  },
+  "planner": {
+    "algorithm": "DynNav A*",
+    "connectivity": 4,
+    "edge_cost": "unit cost per cell",
+    "heuristic": "Manhattan",
+    "start_source": "first dynamics_0 ground-truth pose",
+    "start_xy_m": [0.35972713321232214, -7.046162905973054],
+    "goal_source": "last dynamics_0 ground-truth pose",
+    "goal_xy_m": [7.585787412422368, -3.7221946614105783],
+    "endpoint_frame_basis": "dataset documented common global frame; map YAML origin/resolution applied, no fitted transform"
+  },
+  "output": {
+    "path_csv": "lilocbench_dynamics_0_static_astar_path.csv",
+    "provenance_json": "lilocbench_map_and_trajectory_provenance.json",
+    "overlay_svg": "../../website/public/lilocbench-dynamics-0-verified-overlay.svg"
+  },
+  "license": "CC BY-NC-SA 4.0",
+  "license_record": "LICENSE.md"
+}

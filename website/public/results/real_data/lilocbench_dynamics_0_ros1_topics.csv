@@ -1,0 +1,8 @@
+topic,message_types,message_count,record_first_s,record_last_s,header_first_s,header_last_s,header_record_lag_median_ms,header_record_lag_p95_ms,frame_ids,child_frame_ids
+/dingo_velocity_controller/cmd_vel,geometry_msgs/msg/Twist,6866,1733314486.9201224,1733314646.5788186,,,,,,
+/dingo_velocity_controller/odom,nav_msgs/msg/Odometry,2328,1733314486.6409774,1733314646.5710063,1733314486.64033,1733314646.57033,0.4379749298095703,0.6781339645385742,odom,base_link
+/joint_states,sensor_msgs/msg/JointState,2329,1733314486.6408997,1733314646.570836,1733314486.64033,1733314646.57033,0.39267539978027344,0.6212234497070312,,
+/laser_scan_front/scan,sensor_msgs/msg/LaserScan,2400,1733314486.6164997,1733314646.5488055,1733314486.6163983,1733314646.548612,0.14781951904296875,0.33431053161621066,scan_front_link,
+/laser_scan_rear/scan,sensor_msgs/msg/LaserScan,2400,1733314486.62328,1733314646.5551908,1733314486.6231737,1733314646.5550847,0.1201629638671875,0.22150278091430659,scan_rear_link,
+/tf,tf/msg/tfMessage;tf2_msgs/msg/TFMessage,14250,1733314486.6114154,1733314646.57469,,,,,,
+/tf_static,tf2_msgs/msg/TFMessage,4,1733314486.6007526,1733314486.603196,,,,,,

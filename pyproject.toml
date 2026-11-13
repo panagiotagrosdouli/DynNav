@@ -39,6 +39,9 @@ researcher = [
   "httpx>=0.27,<1",
   "uvicorn[standard]>=0.30,<1",
 ]
+lilocbench = [
+  "rosbags>=0.10,<0.12",
+]
 
 [project.scripts]
 dynnav-benchmark = "dynnav.benchmarks:main"
@@ -71,3 +74,5 @@ select = ["E", "F", "I", "B", "UP"]
 "dynnav/__init__.py" = ["I001"]
 "dynnav/benchmarks.py" = ["I001"]
 "dynnav/research_pipeline.py" = ["E501"]
+# SVG markup is intentionally emitted as literal XML lines in this artifact generator.
+"scripts/generate_lilocbench_overlay.py" = ["E501"]

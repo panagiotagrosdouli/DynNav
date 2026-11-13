@@ -1,0 +1,15 @@
+{
+  "ground_truth_known_free_cells": 3194,
+  "ground_truth_path_length_m": 53.966714849768415,
+  "ground_truth_pose_count": 3194,
+  "ground_truth_sha256": "606f9392c1a992c9acdb5e680a9108ef7647ba8943d747435c90dfa56feaa38f",
+  "license": "CC BY-NC-SA 4.0",
+  "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+  "map_archive_sha256": "941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0",
+  "map_image_sha256": "8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf",
+  "map_yaml_sha256": "6e61ed85520c2e4638684734c738daf63c17de830a535cd8458cee14cd1fb11e",
+  "output": "/workspace/scratch/957adbbbf363/DynNav/website/public/lilocbench-dynamics-0-verified-overlay.svg",
+  "static_astar_cells": 225,
+  "static_astar_nodes_expanded": 6891,
+  "static_astar_path_length_m": 11.200000000000001
+}

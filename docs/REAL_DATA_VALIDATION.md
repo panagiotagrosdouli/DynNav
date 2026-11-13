@@ -45,9 +45,9 @@ Required run metadata: robot and sensor identifiers, ROS distribution and packag
 
 ## Evidence status
 
-A first descriptive analysis of the public `dynamics_0` ground-truth trajectory has been completed and is recorded in [LILocBench dynamics_0 analysis](LILOCBENCH_DYNAMICS_0_ANALYSIS.md). It covers 3,194 poses over 159.951 seconds: 53.967 m of XY path and 0.337 m/s mean XY speed. The [website plot](../website/public/lilocbench-dynamics-0-ground-truth.svg) is the measured XY trajectory without an occupancy-map background.
+The first real-data validation pass is complete for the official office map, the `dynamics_0` ground-truth trajectory, a static A* baseline, and offline ROS1 bag inspection. See the evidence-based [LILocBench real-data report](LILOCBENCH_REAL_DATA_REPORT.md), its retained JSON/CSV artifacts in [`results/real_data`](../results/real_data/), and the [verified map/trajectory overlay](../website/public/lilocbench-dynamics-0-verified-overlay.svg). The portal publishes this same overlay and its provenance artifacts.
 
-The analyzer records a SHA-256 digest when run against the downloaded original pose file. The map ZIP, ROS-bag replay, and planner comparisons have not yet been run or retained as result artifacts. The trajectory statistics describe the recorded robot motion; they do not show that DynNav caused, avoided, or recovered from any event. Passing map-import or playback checks is engineering validation. Planner-efficacy claims require valid controlled comparisons with traceable outcomes. Physical-robot efficacy remains pending matched trials under the frozen protocol.
+The bag was fully decoded and timestamped offline, but it was not played through a live ROS graph or Nav2. Its TF tree has no `map → odom`; therefore odometry was not transformed onto the map. No time-varying occupancy map, planner counterfactual, controlled dynamic-replanning experiment, Gazebo run, or physical-robot trial was established. The trajectory statistics describe recorded robot motion; they do not show that DynNav caused, avoided, or recovered from an event. Physical-robot efficacy remains pending matched trials under the frozen protocol.
 
 ## Citation
 

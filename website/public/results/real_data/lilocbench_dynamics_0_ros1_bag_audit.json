@@ -1,0 +1,593 @@
+{
+  "bag": {
+    "bytes": 38063988,
+    "connection_count": 17,
+    "decoded_message_count": 30577,
+    "message_count": 30577,
+    "path_name": "dynamics_0.bag",
+    "record_duration_s": 159.978065736,
+    "record_end_ns": 1733314646578818504,
+    "record_start_ns": 1733314486600752768,
+    "sha256": "df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58",
+    "topic_count": 7,
+    "topics": {
+      "/dingo_velocity_controller/cmd_vel": {
+        "child_frame_ids": {},
+        "frame_ids": {},
+        "header_record_lag_ms": null,
+        "header_time_s": null,
+        "message_count": 6866,
+        "message_types": [
+          "geometry_msgs/msg/Twist"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.9201224,
+          "last": 1733314646.5788186
+        }
+      },
+      "/dingo_velocity_controller/odom": {
+        "child_frame_ids": {
+          "base_link": 2328
+        },
+        "frame_ids": {
+          "odom": 2328
+        },
+        "header_record_lag_ms": {
+          "count": 2328,
+          "max": 1.8811225891113281,
+          "median": 0.4379749298095703,
+          "min": 0.10657310485839844,
+          "p95": 0.6781339645385742
+        },
+        "header_time_s": {
+          "first": 1733314486.64033,
+          "last": 1733314646.57033
+        },
+        "message_count": 2328,
+        "message_types": [
+          "nav_msgs/msg/Odometry"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.6409774,
+          "last": 1733314646.5710063
+        }
+      },
+      "/joint_states": {
+        "child_frame_ids": {},
+        "frame_ids": {
+          "": 2329
+        },
+        "header_record_lag_ms": {
+          "count": 2329,
+          "max": 0.9212493896484375,
+          "median": 0.39267539978027344,
+          "min": 0.08177757263183594,
+          "p95": 0.6212234497070312
+        },
+        "header_time_s": {
+          "first": 1733314486.64033,
+          "last": 1733314646.57033
+        },
+        "message_count": 2329,
+        "message_types": [
+          "sensor_msgs/msg/JointState"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.6408997,
+          "last": 1733314646.570836
+        }
+      },
+      "/laser_scan_front/scan": {
+        "beam_count": {
+          "count": 2400,
+          "max": 811.0,
+          "median": 811.0,
+          "min": 811.0,
+          "p95": 811.0
+        },
+        "child_frame_ids": {},
+        "frame_ids": {
+          "scan_front_link": 2400
+        },
+        "header_record_lag_ms": {
+          "count": 2400,
+          "max": 0.55694580078125,
+          "median": 0.14781951904296875,
+          "min": 0.09489059448242188,
+          "p95": 0.33431053161621066
+        },
+        "header_time_s": {
+          "first": 1733314486.6163983,
+          "last": 1733314646.548612
+        },
+        "message_count": 2400,
+        "message_types": [
+          "sensor_msgs/msg/LaserScan"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.6164997,
+          "last": 1733314646.5488055
+        },
+        "scan_time_s": {
+          "count": 2400,
+          "max": 0.06666667014360428,
+          "median": 0.06666667014360428,
+          "min": 0.06666667014360428,
+          "p95": 0.06666667014360428
+        },
+        "valid_beam_count": {
+          "count": 2400,
+          "max": 811.0,
+          "median": 808.0,
+          "min": 725.0,
+          "p95": 811.0
+        },
+        "valid_range_max_m": {
+          "count": 2400,
+          "max": 24.738000869750977,
+          "median": 8.981000423431396,
+          "min": 4.077000141143799,
+          "p95": 19.457000732421875
+        },
+        "valid_range_min_m": {
+          "count": 2400,
+          "max": 1.253000020980835,
+          "median": 0.47200003266334534,
+          "min": 0.11700000613927841,
+          "p95": 0.8970000147819519
+        }
+      },
+      "/laser_scan_rear/scan": {
+        "beam_count": {
+          "count": 2400,
+          "max": 811.0,
+          "median": 811.0,
+          "min": 811.0,
+          "p95": 811.0
+        },
+        "child_frame_ids": {},
+        "frame_ids": {
+          "scan_rear_link": 2400
+        },
+        "header_record_lag_ms": {
+          "count": 2400,
+          "max": 0.629425048828125,
+          "median": 0.1201629638671875,
+          "min": 0.09036064147949219,
+          "p95": 0.22150278091430659
+        },
+        "header_time_s": {
+          "first": 1733314486.6231737,
+          "last": 1733314646.5550847
+        },
+        "message_count": 2400,
+        "message_types": [
+          "sensor_msgs/msg/LaserScan"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.62328,
+          "last": 1733314646.5551908
+        },
+        "scan_time_s": {
+          "count": 2400,
+          "max": 0.06666667014360428,
+          "median": 0.06666667014360428,
+          "min": 0.06666667014360428,
+          "p95": 0.06666667014360428
+        },
+        "valid_beam_count": {
+          "count": 2400,
+          "max": 811.0,
+          "median": 807.0,
+          "min": 739.0,
+          "p95": 811.0
+        },
+        "valid_range_max_m": {
+          "count": 2400,
+          "max": 24.53900146484375,
+          "median": 8.695000171661377,
+          "min": 3.205000162124634,
+          "p95": 21.52535018920898
+        },
+        "valid_range_min_m": {
+          "count": 2400,
+          "max": 1.0090000629425049,
+          "median": 0.4570000171661377,
+          "min": 0.05000000074505806,
+          "p95": 0.7322000533342351
+        }
+      },
+      "/tf": {
+        "child_frame_ids": {},
+        "frame_ids": {},
+        "header_record_lag_ms": null,
+        "header_time_s": null,
+        "message_count": 14250,
+        "message_types": [
+          "tf/msg/tfMessage",
+          "tf2_msgs/msg/TFMessage"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.6114154,
+          "last": 1733314646.57469
+        }
+      },
+      "/tf_static": {
+        "child_frame_ids": {},
+        "frame_ids": {},
+        "header_record_lag_ms": null,
+        "header_time_s": null,
+        "message_count": 4,
+        "message_types": [
+          "tf2_msgs/msg/TFMessage"
+        ],
+        "record_order_monotonic_per_connection": true,
+        "record_time_s": {
+          "first": 1733314486.6007526,
+          "last": 1733314486.603196
+        }
+      }
+    }
+  },
+  "csv_artifacts": [
+    "lilocbench_dynamics_0_ros1_topics.csv",
+    "lilocbench_dynamics_0_tf_edges.csv",
+    "lilocbench_dynamics_0_sync_metrics.csv"
+  ],
+  "dataset": "LILocBench",
+  "evidence_status": "offline ROS1 bag decode and timestamp/TF audit; no ROS graph or sensor playback",
+  "ground_truth": {
+    "pose_count": 3194,
+    "sha256": "606f9392c1a992c9acdb5e680a9108ef7647ba8943d747435c90dfa56feaa38f",
+    "source_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt",
+    "time_range_s": [
+      1733314486.6122499,
+      1733314646.5635886
+    ]
+  },
+  "odom_to_ground_truth_fit_diagnostic": {
+    "fit_fraction": 0.699613235926085,
+    "held_out_error": {
+      "max_m": 0.5899824077251927,
+      "median_m": 0.3712510487806875,
+      "p95_m": 0.5728427882997618,
+      "rmse_m": 0.40797025651507235
+    },
+    "paired_messages": 2327,
+    "status": "diagnostic only; not an authoritative TF and not used for map overlay",
+    "train_error": {
+      "max_m": 0.36499261751521,
+      "median_m": 0.08418218263005542,
+      "p95_m": 0.29585709219462947,
+      "rmse_m": 0.14451511055458693
+    },
+    "transform_odom_to_gt_xy": {
+      "rotation_matrix": [
+        [
+          0.5564783800417394,
+          0.8308620899680773
+        ],
+        [
+          -0.8308620899680773,
+          0.5564783800417396
+        ]
+      ],
+      "translation_m": [
+        -71.6077784995947,
+        134.9396934775528
+      ],
+      "yaw_deg": -56.187397588822634
+    }
+  },
+  "sequence": "dynamics_0",
+  "source_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag",
+  "tf": {
+    "dynamic_transform_header_record_lag_ms": {
+      "count": 21237,
+      "max": 3.646373748779297,
+      "median": 0.38504600524902344,
+      "min": -99.95388984680176,
+      "p95": 1.712799072265625
+    },
+    "edges": [
+      {
+        "child": "camera_front_link",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1599
+      },
+      {
+        "child": "camera_left_link",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1599
+      },
+      {
+        "child": "camera_right_link",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1599
+      },
+      {
+        "child": "gt_camera",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1599
+      },
+      {
+        "child": "scan_front_link",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1598
+      },
+      {
+        "child": "scan_rear_link",
+        "parent": "base_link",
+        "topic": "/tf",
+        "transform_messages": 1599
+      },
+      {
+        "child": "front_left_wheel_link",
+        "parent": "chassis_link",
+        "topic": "/tf",
+        "transform_messages": 2329
+      },
+      {
+        "child": "front_right_wheel_link",
+        "parent": "chassis_link",
+        "topic": "/tf",
+        "transform_messages": 2329
+      },
+      {
+        "child": "rear_left_wheel_link",
+        "parent": "chassis_link",
+        "topic": "/tf",
+        "transform_messages": 2329
+      },
+      {
+        "child": "rear_right_wheel_link",
+        "parent": "chassis_link",
+        "topic": "/tf",
+        "transform_messages": 2329
+      },
+      {
+        "child": "base_link",
+        "parent": "odom",
+        "topic": "/tf",
+        "transform_messages": 2328
+      },
+      {
+        "child": "chassis_link",
+        "parent": "base_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_front_color_optical_frame",
+        "parent": "camera_front_color_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_front_depth_optical_frame",
+        "parent": "camera_front_depth_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_front_color_frame",
+        "parent": "camera_front_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_front_depth_frame",
+        "parent": "camera_front_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_left_color_optical_frame",
+        "parent": "camera_left_color_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_left_depth_optical_frame",
+        "parent": "camera_left_depth_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_left_color_frame",
+        "parent": "camera_left_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_left_depth_frame",
+        "parent": "camera_left_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_right_color_optical_frame",
+        "parent": "camera_right_color_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_right_depth_optical_frame",
+        "parent": "camera_right_depth_frame",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_right_color_frame",
+        "parent": "camera_right_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "camera_right_depth_frame",
+        "parent": "camera_right_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "front_bumper_mount",
+        "parent": "chassis_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "imu_link",
+        "parent": "chassis_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "mid_mount",
+        "parent": "chassis_link",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "front_mount",
+        "parent": "front_b_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "front_b_mount",
+        "parent": "front_c_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "front_c_mount",
+        "parent": "mid_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "rear_c_mount",
+        "parent": "mid_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "rear_mount",
+        "parent": "rear_b_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      },
+      {
+        "child": "rear_b_mount",
+        "parent": "rear_c_mount",
+        "topic": "/tf_static",
+        "transform_messages": 1
+      }
+    ],
+    "frames": [
+      "base_link",
+      "camera_front_color_frame",
+      "camera_front_color_optical_frame",
+      "camera_front_depth_frame",
+      "camera_front_depth_optical_frame",
+      "camera_front_link",
+      "camera_left_color_frame",
+      "camera_left_color_optical_frame",
+      "camera_left_depth_frame",
+      "camera_left_depth_optical_frame",
+      "camera_left_link",
+      "camera_right_color_frame",
+      "camera_right_color_optical_frame",
+      "camera_right_depth_frame",
+      "camera_right_depth_optical_frame",
+      "camera_right_link",
+      "chassis_link",
+      "front_b_mount",
+      "front_bumper_mount",
+      "front_c_mount",
+      "front_left_wheel_link",
+      "front_mount",
+      "front_right_wheel_link",
+      "gt_camera",
+      "imu_link",
+      "mid_mount",
+      "odom",
+      "rear_b_mount",
+      "rear_c_mount",
+      "rear_left_wheel_link",
+      "rear_mount",
+      "rear_right_wheel_link",
+      "scan_front_link",
+      "scan_rear_link"
+    ],
+    "interpretation": "Bag includes odom->base_link but no map/world frame or map->odom transform; do not overlay bag odometry directly on the occupancy map.",
+    "map_or_world_frame_present": false,
+    "multiple_parent_frames": {},
+    "odom_to_base_link_present": true,
+    "root_frames": [
+      "odom"
+    ],
+    "unique_parent_per_child": true
+  },
+  "timestamp_synchronization": {
+    "bag_topics_to_ground_truth_nearest_ms": {
+      "/dingo_velocity_controller/odom": {
+        "count": 2328,
+        "max": 42.70291328430176,
+        "median": 12.49992847442627,
+        "min": 1.7459392547607422,
+        "p95": 22.829294204711914,
+        "within_25ms_fraction": 0.9982817869415808
+      },
+      "/joint_states": {
+        "count": 2329,
+        "max": 42.70291328430176,
+        "median": 12.499094009399414,
+        "min": 1.7459392547607422,
+        "p95": 22.829294204711914,
+        "within_25ms_fraction": 0.9982825246887076
+      },
+      "/laser_scan_front/scan": {
+        "count": 2400,
+        "max": 52.865028381347656,
+        "median": 13.971328735351562,
+        "min": 0.6301403045654297,
+        "p95": 20.287811756134033,
+        "within_25ms_fraction": 0.9979166666666667
+      },
+      "/laser_scan_rear/scan": {
+        "count": 2400,
+        "max": 59.51952934265137,
+        "median": 9.864449501037598,
+        "min": 4.874467849731445,
+        "p95": 24.366426467895508,
+        "within_25ms_fraction": 0.9991666666666666
+      }
+    },
+    "front_to_rear_scan_nearest_ms": {
+      "count": 2400,
+      "max": 8.367061614990234,
+      "median": 7.092714309692383,
+      "min": 1.2466907501220703,
+      "p95": 7.982659339904784
+    },
+    "odom_to_ground_truth_nearest_ms": {
+      "count": 2328,
+      "max": 42.70291328430176,
+      "median": 12.49992847442627,
+      "min": 1.7459392547607422,
+      "p95": 22.829294204711914
+    }
+  }
+}
