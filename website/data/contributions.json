@@ -716,7 +716,7 @@
     "readme": "contributions/20_multimodal_failure_explainer/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c20_failure_explainer.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/20_multimodal_failure_explainer/tests",
     "experiment": {
       "contribution_id": "C20",
       "experiment_id": "c20_failure_report_quality",
@@ -751,7 +751,7 @@
     "readme": "contributions/21_ppo_navigation_agent/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c21_ppo.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/21_ppo_navigation_agent/tests",
     "experiment": {
       "contribution_id": "C21",
       "experiment_id": "c21_policy_safety",
