@@ -44,6 +44,8 @@ public:
     std::function<bool()> cancel_checker) override;
 
 private:
+  friend struct PlannerTestAccess;
+  void validateHistoryGeometry() const;
   void onExecutedTransition(const std_msgs::msg::String::SharedPtr message);
   void onHistoryReset(const std_msgs::msg::String::SharedPtr message);
 
@@ -58,10 +60,13 @@ private:
   GridSearchConfig search_config_;
 
   bool history_aware_{false};
+  unsigned int history_width_{0}, history_height_{0};
+  double history_origin_x_{0.0}, history_origin_y_{0.0}, history_resolution_{0.0};
   HistorySearchConfig history_config_;
   std::vector<HistoryHazard> history_hazards_;
   std::vector<std::size_t> history_safe_indices_;
   std::uint64_t active_history_mask_{0};
+  std::uint64_t last_observation_ns_{0};
   bool observed_cell_valid_{false};
   std::size_t observed_cell_{0};
   std::mutex history_mutex_;

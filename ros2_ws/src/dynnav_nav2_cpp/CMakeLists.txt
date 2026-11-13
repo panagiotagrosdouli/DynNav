@@ -76,6 +76,12 @@ install(FILES dynnav_global_planner_plugin.xml
 
 if(BUILD_TESTING)
   find_package(ament_cmake_gtest REQUIRED)
+  ament_add_gtest(test_history_observation test/test_history_observation.cpp)
+  target_include_directories(test_history_observation PRIVATE include)
+  ament_add_gtest(test_planner_observations test/test_planner_observations.cpp)
+  target_link_libraries(test_planner_observations dynnav_global_planner)
+  ament_target_dependencies(test_planner_observations
+    rclcpp nav2_core nav2_costmap_2d geometry_msgs std_msgs)
 
   ament_add_gtest(test_grid_search test/test_grid_search.cpp)
   target_link_libraries(test_grid_search dynnav_grid_search)
