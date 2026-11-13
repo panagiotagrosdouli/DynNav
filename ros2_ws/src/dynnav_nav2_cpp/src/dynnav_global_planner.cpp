@@ -217,6 +217,7 @@ void DynNavGlobalPlanner::cleanup()
   {
     std::lock_guard<std::mutex> lock(history_mutex_);
     active_history_mask_ = 0U;
+    last_observation_ns_ = 0U;
     observed_cell_valid_ = false;
   }
   costmap_ = nullptr;

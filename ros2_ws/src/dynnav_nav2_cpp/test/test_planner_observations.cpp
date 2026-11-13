@@ -45,7 +45,7 @@ TEST(PlannerObservations, OnlyFreshFramedExecutedEventsActivatePersistentHistory
   PlannerTestAccess::setup(planner, map);
   const auto stamp = PlannerTestAccess::stamp(planner);
   for (const auto & text : {std::string("1:0>2:0"), "v1|odom|" + stamp + "|1:0>2:0",
-      "v1|map|1|1:0>2:0", "v1|map|" + stamp + "|1:0>2:0junk"})
+      std::string("v1|map|1|1:0>2:0"), "v1|map|" + stamp + "|1:0>2:0junk"})
   {
     PlannerTestAccess::observe(planner, text);
     EXPECT_EQ(PlannerTestAccess::mask(planner), 0U);

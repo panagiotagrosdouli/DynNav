@@ -100,12 +100,22 @@ jobs:
       - name: Build Nav2 plugin
         run: |
           source /opt/ros/jazzy/setup.bash
-          colcon --log-base /tmp/dynnav_ros2/log build \
+          set -o pipefail
+          if ! colcon --log-base /tmp/dynnav_ros2/log build \
             --base-paths ros2_ws/src/dynnav_nav2_cpp \
             --build-base /tmp/dynnav_ros2/build \
             --install-base /tmp/dynnav_ros2/install \
             --packages-select dynnav_nav2_cpp \
-            --event-handlers console_direct+
+            --event-handlers console_direct+ 2>&1 | tee /tmp/dynnav_ros2-build.log; then
+            python3 - <<'PY'
+          from pathlib import Path
+          for line in Path('/tmp/dynnav_ros2-build.log').read_text().splitlines():
+              if 'error:' in line or 'undefined reference' in line:
+                  escaped = line.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                  print('::error::' + escaped)
+          PY
+            exit 1
+          fi
 
       - name: Test path search and plugin discovery
         run: |

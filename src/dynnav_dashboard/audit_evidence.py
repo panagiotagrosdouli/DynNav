@@ -84,8 +84,11 @@ def load_audit(directory: Path = AUDIT) -> dict:
     if not effect["lower"] <= effect["estimate"] <= effect["upper"] or effect["sample_size"] != len(expected_scenarios):
         raise ValueError("Invalid scenario-level uncertainty interval")
     return {
-        "summary": summary, "protocol": protocol, "effect": effect,
-        "code_revision": revision, "verified_files": verified,
+        "summary": summary,
+        "protocol": protocol,
+        "effect": effect,
+        "code_revision": revision,
+        "verified_files": verified,
         "index_sha256": hashlib.sha256(index_bytes).hexdigest(),
         "trial_rows": len(seen),
         "scope": "Synthetic generated topology; paired scenario bootstrap, not physical-world effectiveness",

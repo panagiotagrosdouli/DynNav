@@ -19,19 +19,23 @@ def render_audit_evidence() -> None:
     st.success("Checksums and complete paired raw-trial denominators verified.")
     st.caption("Integrity is relative to the committed index; it is not independent dataset authentication.")
     st.write(packet["scope"])
-    st.json({
-        "audit_code_checkpoint": packet["code_revision"],
-        "index_sha256": packet["index_sha256"],
-        "raw_trial_rows": packet["trial_rows"],
-        "protocol": packet["protocol"],
-        "provenance_boundary": packet["provenance_boundary"],
-    })
+    st.json(
+        {
+            "audit_code_checkpoint": packet["code_revision"],
+            "index_sha256": packet["index_sha256"],
+            "raw_trial_rows": packet["trial_rows"],
+            "protocol": packet["protocol"],
+            "provenance_boundary": packet["provenance_boundary"],
+        }
+    )
     aggregate = packet["summary"]["aggregate"]
     left, right = st.columns(2)
-    left.metric("State-only exact return infeasibility",
-                f"{aggregate['state_only_exact']['mean_return_infeasible_rate']:.5f}")
-    right.metric("History exact return infeasibility",
-                 f"{aggregate['history_exact']['mean_return_infeasible_rate']:.5f}")
+    left.metric(
+        "State-only exact return infeasibility", f"{aggregate['state_only_exact']['mean_return_infeasible_rate']:.5f}"
+    )
+    right.metric(
+        "History exact return infeasibility", f"{aggregate['history_exact']['mean_return_infeasible_rate']:.5f}"
+    )
     effect = packet["effect"]
     st.write(
         f"History minus state-only: {effect['estimate']:.5f}; "
