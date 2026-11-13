@@ -1,0 +1,60 @@
+name: C09 discrete multi-robot collision-avoidance validation
+
+on:
+  pull_request:
+    paths:
+      - "contributions/09_multi_robot/**"
+      - ".github/workflows/c09-discrete-collision.yml"
+  workflow_dispatch:
+
+jobs:
+  c09-discrete-safety-and-registered-benchmark:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install C09 dependencies
+        run: python -m pip install numpy scipy pytest pyyaml
+      - name: Execute collision and liveness regression tests
+        run: python -m pytest -q contributions/09_multi_robot/tests
+      - name: Execute registered C09 coordination experiment
+        run: |
+          python scripts/run_contribution_suite.py --only C09 --fail-on-skip \
+            --output-dir results/c09_validation/registered
+      - name: Save actual simulated counterexample outcomes
+        run: |
+          PYTHONPATH=contributions/09_multi_robot/code python - <<'PY'
+          import json
+          import numpy as np
+          from pathlib import Path
+          from decentralized_nav import RobotAgent,run_decentralized
+          scenarios={}
+          for name,grid,robots in [
+              ("head_on_swap_blocked",np.zeros((1,2),dtype=np.uint8),
+                [RobotAgent(0,(0,0),(1,0)),RobotAgent(1,(1,0),(0,0))]),
+              ("disjoint_goals_reached",np.zeros((5,9),dtype=np.uint8),
+                [RobotAgent(0,(0,0),(0,3)),RobotAgent(1,(8,0),(8,3))])
+          ]:
+              outcome=run_decentralized(grid,robots,max_steps=15,share_risk=False)
+              scenarios[name]={"goal_reached":outcome.all_reached,
+                               "final_positions":[list(x.pos) for x in robots],
+                               "blocked_intents_not_collisions":outcome.collision_events,
+                               "liveness_guaranteed":False,
+                               "physical_robot_trial":False}
+          assert not scenarios["head_on_swap_blocked"]["goal_reached"]
+          assert scenarios["head_on_swap_blocked"]["final_positions"]==[[0,0],[1,0]]
+          assert scenarios["disjoint_goals_reached"]["goal_reached"]
+          p=Path("results/c09_validation/discrete_safety_scenarios.json")
+          p.parent.mkdir(parents=True,exist_ok=True)
+          p.write_text(json.dumps(scenarios,indent=2)+"\n")
+          print(json.dumps(scenarios,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: c09-discrete-collision-simulation
+          path: results/c09_validation/
+          if-no-files-found: warn

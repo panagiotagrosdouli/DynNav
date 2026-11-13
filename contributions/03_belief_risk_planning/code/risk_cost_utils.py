@@ -22,6 +22,15 @@ Utility συναρτήσεις για cost σε risk-aware navigation με αν�
            + penalties(αν ο άνθρωπος θέλει να αποφεύγει σκοτεινές / low-feature περιοχές)
 """
 
+from pathlib import Path
+import sys
+
+# C03's historical ethical-cost helper uses source owned by C10.
+# Resolve it by repository-relative path so the helper works from any cwd.
+_C10_CODE = Path(__file__).resolve().parents[3] / "contributions" / "10_human_language_ethics" / "code"
+if str(_C10_CODE) not in sys.path:
+    sys.path.insert(0, str(_C10_CODE))
+
 from user_preferences import HumanPreference
 from ethical_risk_policy import EthicalRiskPolicy, EthicalRiskConfig
 
@@ -86,6 +95,16 @@ def human_and_ethical_edge_cost(
         in_private_zone=in_private_zone,
         in_vulnerable_area=in_vulnerable_area,
     )
+    return {
+        "total_cost": total_cost,
+        "base_length": base_length,
+        "physical_risk": physical_risk,
+        "physical_risk_cost": physical_risk_cost,
+        "ethical_risk": ethical_risk,
+        "lambda_weight": lambda_weight,
+    }
+
+
 def path_risk_sum(path, risk_grid):
     """
     Sum of risk along a path.
@@ -110,11 +129,4 @@ def path_length_l2(path):
         L += math.hypot(x1 - x0, y1 - y0)
     return float(L)
 
-    return {
-        "total_cost": total_cost,
-        "base_length": base_length,
-        "physical_risk": physical_risk,
-        "physical_risk_cost": physical_risk_cost,
-        "ethical_risk": ethical_risk,
-        "lambda_weight": lambda_weight,
-    }
+

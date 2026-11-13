@@ -1,0 +1,138 @@
+name: C02-C26 exhaustive integrity and per-contribution execution
+
+on:
+  pull_request:
+    paths:
+      - "contributions/02_uncertainty_calibration/**"
+      - "contributions/03_belief_risk_planning/**"
+      - "contributions/04_irreversibility_returnability/**"
+      - "contributions/05_safe_mode_navigation/**"
+      - "contributions/06_energy_connectivity/**"
+      - "contributions/07_nbv_exploration/**"
+      - "contributions/07_next_best_view/**"
+      - "contributions/08_security_ids/**"
+      - "contributions/09_multi_robot/**"
+      - "contributions/10_human_language_ethics/**"
+      - "contributions/11_vlm_navigation_agent/**"
+      - "contributions/12_diffusion_occupancy/**"
+      - "contributions/13_latent_world_model/**"
+      - "contributions/14_causal_risk_attribution/**"
+      - "contributions/15_neuromorphic_sensing/**"
+      - "contributions/16_federated_nav_learning/**"
+      - "contributions/17_topological_semantic_maps/**"
+      - "contributions/18_formal_safety_shields/**"
+      - "contributions/19_llm_mission_planner/**"
+      - "contributions/20_multimodal_failure_explainer/**"
+      - "contributions/21_ppo_navigation_agent/**"
+      - "contributions/22_curriculum_rl/**"
+      - "contributions/23_gaussian_splatting_mapper/**"
+      - "contributions/24_nerf_uncertainty/**"
+      - "contributions/25_adversarial_attack_simulator/**"
+      - "contributions/26_swarm_consensus/**"
+      - "scripts/audit_contributions_c02_c26.py"
+      - "tests/test_contributions_c02_c26_audit.py"
+      - ".github/workflows/c02-c26-exhaustive.yml"
+      - "configs/contributions/experiments.yaml"
+  workflow_dispatch:
+
+jobs:
+  audit-all-files-and-execute-each-contribution:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install actual scientific analysis dependencies
+        run: |
+          python -m pip install -e ".[dev]"
+          python -m pip install numpy pandas pillow matplotlib pyyaml pytest
+          python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Execute structural integrity on EVERY tracked C02-C26 file
+        run: |
+          python scripts/audit_contributions_c02_c26.py \
+            --output-dir results/c02_c26_exhaustive/file_audit
+      - name: Verify strict inventory and malformed-data rejection
+        run: python -m pytest -q tests/test_contributions_c02_c26_audit.py
+      - name: Run C02 instance-separated archived neural calibration tests
+        run: |
+          python -m pytest -q contributions/02_uncertainty_calibration/tests
+          python contributions/02_uncertainty_calibration/experiments/eval_archived_instance_holdout.py \
+            --input contributions/02_uncertainty_calibration/results/uncertainty_error_data.csv \
+            --out results/c02_c26_exhaustive/c02_real_archived_grid_instance_holdout.json
+      - name: Verify C02 provenance and no map leakage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path("results/c02_c26_exhaustive/c02_real_archived_grid_instance_holdout.json")
+          data=json.loads(p.read_text())
+          assert data["source_sha256"] and len(data["source_sha256"])==64
+          assert set(data["train_instance_ids"]).isdisjoint(data["heldout_instance_ids"])
+          assert data["train_samples"] > 1000 and data["heldout_samples"] > 1000
+          assert data["dataset_evidence"]=="archived_generated_grid_instances_not_real_robot"
+          for name, metrics in data["heldout_reports"].items():
+              assert metrics["n"] > 1000
+              assert 0<=metrics["coverage_1sigma"]<=1
+              print(name,metrics["ece_abs_error"],metrics["coverage_1sigma"])
+          PY
+      - name: Execute C03 ethical-risk and human-preference integration tests
+        run: |
+          python -m pytest -q contributions/03_belief_risk_planning/tests
+
+      - name: Validate registered contribution paths and declarations
+        run: python scripts/validate_contribution_registry.py
+      - name: Run all 25 contributions individually IN ORDER, fail on any skipped dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results/c02_c26_exhaustive/individual
+          for N in $(seq 2 26); do
+            C=$(printf 'C%02d' "$N")
+            echo "::group::Actual individual registered experiment $C"
+            python scripts/run_contribution_suite.py \
+              --only "$C" \
+              --timeout 120 \
+              --fail-on-skip \
+              --output-dir "results/c02_c26_exhaustive/individual/$C"
+            echo "::endgroup::"
+          done
+      - name: Validate real generated artifacts and explicitly distinguish synthetic evidence
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path("results/c02_c26_exhaustive/individual")
+          outcomes={}
+          for n in range(2,27):
+              cid=f"C{n:02d}"
+              manifest=json.loads((root/cid/"manifest.json").read_text())
+              assert len(manifest["results"])==1, cid
+              trial=manifest["results"][0]
+              assert trial["status"]=="passed", trial
+              assert trial["contribution_id"]==cid
+              assert trial["artifact_rows"]>0
+              assert len(trial["artifact_sha256"])==64
+              assert trial["evidence_level"]=="synthetic", (cid,trial["evidence_level"])
+              outcomes[cid]={
+                  "experiment_id":trial["experiment_id"],
+                  "status":trial["status"],
+                  "artifact_rows":trial["artifact_rows"],
+                  "artifact_sha256":trial["artifact_sha256"],
+                  "evidence_level":"synthetic",
+                  "physical_robot_evidence":False,
+                  "claim_boundary":trial["claim_boundary"],
+              }
+          path=Path("results/c02_c26_exhaustive/individual_runs_summary.json")
+          path.write_text(json.dumps(outcomes,indent=2,sort_keys=True)+"\n")
+          print("Verified",len(outcomes),"separate registered synthetic experimental runs")
+          PY
+      - name: Upload all file hashes, all 25 experiment artifacts and provenance
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c02-c26-per-file-and-per-contribution-execution
+          path: results/c02_c26_exhaustive/
+          if-no-files-found: warn

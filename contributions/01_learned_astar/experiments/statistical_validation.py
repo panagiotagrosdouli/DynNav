@@ -228,14 +228,14 @@ def main() -> None:
     parser.add_argument("--trials-per-density", type=int, default=100)
     parser.add_argument("--min-distance", type=int, default=20)
     parser.add_argument("--seed", type=int, default=7)
-    parser.add_argument("--model", type=Path, default=Path("heuristic_net_rich.pt"))
+    parser.add_argument("--model", type=Path, default=Path(__file__).resolve().parents[1] / "models" / "heuristic_net_rich.pt")
     parser.add_argument("--trials-out", type=Path, default=DEFAULT_TRIALS_OUT)
     parser.add_argument("--summary-out", type=Path, default=DEFAULT_SUMMARY_OUT)
     args = parser.parse_args()
 
     rng = random.Random(args.seed)
-    raw_lh = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=True)
-    clipped_lh = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=True)
+    raw_lh = LearnedHeuristicWrapper(model_path=args.model, mode="raw", allow_missing_model=False)
+    clipped_lh = LearnedHeuristicWrapper(model_path=args.model, mode="manhattan_clipped", allow_missing_model=False)
 
     methods: list[tuple[str, Callable[[Grid, Node, Node], tuple[list[Node] | None, int]]]] = [
         ("dijkstra_h0", lambda grid, start, goal: astar_search(grid, start, goal, lambda *_: 0.0)),

@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-12-purple)](.) [![Type](https://img.shields.io/badge/Type-Probabilistic%20Planning-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **Actual neural training completed:** [REAL_MAP_TRAINING_EVIDENCE.md](REAL_MAP_TRAINING_EVIDENCE.md) documents a source-hash-verified LILocBench real-office occupancy denoising study: PyTorch conditional score network actually trained on 558 static-map tiles and assessed on 372 geographically separated held-out tiles, alongside baseline comparisons and exact CI artifacts. This is static-map restoration using **synthetic observation noise**, NOT future obstacle prediction, calibrated crash risk or C12-controlled physical robot navigation.
+
 ## Plain-language summary
 
 A deterministic occupancy grid gives the robot one guess about the future.

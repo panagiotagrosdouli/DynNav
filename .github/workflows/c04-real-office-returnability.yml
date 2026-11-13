@@ -1,0 +1,88 @@
+name: C04 official real-office returnability and minimax threshold evidence
+
+on:
+  pull_request:
+    paths:
+      - "contributions/04_irreversibility_returnability/**"
+      - ".github/workflows/c04-real-office-returnability.yml"
+  workflow_dispatch:
+
+jobs:
+  official-office-returnability:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONPATH: .
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install C04 research dependencies
+        run: python -m pip install numpy scipy pillow pyyaml pytest
+      - name: Run all existing and new C04 tests
+        run: python -m pytest -q contributions/04_irreversibility_returnability/tests
+      - name: Verify real LILocBench office map source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import hashlib,zipfile,urllib.request,shutil,yaml
+          target=Path("/tmp/c04_real_office")
+          target.mkdir(parents=True,exist_ok=True)
+          archive=target/"map_office.zip"
+          with urllib.request.urlopen("https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/map_office.zip",timeout=100) as source,archive.open("wb") as dst:
+              shutil.copyfileobj(source,dst)
+          assert hashlib.sha256(archive.read_bytes()).hexdigest()=="941f96bf90d7d89dddf76fb4864f45212318d39f2b4f1220318786e53f48f6b0", "Upstream map hash changed"
+          with zipfile.ZipFile(archive) as z:
+              for item in z.infolist():
+                  assert (target/item.filename).resolve().is_relative_to(target.resolve()),"Unsafe archive entry"
+              z.extractall(target)
+          files=[]
+          for p in target.rglob("*.yaml"):
+              v=yaml.safe_load(p.read_text())
+              if isinstance(v,dict) and isinstance(v.get("image"),str) and (p.parent/v["image"]).is_file():
+                  files.append(p)
+          assert len(files)==1,files
+          Path("/tmp/c04-map-yaml").write_text(str(files[0]))
+          print("Using independently sourced real ROS occupancy map:",files[0])
+          PY
+      - name: Execute paired C04 returnability and minimal-relaxation study on actual map
+        run: |
+          python contributions/04_irreversibility_returnability/experiments/eval_real_office_returnability.py \
+            "$(cat /tmp/c04-map-yaml)" \
+            --output-dir results/c04_real_office --tasks 4 --seed 17 --tau .08
+      - name: Independently validate recorded real-map study
+        run: |
+          python - <<'PY'
+          import json,csv,math
+          from pathlib import Path
+          d=Path("results/c04_real_office")
+          info=json.loads((d/"summary.json").read_text())
+          rows=list(csv.DictReader((d/"trials.csv").open()))
+          assert len(rows)==12
+          assert info["map_dimensions"]==[1000,1000]
+          assert info["map_image_sha256"]=="8a9ff6aa0d954e7743ed7dd1801d9df2a44a4d023cfda8de6ef12daa39cd57bf"
+          assert info["physical_robot_trials"]==0
+          for task in range(4):
+              by={v["method"]:v for v in rows if int(v["task"])==task}
+              assert len(by)==3
+              assert by["distance_only"]["successful"]=="True"
+              assert by["minimax_feasible_cap"]["successful"]=="True"
+              assert by["hard_cap"]["successful"]=="False", "Strict threshold should reject these sampled routes"
+              assert float(by["minimax_feasible_cap"]["used_tau"])>info["nominal_tau"]
+              base=by["distance_only"];safe=by["minimax_feasible_cap"]
+              assert int(safe["steps"])>=int(base["steps"])
+              assert float(safe["max_I"])<=float(safe["used_tau"])+1e-7
+              assert safe["all_returnable"]=="True"
+              assert float(safe["min_recoverability"])>=0
+              assert float(safe["minimum_feasible_tau"])<=1
+          print("Verified 12 C04 real-map routed results and exact minimax thresholds")
+          PY
+      - name: Upload scientific actual-map C04 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c04-real-office-geometric-returnability-and-minimax-threshold
+          path: results/c04_real_office/
+          if-no-files-found: warn

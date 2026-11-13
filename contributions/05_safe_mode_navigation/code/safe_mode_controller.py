@@ -21,6 +21,7 @@ from __future__ import annotations
 
 from dataclasses import asdict, dataclass
 from enum import Enum
+import math
 
 
 class SafeModeState(str, Enum):
@@ -45,6 +46,16 @@ class SafeModeConfig:
     safe_inflation_radius: float = 2.0
 
     def __post_init__(self) -> None:
+        values=(self.risk_off_threshold,self.risk_on_threshold,self.critical_threshold,
+                self.normal_speed,self.safe_speed,self.normal_inflation_radius,self.safe_inflation_radius)
+        if not all(math.isfinite(float(x)) for x in values):
+            raise ValueError("C05 thresholds, speed and inflation parameters must be finite")
+        if not (0<=self.risk_off_threshold<self.risk_on_threshold<=self.critical_threshold<=1):
+            raise ValueError("C05 risk thresholds must satisfy 0 <= off < on <= critical <= 1")
+        if self.normal_speed < 0 or self.safe_speed < 0 or self.safe_speed > self.normal_speed:
+            raise ValueError("Safe mode must not command faster speed than normal mode")
+        if self.normal_inflation_radius < 0 or self.safe_inflation_radius < self.normal_inflation_radius:
+            raise ValueError("Safe mode inflation must not be smaller than normal inflation")
         if self.risk_off_threshold >= self.risk_on_threshold:
             raise ValueError("risk_off_threshold must be lower than risk_on_threshold for hysteresis.")
         if self.critical_threshold < self.risk_on_threshold:
@@ -113,15 +124,20 @@ class SafeModeController:
         risk = float(risk)
         prev_state = self.state
         transition = "none"
-
+        # Invalid, missing, NaN, infinite or out-of-range risk MUST NOT
+        # silently pass through NORMAL due to floating-point comparisons.
+        invalid_risk = not math.isfinite(risk) or not 0.0 <= risk <= 1.0
+        if invalid_risk:
+            risk = 1.0  # explicit finite critical sentinel for telemetry
         if self.cooldown_remaining > 0:
             self.cooldown_remaining -= 1
 
-        if risk >= self.cfg.critical_threshold:
+        if invalid_risk or risk >= self.cfg.critical_threshold:
             self.state = SafeModeState.EMERGENCY_STOP
             self.recovery_counter = 0
             self.activation_counter = 0
-            transition = f"{prev_state.value}->EMERGENCY_STOP" if prev_state != self.state else "hold_emergency"
+            transition = ("INVALID_RISK->EMERGENCY_STOP" if invalid_risk else
+                          f"{prev_state.value}->EMERGENCY_STOP" if prev_state != self.state else "hold_emergency")
 
         elif self.state == SafeModeState.NORMAL:
             self.recovery_counter = 0

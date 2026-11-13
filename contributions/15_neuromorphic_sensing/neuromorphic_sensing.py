@@ -87,7 +87,13 @@ class DVSSimulator:
 
         # Determine which pixels have a valid reference
         has_ref = self._log_ref > -np.inf
-        delta = np.where(has_ref, log_frame - self._log_ref, 0.0)
+        delta = np.zeros_like(log_frame)
+        delta[has_ref] = log_frame[has_ref] - self._log_ref[has_ref]
+        # Establish a baseline for every newly observed pixel immediately.
+        # Previously the -inf reference was never initialized unless a pixel
+        # fired. With noise_rate=0 this prevented ALL signal-driven DVS events
+        # from ever being generated.
+        self._log_ref[~has_ref] = log_frame[~has_ref]
 
         # Refractory mask
         ready = (self._t_us - self._last_fire_us) >= self.cfg.refractory_us

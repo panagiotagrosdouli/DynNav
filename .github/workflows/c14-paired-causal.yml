@@ -1,0 +1,57 @@
+name: C14 paired causal attribution actual synthetic SCM experiment
+
+on:
+  pull_request:
+    paths:
+      - "contributions/14_causal_risk_attribution/**"
+      - ".github/workflows/c14-paired-causal.yml"
+  workflow_dispatch:
+
+jobs:
+  c14-causal-attribution:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install SCM experiment dependencies
+        run: python -m pip install numpy pytest
+      - name: Run C14 causal numerical and attribution regression tests
+        run: python -m pytest -q contributions/14_causal_risk_attribution/tests
+      - name: Reproduce existing C14 root cause ranking
+        run: |
+          python contributions/14_causal_risk_attribution/experiments/eval_root_cause_attribution.py \
+            --out results/c14_causal_validation/legacy_root_cause.csv
+      - name: Execute 250 paired intervention episodes with injected root causes
+        run: |
+          python contributions/14_causal_risk_attribution/experiments/eval_paired_counterfactuals.py \
+            --seed 2026 --episodes 250 \
+            --output-dir results/c14_causal_validation
+      - name: Assert provenance, finite metrics and zero physical claims
+        run: |
+          python - <<'PY'
+          import csv,json,math
+          from pathlib import Path
+          d=Path("results/c14_causal_validation")
+          summary=json.loads((d/"summary.json").read_text())
+          rows=list(csv.DictReader((d/"counterfactual_trials.csv").open()))
+          assert summary["n_episodes"]==len(rows)==250
+          assert len(summary["source_scm_sha256"])==64
+          assert summary["physical_robot_trials"]==0
+          assert 0<=summary["overall_top1_accuracy"]<=1
+          assert sum(x["n"] for x in summary["per_cause"].values())==250
+          assert len(list(csv.DictReader((d/"legacy_root_cause.csv").open())))==5
+          for row in rows:
+              assert 1<=int(row["rank_of_injected_cause"])<=5
+              assert math.isfinite(float(row["injected_node_effect"]))
+          print("Verified 250 actual paired SCM runs; NO physical causal validation")
+          PY
+      - name: Upload reproducible causal intervention records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c14-paired-injected-causal-attribution-evidence
+          path: results/c14_causal_validation/
+          if-no-files-found: warn

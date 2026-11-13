@@ -1,0 +1,50 @@
+name: C11 VLM transport and semantic goal fail-closed checks
+
+on:
+  pull_request:
+    paths:
+      - "contributions/11_vlm_navigation_agent/**"
+      - ".github/workflows/c11-vlm-integrity.yml"
+  workflow_dispatch:
+
+jobs:
+  c11-actual-transport-and-validation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install local VLM transport/validation dependencies
+        run: python -m pip install numpy pillow pytest
+      - name: Execute C11 all focused tests, including REAL loopback HTTP transport
+        run: |
+          python -m pip install -e .
+          python -m pytest -q contributions/11_vlm_navigation_agent/tests
+      - name: Execute original deterministic C11 semantic validation benchmark
+        run: |
+          python contributions/11_vlm_navigation_agent/experiments/eval_vlm_goal_validation.py \
+            --out results/c11_integrity/validation_fixture.csv
+      - name: Assert benchmark results are explicitly non-VLM/non-robot evidence
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+          rows=list(csv.DictReader(Path("results/c11_integrity/validation_fixture.csv").open()))
+          assert len(rows)==6,rows
+          assert {v["scenario"] for v in rows}=={
+              "valid_corridor_goal","low_confidence_goal","hallucinated_region",
+              "out_of_frame_pixel","far_waypoint","forbidden_semantics"}
+          assert next(v for v in rows if v["scenario"]=="valid_corridor_goal")["decision"]=="ACCEPT"
+          assert all(v["decision"]!="ACCEPT" for v in rows if v["scenario"]!="valid_corridor_goal")
+          print("C11 validation fixture accepted 1 of 6 with no real VLM model executed.")
+          PY
+      - name: Upload C11 validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c11-actual-http-mock-transport-and-goal-validation
+          path: results/c11_integrity/
+          if-no-files-found: warn

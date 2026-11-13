@@ -1,9 +1,11 @@
 import math
+import argparse
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import Dataset, DataLoader, Subset
 
 
 CSV_PATH = "drift_dataset.csv"
@@ -14,7 +16,7 @@ DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class DriftDataset(Dataset):
-    def __init__(self, csv_path: str):
+    def __init__(self, csv_path: str, fit_indices=None):
         df = pd.read_csv(csv_path)
 
         # ----- Επιλογή target column -----
@@ -43,12 +45,20 @@ class DriftDataset(Dataset):
         X = num_df[feature_cols].to_numpy(dtype=np.float32)
         y = num_df[target_col].to_numpy(dtype=np.float32).reshape(-1, 1)
 
-        # Αποθήκευση normalization stats
-        self.x_mean = X.mean(axis=0, keepdims=True)
-        self.x_std = X.std(axis=0, keepdims=True) + 1e-8
-
-        self.y_mean = y.mean(axis=0, keepdims=True)
-        self.y_std = y.std(axis=0, keepdims=True) + 1e-8
+        if not np.isfinite(X).all() or not np.isfinite(y).all():
+            raise ValueError("C02 drift data contain NaN/Inf; refusing unsafe training")
+        if fit_indices is None:
+            # Legacy direct class construction; the main train() method ALWAYS
+            # supplies train-only indices to prevent normalizer leakage.
+            fit_indices = np.arange(len(X))
+        fit_indices = np.asarray(fit_indices,dtype=int)
+        if fit_indices.size < 2 or np.any(fit_indices < 0) or np.any(fit_indices >= len(X)):
+            raise ValueError("Need >=2 valid training indices")
+        x_fit, y_fit = X[fit_indices], y[fit_indices]
+        self.x_mean = x_fit.mean(axis=0, keepdims=True)
+        self.x_std = np.maximum(x_fit.std(axis=0, keepdims=True), 1e-8)
+        self.y_mean = y_fit.mean(axis=0, keepdims=True)
+        self.y_std = np.maximum(y_fit.std(axis=0, keepdims=True), 1e-8)
 
         Xn = (X - self.x_mean) / self.x_std
         yn = (y - self.y_mean) / self.y_std
@@ -97,14 +107,22 @@ def gaussian_nll(y, mean, log_std):
     return 0.5 * (math.log(2 * math.pi) + 2 * log_std + (y - mean) ** 2 / var)
 
 
-def train():
-    full_dataset = DriftDataset(CSV_PATH)
+def train(csv_path=CSV_PATH, model_path=MODEL_PATH, stats_path=NORM_STATS_PATH, epochs=50, seed=2026):
+    if epochs < 1:
+        raise ValueError('epochs must be >=1')
+    torch.manual_seed(seed)
+    np.random.seed(seed)
+    n=len(pd.read_csv(csv_path))
+    if n < 10:
+        raise ValueError('At least ten drift observations required')
+    permutation=np.random.default_rng(seed).permutation(n)
+    n_train=int(.8*n)
+    train_indices=permutation[:n_train]
+    val_indices=permutation[n_train:]
+    full_dataset = DriftDataset(csv_path,fit_indices=train_indices)
 
     # Train/val split (80/20)
-    n = len(full_dataset)
-    n_train = int(0.8 * n)
-    n_val = n - n_train
-    train_ds, val_ds = random_split(full_dataset, [n_train, n_val])
+    train_ds, val_ds = Subset(full_dataset,train_indices.tolist()), Subset(full_dataset,val_indices.tolist())
 
     train_loader = DataLoader(train_ds, batch_size=64, shuffle=True)
     val_loader = DataLoader(val_ds, batch_size=256, shuffle=False)
@@ -114,7 +132,7 @@ def train():
 
     best_val_loss = float("inf")
 
-    for epoch in range(1, 51):
+    for epoch in range(1, epochs+1):
         model.train()
         train_loss = 0.0
         n_train_samples = 0
@@ -161,19 +179,28 @@ def train():
                     "feature_cols": full_dataset.feature_cols,
                     "target_col": full_dataset.target_col,
                 },
-                MODEL_PATH,
+                model_path,
             )
             np.savez(
-                NORM_STATS_PATH,
+                stats_path,
                 x_mean=full_dataset.x_mean,
                 x_std=full_dataset.x_std,
                 y_mean=full_dataset.y_mean,
                 y_std=full_dataset.y_std,
             )
-            print(f"[INFO] Saved best model to {MODEL_PATH}, stats to {NORM_STATS_PATH}")
+            print(f"[INFO] Saved best model to {model_path}, stats to {stats_path}")
 
     print("[INFO] Training finished. Best val loss:", best_val_loss)
 
 
 if __name__ == "__main__":
-    train()
+    parser=argparse.ArgumentParser(description="C02 drift uncertainty training; training-only normalization")
+    parser.add_argument("--csv",default=CSV_PATH)
+    parser.add_argument("--model-out",default=MODEL_PATH)
+    parser.add_argument("--stats-out",default=NORM_STATS_PATH)
+    parser.add_argument("--epochs",type=int,default=50)
+    parser.add_argument("--seed",type=int,default=2026)
+    a=parser.parse_args()
+    Path(a.model_out).parent.mkdir(parents=True,exist_ok=True)
+    Path(a.stats_out).parent.mkdir(parents=True,exist_ok=True)
+    train(a.csv,a.model_out,a.stats_out,a.epochs,a.seed)

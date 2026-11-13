@@ -1,0 +1,74 @@
+name: C16 actual Dingo recorded pseudo-federated navigation regression
+
+on:
+  pull_request:
+    paths:
+      - "contributions/16_federated_nav_learning/**"
+      - ".github/workflows/c16-real-dingo-fedavg.yml"
+  workflow_dispatch:
+
+jobs:
+  recorded-dingo-pseudo-federation:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install actual recorded robotics data and FedAvg requirements
+        run: python -m pip install "rosbags>=0.10,<0.11" numpy pytest
+      - name: Run C16 chronological evaluation tests
+        run: python -m pytest -q contributions/16_federated_nav_learning/tests
+      - name: Obtain and verify genuine historical Dingo ROS recording
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import urllib.request,shutil,hashlib
+          url="https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/bagfiles_no_cams/dynamics_0.bag"
+          p=Path("/tmp/c16_original_dingo.bag")
+          with urllib.request.urlopen(url,timeout=100) as src,p.open("wb") as dst:
+              shutil.copyfileobj(src,dst)
+          h=hashlib.sha256(p.read_bytes()).hexdigest()
+          assert h=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58",h
+          print("Verified original real Dingo rosbag",len(p.read_bytes()),h)
+          PY
+      - name: Actually train six chronological pseudo-clients on real Dingo motion
+        run: |
+          python contributions/16_federated_nav_learning/experiments/eval_real_dingo_pseudoclient_fedavg.py \
+            /tmp/c16_original_dingo.bag \
+            --output-dir results/c16_real_dingo --rounds 60 --pseudo-clients 6
+      - name: Independently validate real source, metrics and no fabricated fleet/privacy
+        run: |
+          python - <<'PY'
+          import json,math,numpy as np
+          from pathlib import Path
+          p=Path("results/c16_real_dingo")
+          j=json.loads((p/"report.json").read_text())
+          prov=j["provenance"]
+          assert prov["original_ros1_bag_sha256"]=="df4abb923df1bb1ff46326abab8667188f4bc17e7ae12ea16905e9d632470c58"
+          assert prov["actual_odom_messages"]==2328
+          assert prov["actual_historical_commands"]==6866
+          assert prov["valid_aligned_steps"]>2000
+          assert len(prov["pseudo_client_ranges"])==6
+          assert prov["actual_robots_in_federation"]==0
+          assert prov["dp_epsilon_claimed"] is False
+          assert prov["physical_robot_trials"]==0
+          assert j["pseudo_clients"]==6
+          assert set(j["chronological_test_metrics"])=={
+              "federated_weighted","federated_uniform",
+              "centralized_same_update_count","stationary","command_kinematics"}
+          for k,metrics in j["chronological_test_metrics"].items():
+              assert all(math.isfinite(v) and v>=0 for v in metrics.values()),(k,metrics)
+          with np.load(p/"model_params.npz",allow_pickle=False) as tensors:
+              assert tensors["federated_W"].shape==(3,3)
+              assert np.isfinite(tensors["federated_W"]).all()
+          print("Validated genuinely trained offline pseudo-FedAvg and heldout Dingo baselines")
+          PY
+      - name: Upload real Dingo offline pseudo-federation models and evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: c16-recorded-dingo-pseudo-client-fedavg-training
+          path: results/c16_real_dingo/
+          if-no-files-found: warn

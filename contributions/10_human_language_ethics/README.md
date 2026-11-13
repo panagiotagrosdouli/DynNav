@@ -2,6 +2,8 @@
 
 [![Module](https://img.shields.io/badge/Module-10-purple)](.) [![Type](https://img.shields.io/badge/Type-HRI%20%2F%20Ethics-blue)](.) [![Status](https://img.shields.io/badge/Status-Core%20Upgraded-brightgreen)](.)
 
+> **C10 strict input and operator-approval verification:** [HUMAN_ETHICS_FAILCLOSED_REPORT.md](HUMAN_ETHICS_FAILCLOSED_REPORT.md) documents the correction of nonfinite human-distance handling, unknown zones and low-confidence cases that previously could permit motion while awaiting human confirmation. These are software-policy controls, **not proof of safe physical human-robot interaction**.
+
 ## Plain-language summary
 
 A robot should not treat every physically reachable path as acceptable.

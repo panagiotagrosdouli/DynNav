@@ -1,5 +1,18 @@
+"""HISTORICAL cross-contribution C07/multi-objective timing, not C01 A* timing.
+
+Retained in its original C01 path for provenance; CLI resolves actual source
+dependencies and requires explicit coverage/centroid data inputs.
+"""
+import argparse
+import sys
 import time
+from pathlib import Path
 import pandas as pd
+
+REPO = Path(__file__).resolve().parents[3]
+for _folder in (REPO / "contributions" / "07_nbv_exploration" / "code", REPO / "core"):
+    if str(_folder) not in sys.path:
+        sys.path.insert(0, str(_folder))
 
 from info_gain_planner import (
     load_coverage_grid,
@@ -51,36 +64,26 @@ def benchmark_pareto(df_scores):
 
 
 if __name__ == "__main__":
-    coverage_csv = "coverage_grid_with_uncertainty.csv"
-    centroids_csv = "cluster_waypoints.csv"
-
-    print(f"[TIMING] Loading coverage grid: {coverage_csv}")
-    prob_grid = load_coverage_grid(coverage_csv)
-    H_map = compute_entropy_map(prob_grid)
-
-    print("[TIMING] Loading uncertainty grid...")
-    U_map = load_uncertainty_grid(coverage_csv)
-
-    print(f"[TIMING] Loading centroids: {centroids_csv}")
-    centroids_df = load_cluster_centroids(centroids_csv)
-
-    robot_row, robot_col = 0, 0
-
-    print("\n[TIMING] Benchmarking multi-objective planner...")
-    t_mo, df_scores = benchmark_multiobj(H_map, U_map, centroids_df, robot_row, robot_col)
-    print(f"[TIMING] Multi-objective planner avg time over {N_RUNS} runs: {t_mo*1000:.3f} ms")
-
-    print("\n[TIMING] Benchmarking Pareto front computation...")
-    t_pf = benchmark_pareto(df_scores)
-    print(f"[TIMING] Pareto front avg time over {N_RUNS} runs: {t_pf*1000:.3f} ms")
-
-    # Αποθήκευση αποτελεσμάτων σε CSV
-    results = pd.DataFrame(
-        [
-            {"component": "Multiobjective_planner", "avg_time_ms": t_mo * 1000.0},
-            {"component": "Pareto_front", "avg_time_ms": t_pf * 1000.0},
-        ]
-    )
-    results.to_csv("timing_results.csv", index=False)
-    print("\n[TIMING] Saved timing_results.csv")
-    print(results)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--coverage", required=True, type=Path)
+    parser.add_argument("--centroids", required=True, type=Path)
+    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--runs", type=int, default=5)
+    args = parser.parse_args()
+    if args.runs < 1:
+        parser.error("--runs must be positive")
+    N_RUNS = args.runs
+    probability = load_coverage_grid(str(args.coverage))
+    entropy = compute_entropy_map(probability)
+    uncertainty = load_uncertainty_grid(str(args.coverage))
+    centroids = load_cluster_centroids(str(args.centroids))
+    multiobj_sec, scores = benchmark_multiobj(entropy, uncertainty, centroids)
+    pareto_sec = benchmark_pareto(scores)
+    args.out.parent.mkdir(parents=True, exist_ok=True)
+    result = pd.DataFrame([
+        {"component":"historical_C07_multiobjective", "avg_time_ms":multiobj_sec*1000},
+        {"component":"historical_C07_pareto_front", "avg_time_ms":pareto_sec*1000},
+    ])
+    result.to_csv(args.out, index=False)
+    print("HISTORICAL NON-C01-ASTAR TIMING (not evidence of learned-A* speed):")
+    print(result.to_string(index=False))
