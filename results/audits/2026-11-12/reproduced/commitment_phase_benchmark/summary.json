@@ -1,0 +1,18 @@
+{
+  "history_aware": {
+    "analytic_boundary_match_rate": 1.0,
+    "detour_rate": 0.26666666666666666,
+    "mean_final_return_probability": 0.6786666666666666,
+    "mean_geometric_length": 4.906666666666666,
+    "mean_planning_time_ms": 0.10919545333611798,
+    "trials": 75
+  },
+  "shortest": {
+    "analytic_boundary_match_rate": 1.0,
+    "detour_rate": 0.0,
+    "mean_final_return_probability": 0.5,
+    "mean_geometric_length": 4.0,
+    "mean_planning_time_ms": 0.012632626668770778,
+    "trials": 75
+  }
+}

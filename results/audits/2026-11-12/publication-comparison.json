@@ -1,0 +1,11 @@
+{
+  "checks": {
+    "state_only_exact_rate": true,
+    "history_exact_rate": true,
+    "mean": true,
+    "sample_size": true,
+    "bootstrap_95": true
+  },
+  "all_passed": true,
+  "evidence_scope": "rerun of frozen synthetic generator, no physical measurements"
+}

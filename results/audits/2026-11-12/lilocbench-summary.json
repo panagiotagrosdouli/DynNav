@@ -1,0 +1,40 @@
+{
+  "analysis_method": "2D path length is the sum of Euclidean XY distances between consecutive ground-truth poses; speeds divide each segment by its timestamp interval.",
+  "data_kind": "recorded ground-truth robot trajectory; not a DynNav planner trial",
+  "dataset": "LILocBench",
+  "duration_s": 159.95133876800537,
+  "license": "CC BY-NC-SA 4.0; cite Trekel et al., IROS 2025",
+  "pose_format": "TUM: timestamp tx ty tz qx qy qz qw",
+  "position_bounds_m": {
+    "x": [
+      -0.5373900376523345,
+      10.821736424800081
+    ],
+    "y": [
+      -9.428774255507623,
+      -3.5546372091018275
+    ],
+    "z": [
+      -1.4704331595588576,
+      -1.4105525740888214
+    ]
+  },
+  "sample_interval_s": {
+    "max": 0.15000081062316895,
+    "median": 0.05000042915344238,
+    "min": 0.04999971389770508
+  },
+  "samples": 3194,
+  "sampling_hz_mean": 19.962321194642524,
+  "sequence": "dynamics_0",
+  "source_sha256": "606f9392c1a992c9acdb5e680a9108ef7647ba8943d747435c90dfa56feaa38f",
+  "source_url": "https://www.ipb.uni-bonn.de/html/projects/localization_benchmark/data/gt_poses_public/dynamics_0/gt_poses.txt",
+  "xy_path_length_m": 53.966714849768415,
+  "xy_speed_m_s": {
+    "max": 1.1019932926975398,
+    "mean": 0.33739458053578497,
+    "median": 0.377975991359206,
+    "p95": 0.4396818023860384
+  },
+  "xy_straight_line_displacement_m": 7.953911745150113
+}

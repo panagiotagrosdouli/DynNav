@@ -1,0 +1,31 @@
+{
+  "status": "passed",
+  "story": "compile protocol -> execute 4 planners -> display executed evidence",
+  "page_errors": [],
+  "api_responses": [
+    {
+      "url": "http://127.0.0.1:8000/v1/system",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8000/v1/protocols",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8000/v1/experiments",
+      "status": 201
+    },
+    {
+      "url": "http://127.0.0.1:8000/v1/experiments/exp_21a073981ecab7e3/run",
+      "status": 202
+    },
+    {
+      "url": "http://127.0.0.1:8000/v1/experiments/exp_21a073981ecab7e3",
+      "status": 200
+    },
+    {
+      "url": "http://127.0.0.1:8000/v1/experiments/exp_21a073981ecab7e3",
+      "status": 200
+    }
+  ]
+}

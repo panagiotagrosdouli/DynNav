@@ -1,0 +1,63 @@
+{
+  "hazard_counts": [
+    1,
+    2,
+    4,
+    6,
+    8,
+    10,
+    12
+  ],
+  "max_cut_absolute_error": 0.0,
+  "per_hazard_count": {
+    "1": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.014440999962062051,
+      "exact_ms": 0.0471890000426356,
+      "probability": 0.8,
+      "speedup_exact_over_cut": 3.267710003919799
+    },
+    "10": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.1596959999687897,
+      "exact_ms": 19.086544000060712,
+      "probability": 0.10737418240000006,
+      "speedup_exact_over_cut": 119.51798419366112
+    },
+    "12": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.23283400003037968,
+      "exact_ms": 67.98472499997388,
+      "probability": 0.06871947673600004,
+      "speedup_exact_over_cut": 291.98796134200063
+    },
+    "2": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.018586999999570253,
+      "exact_ms": 0.037335000001803564,
+      "probability": 0.6400000000000001,
+      "speedup_exact_over_cut": 2.0086619681856557
+    },
+    "4": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.03299799993783381,
+      "exact_ms": 0.20066600006884983,
+      "probability": 0.40960000000000013,
+      "speedup_exact_over_cut": 6.081156447266263
+    },
+    "6": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.052116999995632796,
+      "exact_ms": 0.4746509999904447,
+      "probability": 0.2621440000000001,
+      "speedup_exact_over_cut": 9.107412169353927
+    },
+    "8": {
+      "absolute_error": 0.0,
+      "critical_cut_ms": 0.08020899997518427,
+      "exact_ms": 2.1492969999599154,
+      "probability": 0.1677721600000001,
+      "speedup_exact_over_cut": 26.7962074159369
+    }
+  }
+}

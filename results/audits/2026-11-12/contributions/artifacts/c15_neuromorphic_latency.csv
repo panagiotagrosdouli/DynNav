@@ -1,0 +1,7 @@
+scenario,speed_px_per_frame,method,detected,detection_time_us,latency_us,false_negative,n_events,event_rate_per_ms,max_score
+slow_obstacle,3,event_snn,False,-1.0,80000.0,True,420,5.25,0.0
+slow_obstacle,3,frame_baseline,True,0.0,0.0,False,0,0.0,1.0
+medium_obstacle,6,event_snn,False,-1.0,80000.0,True,840,10.5,0.0
+medium_obstacle,6,frame_baseline,True,0.0,0.0,False,0,0.0,1.0
+fast_obstacle,10,event_snn,False,-1.0,80000.0,True,980,12.25,0.0
+fast_obstacle,10,frame_baseline,True,0.0,0.0,False,0,0.0,1.0

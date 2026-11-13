@@ -1,0 +1,398 @@
+{
+  "alternating_7": {
+    "hard_return_0.9": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 7,
+      "path_length": 42,
+      "trials": 500
+    },
+    "history_cut": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 7,
+      "path_length": 42,
+      "trials": 500
+    },
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 7,
+      "path_length": 42,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "hard_return_0.9": {
+        "baseline_only_events": 499,
+        "baseline_rate": 0.998,
+        "discordant_pairs": 499,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.998,
+          "lower": -1.0,
+          "sample_size": 500,
+          "upper": -0.994
+        },
+        "mcnemar_exact_pvalue": 1.221974545399842e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.998
+      },
+      "history_cut": {
+        "baseline_only_events": 499,
+        "baseline_rate": 0.998,
+        "discordant_pairs": 499,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.998,
+          "lower": -1.0,
+          "sample_size": 500,
+          "upper": -0.994
+        },
+        "mcnemar_exact_pvalue": 1.221974545399842e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.998
+      },
+      "history_exact": {
+        "baseline_only_events": 499,
+        "baseline_rate": 0.998,
+        "discordant_pairs": 499,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.998,
+          "lower": -1.0,
+          "sample_size": 500,
+          "upper": -0.994
+        },
+        "mcnemar_exact_pvalue": 1.221974545399842e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.998
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.998,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.998,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.998,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.998,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 7,
+      "irreversible_failure_rate": 0.998,
+      "mean_realized_closures": 3.852,
+      "module_count": 7,
+      "path_length": 28,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 7,
+      "irreversible_failure_rate": 0.998,
+      "mean_realized_closures": 3.852,
+      "module_count": 7,
+      "path_length": 28,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 7,
+      "irreversible_failure_rate": 0.998,
+      "mean_realized_closures": 3.852,
+      "module_count": 7,
+      "path_length": 28,
+      "trials": 500
+    }
+  },
+  "low_to_high_6": {
+    "hard_return_0.9": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 6,
+      "path_length": 36,
+      "trials": 500
+    },
+    "history_cut": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 6,
+      "path_length": 36,
+      "trials": 500
+    },
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 6,
+      "path_length": 36,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "hard_return_0.9": {
+        "baseline_only_events": 496,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 496,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.998,
+          "sample_size": 500,
+          "upper": -0.984
+        },
+        "mcnemar_exact_pvalue": 9.775796363198735e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "history_cut": {
+        "baseline_only_events": 496,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 496,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.998,
+          "sample_size": 500,
+          "upper": -0.982
+        },
+        "mcnemar_exact_pvalue": 9.775796363198735e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "history_exact": {
+        "baseline_only_events": 496,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 496,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.998,
+          "sample_size": 500,
+          "upper": -0.984
+        },
+        "mcnemar_exact_pvalue": 9.775796363198735e-150,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.992,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.992,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 6,
+      "irreversible_failure_rate": 0.992,
+      "mean_realized_closures": 2.94,
+      "module_count": 6,
+      "path_length": 24,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 6,
+      "irreversible_failure_rate": 0.992,
+      "mean_realized_closures": 2.94,
+      "module_count": 6,
+      "path_length": 24,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 6,
+      "irreversible_failure_rate": 0.992,
+      "mean_realized_closures": 2.94,
+      "module_count": 6,
+      "path_length": 24,
+      "trials": 500
+    }
+  },
+  "mixed_8": {
+    "hard_return_0.9": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.116,
+      "mean_realized_closures": 0.116,
+      "module_count": 8,
+      "path_length": 46,
+      "trials": 500
+    },
+    "history_cut": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 8,
+      "path_length": 48,
+      "trials": 500
+    },
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "mean_realized_closures": 0.0,
+      "module_count": 8,
+      "path_length": 48,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "hard_return_0.9": {
+        "baseline_only_events": 442,
+        "baseline_rate": 1,
+        "discordant_pairs": 442,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.884,
+          "lower": -0.91,
+          "sample_size": 500,
+          "upper": -0.856
+        },
+        "mcnemar_exact_pvalue": 1.761050914342067e-133,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.116,
+        "risk_difference": -0.884
+      },
+      "history_cut": {
+        "baseline_only_events": 500,
+        "baseline_rate": 1,
+        "discordant_pairs": 500,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -1.0,
+          "lower": -1.0,
+          "sample_size": 500,
+          "upper": -1.0
+        },
+        "mcnemar_exact_pvalue": 6.10987272699921e-151,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -1
+      },
+      "history_exact": {
+        "baseline_only_events": 500,
+        "baseline_rate": 1,
+        "discordant_pairs": 500,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -1.0,
+          "lower": -1.0,
+          "sample_size": 500,
+          "upper": -1.0
+        },
+        "mcnemar_exact_pvalue": 6.10987272699921e-151,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -1
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 1,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 1,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 1,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 1,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 8,
+      "irreversible_failure_rate": 1.0,
+      "mean_realized_closures": 4.212,
+      "module_count": 8,
+      "path_length": 32,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 8,
+      "irreversible_failure_rate": 1.0,
+      "mean_realized_closures": 4.212,
+      "module_count": 8,
+      "path_length": 32,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 8,
+      "irreversible_failure_rate": 1.0,
+      "mean_realized_closures": 4.212,
+      "module_count": 8,
+      "path_length": 32,
+      "trials": 500
+    }
+  }
+}

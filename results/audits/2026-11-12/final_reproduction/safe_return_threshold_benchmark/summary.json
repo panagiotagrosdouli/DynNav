@@ -1,0 +1,43 @@
+{
+  "detour_or_rejection_rate": 0.5333333333333333,
+  "per_threshold": {
+    "0.1": {
+      "mean_activated_closures_successes": 2.0,
+      "mean_path_length_successes": 14.0,
+      "success_rate": 1.0,
+      "trials": 5
+    },
+    "0.3": {
+      "mean_activated_closures_successes": 1.6,
+      "mean_path_length_successes": 14.8,
+      "success_rate": 1.0,
+      "trials": 5
+    },
+    "0.5": {
+      "mean_activated_closures_successes": 1.0,
+      "mean_path_length_successes": 16.0,
+      "success_rate": 1.0,
+      "trials": 5
+    },
+    "0.7": {
+      "mean_activated_closures_successes": 0.8,
+      "mean_path_length_successes": 16.4,
+      "success_rate": 1.0,
+      "trials": 5
+    },
+    "0.9": {
+      "mean_activated_closures_successes": 0.2,
+      "mean_path_length_successes": 17.6,
+      "success_rate": 1.0,
+      "trials": 5
+    },
+    "0.99": {
+      "mean_activated_closures_successes": 0.0,
+      "mean_path_length_successes": 18.0,
+      "success_rate": 1.0,
+      "trials": 5
+    }
+  },
+  "success_rate": 1.0,
+  "trials": 30
+}

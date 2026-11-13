@@ -1,0 +1,230 @@
+{
+  "chamber_two_trigger": {
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "path_length": 9,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "history_exact": {
+        "baseline_only_events": 445,
+        "baseline_rate": 0.89,
+        "discordant_pairs": 445,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.89,
+          "lower": -0.916,
+          "sample_size": 500,
+          "upper": -0.862
+        },
+        "mcnemar_exact_pvalue": 2.2013136429275836e-134,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.89
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.89,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.89,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.89,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.89,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 2,
+      "irreversible_failure_rate": 0.89,
+      "path_length": 7,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 2,
+      "irreversible_failure_rate": 0.89,
+      "path_length": 7,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 2,
+      "irreversible_failure_rate": 0.89,
+      "path_length": 7,
+      "trials": 500
+    }
+  },
+  "fork": {
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "path_length": 8,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "history_exact": {
+        "baseline_only_events": 405,
+        "baseline_rate": 0.81,
+        "discordant_pairs": 405,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.81,
+          "lower": -0.844,
+          "sample_size": 500,
+          "upper": -0.776
+        },
+        "mcnemar_exact_pvalue": 2.420369946780824e-122,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.81
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.81,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.81,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.81,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.81,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.81,
+      "path_length": 6,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.81,
+      "path_length": 6,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.81,
+      "path_length": 6,
+      "trials": 500
+    }
+  },
+  "l_room": {
+    "history_exact": {
+      "activated_closure_count": 0,
+      "irreversible_failure_rate": 0.0,
+      "path_length": 8,
+      "trials": 500
+    },
+    "paired_binary_effects_vs_shortest": {
+      "history_exact": {
+        "baseline_only_events": 378,
+        "baseline_rate": 0.756,
+        "discordant_pairs": 378,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.756,
+          "lower": -0.794,
+          "sample_size": 500,
+          "upper": -0.718
+        },
+        "mcnemar_exact_pvalue": 3.248565551764031e-114,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.756
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.756,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.756,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.756,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 500,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.756,
+        "risk_difference": 0
+      }
+    },
+    "shortest": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.756,
+      "path_length": 8,
+      "trials": 500
+    },
+    "state_only_exact": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.756,
+      "path_length": 8,
+      "trials": 500
+    },
+    "state_only_single": {
+      "activated_closure_count": 1,
+      "irreversible_failure_rate": 0.756,
+      "path_length": 8,
+      "trials": 500
+    }
+  }
+}

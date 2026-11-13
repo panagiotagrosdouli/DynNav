@@ -1,0 +1,137 @@
+{
+  "total_count": 1,
+  "jobs": [
+    {
+      "id": 129783514868,
+      "run_id": 42802560005,
+      "workflow_name": "ROS 2 Gazebo benchmark",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/runs/42802560005",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOQWpfhs8AAAAeN7NG9A",
+      "head_sha": "1a0075452b2786e047f0b1f2d1962e7badbd977b",
+      "url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/jobs/129783514868",
+      "html_url": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/42802560005/job/129783514868",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-10T10:50:48Z",
+      "started_at": "2026-11-10T10:50:50Z",
+      "completed_at": "2026-11-10T10:53:20Z",
+      "name": "Jazzy / Gazebo Harmonic / minimal TB3",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-10T10:50:51Z",
+          "completed_at": "2026-11-10T10:50:51Z"
+        },
+        {
+          "name": "Initialize containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-10T10:50:51Z",
+          "completed_at": "2026-11-10T10:51:06Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-10T10:51:06Z",
+          "completed_at": "2026-11-10T10:51:08Z"
+        },
+        {
+          "name": "Install ROS and simulation dependencies",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 4,
+          "started_at": "2026-11-10T10:51:08Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Build planner and benchmark packages",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 5,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Test search, plugin discovery, and experiment contracts",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Record installed simulation environment",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Run paired planner-server benchmark",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Validate result schema",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Upload raw benchmark artifacts",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 10,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 19,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:10Z"
+        },
+        {
+          "name": "Stop containers",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 20,
+          "started_at": "2026-11-10T10:53:10Z",
+          "completed_at": "2026-11-10T10:53:19Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 21,
+          "started_at": "2026-11-10T10:53:19Z",
+          "completed_at": "2026-11-10T10:53:19Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/check-runs/129783514868",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000030994,
+      "runner_name": "GitHub Actions 1000030994",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    }
+  ]
+}

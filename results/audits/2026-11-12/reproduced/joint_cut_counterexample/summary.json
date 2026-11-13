@@ -1,0 +1,97 @@
+{
+  "cut_optimism_cases": 9,
+  "pairs": [
+    {
+      "closure_probability": 0.2,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.9600000000000002,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 2.0
+    },
+    {
+      "closure_probability": 0.2,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.9600000000000002,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 4.0
+    },
+    {
+      "closure_probability": 0.2,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.9600000000000002,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 8.0
+    },
+    {
+      "closure_probability": 0.5,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.75,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 2.0
+    },
+    {
+      "closure_probability": 0.5,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.75,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 4.0
+    },
+    {
+      "closure_probability": 0.5,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.75,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 8.0
+    },
+    {
+      "closure_probability": 0.8,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.35999999999999993,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 2.0
+    },
+    {
+      "closure_probability": 0.8,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.35999999999999993,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 4.0
+    },
+    {
+      "closure_probability": 0.8,
+      "cut_activated_closures": 2,
+      "cut_exact_return_probability": 0.35999999999999993,
+      "cut_path_length": 6,
+      "cut_return_estimate": 1.0,
+      "exact_activated_closures": 0,
+      "exact_path_length": 6,
+      "recoverability_weight": 8.0
+    }
+  ],
+  "route_disagreement_rate": 1.0,
+  "trials": 18
+}

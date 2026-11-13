@@ -1,0 +1,198 @@
+{
+  "total_count": 2,
+  "jobs": [
+    {
+      "id": 129783565137,
+      "run_id": 42802575680,
+      "workflow_name": "Web portal",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/runs/42802575680",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOQWpfhs8AAAAeN7QLUQ",
+      "head_sha": "1a0075452b2786e047f0b1f2d1962e7badbd977b",
+      "url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/jobs/129783565137",
+      "html_url": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/42802575680/job/129783565137",
+      "status": "completed",
+      "conclusion": "failure",
+      "created_at": "2026-11-10T10:50:55Z",
+      "started_at": "2026-11-10T10:51:04Z",
+      "completed_at": "2026-11-10T10:51:10Z",
+      "name": "Build web interfaces",
+      "steps": [
+        {
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 1,
+          "started_at": "2026-11-10T10:51:04Z",
+          "completed_at": "2026-11-10T10:51:05Z"
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 2,
+          "started_at": "2026-11-10T10:51:05Z",
+          "completed_at": "2026-11-10T10:51:07Z"
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 3,
+          "started_at": "2026-11-10T10:51:07Z",
+          "completed_at": "2026-11-10T10:51:07Z"
+        },
+        {
+          "name": "Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 4,
+          "started_at": "2026-11-10T10:51:07Z",
+          "completed_at": "2026-11-10T10:51:08Z"
+        },
+        {
+          "name": "Verify contribution catalog is current",
+          "status": "completed",
+          "conclusion": "failure",
+          "number": 5,
+          "started_at": "2026-11-10T10:51:08Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Install locked dependencies",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 6,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Audit dependency trees",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 7,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Type-check standalone Vercel app",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 8,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Build combined portal",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 9,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Build standalone Vercel app",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 10,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Verify both portal entry points",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 11,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Upload deployment-ready portal",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 12,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Upload GitHub Pages artifact",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 13,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Post Run actions/setup-python@v5",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 24,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "status": "completed",
+          "conclusion": "skipped",
+          "number": 25,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 26,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        },
+        {
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success",
+          "number": 27,
+          "started_at": "2026-11-10T10:51:09Z",
+          "completed_at": "2026-11-10T10:51:09Z"
+        }
+      ],
+      "check_run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/check-runs/129783565137",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": 1000031000,
+      "runner_name": "GitHub Actions 1000031000",
+      "runner_group_id": 0,
+      "runner_group_name": "GitHub Actions"
+    },
+    {
+      "id": 129783691216,
+      "run_id": 42802575680,
+      "workflow_name": "Web portal",
+      "head_branch": "main",
+      "run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/runs/42802575680",
+      "run_attempt": 1,
+      "node_id": "CR_kwDOQWpfhs8AAAAeN7X30A",
+      "head_sha": "1a0075452b2786e047f0b1f2d1962e7badbd977b",
+      "url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/actions/jobs/129783691216",
+      "html_url": "https://github.com/panagiotagrosdouli/DynNav/actions/runs/42802575680/job/129783691216",
+      "status": "completed",
+      "conclusion": "skipped",
+      "created_at": "2026-11-10T10:51:11Z",
+      "started_at": "2026-11-10T10:51:11Z",
+      "completed_at": "2026-11-10T10:51:10Z",
+      "name": "Deploy GitHub Pages",
+      "steps": [
+
+      ],
+      "check_run_url": "https://api.github.com/repos/panagiotagrosdouli/DynNav/check-runs/129783691216",
+      "labels": [
+        "ubuntu-24.04"
+      ],
+      "runner_id": null,
+      "runner_name": null,
+      "runner_group_id": null,
+      "runner_group_name": null
+    }
+  ]
+}

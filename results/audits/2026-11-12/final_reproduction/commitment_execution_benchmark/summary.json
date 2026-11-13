@@ -1,0 +1,394 @@
+{
+  "hard_return_0.9:p=0.2": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "hard_return_0.9:p=0.5": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "hard_return_0.9:p=0.8": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_cut:p=0.2": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_cut:p=0.5": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_cut:p=0.8": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_exact:p=0.2": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_exact:p=0.5": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "history_exact:p=0.8": {
+    "activated_closure_count": 0,
+    "irreversible_failure_rate": 0.0,
+    "mean_realized_closures": 0.0,
+    "path_length": 18,
+    "recovery_feasible_rate": 1.0,
+    "trials": 1000
+  },
+  "paired_binary_effects": {
+    "p=0.2": {
+      "hard_return_0.9": {
+        "baseline_only_events": 512,
+        "baseline_rate": 0.512,
+        "discordant_pairs": 512,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.512,
+          "lower": -0.543,
+          "sample_size": 1000,
+          "upper": -0.481
+        },
+        "mcnemar_exact_pvalue": 1.4916681462400413e-154,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.512
+      },
+      "history_cut": {
+        "baseline_only_events": 512,
+        "baseline_rate": 0.512,
+        "discordant_pairs": 512,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.512,
+          "lower": -0.542,
+          "sample_size": 1000,
+          "upper": -0.48
+        },
+        "mcnemar_exact_pvalue": 1.4916681462400413e-154,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.512
+      },
+      "history_exact": {
+        "baseline_only_events": 512,
+        "baseline_rate": 0.512,
+        "discordant_pairs": 512,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.512,
+          "lower": -0.543,
+          "sample_size": 1000,
+          "upper": -0.481
+        },
+        "mcnemar_exact_pvalue": 1.4916681462400413e-154,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.512
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.512,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.512,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.512,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.512,
+        "risk_difference": 0
+      }
+    },
+    "p=0.5": {
+      "hard_return_0.9": {
+        "baseline_only_events": 881,
+        "baseline_rate": 0.881,
+        "discordant_pairs": 881,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.881,
+          "lower": -0.9,
+          "sample_size": 1000,
+          "upper": -0.86
+        },
+        "mcnemar_exact_pvalue": 1.240520129162012e-265,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.881
+      },
+      "history_cut": {
+        "baseline_only_events": 881,
+        "baseline_rate": 0.881,
+        "discordant_pairs": 881,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.881,
+          "lower": -0.9,
+          "sample_size": 1000,
+          "upper": -0.861
+        },
+        "mcnemar_exact_pvalue": 1.240520129162012e-265,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.881
+      },
+      "history_exact": {
+        "baseline_only_events": 881,
+        "baseline_rate": 0.881,
+        "discordant_pairs": 881,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.881,
+          "lower": -0.9,
+          "sample_size": 1000,
+          "upper": -0.861
+        },
+        "mcnemar_exact_pvalue": 1.240520129162012e-265,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.881
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.881,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.881,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.881,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.881,
+        "risk_difference": 0
+      }
+    },
+    "p=0.8": {
+      "hard_return_0.9": {
+        "baseline_only_events": 992,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 992,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.997,
+          "sample_size": 1000,
+          "upper": -0.986
+        },
+        "mcnemar_exact_pvalue": 4.778309726736481e-299,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "history_cut": {
+        "baseline_only_events": 992,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 992,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.997,
+          "sample_size": 1000,
+          "upper": -0.986
+        },
+        "mcnemar_exact_pvalue": 4.778309726736481e-299,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "history_exact": {
+        "baseline_only_events": 992,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 992,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": -0.992,
+          "lower": -0.997,
+          "sample_size": 1000,
+          "upper": -0.986
+        },
+        "mcnemar_exact_pvalue": 4.778309726736481e-299,
+        "proposed_only_events": 0,
+        "proposed_rate": 0,
+        "risk_difference": -0.992
+      },
+      "state_only_exact": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.992,
+        "risk_difference": 0
+      },
+      "state_only_single": {
+        "baseline_only_events": 0,
+        "baseline_rate": 0.992,
+        "discordant_pairs": 0,
+        "interval": {
+          "confidence": 0.95,
+          "estimate": 0.0,
+          "lower": 0.0,
+          "sample_size": 1000,
+          "upper": 0.0
+        },
+        "mcnemar_exact_pvalue": 1.0,
+        "proposed_only_events": 0,
+        "proposed_rate": 0.992,
+        "risk_difference": 0
+      }
+    }
+  },
+  "shortest:p=0.2": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.512,
+    "mean_realized_closures": 0.636,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.488,
+    "trials": 1000
+  },
+  "shortest:p=0.5": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.881,
+    "mean_realized_closures": 1.482,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.119,
+    "trials": 1000
+  },
+  "shortest:p=0.8": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.992,
+    "mean_realized_closures": 2.404,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.008,
+    "trials": 1000
+  },
+  "state_only_exact:p=0.2": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.512,
+    "mean_realized_closures": 0.636,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.488,
+    "trials": 1000
+  },
+  "state_only_exact:p=0.5": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.881,
+    "mean_realized_closures": 1.482,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.119,
+    "trials": 1000
+  },
+  "state_only_exact:p=0.8": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.992,
+    "mean_realized_closures": 2.404,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.008,
+    "trials": 1000
+  },
+  "state_only_single:p=0.2": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.512,
+    "mean_realized_closures": 0.636,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.488,
+    "trials": 1000
+  },
+  "state_only_single:p=0.5": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.881,
+    "mean_realized_closures": 1.482,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.119,
+    "trials": 1000
+  },
+  "state_only_single:p=0.8": {
+    "activated_closure_count": 3,
+    "irreversible_failure_rate": 0.992,
+    "mean_realized_closures": 2.404,
+    "path_length": 12,
+    "recovery_feasible_rate": 0.008,
+    "trials": 1000
+  }
+}
