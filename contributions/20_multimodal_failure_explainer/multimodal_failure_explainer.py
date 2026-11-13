@@ -62,7 +62,7 @@ class FailureReport:
         lines = [
             f"# Failure Report — {self.failure_type}",
             f"**Time:** {self.timestamp:.2f}s | **Position:** {self.robot_pos}",
-            f"**Confidence:** {self.confidence:.2f}",
+            "**Confidence:** unavailable (no calibrated confidence model)",
             "",
             "## Scene Description",
             self.scene_description,
@@ -92,6 +92,8 @@ class FailureReport:
             "stl_summary": self.stl_summary,
             "corrective_actions": self.corrective_actions,
             "confidence": self.confidence,
+            "confidence_status": "unavailable_uncalibrated",
+            "causal_attribution_status": "unavailable_no_episode_grounded_model",
         }
 
 
@@ -144,9 +146,9 @@ class MultimodalFailureExplainer:
         stl_summary = self._summarise_stl(event)
         actions = self.CORRECTIVE_ACTIONS.get(event.failure_type, ["Investigate manually"])
 
-        confidence = 0.7 if scene_desc != "Scene analysis unavailable." else 0.4
-        if root_causes:
-            confidence = min(0.95, confidence + 0.1)
+        # No fitted/validated confidence model or episode causal model is wired
+        # here. A formatted description is not probabilistic causal evidence.
+        confidence = 0.0
 
         report = FailureReport(
             failure_type=event.failure_type.value,
@@ -180,34 +182,13 @@ class MultimodalFailureExplainer:
 
     def _vlm_describe(self, frame: np.ndarray,
                        failure_type: FailureType) -> str:
-        """Query VLM for scene description (stub — calls vlm_planner if available)."""
-        try:
-            import sys, os
-            sys.path.insert(0, os.path.join(os.path.dirname(__file__),
-                                             "../19_llm_mission_planner"))
-            # Placeholder — in production call the VLM API
-            return f"[VLM] Scene at time of {failure_type.value}: visual analysis pending."
-        except Exception:
-            return "Scene analysis unavailable."
+        """Fail closed until an actual visual analysis provider is integrated."""
+        return "Scene analysis unavailable."
 
     def _attribute_causes(self, event: FailureEvent
                            ) -> list[tuple[str, float]]:
-        """Use causal SCM (Contribution 14) for root-cause ranking."""
-        if not self.use_causal:
-            return []
-        try:
-            import sys, os
-            sys.path.insert(0, os.path.join(os.path.dirname(__file__),
-                                             "../14_causal_risk_attribution"))
-            from causal_risk import NavigationSCM
-            scm = NavigationSCM()
-            rng = np.random.default_rng(0)
-            noise = {n: rng.standard_normal() * 0.3 for n in scm.nodes}
-            ranking = scm.root_cause_ranking(noise, n_samples=50)
-            return [(name, round(score, 4)) for name, score in ranking[:4]]
-        except Exception as e:
-            logger.debug("Causal attribution unavailable: %s", e)
-            return [("sensor_noise", 0.42), ("localization_error", 0.31)]
+        """No episode-grounded causal model is integrated; never invent scores."""
+        return []
 
     def _summarise_stl(self, event: FailureEvent) -> str:
         if not event.stl_robustness:

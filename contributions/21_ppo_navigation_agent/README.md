@@ -222,3 +222,22 @@ This would align training-time and deployment-time safety constraints.
 Contribution 21 establishes the reinforcement-learning navigation layer of DynNav.
 
 The upgraded version makes it stronger by adding policy-safety evaluation and baseline comparison rather than relying only on training reward.
+
+## Actual CPU policy update (integration revision)
+
+`PPOAgent.update` now differentiates the clipped Gaussian PPO surrogate, value
+MSE and entropy objective using CPU PyTorch, applies globally clipped SGD steps,
+and writes learned parameters back to the NumPy inference networks. Rollout
+truncations bootstrap the critic; terminal episodes do not. `NavEnv(seed=...)`
+permits repeatable toy training. Install CPU PyTorch to use the update path.
+
+```bash
+python contributions/21_ppo_navigation_agent/experiments/train_ppo_cpu.py \
+  --updates 20 --eval-seeds 16 --output work/c21_training
+```
+
+This retains loss curves, an actual NPZ checkpoint, seed/config/source hashes,
+and paired held-out outcomes against initial and greedy policies. It does not
+replace the historical negative smoke results. Actual parameter learning is not
+evidence of navigation superiority, arbitrary-map generalization or ROS/robot
+closed-loop validation. The environment is the retained toy simulator, not Gazebo.

@@ -56,11 +56,11 @@ class PPOConfig:
 
 
 # ---------------------------------------------------------------------------
-# Neural network stubs (replace with PyTorch nn.Module in production)
+# NumPy inference networks, optimized through CPU PyTorch autograd in update()
 # ---------------------------------------------------------------------------
 
 class LinearLayer:
-    """Single linear layer with optional activation (numpy stub)."""
+    """Single trainable linear layer with NumPy inference."""
 
     def __init__(self, in_d: int, out_d: int, activation: str = "relu", seed: int = 0):
         rng = np.random.default_rng(seed)
@@ -98,8 +98,8 @@ class ActorNetwork:
         mean, std = self.forward(obs)
         action = mean + std * rng.standard_normal(mean.shape)
         log_prob = float(np.sum(
-            -0.5 * ((action - mean) / (std + 1e-8)) ** 2
-            - np.log(std + 1e-8) - 0.5 * np.log(2 * np.pi)
+            -0.5 * ((action - mean) / std) ** 2
+            - np.log(std) - 0.5 * np.log(2 * np.pi)
         ))
         return action, log_prob
 
@@ -165,10 +165,10 @@ class NavEnv:
     Replace with Gazebo/ROS2 bridge for real-world deployment.
     """
 
-    def __init__(self, cfg: PPOConfig, grid_size: int = 16):
+    def __init__(self, cfg: PPOConfig, grid_size: int = 16, seed: int | None = None):
         self.cfg = cfg
         self.grid_size = grid_size
-        self._rng = np.random.default_rng()
+        self._rng = np.random.default_rng(seed)
         self.robot_pos = np.array([0.0, 0.0])
         self.goal_pos = np.array([5.0, 5.0])
         self.obstacles: list[np.ndarray] = []
@@ -242,7 +242,7 @@ class NavEnv:
 class PPOAgent:
     """
     PPO agent for DynNav navigation.
-    Uses numpy-based networks; swap for PyTorch for GPU training.
+    Uses NumPy inference and CPU PyTorch autograd for actual PPO SGD updates.
     """
 
     def __init__(self, cfg: PPOConfig | None = None):
@@ -252,6 +252,7 @@ class PPOAgent:
         self.buffer = RolloutBuffer()
         self._rng = np.random.default_rng(42)
         self.training_log: list[dict] = []
+        self._last_value = 0.0
 
     def select_action(self, obs: np.ndarray) -> tuple[np.ndarray, float, float]:
         action, log_prob = self.actor.sample(obs, self._rng)
@@ -279,6 +280,7 @@ class PPOAgent:
                 obs = env.reset()
 
         last_val = self.critic.forward(obs)
+        self._last_value = last_val
         advantages, returns = self.buffer.compute_gae(
             last_val, self.cfg.gamma, self.cfg.gae_lambda
         )
@@ -292,30 +294,88 @@ class PPOAgent:
 
     def update(self, advantages: np.ndarray,
                returns: np.ndarray) -> dict:
+        """Optimize the clipped Gaussian-policy surrogate with CPU autograd.
+
+        Existing NumPy inference weights remain the public representation.
+        Gradient steps update all actor/critic layers and log standard deviation.
+        This small implementation uses SGD, not an implicit Adam implementation.
+        No policy usefulness or robot generalization follows from update passage.
         """
-        PPO clipped surrogate objective update (numpy stub).
-        In production: compute actual gradients with PyTorch autograd.
-        """
-        # Normalise advantages
-        adv = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
-        # Stub: log approximate losses without backprop
-        policy_loss = float(-np.mean(adv))
-        value_loss = float(np.mean((returns - np.array(self.buffer.values)) ** 2))
-        entropy = float(np.mean(self.actor.log_std))
-        total_loss = policy_loss + self.cfg.value_coef * value_loss - self.cfg.entropy_coef * entropy
-        return {
-            "policy_loss": round(policy_loss, 5),
-            "value_loss": round(value_loss, 5),
-            "entropy": round(entropy, 5),
-            "total_loss": round(total_loss, 5),
-        }
+        import torch
+
+        count = len(self.buffer.obs)
+        if count == 0 or len(advantages) != count or len(returns) != count:
+            raise ValueError("PPO update requires aligned nonempty rollout, advantages and returns")
+        if self.cfg.batch_size <= 0 or self.cfg.n_epochs <= 0:
+            raise ValueError("PPO batch size and epochs must be positive")
+        obs = torch.tensor(np.asarray(self.buffer.obs), dtype=torch.float64)
+        actions = torch.tensor(np.asarray(self.buffer.actions), dtype=torch.float64)
+        old_log = torch.tensor(self.buffer.log_probs, dtype=torch.float64)
+        target = torch.tensor(returns, dtype=torch.float64)
+        adv = torch.tensor(advantages, dtype=torch.float64)
+        if not all(torch.isfinite(v).all() for v in (obs, actions, old_log, target, adv)):
+            raise ValueError("PPO inputs must be finite")
+        adv = (adv - adv.mean()) / (adv.std(unbiased=False) + 1e-8)
+
+        def parameters(network):
+            return [torch.tensor(v.copy(), dtype=torch.float64, requires_grad=True)
+                    for layer in (network.l1, network.l2, network.out) for v in (layer.W, layer.b)]
+
+        actor = parameters(self.actor)
+        log_std = torch.tensor(self.actor.log_std.copy(), dtype=torch.float64, requires_grad=True)
+        actor.append(log_std)
+        critic = parameters(self.critic)
+        actor_optimizer = torch.optim.SGD(actor, lr=self.cfg.lr_actor)
+        critic_optimizer = torch.optim.SGD(critic, lr=self.cfg.lr_critic)
+
+        def forward(x, params, actor_output):
+            x = torch.tanh(x @ params[0] + params[1])
+            x = torch.tanh(x @ params[2] + params[3])
+            x = x @ params[4] + params[5]
+            return torch.tanh(x) if actor_output else x.squeeze(-1)
+
+        logs = []
+        for _ in range(self.cfg.n_epochs):
+            order = self._rng.permutation(count)
+            for start in range(0, count, self.cfg.batch_size):
+                indices = order[start:start + self.cfg.batch_size]
+                distribution = torch.distributions.Normal(
+                    forward(obs[indices], actor, True), log_std.clamp(-20, 2).exp()
+                )
+                log_prob = distribution.log_prob(actions[indices]).sum(-1)
+                ratio = (log_prob - old_log[indices]).exp()
+                surrogate = torch.minimum(
+                    ratio * adv[indices], ratio.clamp(1 - self.cfg.clip_eps, 1 + self.cfg.clip_eps) * adv[indices]
+                )
+                policy_loss = -surrogate.mean()
+                value_loss = ((forward(obs[indices], critic, False) - target[indices]) ** 2).mean()
+                entropy = distribution.entropy().sum(-1).mean()
+                total_loss = policy_loss + self.cfg.value_coef * value_loss - self.cfg.entropy_coef * entropy
+                if not torch.isfinite(total_loss):
+                    raise ValueError("Nonfinite PPO loss; weights were not published")
+                actor_optimizer.zero_grad()
+                critic_optimizer.zero_grad()
+                total_loss.backward()
+                torch.nn.utils.clip_grad_norm_(actor + critic, self.cfg.max_grad_norm, error_if_nonfinite=True)
+                actor_optimizer.step()
+                critic_optimizer.step()
+                with torch.no_grad():
+                    log_std.clamp_(-20, 2)
+                logs.append([float(v.detach()) for v in (policy_loss, value_loss, entropy, total_loss)])
+
+        for network, params in ((self.actor, actor), (self.critic, critic)):
+            for index, layer in enumerate((network.l1, network.l2, network.out)):
+                layer.W = params[2 * index].detach().numpy().copy()
+                layer.b = params[2 * index + 1].detach().numpy().copy()
+        self.actor.log_std = log_std.detach().numpy().copy()
+        return dict(zip(("policy_loss", "value_loss", "entropy", "total_loss"), np.mean(logs, axis=0).tolist()))
 
     def train(self, env: NavEnv, n_updates: int = 50) -> list[dict]:
         """Main training loop."""
         for update in range(n_updates):
             stats = self.collect_rollout(env)
             advantages, returns = self.buffer.compute_gae(
-                0.0, self.cfg.gamma, self.cfg.gae_lambda
+                self._last_value, self.cfg.gamma, self.cfg.gae_lambda
             )
             loss_stats = self.update(advantages, returns)
             record = {"update": update + 1, **stats, **loss_stats}
