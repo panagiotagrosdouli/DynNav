@@ -789,7 +789,7 @@
     "readme": "contributions/22_curriculum_rl/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c22_curriculum_rl.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/22_curriculum_rl/tests",
     "experiment": {
       "contribution_id": "C22",
       "experiment_id": "c22_curriculum_strategies",

@@ -40,7 +40,7 @@ class Probe:
         self.node.create_subscription(Odometry, "/odom", self.odom, qos_profile_sensor_data)
         qos = QoSProfile(depth=1, durability=DurabilityPolicy.TRANSIENT_LOCAL)
         self.node.create_subscription(OccupancyGrid, "/map", self.mapping, qos)
-        self.node.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.amcl, qos_profile_sensor_data)
+        self.node.create_subscription(PoseWithCovarianceStamped, "/amcl_pose", self.amcl, qos)
         self.buffer = Buffer()
         self.listener = TransformListener(self.buffer, self.node)
 
@@ -230,6 +230,10 @@ def main():
             rclpy.spin_once(navigator, timeout_sec=0.1)
             time.sleep(0.01)
         if not probe.counts["amcl"]:
+            result["amcl_pose_publishers"] = [
+                str(info) for info in probe.node.get_publishers_info_by_topic("/amcl_pose")
+            ]
+            result["observed_topics"] = probe.node.get_topic_names_and_types()
             raise RuntimeError("AMCL did not publish a finite map-frame pose on the newly generated map")
         probe.transform("map", "base_link")
         pose.header.stamp = navigator.get_clock().now().to_msg()
@@ -252,6 +256,9 @@ def main():
             result["failure_observations"] = probe.snapshot()
         (directory / "result.json").write_text(json.dumps(result, indent=2) + "\n")
         print("::error::" + result["error"].replace("%", "%25"), flush=True)
+        print("::error::observations " + json.dumps(result.get("failure_observations")), flush=True)
+        if "amcl_pose_publishers" in result:
+            print("::error::amcl publishers " + str(result["amcl_pose_publishers"]), flush=True)
         raise
     finally:
         if process is not None:
