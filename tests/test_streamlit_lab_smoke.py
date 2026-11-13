@@ -24,7 +24,7 @@ PAGES = [
 
 
 def test_all_streamlit_pages_parse() -> None:
-    assert len(PAGES) >= 14
+    assert len(PAGES) >= 15
     for page in PAGES:
         ast.parse(page.read_text(encoding="utf-8"), filename=str(page))
 
