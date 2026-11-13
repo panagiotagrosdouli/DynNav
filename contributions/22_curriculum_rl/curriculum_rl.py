@@ -304,7 +304,12 @@ def run_curriculum_training(
             "ep_reward": round(ep_reward, 3),
             "ep_steps": ep_steps,
             "success": int(info.get("success", False)),
-            "success_rate": round(scheduler.success_rate, 3),
+            "success_rate": (
+                scheduler.stage_history[-1]["success_rate"]
+                if scheduler.current_stage_idx != episode_stage_idx
+                else round(scheduler.success_rate, 3)
+            ),
+            "next_stage": scheduler.current.name,
             "policy_update_l2": float(np.linalg.norm(agent.actor.out.W - initial_weights)),
             **losses,
         }

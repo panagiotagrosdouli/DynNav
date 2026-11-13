@@ -26,6 +26,7 @@ struct PlannerTestAccess
     p.history_hazards_ = {{1, 2, 1, 0.8}};
   }
   static std::uint64_t mask(const DynNavGlobalPlanner & p) {return p.active_history_mask_;}
+  static void shortest(DynNavGlobalPlanner & p) {p.history_aware_ = false;}
   static std::string stamp(const DynNavGlobalPlanner & p)
   {
     return std::to_string(p.clock_->now().nanoseconds());
@@ -75,5 +76,31 @@ TEST(PlannerObservations, RejectsResizedOrShiftedHistoryCostmapWithoutClearingHa
   pose.header.frame_id = "map";
   EXPECT_THROW(planner.createPlan(pose, pose, [] {return false;}), nav2_core::PlannerException);
   EXPECT_EQ(PlannerTestAccess::mask(planner), 1U);
+}
+
+TEST(PlannerObservations, PathCoordinatesUseTheSnapshotEvenIfMapChangesDuringSearch)
+{
+  nav2_costmap_2d::Costmap2D map(6, 1, 1.0, 0.0, 0.0, 0);
+  DynNavGlobalPlanner planner;
+  PlannerTestAccess::setup(planner, map);
+  PlannerTestAccess::shortest(planner);
+  geometry_msgs::msg::PoseStamped start, goal;
+  start.header.frame_id = goal.header.frame_id = "map";
+  start.pose.position.x = 0.5;
+  goal.pose.position.x = 5.5;
+  start.pose.position.y = goal.pose.position.y = 0.5;
+  start.pose.orientation.w = goal.pose.orientation.w = 1.0;
+  bool resized = false;
+  const auto path = planner.createPlan(start, goal, [&]() {
+      if (!resized) {
+        map.resizeMap(12, 2, 2.0, 10.0, 20.0);
+        resized = true;
+      }
+      return false;
+    });
+  EXPECT_TRUE(resized);
+  ASSERT_EQ(path.poses.size(), 6U);
+  EXPECT_DOUBLE_EQ(path.poses[2].pose.position.x, 2.5);
+  EXPECT_DOUBLE_EQ(path.poses[2].pose.position.y, 0.5);
 }
 }  // namespace dynnav_nav2_cpp
