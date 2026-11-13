@@ -51,7 +51,7 @@
     "readme": "contributions/02_uncertainty_calibration/README.md",
     "source": "contributions/02_uncertainty_calibration/code",
     "renderer": "src/dynnav_dashboard/contributions/c02_ekf_ukf.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/02_uncertainty_calibration/tests",
     "experiment": {
       "contribution_id": "C02",
       "experiment_id": "c02_uncertainty_calibration",
@@ -91,7 +91,7 @@
     "readme": "contributions/03_belief_risk_planning/README.md",
     "source": "contributions/03_belief_risk_planning/code",
     "renderer": "src/dynnav_dashboard/contributions/c03_cvar_astar.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/03_belief_risk_planning/tests",
     "experiment": {
       "contribution_id": "C03",
       "experiment_id": "c03_belief_risk_tradeoff",
@@ -166,7 +166,7 @@
     "readme": "contributions/05_safe_mode_navigation/README.md",
     "source": "contributions/05_safe_mode_navigation/code",
     "renderer": "src/dynnav_dashboard/contributions/c05_safe_mode_fsm.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/05_safe_mode_navigation/tests",
     "experiment": {
       "contribution_id": "C05",
       "experiment_id": "c05_safe_mode_thresholds",
@@ -204,7 +204,7 @@
     "readme": "contributions/06_energy_connectivity/README.md",
     "source": "contributions/06_energy_connectivity/code",
     "renderer": "src/dynnav_dashboard/contributions/c06_energy_connectivity.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/06_energy_connectivity/tests",
     "experiment": {
       "contribution_id": "C06",
       "experiment_id": "c06_resource_feasibility",
@@ -246,7 +246,7 @@
     "readme": "contributions/07_next_best_view/README.md",
     "source": "contributions/07_next_best_view/code",
     "renderer": "src/dynnav_dashboard/contributions/c07_next_best_view.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/07_next_best_view/tests",
     "experiment": {
       "contribution_id": "C07",
       "experiment_id": "c07_returnability_aware_nbv",
@@ -288,7 +288,7 @@
     "readme": "contributions/08_security_ids/README.md",
     "source": "contributions/08_security_ids/code",
     "renderer": "src/dynnav_dashboard/contributions/c08_security_ids.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/08_security_ids/tests",
     "experiment": {
       "contribution_id": "C08",
       "experiment_id": "c08_ids_response_policy",
@@ -323,7 +323,7 @@
     "readme": "contributions/09_multi_robot/README.md",
     "source": "contributions/09_multi_robot/code",
     "renderer": "src/dynnav_dashboard/contributions/c09_multi_robot.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/09_multi_robot/tests",
     "experiment": {
       "contribution_id": "C09",
       "experiment_id": "c09_team_coordination",
@@ -358,7 +358,7 @@
     "readme": "contributions/10_human_language_ethics/README.md",
     "source": "contributions/10_human_language_ethics/code",
     "renderer": "src/dynnav_dashboard/contributions/c10_human_aware.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/10_human_language_ethics/tests",
     "experiment": {
       "contribution_id": "C10",
       "experiment_id": "c10_human_ethics_policy",
@@ -393,7 +393,7 @@
     "readme": "contributions/11_vlm_navigation_agent/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c11_vlm_goal_validation.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/11_vlm_navigation_agent/tests",
     "experiment": {
       "contribution_id": "C11",
       "experiment_id": "c11_vlm_goal_validation",
@@ -428,7 +428,7 @@
     "readme": "contributions/12_diffusion_occupancy/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c12_diffusion_occupancy.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/12_diffusion_occupancy/tests",
     "experiment": {
       "contribution_id": "C12",
       "experiment_id": "c12_risk_map_quality",
@@ -466,7 +466,7 @@
     "readme": "contributions/13_latent_world_model/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c13_world_model.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/13_latent_world_model/tests",
     "experiment": {
       "contribution_id": "C13",
       "experiment_id": "c13_rollout_audit",
@@ -504,7 +504,7 @@
     "readme": "contributions/14_causal_risk_attribution/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c14_causal_scm.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/14_causal_risk_attribution/tests",
     "experiment": {
       "contribution_id": "C14",
       "experiment_id": "c14_root_cause_attribution",
@@ -540,7 +540,7 @@
     "readme": "contributions/15_neuromorphic_sensing/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c15_neuromorphic.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/15_neuromorphic_sensing/tests",
     "experiment": {
       "contribution_id": "C15",
       "experiment_id": "c15_neuromorphic_latency",
@@ -574,7 +574,7 @@
     "readme": "contributions/16_federated_nav_learning/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c16_federated_learning.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/16_federated_nav_learning/tests",
     "experiment": {
       "contribution_id": "C16",
       "experiment_id": "c16_federated_tradeoffs",
@@ -614,7 +614,7 @@
     "readme": "contributions/17_topological_semantic_maps/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c17_topological_maps.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/17_topological_semantic_maps/tests",
     "experiment": {
       "contribution_id": "C17",
       "experiment_id": "c17_topological_semantic_navigation",
@@ -648,7 +648,7 @@
     "readme": "contributions/18_formal_safety_shields/README.md",
     "source": null,
     "renderer": "src/dynnav_dashboard/contributions/c18_cbf_stl_shields.py",
-    "tests": "tests/test_contribution_experiment_suite.py",
+    "tests": "contributions/18_formal_safety_shields/tests",
     "experiment": {
       "contribution_id": "C18",
       "experiment_id": "c18_shield_stress_test",
