@@ -1,0 +1,29 @@
+
+> dynnav-researcher-web@0.1.0 build
+> next build
+
+▲ Next.js 16.4.3 (Turbopack)
+⚠ React 18 support is deprecated in Next.js 16 and will be removed in Next.js 17. Please upgrade to React 19. Learn more: https://nextjs.org/docs/messages/react-version
+✓ Running next.config.ts took 76ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.6s
+  Running TypeScript ...
+  Finished TypeScript in 7.5s ...
+  Collecting page data using 2 workers ...
+  Generating static pages using 2 workers (0/3) ...
+✓ Generating static pages using 2 workers (3/3) in 422ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+└ ○ /_not-found
+
+
+○  (Static)  prerendered as static content
+
+npm notice
+npm notice New major version of npm available! 11.9.0 -> 12.2.2
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.2
+npm notice To update run: npm install -g npm@12.2.2
+npm notice
