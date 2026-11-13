@@ -119,10 +119,13 @@ def main():
     args = parser.parse_args()
     directory = args.output.resolve()
     directory.mkdir(parents=True, exist_ok=True)
+    checkout = Path(__file__).resolve().parents[1]
     result = {
         "status": "failed",
         "evidence": "live_simulated_sensor_integration",
-        "source_revision": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
+        "source_revision": subprocess.check_output(
+            ["git", "-c", f"safe.directory={checkout}", "-C", str(checkout), "rev-parse", "HEAD"], text=True
+        ).strip(),
         "physical_robot_tested": False,
         "independent_ground_truth_accuracy_measured": False,
         "protocol": "live_slam_amcl_v1: rotate in place, save newly observed map, restart, localize, navigate 0.5m",
